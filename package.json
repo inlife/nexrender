@@ -1,0 +1,23 @@
+{
+  "name": "noxrender",
+  "version": "0.1.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Inlife",
+  "license": "MIT",
+  "dependencies": {
+    "app-root-path": "^1.0.0",
+    "async": "^1.5.2",
+    "dotenv": "^2.0.0",
+    "download": "^4.4.3",
+    "express": "^4.13.4",
+    "fs-extra": "^0.26.5",
+    "jimp": "^0.2.21",
+    "mkdirp": "^0.5.1",
+    "node-ffprobe": "^1.2.2",
+    "shortid": "^2.2.4"
+  }
+}

@@ -1,0 +1,10 @@
+# folders
+node_modules/
+temp/
+results/
+
+# env files
+.env
+
+# mac crap
+.DS_Store
