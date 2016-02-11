@@ -12,4 +12,4 @@ var proj = new Project("project1", "base", {
 
 proj.start(function(result) {
     console.log('done:', result);
-})
+});

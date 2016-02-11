@@ -1,0 +1,39 @@
+var project = {
+    template: "template1",
+    composition: "comp1",
+    assets: [{
+        type: "image",
+        src: "https://dl.dropboxusercontent.com/u/28013196/avatar/mario.jpeg",
+        name: "thumn1.jpg", // name of file to save content to
+        process: {
+            cover: true,
+            width: 1280,
+            height: 720,
+            grayscale: true  
+        }
+    }, {
+        type: "audio",
+        src: "https://dl.dropboxusercontent.com/u/28013196/dnb2.mp3",
+        name: "audio.mp3"
+    }, {
+        type: "data",
+        src: "https://dl.dropboxusercontent.com/u/28013196/data.json",
+        name: "data.json"
+    }],
+    postActions: [{ // or "plugins"
+        name: "youtube-upload",
+        params: [{
+            profile: "inlife", // predefined account record with auth keys etc.
+            title: "test",
+            description: "description",
+            keywords: "keywords",
+            category: "music",
+            privacy: "public",
+        }]
+    }, {
+        name: "email-notification",
+        params: [{
+            emails: ["test@test.com", "test2@test.com"]
+        }]
+    }]
+};
