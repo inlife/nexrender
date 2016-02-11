@@ -33,7 +33,7 @@ $ node index.js
 - Cover code with comments
 - Make ffmpeg optional
 - Add Youtube upload
-- Integrate IFTT
+- Integrate IFTTT
 - Fully functional REST API
 - Attach database to store projects
 - Conditional/Scheduled project rendering
