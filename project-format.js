@@ -5,12 +5,18 @@ var project = {
         type: "image",
         src: "https://dl.dropboxusercontent.com/u/28013196/avatar/mario.jpeg",
         name: "thumn1.jpg", // name of file to save content to
-        process: {
-            cover: true,
-            width: 1280,
-            height: 720,
-            grayscale: true  
-        }
+        filters: [{
+            name: "cover",
+            params: [{
+                width: 1280,
+                height: 720
+            }]
+        }, {
+            name: "grayscale",
+            params: [{
+                power: 10
+            }]  
+        }]
     }, {
         type: "audio",
         src: "https://dl.dropboxusercontent.com/u/28013196/dnb2.mp3",
