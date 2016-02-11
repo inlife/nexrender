@@ -29,7 +29,7 @@ var project = {
     postActions: [{ // or "plugins"
         name: "youtube-upload",
         params: [{
-            profile: "inlife", // predefined account record with auth keys etc.
+            profile: "inlife-youtube", // predefined account record with auth keys etc.
             title: "test",
             description: "description",
             keywords: "keywords",

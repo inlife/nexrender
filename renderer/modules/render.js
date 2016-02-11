@@ -19,7 +19,6 @@ class Render {
      * Resolves promise
      * @param  {Function}
      * @param  {Function}
-     * @return {[type]}
      */
     resolver(resolve, reject) {
         let aedata = [];
@@ -42,13 +41,8 @@ class Render {
         });
 
         ae.on('close', (code) => {
-            let data = aedata.join('');
-            return (code !== 0) ? reject(data) : resolve(data);
+            return (code !== 0) ? reject(aedata.join('')) : resolve(aedata.join(''));
         });
-    }
-
-    onClose() {
-
     }
 }
 
