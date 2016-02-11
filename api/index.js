@@ -1,15 +1,7 @@
-var express = require('express');
+'use strict';
 
-var app = express();
+class Api {
+    // api for rest server
+}
 
-app.get('/', function (req, res) {
-    res.send('Hello World!');
-});
-
-module.exports = {
-    start: function(port) {
-        app.listen(port, function () {
-            // console.log('rest api server started');
-        });
-    }
-};
+module.exports = new Api;

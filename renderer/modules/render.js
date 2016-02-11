@@ -1,40 +1,55 @@
 'use strict';
 
+const spawn = require('child_process').spawn;
+
+const AEBINARY = process.env.AEBINARY;
+
 class Render {
 
     /**
      * Starts rendering
+     * @return {Promise}
+     */
+    start(project) {
+        this.project = project;
+        return new Promise(this.resolver);
+    }
+
+    /**
+     * Resolves promise
+     * @param  {Function}
+     * @param  {Function}
      * @return {[type]}
      */
-    start() {}
+    resolver(resolve, reject) {
+        let aedata = [];
+
+        let ae = spawn(binary, [
+            '-project',     this.project.template,
+            '-comp',        this.project.composition,
+            '-OMtemplate',  this.project.template,
+            '-s',           this.project.startframe,
+            '-e',           this.project.endframe,
+            '-output',      this.project.output
+        ]);
+
+        ae.stdout.on('data', (data) => {
+            aedata.push(data.toString());
+        });
+
+        ae.stderr.on('data', (data) => {  
+            aedata.push(data.toString());
+        });
+
+        ae.on('close', (code) => {
+            let data = aedata.join('');
+            return (code !== 0) ? reject(data) : resolve(data);
+        });
+    }
+
+    onClose() {
+
+    }
 }
 
-module.exports = new Render;
-
-// // render.js
-// var spawn = require('child_process').spawn;
-
-// module.exports = function(binary, projdata, callback) {
-
-//     var aedata = [];
-//     var ae = spawn(binary, [
-//         '-project', projdata.project,
-//         '-comp', projdata.comp,
-//         '-OMtemplate', projdata.template,
-//         '-s', '0',
-//         '-e', projdata.frames,
-//         '-output', projdata.output
-//     ]);
-
-//     ae.stdout.on('data', function(data) {
-//         aedata.push(data.toString());
-//     });
-
-//     ae.stderr.on('data', function (data) {  
-//         aedata.push(data.toString());
-//     });
-
-//     ae.on('close', function (code) {  
-//         callback((code != 0) ? aedata.join() : null, aedata.join());
-//     });
-// };
+module.exports = Render;
