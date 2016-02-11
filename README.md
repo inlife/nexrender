@@ -4,31 +4,38 @@ Basicaly it takes premade project, creates copy of it, downloads and replaces de
 
 >Currently under initial development phase.
 
+### Documentation can be found: [here](DEVELOPMENT.md)
+
 ## Dependencies
 - Node.js
 - Adobe After Effects
 - ffmpeg (audio information)
 
 ## Installation
-1. Clone the repo.
-2. Create output template in Adobe After Effects with name "h264"
-3. Follow instructions:
+* Clone the repo.
+* Create output template in Adobe After Effects with name "h264"
+* Install ffpmeg:
 
-using **Homebrew**:
+On OS X using **Homebrew**:
 
 ```sh
 $ brew install ffmpeg
-$ npm install
-$ cp example.env .env
-$ node index.js
 ```
+On windows using **Google** :D
 
-using **apt-get**:
+* Install dependencies
 
 ```sh
-$ sudo apt-get install ffmpeg
 $ npm install
+```
+* Copy configs, and dont forget to **edit** them
+
+```sh
 $ cp example.env .env
+```
+*  Run
+
+```sh
 $ node index.js
 ```
 
