@@ -11,9 +11,7 @@
   "dependencies": {
     "app-root-path": "^1.0.0",
     "async": "^1.5.2",
-    "dotenv": "^2.0.0",
     "download": "^4.4.3",
-    "express": "^4.13.4",
     "fs-extra": "^0.26.5",
     "jimp": "^0.2.21",
     "mkdirp": "^0.5.1",

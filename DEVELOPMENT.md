@@ -3,7 +3,7 @@
 1. Use project format to store data as described in [project-format.js](project-format.js) as **Project**
 2. Creating new instance of **Project** does not necessarily lead to rendering.
 3. Created **Project** objects are stored in database.
-4. **Projects** may be crated (and stored) on separate machine
+4. **Projects** may be created (and stored) on separate machine
 5. Structure of whole working "thing" looks like this:
 ![sheme](sheme.png)
 
