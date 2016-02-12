@@ -10,12 +10,14 @@ const TEMP_DIRECTORY        = process.env.TEMP_DIRECTORY        || "temp";
 module.exports = function(project) {
     return new Promise((resolve, reject) => {
 
+        console.log("setting up project...");
+
         // setup project's workpath
-        project.workpath = path.join(TEMP_DIRECTORY, project.uid);
+        project.workpath   = path.join(TEMP_DIRECTORY,      project.uid);
 
         // set template path && projectname
         let templatepath   = path.join(TEMPLATES_DIRECTORY, project.template);
-        let workingProject = path.join(project.workpath, project.template);
+        let workingProject = path.join(project.workpath,    project.template);
 
         // create, if it does not exists
         mkdirp.sync(project.workpath);

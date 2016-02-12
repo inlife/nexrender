@@ -16,6 +16,7 @@
     "jimp": "^0.2.21",
     "mkdirp": "^0.5.1",
     "node-ffprobe": "^1.2.2",
+    "rename": "^1.0.3",
     "shortid": "^2.2.4"
   }
 }
