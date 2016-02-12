@@ -1,58 +1,33 @@
 'use strict';
 
-const Project = require('./modules/project');
+const setup         = require('./tasks/setup');
+const download      = require('./tasks/download');
+const filter        = require('./tasks/filter');
+const render        = require('./tasks/render');
+const cleanup       = require('./tasks/cleanup');
 
-// class Renderer {
-//     render() {
+class Renderer {
 
-//     }
-// }
+    /**
+     * @param  {Project}
+     * @return {Promise}
+     */
+    render(project) {
+        return new Promise((resolve, reject) => {
+            project
+                .prepare()
+                .then(setup)
+                // .then(download)
+                // .then(filter)
+                // .then(render)
+                // .then(cleanup)
+                .then((project) => {
+                    // run post actions
+                    resolve(project);
+                })
+                .catch(reject);
+        });
+    }
+}
 
-// module.exports = new Renderer;
-
-let proj = new Project({
-    template: "template1",
-    composition: "comp1",
-    assets: [{
-        type: "image",
-        src: "https://dl.dropboxusercontent.com/u/28013196/avatar/mario.jpeg",
-        name: "thumn1.jpg", // name of file to save content to
-        filters: [{
-            name: "cover",
-            params: [{
-                width: 1280,
-                height: 720
-            }]
-        }, {
-            name: "grayscale",
-            params: [{
-                power: 10
-            }]  
-        }]
-    }, {
-        type: "audio",
-        src: "https://dl.dropboxusercontent.com/u/28013196/dnb2.mp3",
-        name: "audio.mp3"
-    }, {
-        type: "data",
-        src: "https://dl.dropboxusercontent.com/u/28013196/data.json",
-        name: "data.json"
-    }],
-    postActions: [{ // or "plugins"
-        name: "youtube-upload",
-        params: [{
-            profile: "inlife-youtube", // predefined account record with auth keys etc.
-            title: "test",
-            description: "description",
-            keywords: "keywords",
-            category: "music",
-            privacy: "public",
-        }]
-    }, {
-        name: "email-notification",
-        params: [{
-            emails: ["test@test.com", "test2@test.com"]
-        }]
-    }]
-});
-console.log(proj);
+module.exports = new Renderer;

@@ -1,14 +1,19 @@
 'use strict';
 
-var shortid = require('shortid');
-var api     = require('../../api');
+const shortid = require('shortid');
+const api     = require('../api');
 
 const DEFAULT_STATE         = 'queued';
-const DEFAULT_TEMPLATE      = 'template1';
+const DEFAULT_TEMPLATE      = 'template1.aep';
 const DEFAULT_COMPOSITION   = 'comp1';
 
 class Project {
 
+    /**
+     * Creates project entity from params
+     * @param  {Object}
+     * @return {Project}
+     */
     constructor(params) {
         let data            = params            || {};
 
@@ -20,8 +25,18 @@ class Project {
         this.postActions    = data.postActions  || [];
     }
 
+    /**
+     * Neat chaining
+     * @return {Promise}
+     */
+    prepare() {
+        return new Promise((resolve, reject) => {
+            resolve(this);
+        });
+    }
+
     update() {
-        api.updateProject(this);
+        return api.update(this);
     }
 }
 
