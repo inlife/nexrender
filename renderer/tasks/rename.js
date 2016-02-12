@@ -19,7 +19,7 @@ module.exports = function(packed) {
         // iterate over each file and create rename(move) callback
         for (let i = 0; i < files.length; i++) {
             let src = files[i].path;
-            let dst = path.join( project.workpath, project.assets[i].name );]
+            let dst = path.join( project.workpath, project.assets[i].name );
 
             calls.push((callback) => {
                 fs.move(src, dst, callback);

@@ -5,6 +5,7 @@ const download      = require('./tasks/download');
 const rename        = require('./tasks/rename');
 const filter        = require('./tasks/filter');
 const render        = require('./tasks/render');
+const verify        = require('./tasks/verify');
 const cleanup       = require('./tasks/cleanup');
 
 class Renderer {
@@ -21,7 +22,8 @@ class Renderer {
                 .then(download)
                 .then(rename)
                 // .then(filter)
-                // .then(render)
+                .then(render)
+                .then(verify)
                 // .then(cleanup)
                 .then((project) => {
                     // run post actions

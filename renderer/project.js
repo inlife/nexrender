@@ -7,6 +7,8 @@ const DEFAULT_STATE         = 'queued';
 const DEFAULT_TEMPLATE      = 'template1.aep';
 const DEFAULT_COMPOSITION   = 'comp1';
 
+const AE_CODEC = process.env.AE_CODEC || 'h264';
+
 class Project {
 
     /**
@@ -23,6 +25,7 @@ class Project {
         this.composition    = data.composition  || DEFAULT_COMPOSITION;
         this.assets         = data.assets       || [];
         this.postActions    = data.postActions  || [];
+        this.settings       = data.settings     || { codec:  'h264' };
     }
 
     /**

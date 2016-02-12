@@ -1,49 +1,54 @@
 'use strict';
 
 const spawn = require('child_process').spawn;
+const path  = require('path');
 
-const AEBINARY = process.env.AEBINARY;
+const AE_BINARY     = process.env.AE_BINARY;
+const AE_OUTPUTEXT  = (process.platform === 'darwin' ? '.mov' : process.env.AE_OUTPUTEXT || '.mp4');
 
-class Render {
+module.exports = function(project) {
+    return new Promise((resolve, reject) => {
 
-    /**
-     * Starts rendering
-     * @return {Promise}
-     */
-    start(project) {
-        this.project = project;
-        return new Promise(this.resolver);
-    }
+        console.log("rendering project...");
 
-    /**
-     * Resolves promise
-     * @param  {Function}
-     * @param  {Function}
-     */
-    resolver(resolve, reject) {
+        // create container for data and parameters
         let aedata = [];
+        let params = [];
 
-        let ae = spawn(binary, [
-            '-project',     this.project.template,
-            '-comp',        this.project.composition,
-            '-OMtemplate',  this.project.template,
-            '-s',           this.project.startframe,
-            '-e',           this.project.endframe,
-            '-output',      this.project.output
-        ]);
+        // setup parameters
+        params.push('-comp',        project.composition);
+        params.push('-project',     path.join( process.cwd(), project.workpath, project.template ));
+        params.push('-output',      path.join( process.cwd(), project.workpath, 'result' + AE_OUTPUTEXT ));
 
+        // advanced parameters
+        if (project.settings) {
+
+            if (project.settings.codec)
+                params.push('-OMtemplate', project.settings.codec);
+
+            if (project.settings.startframe)
+                params.push('-s', project.settings.startframe);
+
+            if (project.settings.endframe)
+                params.push('-e', project.settings.endframe);
+        }
+
+        // spawn process and begin rendering
+        let ae = spawn(AE_BINARY, params);
+
+        // on data (logs)
         ae.stdout.on('data', (data) => {
             aedata.push(data.toString());
         });
 
+        // on error (logs)
         ae.stderr.on('data', (data) => {  
             aedata.push(data.toString());
         });
 
+        // on finish (code 0 - success, other - error)
         ae.on('close', (code) => {
-            return (code !== 0) ? reject(aedata.join('')) : resolve(aedata.join(''));
+            return (code != 0) ? reject( aedata.join('') ) : resolve( project );
         });
-    }
-}
-
-module.exports = Render;
+    });
+};

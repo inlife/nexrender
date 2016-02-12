@@ -9,14 +9,11 @@
   "author": "Inlife",
   "license": "MIT",
   "dependencies": {
-    "app-root-path": "^1.0.0",
     "async": "^1.5.2",
     "download": "^4.4.3",
     "fs-extra": "^0.26.5",
     "jimp": "^0.2.21",
     "mkdirp": "^0.5.1",
-    "node-ffprobe": "^1.2.2",
-    "rename": "^1.0.3",
     "shortid": "^2.2.4"
   }
 }
