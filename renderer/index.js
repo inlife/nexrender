@@ -24,9 +24,9 @@ class Renderer {
                 // .then(filter)
                 .then(render)
                 .then(verify)
+                // .then(plugins)
                 // .then(cleanup)
                 .then((project) => {
-                    // run post actions
                     resolve(project);
                 })
                 .catch(reject);
