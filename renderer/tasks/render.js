@@ -18,10 +18,12 @@ module.exports = function(project) {
         let aedata = [];
         let params = [];
 
+        project.resultname = 'result' + AE_OUTPUTEXT;
+
         // setup parameters
         params.push('-comp',        project.composition);
         params.push('-project',     path.join( process.cwd(), project.workpath, project.template ));
-        params.push('-output',      path.join( process.cwd(), project.workpath, 'result' + AE_OUTPUTEXT ));
+        params.push('-output',      path.join( process.cwd(), project.workpath, project.resultname ));
 
         // advanced parameters
         if (project.settings) {
