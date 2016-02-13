@@ -34,7 +34,10 @@ class Project {
      */
     prepare() {
         return new Promise((resolve, reject) => {
-            resolve(this);
+            this.state = "rendering";
+            this.update().then(() => {
+                resolve(this);
+            })
         });
     }
 

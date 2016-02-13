@@ -3,6 +3,7 @@
 const path  = require('path');
 const fs    = require('fs-extra');
 const dir   = require('node-dir');
+const async = require('async');
 
 // plugin storage
 let plugins = {};
