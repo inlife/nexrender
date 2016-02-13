@@ -23,7 +23,7 @@ module.exports = function(project) {
         
         // run download and return
         downloader.run((err, files) => {
-            return (err) ? reject(err) : resolve([project, files]);
+            return (err) ? reject(err) : resolve(project);
         });
     });
 };

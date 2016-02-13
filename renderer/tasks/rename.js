@@ -8,22 +8,18 @@ const async     = require('async');
  * This task renames assets from their original name
  * to one, that is provided under "asset.name"
  */
-module.exports = function(packed) {
+module.exports = function(project) {
     return new Promise((resolve, reject) => {
 
         console.log("renaming assets...");
-
-        // unpack vars
-        let project = packed[0],
-            files   = packed[1];
 
         // initialize empty call-queue array
         let calls = [];
 
         // iterate over each file and create rename(move) callback
-        for (let i = 0; i < files.length; i++) {
-            let src = files[i].path;
-            let dst = path.join( project.workpath, project.assets[i].name );
+        for (let asset of project.assets) {
+            let src = path.join( project.workpath, asset.src.substring( asset.src.lastIndexOf('/') + 1 ));
+            let dst = path.join( project.workpath, asset.name );
 
             calls.push((callback) => {
                 fs.move(src, dst, callback);
