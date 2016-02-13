@@ -12,6 +12,7 @@ module.exports = function(project) {
 
         console.log("verifying project...");
 
+        // read stats for file
         fs.stat( path.join( 
             project.workpath, 
             project.resultname 

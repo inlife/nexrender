@@ -26,7 +26,7 @@ class Renderer {
                 .then(render)
                 .then(verify)
                 .then(plugins)
-                // .then(cleanup)
+                .then(cleanup)
                 .then((project) => {
                     resolve(project);
                 })
