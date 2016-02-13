@@ -28,6 +28,7 @@ module.exports = function(project) {
 
         // run rename(move) callbacks in parallel
         async.parallel(calls, (err, results) => {
+            console.log(err);
             return (err) ? reject(err) : resolve(project);
         })
     });
