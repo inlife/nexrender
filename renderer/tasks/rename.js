@@ -4,6 +4,10 @@ const fs        = require('fs-extra');
 const path      = require('path');
 const async     = require('async');
 
+/**
+ * This task renames assets from their original name
+ * to one, that is provided under "asset.name"
+ */
 module.exports = function(packed) {
     return new Promise((resolve, reject) => {
 

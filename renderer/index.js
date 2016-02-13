@@ -23,7 +23,7 @@ class Renderer {
                 .then(rename)
                 // .then(filter)
                 .then(render)
-                .then(verify)
+                // .then(verify)
                 // .then(plugins)
                 // .then(cleanup)
                 .then((project) => {

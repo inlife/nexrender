@@ -6,6 +6,9 @@ const path  = require('path');
 const AE_BINARY     = process.env.AE_BINARY;
 const AE_OUTPUTEXT  = (process.platform === 'darwin' ? '.mov' : process.env.AE_OUTPUTEXT || '.mp4');
 
+/**
+ * This task creates rendering process
+ */
 module.exports = function(project) {
     return new Promise((resolve, reject) => {
 

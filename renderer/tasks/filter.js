@@ -1,12 +1,27 @@
 'use strict';
 
-class ImageFilter {
+const jimp = require('jimp');
 
-	/**
-	 * Filters image according to params
-	 * @return {[type]}
-	 */
-    filter() {}
-}
+module.exports = function(project) {
+    return new Promise((resolve, reject) => {
 
-module.exports = new ImageFilter;
+        console.log("filtering image assets...");
+
+        // initialize empty call-queue array
+        let calls = [];
+
+        // iterate over asset, find images
+        for (let asset of project.assets) {
+            if (asset.type !== 'image') continue;
+
+            calls.push((callback) => {
+                
+            });
+        }
+
+        // run rename(move) callbacks in parallel
+        async.parallel(calls, (err, results) => {
+            return (err) ? reject(err) : resolve(project);
+        })
+    });
+};

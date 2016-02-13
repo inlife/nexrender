@@ -2,6 +2,9 @@
 
 const Download = require('download');
 
+/**
+ * This task is used to download every asset in the "project.asset"
+ */
 module.exports = function(project) {
     return new Promise((resolve, reject) => {
 
