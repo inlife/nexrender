@@ -25,7 +25,7 @@ class Project {
         this.composition    = data.composition  || DEFAULT_COMPOSITION;
         this.assets         = data.assets       || [];
         this.postActions    = data.postActions  || [];
-        this.settings       = data.settings     || { codec:  'h264' };
+        this.settings       = data.settings     || { codec: AE_CODEC };
     }
 
     /**

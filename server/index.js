@@ -1,10 +1,15 @@
-var express = require('express');
+'use strict';
 
-var app = express();
+const express       = require('express');
+const bodyParser    = require('body-parser');
+const router        = require('./router');
 
-app.get('/', function (req, res) {
-    res.send('Hello World!');
-});
+let app = express();
+
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+
+app.use('/api', router);
 
 module.exports = {
     start: function(port) {

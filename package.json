@@ -10,9 +10,11 @@
   "license": "MIT",
   "dependencies": {
     "async": "^1.5.2",
+    "body-parser": "^1.15.0",
     "download": "^4.4.3",
     "fs-extra": "^0.26.5",
     "jimp": "^0.2.21",
+    "lowdb": "^0.12.3",
     "mkdirp": "^0.5.1",
     "node-dir": "^0.1.11",
     "shortid": "^2.2.4"
