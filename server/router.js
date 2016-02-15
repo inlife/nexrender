@@ -13,35 +13,35 @@ router.use((req, res, next) => {
 
 // routes
 
+// mixin for DRY
+var promisade = function(promise, res) {
+    promise
+        .then(data => res.json(data))
+        .catch((err) => {
+            res.status(400);
+            res.json(err);
+        });
+};
+
 // projects
 router.get('/projects', (req, res) => {
-    controller
-        .get()
-        .then( res.json );   
+    promisade( controller.get(), res );
 });
 
-router.post('/projects', (req, res) => {
-    controller
-        .create( req.body )
-        .then( res.json );   
+router.post('/projects', (req, res) => {  
+    promisade( controller.create( req.body ), res );
 });
 
 router.get('/projects/:id', (req, res) => {
-    controller
-        .get( req.params.id )
-        .then( res.json );   
+    promisade( controller.get( req.params.id ), res );
 });
 
 router.put('/projects/:id', (req, res) => {
-    controller
-        .update( req.params.id, req.body )
-        .then( res.json );   
+    promisade( controller.update( req.params.id, req.body ), res );
 });
 
 router.delete('/projects/:id', (req, res) => {
-    controller
-        .delete( req.params.id )
-        .then( res.json );   
+    promisade( controller.delete( req.params.id ), res );  
 });
 
 module.exports = router;
