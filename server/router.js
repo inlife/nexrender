@@ -1,47 +1,40 @@
 'use strict';
 
 const express       = require('express');
-const controller    = require('./controller');
+const projects      = require('./controllers/project');
+const rendernode    = require('./controllers/rendernode');
+const middleware    = require('./middleware');
+const promisade     = require('./promisade');
 
 let router = express.Router();
 
 // middleware
-router.use((req, res, next) => {
-    console.log('Something is happening.');
-    next();
-});
-
-// routes
-
-// mixin for DRY
-var promisade = function(promise, res) {
-    promise
-        .then(data => res.json(data))
-        .catch((err) => {
-            res.status(400);
-            res.json(err);
-        });
-};
+router.use(middleware);
 
 // projects
 router.get('/projects', (req, res) => {
-    promisade( controller.get(), res );
+    promisade( projects.get(), res );
 });
 
 router.post('/projects', (req, res) => {  
-    promisade( controller.create( req.body ), res );
+    promisade( projects.create( req.body ), res );
 });
 
 router.get('/projects/:id', (req, res) => {
-    promisade( controller.get( req.params.id ), res );
+    promisade( projects.get( req.params.id ), res );
 });
 
 router.put('/projects/:id', (req, res) => {
-    promisade( controller.update( req.params.id, req.body ), res );
+    promisade( projects.update( req.params.id, req.body ), res );
 });
 
 router.delete('/projects/:id', (req, res) => {
-    promisade( controller.delete( req.params.id ), res );  
+    promisade( projects.delete( req.params.id ), res );  
+});
+
+// rendernodes
+router.post('/rendernodes', (req, res) => {
+    rendernode.update(req); res.send(200);
 });
 
 module.exports = router;
