@@ -16,7 +16,7 @@ app.use('/api', router);
 module.exports = {
     start: function(port) {
         app.listen(port, function () {
-            console.log('rest api server started');
+            console.log('noxrender.server is listening on port:', port);
         });
     }
 };

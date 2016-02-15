@@ -5,13 +5,16 @@ let rendernodes = {};
 
 // every 1 minute launch clearer for rendernodes
 setInterval(() => {
-    for (let rnode of rendernodes) {
+    for (let rnodeid in rendernodes) {
+        
+        let rnode = rendernodes[rnodeid];
+        
         // calculate diffreence
         let difference = new Date - rnode.updatedAt;
         
         // if it bigger then 6 minutes
         if (difference > 360000) {
-            delete rendernodes[rnode.uid];
+            delete rendernodes[rnodeid];
         }
     }
 }, 60000);
