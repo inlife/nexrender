@@ -5,7 +5,7 @@
 3. Created **Project** objects are stored in database.
 4. **Projects** may be created (and stored) on separate machine
 5. Structure of whole working "thing" looks like this:
-![sheme](sheme.png)
+![scheme](scheme.png)
 
 ## Description: 
 1. Rendering node – any desktop with running instance of noxrender.renderer, including Web/API server. Must have Adobe After Effects installed.

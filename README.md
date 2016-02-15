@@ -1,6 +1,6 @@
 # noxrender
-Automates AE project creating and rendering.
-Basicaly it takes premade project, creates copy of it, downloads and replaces default assets, and starts rendering process.
+Automates After Effects project creating and rendering.
+Basicaly it takes premade project, creates copy of it, downloads assets, and starts rendering process.
 
 >Currently under initial development phase.
 
