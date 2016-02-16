@@ -7,6 +7,8 @@ Automate your After Effects project creation and rendering routine.
 Create application, that can automatically create and render AE projects from templates. It's can be useful for everyone out there, who have constant routine of creating big amount of very similar projects. 
 
 ## Features
+- asset import
+- creating project from template
 - automated rendering
 - multiple machines support
 - persistent database storage
