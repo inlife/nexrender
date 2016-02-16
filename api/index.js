@@ -65,6 +65,11 @@ let wrapper = {
         });
     },
 
+    /**
+     * Get single or multiple entities of Project
+     * @optional @param {Number} id 
+     * @return {Promise}
+     */
     get: (id) => {
         if (!this.registered) return console.error('[error] call config method first');
 
@@ -74,11 +79,17 @@ let wrapper = {
             // request creation
             if (id) {
                 client.methods.get( packdata( {}, id ), (data, res) => {
-                    resolve(data);
+                    resolve( new Project( data, wrapper ) );
                 });
             } else {
                 client.methods.getAll({}, (data, res) => {
-                    resolve(data);
+                    let results = [];
+
+                    for (let obj of data) {
+                        results.push( new Project( obj, wrapper ) );
+                    } 
+
+                    resolve(results);
                 });
             }
         });

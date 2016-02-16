@@ -25,6 +25,7 @@ class Project {
         this.callbacks  = {};
         this.ticker     = null;
         this.api        = api || null;
+        this.error      = null;
     }
 
     /**
@@ -57,6 +58,7 @@ class Project {
         this.assets         = data.assets       || [];
         this.postActions    = data.postActions  || [];
         this.settings       = data.settings     || { codec: AE_CODEC };
+        this.error          = data.error        || null;
     }
 
     /**
@@ -70,10 +72,6 @@ class Project {
                 resolve(this);
             })
         });
-    }
-
-    update() {
-        return this.api.update(this);
     }
 
     /**
@@ -114,7 +112,7 @@ class Project {
     callMethod(method) {
         if (this.callbacks[method]) {
             for (let callback of this.callbacks[method]) {
-                callback(null, this);
+                callback( this.error, this);
             }
         }
     }
