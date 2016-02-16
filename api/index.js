@@ -14,6 +14,10 @@ let API_PORT = 3000;
 let wrapper = {
     registered: false,
 
+    /**
+     * Configuration for api connections
+     * @param  {Object} opts
+     */
     config: (opts) => {
         var opts = opts || {};
 
@@ -23,12 +27,18 @@ let wrapper = {
         this.registered = router.bind(client, host, port);
     },
 
+    /**
+     * Creates new Project object, saves to server's database
+     * @param  {Object} data  Plain object for project
+     * @return {Promise} 
+     */
     create: (data) => {
         if (!this.registered) return console.error('[error] call config method first');
 
         // setup default params
         data = data || {};
 
+        // check for emptiness plain values
         try {
             assert( data.template );
             assert( data.composition );
@@ -36,6 +46,7 @@ let wrapper = {
             return console.error('[error] provide project properties');
         } 
 
+        // and arrays
         data.assets      = data.assets        || [];
         data.settings    = data.settings      || [];
         data.postActions = data.postActions   || [];
@@ -46,7 +57,7 @@ let wrapper = {
             // request creation
             client.methods.create( packdata( data ), (data, res) => {
                 if (data && data.template) {
-                    return resolve( new Project(data) );
+                    return resolve( new Project(data, wrapper) );
                 }
 
                 reject( data );
@@ -54,8 +65,23 @@ let wrapper = {
         });
     },
 
-    get: () => {
-        if (!this.registered) return console.log('call config method first');
+    get: (id) => {
+        if (!this.registered) return console.error('[error] call config method first');
+
+        // return promise
+        return new Promise((resolve, reject) => {
+
+            // request creation
+            if (id) {
+                client.methods.get( packdata( {}, id ), (data, res) => {
+                    resolve(data);
+                });
+            } else {
+                client.methods.getAll({}, (data, res) => {
+                    resolve(data);
+                });
+            }
+        });
     }
 };
 
