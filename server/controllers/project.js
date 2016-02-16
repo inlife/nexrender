@@ -24,7 +24,7 @@ class Controller {
                 return this.find( query );
             }
 
-            return this.chain().filter( query ).value();
+            return this.chain().filter( query ).value().filter( n => n !== null );
         };
     }
 
