@@ -26,6 +26,8 @@ class Project {
         this.assets         = data.assets       || [];
         this.postActions    = data.postActions  || [];
         this.settings       = data.settings     || { codec: AE_CODEC };
+
+        this.callbacks      = {};
     }
 
     /**
@@ -46,7 +48,11 @@ class Project {
     }
 
     on(method, callback) {
-        
+        if (this.callbacs[method]) {
+            return this.callbacks[ method ].push( callback );
+        }
+
+        return this.callbacks[ method ] = [ callback ]
     }
 }
 
