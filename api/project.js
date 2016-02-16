@@ -1,7 +1,7 @@
 'use strict';
 
 const shortid = require('shortid');
-const api     = require('../api');
+const api     = require('./index');
 
 const DEFAULT_STATE         = 'queued';
 const DEFAULT_TEMPLATE      = 'template1.aep';
@@ -43,6 +43,10 @@ class Project {
 
     update() {
         return api.update(this);
+    }
+
+    on(method, callback) {
+        
     }
 }
 
