@@ -61,18 +61,18 @@ class Project {
         this.error          = data.error        || null;
     }
 
-    /**
-     * Neat chaining
-     * @return {Promise}
-     */
-    prepare() {
-        return new Promise((resolve, reject) => {
-            this.state = "rendering";
-            this.update().then(() => {
-                resolve(this);
-            })
-        });
-    }
+    // /**
+    //  * Neat chaining
+    //  * @return {Promise}
+    //  */
+    // prepare() {
+    //     return new Promise((resolve, reject) => {
+    //         this.state = "rendering";
+    //         this.update().then(() => {
+    //             resolve(this);
+    //         })
+    //     });
+    // }
 
     /**
      * Function get called every TICKER_INTERVAL
@@ -85,6 +85,10 @@ class Project {
                 this.callMethod( project.state );
             }
         })
+    }
+
+    save() {
+        return this.api.update(this);
     }
 
     /**

@@ -93,6 +93,36 @@ let wrapper = {
                 });
             }
         });
+    },
+
+    /**
+     * Update object on server
+     * @param  {Object || Project} object
+     * @return {Promise}
+     */
+    update: (object) => {
+        if (!this.registered) return console.error('[error] call config method first');
+        
+        let data = object;
+
+        if (object instanceof Project) {
+            data = object.serialize();
+        }
+
+        return new Promise((resolve, reject) => {
+            client.methods.update( packdata( data, object.uid ), (data, res) => {
+
+                if (data && data.template) {
+                    if (object instanceof Project) {
+                        return resolve( object.deserialize(data) );
+                    } else {
+                        return resolve( new Project(data, wrapper) );
+                    }
+                }
+
+                reject( data );
+            });
+        });
     }
 };
 
