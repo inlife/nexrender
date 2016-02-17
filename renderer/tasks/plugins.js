@@ -37,9 +37,16 @@ module.exports = function(project) {
         // initialize empty call-queue array
         let calls = [];
 
+        // call copy to results plugin by default
+        calls.push((callback) => {
+            plugins['copy-to-results'].plugin(project, {}, callback);
+        });
+
+        // iterate over activated plugins for project
         for (let action of project.postActions) {
             if (!plugins[action.name]) continue;
 
+            // and call them
             calls.push((callback) => {
                 plugins[action.name].plugin(project, action, callback);
             });
