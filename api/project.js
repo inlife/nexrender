@@ -6,7 +6,7 @@ const DEFAULT_STATE         = 'queued';
 const DEFAULT_TEMPLATE      = 'template.aep';
 const DEFAULT_COMPOSITION   = 'comp1';
 
-const TICKER_INTERVAL       = 10000;
+const TICKER_INTERVAL       = 60 * 1000; // 1 minute
 
 const AE_CODEC = process.env.AE_CODEC || 'h264';
 
@@ -40,7 +40,8 @@ class Project {
             template:       this.template,
             settings:       this.settings,
             composition:    this.composition,
-            postActions:    this.postActions
+            postActions:    this.postActions,
+            errorMessage:   this.errorMessage
         };
     }
 
@@ -58,7 +59,7 @@ class Project {
         this.assets         = data.assets       || [];
         this.postActions    = data.postActions  || [];
         this.settings       = data.settings     || { codec: AE_CODEC };
-        this.errorMsg       = data.errorMsg     || null;
+        this.errorMessage   = data.errorMessage || null;
     }
 
     // RENDERER ONLY SIZE METHODS
@@ -94,12 +95,13 @@ class Project {
      * @param {Mixed} err
      * @return {Promise}
      */
-    error(err) {
+    failure(err) {
+        console.log('omg error', err);
         let errmsg = (err.message) ? err.message : err;
 
         return new Promise((resolve, reject) => {
-            this.state = "error";
-            this.errorMsg = errmsg; 
+            this.state = "failure";
+            this.errorMessage = errmsg; 
             this.save().then(() => {
                 resolve(this);
             })

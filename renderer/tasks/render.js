@@ -3,7 +3,6 @@
 const spawn = require('child_process').spawn;
 const path  = require('path');
 
-const AE_BINARY     = process.env.AE_BINARY;
 const AE_OUTPUTEXT  = (process.platform === 'darwin' ? '.mov' : process.env.AE_OUTPUTEXT || '.mp4');
 
 /**
@@ -39,7 +38,7 @@ module.exports = function(project) {
         }
 
         // spawn process and begin rendering
-        let ae = spawn(AE_BINARY, params);
+        let ae = spawn(process.env.AE_BINARY, params);
 
         // on data (logs)
         ae.stdout.on('data', (data) => {

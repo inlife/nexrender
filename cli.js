@@ -20,7 +20,6 @@ cli.parse({
 //           -sp 3000
 
 cli.main(function(args, options) {
-    console.log(args);
 
     if (options['api-server']) {
         noxrender.server.start(options.port);
@@ -35,6 +34,6 @@ cli.main(function(args, options) {
 
         let host = options.host.split(':');
 
-        renderer.start( host[0], host[1] );
+        noxrender.renderer.start( host[0], host[1] );
     }
 });

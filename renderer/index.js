@@ -20,7 +20,7 @@ const API_REQUEST_INTERVAL = 15 * 60 * 1000; // 15 minutes
  * @param  {Function} resolve
  * @param  {Function} reject 
  */
-let applyTasks = (project, resolve, reject) => {
+function applyTasks(project, resolve, reject) {
     project
         .prepare()
         .then(setup)
@@ -41,7 +41,7 @@ let applyTasks = (project, resolve, reject) => {
         .catch((err) => {
 
             // project encountered an error
-            project.error(err).then(() => {
+            project.failure(err).then(() => {
                 reject(project);
             })
         });
@@ -52,7 +52,7 @@ let applyTasks = (project, resolve, reject) => {
  * itearate over each and returst first one that's state is 'queued'
  * @return {Promise}
  */
-let requestNextProject = () => {
+function requestNextProject() {
     return new Promise((resolve, reject) => {
 
         // request list
@@ -76,7 +76,7 @@ let requestNextProject = () => {
         // if error - reject
         }).catch(reject);
     });
-};
+}
 
 /**
  * Reuqests next project
@@ -85,37 +85,44 @@ let requestNextProject = () => {
  * but if project is not found - sets timeout
  * to request again after API_REQUEST_INTERVAL
  */
-let startRecursion = () => {
+function startRecursion() {
     requestNextProject().then((project) => {
-        this.render(project).then(startRecursion)
+        startRender(project).then(startRecursion)
     }).catch(() => {
         setTimeout(() => { startRecursion() }, API_REQUEST_INTERVAL);
     });
-};
+}
+
+/**
+ * Start automated reqeusting projects and rendering them
+ * @param  {String} host Api server host
+ * @param  {Number} port Api server port
+ */
+function start(host, port) {
+    console.log('noxrender.renderer is starting');
+
+    // configure api connection
+    api.config({
+        host: host,
+        port: port
+    });
+
+    // start quering
+    startRecursion();
+}
+
+/**
+ * Start project rendering and return promise
+ * @param  {Project} project
+ * @return {Promise}
+ */
+function startRender(project) {
+    return new Promise((res, rej) => {
+        return applyTasks(project, res, rej);
+    });
+}
 
 module.exports = {
-
-    /**
-     * Start automated reqeusting projects and rendering them
-     * @param  {String} host Api server host
-     * @param  {Number} port Api server port
-     */
-    start: (host, port) => {
-        console.log('noxrender.renderer is starting');
-
-        // configure api connection
-        api.config({
-            host: host,
-            port: port
-        });
-
-        // start quering
-        startRecursion();
-    },
-
-    render(project) {
-        return new Promise((res, rej) => {
-            return applyTasks(project, res, rej);
-        });
-    },
+    start: start,
+    render: startRender
 };

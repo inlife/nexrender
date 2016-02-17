@@ -2,6 +2,24 @@
 
 const path  = require('path');
 const fs    = require('fs-extra');
+const dir   = require('node-dir');
+
+/**
+ * Function tries to read logs from folder with project
+ * @param  {Project}   project
+ * @param  {Function} callback 
+ */
+function getLogs(project, callback) {
+    let logsdir = path.join( project.workpath, project.template + ' Logs' );
+    let msg = '';
+
+    dir.readFiles(logsdir, (err, cnt, filename, next) => {
+        msg += cnt;
+        next();
+    }, (err, files) => {
+        callback(msg);
+    });
+}
 
 /**
  * verify that project rendered:
@@ -17,8 +35,13 @@ module.exports = function(project) {
             project.workpath, 
             project.resultname 
         ), (err, stats) => {
-            if (err) return reject(err);
-            return (stats.size < 1) ? reject(new Error('empty render file')) : resolve(project); 
+            if (err || stats.size < 1) {
+                getLogs(project, (logs) => {
+                    return reject(logs);
+                })
+            } else {
+                return resolve(project); 
+            }
         })
     });
 };
