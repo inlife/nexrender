@@ -11,7 +11,7 @@ const AE_OUTPUTEXT  = (process.platform === 'darwin' ? '.mov' : process.env.AE_O
 module.exports = function(project) {
     return new Promise((resolve, reject) => {
 
-        console.log("rendering project...");
+        console.log(`[${project.uid}] rendering project...`);
 
         // create container for data and parameters
         let aedata = [];

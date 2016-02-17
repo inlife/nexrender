@@ -33,12 +33,16 @@ function applyTasks(project, resolve, reject) {
         .then(cleanup)
         .then((project) => {
 
+            console.log(`[${project.uid}] project finished`);
+
             // project is finished
             project.finish().then(() => {
                 resolve(project);
             });
         })
         .catch((err) => {
+
+            console.log(`[${project.uid}] project failed`);
 
             // project encountered an error
             project.failure(err).then(() => {

@@ -32,7 +32,7 @@ let plugins = {};
 module.exports = function(project) {
     return new Promise((resolve, reject) => {
 
-        console.log("applying plugins...");
+        console.log(`[${project.uid}] applying plugins...`);
 
         // initialize empty call-queue array
         let calls = [];

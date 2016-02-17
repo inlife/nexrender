@@ -7,7 +7,7 @@ const path  = require('path');
 module.exports = function(project) {
     return new Promise((resolve, reject) => {
 
-        console.log("filtering image assets...");
+        console.log(`[${project.uid}] filtering image assets...`);
 
         // initialize empty call-queue array
         let calls = [];

@@ -8,7 +8,7 @@ const Download = require('download');
 module.exports = function(project) {
     return new Promise((resolve, reject) => {
 
-        console.log("downloading assets...");
+        console.log(`[${project.uid}] downloading assets...`);
 
         // create downloader
         let downloader = new Download();

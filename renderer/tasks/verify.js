@@ -28,7 +28,7 @@ function getLogs(project, callback) {
 module.exports = function(project) {
     return new Promise((resolve, reject) => {
 
-        console.log("verifying project...");
+        console.log(`[${project.uid}] verifying project...`);
 
         // read stats for file
         fs.stat( path.join( 

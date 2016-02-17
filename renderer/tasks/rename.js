@@ -11,7 +11,7 @@ const async     = require('async');
 module.exports = function(project) {
     return new Promise((resolve, reject) => {
 
-        console.log("renaming assets...");
+        console.log(`[${project.uid}] renaming assets...`);
 
         // initialize empty call-queue array
         let calls = [];
