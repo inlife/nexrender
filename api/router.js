@@ -5,9 +5,9 @@ let bind = (client, host, port) => {
 
     client.registerMethod("create", url + 'projects',       "POST");
     client.registerMethod("getAll", url + 'projects',       "GET");
-    client.registerMethod("get",    url + 'projects/${id}/', "GET");
-    client.registerMethod("update", url + 'projects/${id}/', "PUT");
-    client.registerMethod("delete", url + 'projects/${id}/', "DELETE");
+    client.registerMethod("get",    url + 'projects/${id}', "GET");
+    client.registerMethod("update", url + 'projects/${id}', "PUT");
+    client.registerMethod("remove", url + 'projects/${id}', "DELETE");
 
     return true;
 };

@@ -6,7 +6,7 @@ const router    = require('./router');
 const packdata  = require('./packdata');
 const Project   = require('./project');
 
-let client = new Client();
+let client = null;
 
 let API_HOST = 'localhost';
 let API_PORT = 3000;
@@ -23,6 +23,8 @@ let wrapper = {
 
         let host = opts.host || API_HOST;
         let port = opts.port || API_PORT;
+
+        client = new Client();
 
         this.registered = router.bind(client, host, port);
     },
@@ -56,11 +58,11 @@ let wrapper = {
 
             // request creation
             client.methods.create( packdata( data ), (data, res) => {
-                if (data && data.template) {
+                if (data && data.template && res.statusCode == 200) {
                     return resolve( new Project(data, wrapper) );
                 }
 
-                reject( data );
+                reject( res.statusMessage );
             });
         });
     },
@@ -79,10 +81,15 @@ let wrapper = {
             // request creation
             if (id) {
                 client.methods.get( packdata( {}, id ), (data, res) => {
-                    resolve( new Project( data, wrapper ) );
+                    return (res.statusCode != 200) ? 
+                        reject( res.statusMessage ) : 
+                        resolve( new Project( data, wrapper ) );
                 });
             } else {
                 client.methods.getAll({}, (data, res) => {
+                    if (res.statusCode != 200) {
+                        return reject( res.statusMessage );
+                    }
                     let results = [];
 
                     for (let obj of data) {
@@ -112,7 +119,7 @@ let wrapper = {
         return new Promise((resolve, reject) => {
             client.methods.update( packdata( data, object.uid ), (data, res) => {
 
-                if (data && data.template) {
+                if (data && data.template && res.statusCode == 200) {
                     if (object instanceof Project) {
                         return resolve( object.deserialize(data) );
                     } else {
@@ -120,8 +127,23 @@ let wrapper = {
                     }
                 }
 
-                reject( data );
+                reject( res.statusMessage );
             });
+        });
+    },
+
+    /**
+     * Remove object from server
+     * @param  {Number} id project uid
+     * @return {Promise}
+     */
+    remove: (id) => {
+        if (!this.registered) return console.error('[error] call config method first');
+
+        return new Promise((resolve, reject) => {
+            client.methods.remove( packdata( {}, id ), (data, res) => {
+                return (res.statusCode != 200) ? reject(res.statusMessage) : resolve(data);
+            });;
         });
     }
 };

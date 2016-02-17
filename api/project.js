@@ -3,7 +3,7 @@
 const shortid = require('shortid');
 
 const DEFAULT_STATE         = 'queued';
-const DEFAULT_TEMPLATE      = 'template1.aep';
+const DEFAULT_TEMPLATE      = 'template.aep';
 const DEFAULT_COMPOSITION   = 'comp1';
 
 const TICKER_INTERVAL       = 10000;
@@ -87,8 +87,20 @@ class Project {
         })
     }
 
+    /**
+     * Binding for api update method
+     * @return {Promise}
+     */
     save() {
         return this.api.update(this);
+    }
+
+    /**
+     * Binding for api remove method
+     * @return {Promise}
+     */
+    remove() {
+        return this.api.remove(this.uid);
     }
 
     /**
