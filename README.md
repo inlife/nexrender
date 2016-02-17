@@ -7,7 +7,10 @@ Automate your After Effects project creation and rendering routine.
 >Currently under initial development phase.
 
 ## Purpose
-Create application, that can automatically create and render AE projects from templates. It's can be useful for everyone out there, who have constant routine of creating big amount of very similar projects. 
+Create application, that can automatically create and render AE projects from templates, and managing rendering queue. It's can be useful for everyone out there, who have constant routine of creating big amount of very similar projects. 
+
+### To understand what its really about
+I suggest you to read this [document](DEVELOPMENT.md).
 
 ## Features
 - asset import
