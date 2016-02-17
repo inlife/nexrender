@@ -6,13 +6,17 @@ const storage   = require('lowdb/file-sync');
 
 const SERVER_DB_PATH = process.env.SERVER_DB_PATH || 'db.json';
 
+let initialized = false;
+
 class Controller {
 
     /**
      * Called on loading, creates db connection
      * Binds methods
      */
-    constructor() {
+    initialize() {
+        initialized = true;
+
         // load file sync database
         this.db = low(SERVER_DB_PATH, { storage })('projects');
 
@@ -34,6 +38,8 @@ class Controller {
      * @return {Promise}
      */
     create(data) {
+        if (!initialized) this.initialize();
+
         // set default data
         data.uid = data.uid || shortid();
         data.state = data.state || "queued";
@@ -55,6 +61,8 @@ class Controller {
      * @return {Promise}
      */
     get(id) {
+        if (!initialized) this.initialize();
+        
         // get project by id, or get all items if id not provided
         return new Promise((resolve, reject) => {
             resolve( this.db.findAll( id ? { uid: id } : {} ) || reject( {} ) );
@@ -68,6 +76,8 @@ class Controller {
      * @return {Promise}
      */
     update(id, data) {
+        if (!initialized) this.initialize();
+        
         // set default data
         data.updatedAt = new Date;
 
@@ -83,6 +93,8 @@ class Controller {
      * @return {Promise}
      */
     delete(id) {
+        if (!initialized) this.initialize();
+        
         // remove project by id
         return new Promise((resolve, reject) => {
             resolve( this.db.remove({ uid : id }) );
