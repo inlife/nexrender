@@ -1,6 +1,6 @@
 {
   "name": "nexrender",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Automate your After Effects project creation and rendering routine.",
   "main": "index.js",
   "bin": {
