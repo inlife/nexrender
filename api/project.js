@@ -58,21 +58,55 @@ class Project {
         this.assets         = data.assets       || [];
         this.postActions    = data.postActions  || [];
         this.settings       = data.settings     || { codec: AE_CODEC };
-        this.error          = data.error        || null;
+        this.errorMsg       = data.errorMsg     || null;
     }
 
-    // /**
-    //  * Neat chaining
-    //  * @return {Promise}
-    //  */
-    // prepare() {
-    //     return new Promise((resolve, reject) => {
-    //         this.state = "rendering";
-    //         this.update().then(() => {
-    //             resolve(this);
-    //         })
-    //     });
-    // }
+    // RENDERER ONLY SIZE METHODS
+
+    /**
+     * Sets state of project to 'rendering' (render started)
+     * @return {Promise}
+     */
+    prepare() {
+        return new Promise((resolve, reject) => {
+            this.state = "rendering";
+            this.save().then(() => {
+                resolve(this);
+            })
+        });
+    }
+
+    /**
+     * Sets state of project to 'finished' (render succeeded)
+     * @return {Promise}
+     */
+    finish() {
+        return new Promise((resolve, reject) => {
+            this.state = "finished";
+            this.save().then(() => {
+                resolve(this);
+            })
+        });
+    }
+
+    /**
+     * Sets state of project to 'error' (render failed)
+     * @param {Mixed} err
+     * @return {Promise}
+     */
+    error(err) {
+        let errmsg = (err.message) ? err.message : err;
+
+        return new Promise((resolve, reject) => {
+            this.state = "error";
+            this.errorMsg = errmsg; 
+            this.save().then(() => {
+                resolve(this);
+            })
+        });
+    }
+
+    // END RENDERER ONLY SIDE METHODS
 
     /**
      * Function get called every TICKER_INTERVAL
@@ -128,7 +162,7 @@ class Project {
     callMethod(method) {
         if (this.callbacks[method]) {
             for (let callback of this.callbacks[method]) {
-                callback( this.error, this);
+                callback( this.errorMsg, this);
             }
         }
     }
