@@ -17,11 +17,76 @@ Create application, that can automatically create and render AE projects from te
 - persistent database storage
 - api library
 
+## Installation
+Install globally to use as **cli**:
+
+```sh
+$ npm install nexrender -g
+```
+
+Install locally to use programmaticaly, or as **api**:
+
+```sh
+$ npm install nexrender
+```
+
+## Usage (CLI)
+To start **api server**:
+
+```sh
+$ nexrender --api-server --port=3000
+```
+
+To start **render node**:
+
+```sh
+$ nexrender --renderer --host=localhost:3000 --aerender=/path/to/aerender
+```
+
+## Usage (API)
+
+```js
+var api = require('nexrender').api;
+
+// Configure api connection
+api.config({
+    host: "localhost",
+    port: 3000
+});
+
+// Define project properties
+var assets = [{
+    type: 'image',
+    src: 'https://dl.dropboxusercontent.com/u/28013196/avatar/mario.jpeg',
+    name: 'image.jpg'
+}];
+
+// Create project
+api.create({
+    template: 'template1.aep',
+    composition: 'base',
+    assets: assets
+}).then((project) => {
+
+    console.log('project saved');
+
+    project.on('rendering', function(err, project) {
+        console.log('project rendering started');
+    });
+
+    project.on('finished', function(err, project) {
+        console.log('project rendering finished')
+    });
+
+    project.on('failure', function(err, project) {
+        console.log('project rendering error')
+    });
+});
+```
+
 ## Plans
-- finish basic parts
-- create cli interface
-- add samples for project structure
-- create an npm package
+- create plugin for youtube uploading
+- create plugin for email notifications
 - add feature of parallel rendering
 
 ## Development
