@@ -1,16 +1,24 @@
 {
   "name": "noxrender",
   "version": "0.1.0",
-  "description": "",
+  "description": "Automate your After Effects project creation and rendering routine.",
   "main": "index.js",
+  "bin": {
+    "noxrender": "./cli.js"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "Inlife",
+  "author": {
+    "name": "Inlife",
+    "email": "vladgritsenko@gmail.com",
+    "url": "http://github.com/inlife"
+  },
   "license": "MIT",
   "dependencies": {
     "async": "^1.5.2",
     "body-parser": "^1.15.0",
+    "cli": "^0.11.1",
     "download": "^4.4.3",
     "fs-extra": "^0.26.5",
     "jimp": "^0.2.21",
