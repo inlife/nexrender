@@ -16,7 +16,7 @@ To explain in simple words, what this library does is, ill show you this simple 
 
 This "library" or application does not render video by itself. To render AE project you need actual AE application installed on machine that will be used as rendering node (`renderer`).
 
-## Application Stucture
+## Your render network structure
 ![scheme](https://cloud.githubusercontent.com/assets/2182108/13123764/84efaf94-d5c6-11e5-9517-69f940bfadbc.png)
 
 ## Terms:
