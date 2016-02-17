@@ -16,6 +16,7 @@ Create application, that can automatically create and render AE projects from te
 
 ## Plans
 - finish basic parts
+- create cli interface
 - add samples for project structure
 - create an npm package
 - add feature of parallel rendering
