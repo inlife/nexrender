@@ -6,7 +6,7 @@ const DEFAULT_STATE         = 'queued';
 const DEFAULT_TEMPLATE      = 'template.aep';
 const DEFAULT_COMPOSITION   = 'comp1';
 
-const TICKER_INTERVAL       = 60 * 1000; // 1 minute
+const TICKER_INTERVAL       = 60 * 1000 || process.env.API_UPDATE_INTERVAL; // 1 minute
 
 const AE_CODEC = process.env.AE_CODEC || 'h264';
 

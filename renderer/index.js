@@ -11,7 +11,7 @@ const verify        = require('./tasks/verify');
 const plugins       = require('./tasks/plugins');
 const cleanup       = require('./tasks/cleanup');
 
-const API_REQUEST_INTERVAL = 15 * 60 * 1000; // 15 minutes
+const API_REQUEST_INTERVAL = 15 * 60 * 1000 || process.env.API_REQUEST_INTERVAL; // 15 minutes
 
 /**
  * Apply tasks one by one
@@ -91,7 +91,7 @@ function requestNextProject() {
  */
 function startRecursion() {
     requestNextProject().then((project) => {
-        startRender(project).then(startRecursion)
+        startRender(project).then(startRecursion).catch(startRecursion)
     }).catch(() => {
         setTimeout(() => { startRecursion() }, API_REQUEST_INTERVAL);
     });
