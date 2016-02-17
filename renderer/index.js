@@ -33,7 +33,9 @@ function applyTasks(project, resolve, reject) {
         .then(cleanup)
         .then((project) => {
 
+            console.log('----------------------------');
             console.log(`[${project.uid}] project finished`);
+            console.log('----------------------------\n\n');
 
             // project is finished
             project.finish().then(() => {
@@ -42,7 +44,9 @@ function applyTasks(project, resolve, reject) {
         })
         .catch((err) => {
 
+            console.log('--------------------------');
             console.log(`[${project.uid}] project failed`);
+            console.log('--------------------------\n\n');
 
             // project encountered an error
             project.failure(err).then(() => {

@@ -2,6 +2,7 @@
 
 'use strict';
 
+const os        = require('os');
 const cli       = require('cli').enable('version');
 const noxrender = require('./index.js');
 
@@ -26,6 +27,10 @@ cli.main(function(args, options) {
     }
 
     if (options['renderer']) {
+        if (['darwin', 'win32', 'win64'].indexOf( os.platform() ) == -1) {
+            console.warn('[error] you might be considering to run renderer on officialy supported platform');
+        }
+
         if (!options.aerender) {
             return console.error('[error] provide --aerender=PATH for aerender binary file');
         }
