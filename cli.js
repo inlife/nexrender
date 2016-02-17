@@ -4,7 +4,7 @@
 
 const os        = require('os');
 const cli       = require('cli').enable('version');
-const noxrender = require('./index.js');
+const nexrender = require('./index.js');
 
 cli.parse({
     'aerender':     [false, 'PATH to aerender binary', 'path'],
@@ -15,15 +15,15 @@ cli.parse({
 });
 
 // Usage: 
-// noxrender --renderer --host=localhost:3000 --aerender="/Applications/Adobe After Effects CC 2015/aerender"
+// nexrender --renderer --host=localhost:3000 --aerender="/Applications/Adobe After Effects CC 2015/aerender"
 //           -rh localhost:3000 --aerender="/Applications/Adobe After Effects CC 2015/aerender"
-// noxrender --api-server --port=3000
+// nexrender --api-server --port=3000
 //           -sp 3000
 
 cli.main(function(args, options) {
 
     if (options['api-server']) {
-        noxrender.server.start(options.port);
+        nexrender.server.start(options.port);
     }
 
     if (options['renderer']) {
@@ -39,6 +39,6 @@ cli.main(function(args, options) {
 
         let host = options.host.split(':');
 
-        noxrender.renderer.start( host[0], host[1] );
+        nexrender.renderer.start( host[0], host[1] );
     }
 });

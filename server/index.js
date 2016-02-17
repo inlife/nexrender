@@ -16,7 +16,7 @@ app.use('/api', router);
 module.exports = {
     start: function(port) {
         app.listen(port, function () {
-            console.log('noxrender.server is listening on port:', port);
+            console.log('nexrender.server is listening on port:', port);
         });
     }
 };

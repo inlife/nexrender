@@ -1,10 +1,10 @@
 {
-  "name": "noxrender",
+  "name": "nexrender",
   "version": "0.1.0",
   "description": "Automate your After Effects project creation and rendering routine.",
   "main": "index.js",
   "bin": {
-    "noxrender": "./cli.js"
+    "nexrender": "./cli.js"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -14,7 +14,7 @@
     "email": "vladgritsenko@gmail.com",
     "url": "http://github.com/inlife"
   },
-  "repository": "inlife/noxrender",
+  "repository": "inlife/nexrender",
   "license": "MIT",
   "dependencies": {
     "async": "^1.5.2",

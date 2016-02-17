@@ -107,7 +107,7 @@ function startRecursion() {
  * @param  {Number} port Api server port
  */
 function start(host, port) {
-    console.log('noxrender.renderer is starting');
+    console.log('nexrender.renderer is starting');
 
     // configure api connection
     api.config({
