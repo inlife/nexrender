@@ -1,4 +1,6 @@
-.center[![nexrender](https://cloud.githubusercontent.com/assets/2182108/13123763/8215afc6-d5c6-11e5-8462-039165c84e2f.png)]
+<p align="center">
+  <img src="https://cloud.githubusercontent.com/assets/2182108/13123763/8215afc6-d5c6-11e5-8462-039165c84e2f.png" />
+</p>
 
 Automate your After Effects project creation and rendering routine.
 
