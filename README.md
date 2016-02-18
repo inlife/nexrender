@@ -2,7 +2,11 @@
   <img src="https://cloud.githubusercontent.com/assets/2182108/13123763/8215afc6-d5c6-11e5-8462-039165c84e2f.png" />
 </p>
 
-Automate your After Effects project creation and rendering routine. Create your own render network.
+-------
+
+Automate your After Effects project creation and rendering routine. 
+
+>Create your own render network.
 
 ## Purpose
 Create application, that can automatically create and render AE projects from templates, and managing rendering queue. It's can be useful for everyone out there, who have constant routine of creating big amount of very similar projects. 
@@ -17,6 +21,11 @@ I suggest you to read this [document](DEVELOPMENT.md).
 - multiple machines support
 - persistent database storage
 - api library
+
+## Use cases:
+- Create own render network (render farm)
+- Easy way to queue up projects
+- Automate creating similar projects with different assets
 
 ## Installation
 Install globally to use as **cli**:
