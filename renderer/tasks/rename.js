@@ -21,6 +21,8 @@ module.exports = function(project) {
             let src = path.join( project.workpath, asset.src.substring( asset.src.lastIndexOf('/') + 1 ));
             let dst = path.join( project.workpath, asset.name );
 
+            if (src === dst) continue;
+
             calls.push((callback) => {
                 fs.move(src, dst, callback);
             });

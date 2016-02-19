@@ -16,7 +16,10 @@ module.exports = {
         // create, if it does not exists
         mkdirp.sync(RESULTS_DIR);
 
-        // send success
-        fs.move(src, dst, callback);
+        // remove file if exists 
+        fs.unlink(dst, () => {
+            // send success
+            fs.move(src, dst, callback);
+        })
     }
 };
