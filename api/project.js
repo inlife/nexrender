@@ -5,10 +5,11 @@ const shortid = require('shortid');
 const DEFAULT_STATE         = 'queued';
 const DEFAULT_TEMPLATE      = 'template.aep';
 const DEFAULT_COMPOSITION   = 'comp1';
+const DEFAULT_PROJECT_TYPE  = 'default';
 
 const TICKER_INTERVAL       = 60 * 1000 || process.env.API_UPDATE_INTERVAL; // 1 minute
 
-const AE_CODEC = process.env.AE_CODEC || 'h264';
+const AE_OUTPUT_MODULE = process.env.AE_OUTPUT_MODULE || 'h264';
 
 
 class Project {
@@ -35,8 +36,9 @@ class Project {
     serialize() {
         return {
             uid:            this.uid,
+            type:           this.type,
             state:          this.state,
-            asset:          this.assets,
+            assets:         this.assets,
             template:       this.template,
             settings:       this.settings,
             composition:    this.composition,
@@ -56,9 +58,10 @@ class Project {
         this.state          = data.state        || DEFAULT_STATE;
         this.template       = data.template     || DEFAULT_TEMPLATE;
         this.composition    = data.composition  || DEFAULT_COMPOSITION;
+        this.type           = data.type         || DEFAULT_PROJECT_TYPE;
         this.assets         = data.assets       || [];
         this.postActions    = data.postActions  || [];
-        this.settings       = data.settings     || { codec: AE_CODEC };
+        this.settings       = data.settings     || { outputModule: AE_OUTPUT_MODULE };
         this.errorMessage   = data.errorMessage || null;
     }
 

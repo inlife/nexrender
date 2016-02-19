@@ -29,7 +29,7 @@ module.exports = function(project) {
 
         if (project.type && project.type === 'custom') {
             if (!projectFound) {
-                return reject(new Error('You selected custom project, but did not upload one'))
+                return reject(new Error('You selected custom project, but did not upload one'));
             }
         }
         

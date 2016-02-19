@@ -27,14 +27,14 @@ module.exports = function(project) {
         // advanced parameters
         if (project.settings) {
 
-            if (project.settings.codec)
-                params.push('-OMtemplate', project.settings.codec);
+            if (project.settings.outputModule)
+                params.push('-OMtemplate', project.settings.outputModule);
 
-            if (project.settings.startframe)
-                params.push('-s', project.settings.startframe);
+            if (project.settings.startFrame)
+                params.push('-s', project.settings.startFrame);
 
-            if (project.settings.endframe)
-                params.push('-e', project.settings.endframe);
+            if (project.settings.endFrame)
+                params.push('-e', project.settings.endFrame);
         }
 
         // spawn process and begin rendering
