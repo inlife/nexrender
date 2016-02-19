@@ -1,15 +1,11 @@
 'use strict';
 
-const Client    = require('node-rest-client').Client;
 const assert    = require('assert');
-const router    = require('./router');
-const packdata  = require('./packdata');
-const Project   = require('./project');
+const router    = require('./routers/project');
+const Project   = require('./models/project');
 
-let client = null;
-
-let API_HOST = 'localhost';
-let API_PORT = 3000;
+let DEFAULT_API_HOST = 'localhost';
+let DEFAULT_API_PORT = 3000;
 
 let wrapper = {
     registered: false,
@@ -21,12 +17,10 @@ let wrapper = {
     config: (opts) => {
         var opts = opts || {};
 
-        let host = opts.host || API_HOST;
-        let port = opts.port || API_PORT;
+        let host = opts.host || DEFAULT_API_HOST;
+        let port = opts.port || DEFAULT_API_PORT;
 
-        client = new Client();
-
-        this.registered = router.bind(client, host, port);
+        this.registered = router.bind(host, port);
     },
 
     /**
@@ -57,12 +51,18 @@ let wrapper = {
         return new Promise((resolve, reject) => {
 
             // request creation
-            client.methods.create( packdata( data ), (data, res) => {
-                if (data && data.template && res.statusCode == 200) {
+            router.create(data, (err, res, data) => {
+
+                // parse json
+                if (typeof data === 'string') data = JSON.parse(data);
+                
+                // verify
+                if (!err && data && data.template && res.statusCode == 200) {
                     return resolve( new Project(data, wrapper) );
                 }
 
-                reject( res.statusMessage );
+                // notify about error
+                reject( err || res.statusMessage );
             });
         });
     },
@@ -78,20 +78,26 @@ let wrapper = {
         // return promise
         return new Promise((resolve, reject) => {
 
-            // request creation
+            // if id provided
             if (id) {
-                client.methods.get( packdata( {}, id ), (data, res) => {
-                    return (res.statusCode != 200) ? 
-                        reject( res.statusMessage ) : 
-                        resolve( new Project( data, wrapper ) );
+                // return single
+                router.get(id, (err, res, data) => {
+                    // parse json
+                    if (typeof data === 'string') data = JSON.parse(data);
+
+                    // verify || notify about error
+                    return (err || res.statusCode != 200) ? reject(err || res.statusMessage) : resolve( new Project(data, wrapper) );
                 });
             } else {
-                client.methods.getAll({}, (data, res) => {
-                    if (res.statusCode != 200) {
-                        return reject( res.statusMessage );
-                    }
-                    let results = [];
 
+                // return multiple
+                router.getAll((err, res, data) => {
+                    if (!res || res.statusCode != 200) return reject( new Error('Error occured during getting list of projects') );
+
+                    // read json
+                    let results = []; if (typeof data === 'string') data = JSON.parse(data);
+
+                    // iterate and create objects
                     for (let obj of data) {
                         results.push( new Project( obj, wrapper ) );
                     } 
@@ -110,16 +116,20 @@ let wrapper = {
     update: (object) => {
         if (!this.registered) return console.error('[error] call config method first');
         
-        let data = object;
+        let uobj = object;
 
         if (object instanceof Project) {
-            data = object.serialize();
+            uobj = object.serialize();
         }
 
         return new Promise((resolve, reject) => {
-            client.methods.update( packdata( data, object.uid ), (data, res) => {
+            router.update(object.uid, uobj, (err, res, data) => {
 
-                if (data && data.template && res.statusCode == 200) {
+                // parse json
+                if (typeof data === 'string') data = JSON.parse(data);
+
+                // verify
+                if (!err && data && data.template && res.statusCode == 200) {
                     if (object instanceof Project) {
                         return resolve( object.deserialize(data) );
                     } else {
@@ -127,7 +137,8 @@ let wrapper = {
                     }
                 }
 
-                reject( res.statusMessage );
+                // notify about error
+                reject( err || res.statusMessage );
             });
         });
     },
@@ -141,8 +152,13 @@ let wrapper = {
         if (!this.registered) return console.error('[error] call config method first');
 
         return new Promise((resolve, reject) => {
-            client.methods.remove( packdata( {}, id ), (data, res) => {
-                return (res.statusCode != 200) ? reject(res.statusMessage) : resolve(data);
+            router.remove(id, (err, res, data) => {
+
+                // parse json
+                if (typeof data === 'string') data = JSON.parse(data);
+
+                // verify || notify about error
+                return (err || res.statusCode != 200) ? reject(err || res.statusMessage) : resolve(data);
             });;
         });
     }

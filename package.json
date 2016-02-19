@@ -28,7 +28,7 @@
     "mkdirp": "^0.5.1",
     "morgan": "^1.6.1",
     "node-dir": "^0.1.11",
-    "node-rest-client": "^1.8.0",
+    "request": "^2.69.0",
     "shortid": "^2.2.4"
   }
 }

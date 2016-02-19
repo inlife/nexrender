@@ -65,8 +65,12 @@ function applyTasks(project, resolve, reject) {
 function requestNextProject() {
     return new Promise((resolve, reject) => {
 
+        console.log('making request for projects...');
+
         // request list
         api.get().then((results) => {
+
+            console.log('looking for suitable projects...');
 
             // if list empty - reject
             if (!results || results.length < 1) {
@@ -99,6 +103,7 @@ function startRecursion() {
     requestNextProject().then((project) => {
         startRender(project).then(startRecursion).catch(startRecursion)
     }).catch(() => {
+        console.log('request failed or no suitable projects found. retrying in:', API_REQUEST_INTERVAL, 'sec');
         setTimeout(() => { startRecursion() }, API_REQUEST_INTERVAL);
     });
 }

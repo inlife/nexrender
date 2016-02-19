@@ -63,6 +63,8 @@ class Project {
         this.postActions    = data.postActions  || [];
         this.settings       = data.settings     || { outputModule: AE_OUTPUT_MODULE };
         this.errorMessage   = data.errorMessage || null;
+
+        return this;
     }
 
     // RENDERER ONLY SIZE METHODS
