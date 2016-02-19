@@ -6,6 +6,7 @@ const setup         = require('./tasks/setup');
 const download      = require('./tasks/download');
 const rename        = require('./tasks/rename');
 const filter        = require('./tasks/filter');
+const patch         = require('./tasks/patch');
 const render        = require('./tasks/render');
 const verify        = require('./tasks/verify');
 const plugins       = require('./tasks/plugins');
@@ -27,6 +28,7 @@ function applyTasks(project, resolve, reject) {
         .then(download)
         .then(rename)
         .then(filter)
+        .then(patch)
         .then(render)
         .then(verify)
         .then(plugins)
