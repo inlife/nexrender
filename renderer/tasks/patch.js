@@ -39,10 +39,11 @@ module.exports = function(project) {
                 let expressions = data.match(/\<expr bdata=\"([a-f0-9]+)\"\s*\/\>/ig);
 
                 for (let expr of expressions) {
+                    // extract hex from xml tag and decode it
                     let hex = expr.split('"')[1];
                     let dec = new Buffer(hex, 'hex').toString('utf8');
 
-                    // do patch and encode to hex
+                    // do patch and encode back to hex
                     let enc = new Buffer( dec.replace( replaceFromPath, replaceToPath ) ).toString('hex');
 
                     // replace patched hex
@@ -51,7 +52,7 @@ module.exports = function(project) {
 
                 // save result
                 fs.writeFile(projectName, data, (err) => {
-                    if (err) return reject(err) else resolve(project);
+                    return (err) ? reject(err) : resolve(project);
                 });
             });
         }
