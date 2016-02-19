@@ -98,8 +98,9 @@ api.create({
 - create plugin for youtube uploading
 - create plugin for email notifications
 - add feature of parallel rendering
+- cover code with tests
 
 ## Development
 Read document: [here](DEVELOPMENT.md)
 
-## [License] (LICENSE)
+## [License](LICENSE)

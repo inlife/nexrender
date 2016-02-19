@@ -11,7 +11,8 @@ cli.parse({
     'api-server':   ['s', 'Start api server'],
     'renderer':     ['r', 'Start renderer'],
     'host':         ['h', 'Remote HOST:PORT to connect', 'host', 'localhost:3000'],
-    'port':         ['p', 'Listen on port', 'port', 3000]
+    'port':         ['p', 'Listen on port', 'port', 3000],
+    'version':      ['v', 'Get version']
 });
 
 // Usage: 
@@ -21,6 +22,10 @@ cli.parse({
 //           -sp 3000
 
 cli.main(function(args, options) {
+
+    if (options.version) {
+        return console.log('nexrender version:', nexrender.version)
+    }
 
     if (options['api-server']) {
         nexrender.server.start(options.port);
