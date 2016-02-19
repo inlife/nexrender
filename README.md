@@ -12,11 +12,12 @@ Automate your After Effects project creation and rendering routine.
 Create application, that can automatically create and render AE projects from templates, and managing rendering queue. It's can be useful for everyone out there, who have constant routine of creating big amount of very similar projects. 
 
 ### To understand what its really about
-I suggest you to read this [document](DEVELOPMENT.md).
+I suggest you to read [WIKI](https://github.com/Inlife/nexrender/wiki).
 
 ## Features
 - asset import
 - creating project from template
+- AE expressions support
 - automated rendering
 - multiple machines support
 - persistent database storage
@@ -25,7 +26,7 @@ I suggest you to read this [document](DEVELOPMENT.md).
 ## Use cases:
 - Create own render network (render farm)
 - Easy way to queue up projects
-- Automate creating similar projects with different assets
+- Automate creating similar projects with different assets and scripting
 
 ## Installation
 Install globally to use as **cli**:
@@ -41,19 +42,21 @@ $ npm install nexrender
 ```
 
 ## Usage (CLI)
-To start **api server**:
+To start [**api server**:](https://github.com/Inlife/nexrender/wiki/API-server)
 
 ```sh
 $ nexrender --api-server --port=3000
 ```
 
-To start **render node**:
+To start [**render node**:](https://github.com/Inlife/nexrender/wiki/Rendering-node)
 
 ```sh
 $ nexrender --renderer --host=localhost:3000 --aerender=/path/to/aerender
 ```
 
 ## Usage (API)
+
+Creating [**project**:](https://github.com/Inlife/nexrender/wiki/Project-model)
 
 ```js
 var api = require('nexrender').api;
@@ -73,7 +76,7 @@ var assets = [{
 
 // Create project
 api.create({
-    template: 'template1.aep',
+    template: 'template1.aepx',
     composition: 'base',
     assets: assets
 }).then((project) => {
@@ -100,7 +103,6 @@ api.create({
 - add feature of parallel rendering
 - cover code with tests
 
-## Development
-Read document: [here](DEVELOPMENT.md)
+## [Help](https://github.com/Inlife/nexrender/wiki)
 
 ## [License](LICENSE)
