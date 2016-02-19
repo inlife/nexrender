@@ -25,6 +25,11 @@ module.exports = function(project) {
         // create, if it does not exists
         mkdirp.sync(project.workpath);
 
+        // if project is custom - dont copy (it must be downloaded)
+        if (project.type && project.type === 'custom') {
+            return resolve(project);
+        }
+
         // copy project file
         fs.copy(templatepath, workingProject, (err) => {
             return (err) ? reject(err) : resolve(project);
