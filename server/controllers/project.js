@@ -81,8 +81,6 @@ class Controller {
         // set default data
         data.updatedAt = new Date;
 
-        console.log(data);
-
         // update data and return
         return new Promise((resolve, reject) => {
             resolve( this.db.chain().find({ uid: id }).assign( data ).value() );
