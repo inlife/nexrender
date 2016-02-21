@@ -102,9 +102,11 @@ api.create({
 ```
 
 ## Plans
+- add platform settings for renderer
 - create plugin for youtube uploading
 - create plugin for email notifications
 - add feature of parallel rendering
+- test on more configurations
 - cover code with tests
 
 ## [Help](https://github.com/Inlife/nexrender/wiki)
