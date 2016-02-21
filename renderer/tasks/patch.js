@@ -56,5 +56,7 @@ module.exports = function(project) {
                 });
             });
         }
+
+        resolve(project);
     });
 };
