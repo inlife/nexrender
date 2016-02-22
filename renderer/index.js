@@ -110,17 +110,21 @@ function startRecursion() {
 
 /**
  * Start automated reqeusting projects and rendering them
- * @param  {String} host Api server host
- * @param  {Number} port Api server port
+ * @param  {Object} opts Options object
  */
-function start(host, port) {
+function start(opts) {
     console.log('nexrender.renderer is starting');
+
+    opts = opts || {};
 
     // configure api connection
     api.config({
-        host: host,
-        port: port
+        host: opts.host || null,
+        port: opts.port || null
     });
+
+    // set global aerender path
+    process.env.AE_BINARY = opts.aerender;
 
     // start quering
     startRecursion();
