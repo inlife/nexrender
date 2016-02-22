@@ -40,10 +40,13 @@ cli.main(function(args, options) {
             return console.error('[error] provide --aerender=PATH for aerender binary file');
         }
 
-        process.env.AE_BINARY = options.aerender;
-
         let host = options.host.split(':');
 
-        nexrender.renderer.start( host[0], host[1] );
+        nexrender.renderer.start({
+            host: uri[0],
+            port: uri[1],
+            aerender: options.aerender
+            /*platform specific settings*/
+        });
     }
 });
