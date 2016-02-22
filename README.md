@@ -8,9 +8,7 @@
 [![Dependency Status](https://david-dm.org/inlife/nexrender.svg)](https://david-dm.org/inlife/nexrender)
 [![Code Climate](https://codeclimate.com/github/Inlife/nexrender/badges/gpa.svg)](https://codeclimate.com/github/Inlife/nexrender)
 
-Automate your After Effects project creation and rendering routine. 
-
->Create your own render network.
+Automate your After Effects project creation and rendering routine. Create your own render network.
 
 ## Purpose
 Create application, that can automatically create and render AE projects from templates, and managing rendering queue. It's can be useful for everyone out there, who have constant routine of creating big amount of very similar projects. 
@@ -102,6 +100,9 @@ api.create({
 ```
 
 ## Plans
+- add programmatical render node creation
+- add ability to choose output extension
+- add security to rest api layer
 - add platform settings for renderer
 - create plugin for youtube uploading
 - create plugin for email notifications
