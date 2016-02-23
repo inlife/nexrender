@@ -9,7 +9,7 @@ const filter        = require('./tasks/filter');
 const patch         = require('./tasks/patch');
 const render        = require('./tasks/render');
 const verify        = require('./tasks/verify');
-const plugins       = require('./tasks/plugins');
+const actions       = require('./tasks/actions');
 const cleanup       = require('./tasks/cleanup');
 
 const API_REQUEST_INTERVAL = 15 * 60 * 1000 || process.env.API_REQUEST_INTERVAL; // 15 minutes
@@ -31,7 +31,7 @@ function applyTasks(project, resolve, reject) {
         .then(patch)
         .then(render)
         .then(verify)
-        .then(plugins)
+        .then(actions)
         .then(cleanup)
         .then((project) => {
 

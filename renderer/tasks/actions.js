@@ -6,19 +6,19 @@ const dir   = require('node-dir');
 const async = require('async');
 
 // plugin storage
-let plugins = {};
+let actions = {};
 
-// register plugins
+// register actions
 (function() {
-    // set plugins dir
-    let pluginsdir = path.join(__dirname, '..', 'plugins');
+    // set actions dir
+    let actionsdir = path.join(__dirname, '..', 'actions');
 
-    // read every file and load it into plugins storage
-    dir.readFiles(pluginsdir, (err, cnt, filename, next) => {
+    // read every file and load it into actions storage
+    dir.readFiles(actionsdir, (err, cnt, filename, next) => {
         let plugin = require(filename);
 
         // push plugin to storage
-        plugins[plugin.name] = plugin;
+        actions[plugin.name] = plugin;
 
         // go to next plugin file
         next();
@@ -26,29 +26,29 @@ let plugins = {};
 })();
 
 /**
- * run post render actions from plugins folder
+ * run post render actions from actions folder
  * upload, copy to local folder, email, etc.
  */
 module.exports = function(project) {
     return new Promise((resolve, reject) => {
 
-        console.log(`[${project.uid}] applying plugins...`);
+        console.log(`[${project.uid}] applying actions...`);
 
         // initialize empty call-queue array
         let calls = [];
 
         // call copy to results plugin by default
         calls.push((callback) => {
-            plugins['copy-to-results'].plugin(project, {}, callback);
+            actions['copy-to-results'].plugin(project, {}, callback);
         });
 
-        // iterate over activated plugins for project
+        // iterate over activated actions for project
         for (let action of project.postActions) {
-            if (!plugins[action.name]) continue;
+            if (!actions[action.name]) continue;
 
             // and call them
             calls.push((callback) => {
-                plugins[action.name].plugin(project, action, callback);
+                actions[action.name].plugin(project, action, callback);
             });
         }
 
