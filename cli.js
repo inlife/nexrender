@@ -23,6 +23,17 @@ cli.parse({
 
 cli.main(function(args, options) {
 
+    console.log(`
+                                   | |          
+ _ __   _____  ___ __ ___ _ __   __| | ___ _ __ 
+| '_ \\ / _ \\ \\/ / '__/ _ \\ '_ \\ / _\` |/ _ \\ '__|
+| | | |  __/>  <| | |  __/ | | | (_| |  __/ |   
+|_| |_|\\___/_/\\_\\_|  \\___|_| |_|\\__,_|\\___|_|   
+          
+                  VERSION: ${nexrender.version} 
+                   AUTHOR: Inlife                                    
+    `);
+
     if (options.version) {
         return console.log('nexrender version:', nexrender.version)
     }
@@ -40,7 +51,7 @@ cli.main(function(args, options) {
             return console.error('[error] provide --aerender=PATH for aerender binary file');
         }
 
-        let host = options.host.split(':');
+        let uri = options.host.split(':');
 
         nexrender.renderer.start({
             host: uri[0],
