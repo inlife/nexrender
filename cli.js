@@ -13,7 +13,7 @@ cli.parse({
     'renderer':     ['r',   'Start renderer'],
     'aerender':     [false, 'PATH to aerender binary',      'path'],
     'host':         ['h',   'Remote HOST:PORT to connect',  'string',   'localhost:3000'],
-    'mem':          [false, 'aerender % of memory',         'string',   '25 25'],
+    'mem':          [false, 'aerender % of memory',         'string',   '50 50'],
     'mp':           [false, 'arender multi frames'],
 
     // api server params
