@@ -36,8 +36,11 @@ module.exports = function(project) {
             if (project.settings.endFrame)
                 params.push('-e', project.settings.endFrame);
 
-            if (priject.settings.multiFrame)
+            if (process.env.AE_MULTIFRAMES)
                 param.push('-mp');
+
+            if (process.env.AE_MEMORY)
+                param.push('-mem_usage', process.env.AE_MEMORY);
         }
 
         // spawn process and begin rendering

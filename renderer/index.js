@@ -126,7 +126,9 @@ function start(opts) {
     });
 
     // set global aerender path
-    process.env.AE_BINARY = opts.aerender;
+    process.env.AE_BINARY       = opts.aerender;
+    process.env.AE_MULTIFRAMES  = opts.multiframes || true;
+    process.env.AE_MEMORY       = opts.memory || "25 25";
 
     // start quering
     startRecursion();
