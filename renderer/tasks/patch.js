@@ -42,7 +42,7 @@ module.exports = function(project) {
 
                     // do patch and encode back to hex
                     // using regex file path pattern
-                    let enc = new Buffer( dec.replace( /([A-Z]\:|)(\/|\\)(.+(\/|\\)|)/gm, replaceToPath ) ).toString('hex');
+                    let enc = new Buffer( dec.replace( /([A-Z]\:|~|)(\/|\\)(.+(\/|\\)|)/gm, replaceToPath ) ).toString('hex');
 
                     // replace patched hex
                     data = data.replace( hex, enc );
