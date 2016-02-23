@@ -7,12 +7,18 @@ const cli       = require('cli').enable('version');
 const nexrender = require('./index.js');
 
 cli.parse({
-    'aerender':     [false, 'PATH to aerender binary', 'path'],
-    'api-server':   ['s', 'Start api server'],
-    'renderer':     ['r', 'Start renderer'],
-    'host':         ['h', 'Remote HOST:PORT to connect', 'host', 'localhost:3000'],
-    'port':         ['p', 'Listen on port', 'port', 3000],
-    'version':      ['v', 'Get version']
+    'version':      ['v',   'Get version'],
+
+    // render node params
+    'renderer':     ['r',   'Start renderer'],
+    'aerender':     [false, 'PATH to aerender binary',      'path'],
+    'host':         ['h',   'Remote HOST:PORT to connect',  'host', '   localhost:3000'],
+    'mem':          [false, 'aerender % of memory',         'string',   '25 25'],
+    'mp':           [false, 'arender multi frames'],
+
+    // api server params
+    'api-server':   ['s',   'Start api server'],
+    'port':         ['p',   'Listen on port',               'port',     3000]
 });
 
 // Usage: 
@@ -58,8 +64,9 @@ http://github.com/Inlife/nexrender
         nexrender.renderer.start({
             host: uri[0],
             port: uri[1],
-            aerender: options.aerender
-            /*platform specific settings*/
+            aerender: options.aerender,
+            memory: options.mem,
+            multiframes: options.mp || false
         });
     }
 });

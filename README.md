@@ -100,10 +100,8 @@ api.create({
 ```
 
 ## Plans
-- add programmatical render node creation
 - add ability to choose output extension
 - add security to rest api layer
-- add platform settings for renderer
 - create plugin for youtube uploading
 - create plugin for email notifications
 - add feature of parallel rendering
