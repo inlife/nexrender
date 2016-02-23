@@ -15,15 +15,15 @@ module.exports = function(project) {
 
         // Iterate over assets, 
         // skip those that are not data/script files, 
-        // or have empty patch paths
         for (let asset of project.assets) {
             if (['script', 'data'].indexOf(asset.type) === -1) continue;
-            if (!asset.patch || asset.patch.length < 1) continue;
 
             // project file template name
             let projectName     = path.join( project.workpath, project.template );
             let replaceToPath   = path.join( process.cwd(), project.workpath ); // absolute path
-            let replaceFromPath = asset.patch.replace(/[\/\\]$/, ''); // remove trailing slash
+            
+            // remove trailing slash
+            replaceToPath = replaceToPath.patch.replace(/[\/\\]$/, '');
 
             // read project file contents
             fs.readFile(projectName, (err, bin) => {
@@ -44,7 +44,8 @@ module.exports = function(project) {
                     let dec = new Buffer(hex, 'hex').toString('utf8');
 
                     // do patch and encode back to hex
-                    let enc = new Buffer( dec.replace( replaceFromPath, replaceToPath ) ).toString('hex');
+                    // using regex file path pattern
+                    let enc = new Buffer( dec.replace( /([A-Z]\:|)(\/|\\)(.+(\/|\\)|)/gm, replaceToPath ) ).toString('hex');
 
                     // replace patched hex
                     data = data.replace( hex, enc );

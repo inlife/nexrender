@@ -25,9 +25,12 @@ module.exports = function(project) {
         // create, if it does not exists
         mkdirp.sync(project.workpath);
 
-        // if project is custom - dont copy (it must be downloaded)
-        if (project.type && project.type === 'custom') {
-            return resolve(project);
+        // if we have project (template) as an asset
+        // we'll donwload it later, skip copying
+        for (let asset of project.assets) {
+            if (asset.type && ['project', 'template'].indexOf(asset.type) !== -1) {
+                return resolve(project);
+            }
         }
 
         // copy project file

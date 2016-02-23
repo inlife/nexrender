@@ -35,6 +35,9 @@ module.exports = function(project) {
 
             if (project.settings.endFrame)
                 params.push('-e', project.settings.endFrame);
+
+            if (priject.settings.multiFrame)
+                param.push('-mp');
         }
 
         // spawn process and begin rendering

@@ -29,9 +29,11 @@ cli.main(function(args, options) {
 | '_ \\ / _ \\ \\/ / '__/ _ \\ '_ \\ / _\` |/ _ \\ '__|
 | | | |  __/>  <| | |  __/ | | | (_| |  __/ |   
 |_| |_|\\___/_/\\_\\_|  \\___|_| |_|\\__,_|\\___|_|   
-          
+
                   VERSION: ${nexrender.version} 
-                   AUTHOR: Inlife                                    
+
+For support and information, please visit:
+http://github.com/Inlife/nexrender
     `);
 
     if (options.version) {
