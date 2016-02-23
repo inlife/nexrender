@@ -3,8 +3,6 @@
 const spawn = require('child_process').spawn;
 const path  = require('path');
 
-const AE_OUTPUTEXT  = (process.platform === 'darwin' ? '.mov' : process.env.AE_OUTPUTEXT || '.mp4');
-
 /**
  * This task creates rendering process
  */
@@ -17,7 +15,9 @@ module.exports = function(project) {
         let aedata = [];
         let params = [];
 
-        project.resultname = 'result' + AE_OUTPUTEXT;
+        let outext = (project.settings && project.settings.outputExt) ? project.settings.outputExt : 'mp4';
+
+        project.resultname = 'result' + '.' + outext;
 
         // setup parameters
         params.push('-comp',        project.composition);

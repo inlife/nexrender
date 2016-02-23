@@ -100,7 +100,6 @@ api.create({
 ```
 
 ## Plans
-- add ability to choose output extension
 - add security to rest api layer
 - create plugin for youtube uploading
 - create plugin for email notifications

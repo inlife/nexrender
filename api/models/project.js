@@ -9,7 +9,8 @@ const DEFAULT_PROJECT_TYPE  = 'default';
 
 const TICKER_INTERVAL       = 60 * 1000 || process.env.API_UPDATE_INTERVAL; // 1 minute
 
-const AE_OUTPUT_MODULE = process.env.AE_OUTPUT_MODULE || 'h264';
+const AE_OUTPUT_MODULE      = process.env.AE_OUTPUT_MODULE || 'h264';
+const AE_OUTPUT_EXT         = 'mp4';
 
 
 class Project {
@@ -61,7 +62,7 @@ class Project {
         this.type           = data.type         || DEFAULT_PROJECT_TYPE;
         this.assets         = data.assets       || [];
         this.postActions    = data.postActions  || [];
-        this.settings       = data.settings     || { outputModule: AE_OUTPUT_MODULE };
+        this.settings       = data.settings     || { outputModule: AE_OUTPUT_MODULE, outputExt: AE_OUTPUT_EXT };
         this.errorMessage   = data.errorMessage || null;
 
         return this;
