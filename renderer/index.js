@@ -113,7 +113,9 @@ function startRecursion() {
  * @param  {Object} opts Options object
  */
 function start(opts) {
+    console.log('=========[RENDERNODE]=========')
     console.log('nexrender.renderer is starting');
+    console.log('==============================')
 
     opts = opts || {};
 
