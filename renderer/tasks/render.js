@@ -28,8 +28,17 @@ module.exports = function(project) {
         if (project.settings) {
 
             if (process.env.AE_MEMORY) {
-                let mms = process.env.AE_MEMORY.split(' ');
-                params.push('-mem_usage', parseInt(mms[0]), parseInt(mms[1]));
+                
+                if (process.env.AE_MEMORY.indexOf(' ') === -1) {
+                    return reject(new Error('Memory setting must look like --mem=\"50 50\". \
+                        Details: https://helpx.adobe.com/after-effects/using/automated-rendering-network-rendering.html'));
+                }
+
+                let memcomps = process.env.AE_MEMORY.split(' ');
+                let image_cache_percent = parseInt(memcomps[0]) || 50;
+                let max_mem_percent     = parseInt(memcomps[1]) || 50;
+
+                params.push('-mem_usage', image_cache_percent, max_mem_percent);
             }
 
             if (project.settings.outputModule)
