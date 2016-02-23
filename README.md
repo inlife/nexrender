@@ -100,6 +100,7 @@ api.create({
 ```
 
 ## Plans
+- add render progress evaluation
 - add security to rest api layer
 - create plugin for youtube uploading
 - create plugin for email notifications
