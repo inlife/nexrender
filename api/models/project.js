@@ -43,7 +43,7 @@ class Project {
             template:       this.template,
             settings:       this.settings,
             composition:    this.composition,
-            postActions:    this.postActions,
+            actions:        this.actions,
             errorMessage:   this.errorMessage
         };
     }
@@ -61,7 +61,7 @@ class Project {
         this.composition    = data.composition  || DEFAULT_COMPOSITION;
         this.type           = data.type         || DEFAULT_PROJECT_TYPE;
         this.assets         = data.assets       || [];
-        this.postActions    = data.postActions  || [];
+        this.actions        = data.actions      || [];
         this.settings       = data.settings     || { outputModule: AE_OUTPUT_MODULE, outputExt: AE_OUTPUT_EXT };
         this.errorMessage   = data.errorMessage || null;
 
@@ -102,7 +102,6 @@ class Project {
      * @return {Promise}
      */
     failure(err) {
-        console.log('omg error', err);
         let errmsg = (err.message) ? err.message : err;
 
         return new Promise((resolve, reject) => {

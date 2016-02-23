@@ -43,7 +43,7 @@ module.exports = function(project) {
         });
 
         // iterate over activated actions for project
-        for (let action of project.postActions) {
+        for (let action of project.actions) {
             if (!actions[action.name]) continue;
 
             // and call them

@@ -20,10 +20,7 @@ module.exports = function(project) {
 
             // project file template name
             let projectName     = path.join( project.workpath, project.template );
-            let replaceToPath   = path.join( process.cwd(), project.workpath ); // absolute path
-            
-            // remove trailing slash
-            replaceToPath = replaceToPath.patch.replace(/[\/\\]$/, '');
+            let replaceToPath   = path.join( process.cwd(), project.workpath, path.sep); // absolute path
 
             // read project file contents
             fs.readFile(projectName, (err, bin) => {

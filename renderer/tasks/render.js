@@ -27,6 +27,11 @@ module.exports = function(project) {
         // advanced parameters
         if (project.settings) {
 
+            if (process.env.AE_MEMORY) {
+                let mms = process.env.AE_MEMORY.split(' ');
+                params.push('-mem_usage', parseInt(mms[0]), parseInt(mms[1]));
+            }
+
             if (project.settings.outputModule)
                 params.push('-OMtemplate', project.settings.outputModule);
 
@@ -37,10 +42,8 @@ module.exports = function(project) {
                 params.push('-e', project.settings.endFrame);
 
             if (process.env.AE_MULTIFRAMES)
-                param.push('-mp');
+                params.push('-mp');
 
-            if (process.env.AE_MEMORY)
-                param.push('-mem_usage', process.env.AE_MEMORY);
         }
 
         // spawn process and begin rendering

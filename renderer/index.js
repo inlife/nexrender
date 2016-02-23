@@ -50,6 +50,8 @@ function applyTasks(project, resolve, reject) {
             console.log(`[${project.uid}] project failed`);
             console.log('--------------------------\n');
 
+            console.log('Error message:', err.message || err);
+
             // project encountered an error
             project.failure(err).then(() => {
                 reject(project);
@@ -113,9 +115,9 @@ function startRecursion() {
  * @param  {Object} opts Options object
  */
 function start(opts) {
-    console.log('=========[RENDERNODE]=========')
-    console.log('nexrender.renderer is starting');
-    console.log('==============================')
+    console.log('=========[RENDERNODE]=========\n')
+    console.log('nexrender.renderer is starting\n');
+    console.log('------------------------------');
 
     opts = opts || {};
 

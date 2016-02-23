@@ -12,7 +12,6 @@ module.exports = function(project) {
 
         // create downloader
         let downloader   = new Download();
-        let projectFound = false;
 
         // set download path
         downloader.dest(project.workpath);
@@ -23,13 +22,7 @@ module.exports = function(project) {
 
             // check for custom project
             if (asset.type === 'project') {
-                projectFound = true;
-            }
-        }
-
-        if (project.type && project.type === 'custom') {
-            if (!projectFound) {
-                return reject(new Error('You selected custom project, but did not upload one'));
+                project.template = asset.name;
             }
         }
         
