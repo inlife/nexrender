@@ -28,16 +28,19 @@ module.exports = function(project) {
         if (project.settings) {
 
             if (process.env.AE_MEMORY) {
-                
+
+                // if mem_usage have wrong format
                 if (process.env.AE_MEMORY.indexOf(' ') === -1) {
                     return reject(new Error('Memory setting must look like --mem=\"50 50\". \
                         Details: https://helpx.adobe.com/after-effects/using/automated-rendering-network-rendering.html'));
                 }
 
+                // split by space and prase int's
                 let memcomps = process.env.AE_MEMORY.split(' ');
                 let image_cache_percent = parseInt(memcomps[0]) || 50;
                 let max_mem_percent     = parseInt(memcomps[1]) || 50;
 
+                // pass params
                 params.push('-mem_usage', image_cache_percent, max_mem_percent);
             }
 

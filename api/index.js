@@ -43,9 +43,9 @@ let wrapper = {
         } 
 
         // and arrays
-        data.assets      = data.assets        || [];
-        data.settings    = data.settings      || [];
-        data.actions     = data.actions       || [];
+        data.assets      = data.assets      || [];
+        data.settings    = data.settings    || [];
+        data.actions     = data.actions     || [];
 
         // return promise
         return new Promise((resolve, reject) => {
