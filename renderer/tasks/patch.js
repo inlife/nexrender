@@ -22,6 +22,9 @@ module.exports = function(project) {
             let projectName     = path.join( project.workpath, project.template );
             let replaceToPath   = path.join( process.cwd(), project.workpath, path.sep); // absolute path
 
+            // escape single backslash to double in win
+            replaceToPath = replaceToPath.replace('\\', '\\\\');
+
             // read project file contents
             fs.readFile(projectName, (err, bin) => {
                 if (err) return reject(err);
