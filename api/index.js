@@ -57,7 +57,7 @@ let wrapper = {
                 if (typeof data === 'string') data = JSON.parse(data);
                 
                 // verify
-                if (!err && data && data.template && res.statusCode == 200) {
+                if (!err && data && data.template && res.statusCode === 200) {
                     return resolve( new Project(data, wrapper) );
                 }
 
@@ -129,7 +129,7 @@ let wrapper = {
                 if (typeof data === 'string') data = JSON.parse(data);
 
                 // verify
-                if (!err && data && data.template && res.statusCode == 200) {
+                if (!err && data && data.template && res.statusCode === 200) {
                     if (object instanceof Project) {
                         return resolve( object.deserialize(data) );
                     } else {

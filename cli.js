@@ -56,7 +56,7 @@ http://github.com/Inlife/nexrender
     if (options['renderer']) {
         process.title = 'nexrender.renderer';
 
-        if (['darwin', 'win32', 'win64'].indexOf( os.platform() ) == -1) {
+        if (['darwin', 'win32', 'win64'].indexOf( os.platform() ) === -1) {
             console.warn('[error] you might be considering to run renderer on officialy supported platform');
         }
 

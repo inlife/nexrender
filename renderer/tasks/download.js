@@ -11,7 +11,7 @@ module.exports = function(project) {
         console.info(`[${project.uid}] downloading assets...`);
 
         // create downloader
-        let downloader   = new Download();
+        let downloader = new Download();
 
         // set download path
         downloader.dest(project.workpath);

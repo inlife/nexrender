@@ -81,7 +81,7 @@ function requestNextProject() {
 
             // iterate, find queued
             for (let project of results) {
-                if (project.state == 'queued') {
+                if (project.state === 'queued') {
                     return resolve( project );
                 }
             }
