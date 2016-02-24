@@ -1,5 +1,7 @@
 // console.log = function() {}
 
+console.info = function() {};
+
 require('./renderer/tasks/setup.js');
 
 var assert = require("assert"); // node.js core module

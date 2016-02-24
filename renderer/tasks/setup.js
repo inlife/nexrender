@@ -13,7 +13,7 @@ const TEMP_DIRECTORY        = process.env.TEMP_DIRECTORY        || "temp";
 module.exports = function(project) {
     return new Promise((resolve, reject) => {
 
-        console.log(`[${project.uid}] setting up project...`);
+        console.info(`[${project.uid}] setting up project...`);
 
         // setup project's workpath
         project.workpath   = path.join(TEMP_DIRECTORY,      project.uid);
@@ -32,7 +32,7 @@ module.exports = function(project) {
                 return resolve(project);
             }
         }
-        console.log(templatepath, workingProject);
+
         // copy project file
         fs.copy(templatepath, workingProject, (err) => {
             return (err) ? reject(err) : resolve(project);
