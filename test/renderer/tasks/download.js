@@ -55,8 +55,8 @@ describe('Task: download', () => {
     });
 
     afterEach(() => {
-        fs.removeSync( path.join('test', 'proj.aep') );
-        fs.removeSync( path.join('test', 'image.jpg') );
+        fs.unlink( path.join('test', 'proj.aep') );
+        fs.unlink( path.join('test', 'image.jpg') );
     });
 
     it('should download each asset', () => {
