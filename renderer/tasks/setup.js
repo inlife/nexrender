@@ -32,7 +32,7 @@ module.exports = function(project) {
                 return resolve(project);
             }
         }
-
+        console.log(templatepath, workingProject);
         // copy project file
         fs.copy(templatepath, workingProject, (err) => {
             return (err) ? reject(err) : resolve(project);

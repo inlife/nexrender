@@ -130,7 +130,7 @@ function start(opts) {
     // set global aerender path
     process.env.AE_BINARY       = opts.aerender;
     process.env.AE_MULTIFRAMES  = opts.multiframes  || false;
-    process.env.AE_MEMORY       = opts.memory       || null;
+    process.env.AE_MEMORY       = opts.memory       || undefined;
 
     // start quering
     startRecursion();

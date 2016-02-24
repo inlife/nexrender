@@ -27,12 +27,12 @@ module.exports = function(project) {
         // advanced parameters
         if (project.settings) {
 
-            if (process.env.AE_MEMORY) {
+            if (process.env.AE_MEMORY && process.env.AE_MEMORY.length > 0) {
 
                 // if mem_usage have wrong format
                 if (process.env.AE_MEMORY.indexOf(' ') === -1) {
                     return reject(new Error('Memory setting must look like --mem=\"50 50\". \
-                        Details: https://helpx.adobe.com/after-effects/using/automated-rendering-network-rendering.html'));
+Details: https://helpx.adobe.com/after-effects/using/automated-rendering-network-rendering.html'));
                 }
 
                 // split by space and prase int's

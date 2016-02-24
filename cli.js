@@ -14,7 +14,7 @@ cli.parse({
     'aerender':     [false, 'PATH to aerender binary',      'path'],
     'host':         ['h',   'Remote HOST:PORT to connect',  'string',   'localhost:3000'],
     'mem':          [false, 'aerender % of memory',         'string'],
-    'mp':           [false, 'arender multi frames'],
+    'mp':           [false, 'aerender multi frames'],
 
     // api server params
     'api-server':   ['s',   'Start api server'],
@@ -75,7 +75,7 @@ http://github.com/Inlife/nexrender
             host: uri[0],
             port: uri[1],
             aerender: options.aerender,
-            memory: options.mem || null,
+            memory: options.mem || undefined,
             multiframes: options.mp || false
         });
     }
