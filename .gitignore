@@ -8,3 +8,4 @@ results/
 
 # mac crap
 .DS_Store
+/coverage
