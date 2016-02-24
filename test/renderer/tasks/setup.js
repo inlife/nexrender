@@ -44,12 +44,12 @@ describe('Task: setup', () => {
     });
 
     it('should have created temp folder if it not existed', () => {
-        'test/temp/mytestid'.should.be.a.path();
+        path.join('test', 'temp', 'mytestid').should.be.a.path();
     });
 
     describe('(without project-as-asset)', () => {
         it('should have copied project file from templates to workpath dir', () => {
-            'test/temp/mytestid/project.aep'.should.be.a.path();
+            path.join('test', 'temp', 'mytestid', 'project.aep').should.be.a.path();
         });
     });
     
@@ -62,7 +62,7 @@ describe('Task: setup', () => {
         })
 
         it('should not copy project if project asset is provided', () => {
-            'test/temp/mytestid/project.aep'.should.not.be.a.path();
+            path.join('test', 'temp', 'mytestid', 'project.aep').should.not.be.a.path();
         });
     });
 
@@ -71,7 +71,7 @@ describe('Task: setup', () => {
             delete project.template;
         });
 
-        it('should raise error', () => {
+        it('should raise copy error', () => {
             cperror.should.not.be.undefined;
         });
     });

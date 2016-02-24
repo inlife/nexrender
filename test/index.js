@@ -1,3 +1,5 @@
+'use strict';
+
 // override console.info (disable output from modules)
 console.info = function() {};
 

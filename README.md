@@ -100,13 +100,13 @@ api.create({
 ```
 
 ## Plans
+- cover code with tests
 - add render progress evaluation
 - add security to rest api layer
 - create plugin for youtube uploading
 - create plugin for email notifications
 - add feature of parallel rendering
 - test on more configurations
-- cover code with tests
 
 ## [Help](https://github.com/Inlife/nexrender/wiki)
 
