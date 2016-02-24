@@ -50,17 +50,19 @@ describe('Task: download', () => {
         download(project).then((proj) => {
             project = proj; done();
         }).catch((err) => {
-            cperror = err; done();
+            cperror = err; 
+            setTimeout(done, 100);
         });
     });
 
     afterEach(() => {
-        fs.unlink( path.join('test', 'proj.aep') );
-        fs.unlink( path.join('test', 'image.jpg') );
+        fs.unlinkSync( path.join('test', 'proj.aep') );
+        fs.unlinkSync( path.join('test', 'image.jpg') );
     });
 
     it('should download each asset', () => {
         path.join('test', 'proj.aep').should.be.a.path();
+        path.join('test', 'image.jpg').should.be.a.path();
     });
 
     it('should set project.template to asset.name if its project', () => {
