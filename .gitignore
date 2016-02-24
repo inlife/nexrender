@@ -2,10 +2,10 @@
 node_modules/
 temp/
 results/
+coverage/
 
 # env files
 .env
 
-# mac crap
+# mac crap :D
 .DS_Store
-/coverage

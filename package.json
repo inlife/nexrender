@@ -30,8 +30,7 @@
     "morgan": "^1.6.1",
     "node-dir": "^0.1.11",
     "request": "^2.69.0",
-    "shortid": "^2.2.4",
-    "winston": "^2.1.1"
+    "shortid": "^2.2.4"
   },
   "devDependencies": {
     "chai": "^3.5.0",
