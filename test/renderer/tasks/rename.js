@@ -12,7 +12,7 @@ chai.use(chaiProm);
 global.should = chai.should();
 
 // require module
-var rename = require("../../../renderer/tasks/rename.js");
+var rename = require('../../../renderer/tasks/rename.js');
 
 describe('Task: rename', () => {
 

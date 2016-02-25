@@ -11,7 +11,7 @@ chai.use(chaiAsFs);
 global.should = chai.should();
 
 // require module
-var download = require("../../../renderer/tasks/download.js");
+var download = require('../../../renderer/tasks/download.js');
 
 describe('Task: download', () => {
 

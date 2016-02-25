@@ -12,7 +12,7 @@ chai.use(chaiProm);
 global.should = chai.should();
 
 // require module
-var filter = require("../../../renderer/tasks/filter.js");
+var filter = require('../../../renderer/tasks/filter.js');
 
 describe('Task: filter', () => {
 

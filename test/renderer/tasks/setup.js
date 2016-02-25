@@ -14,7 +14,7 @@ process.env.TEMP_DIRECTORY      = path.join('test', 'temp');
 process.env.TEMPLATES_DIRECTORY = path.join('test', 'res');
 
 // require module
-var setup = require("../../../renderer/tasks/setup.js");
+var setup = require('../../../renderer/tasks/setup.js');
 
 describe('Task: setup', () => {
 
