@@ -9,7 +9,7 @@ const path  = require('path');
 module.exports = function(project) {
     return new Promise((resolve, reject) => {
 
-        console.log(`[${project.uid}] rendering project...`);
+        console.info(`[${project.uid}] rendering project...`);
 
         // create container for data and parameters
         let aedata = [];

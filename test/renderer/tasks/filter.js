@@ -38,9 +38,9 @@ describe('Task: filter', () => {
     });
 
 
-    it('should not raise errors if there is nothing to process', () => {
+    it('should not raise errors if there is nothing to process', (done) => {
         project.assets = [];
-        filter(project).should.be.fulfilled;
+        filter(project).should.be.fulfilled.notify(done);
     })
 
     it('should skip all non-image and empty-filter assets', (done) => {
@@ -97,13 +97,13 @@ describe('Task: filter', () => {
     });
 
 
-    it('should raise error if there no params needed for filter', () => {
+    it('should raise error if there no params needed for filter', (done) => {
         project.assets.push({
             type: 'image',
             name: '2.jpg',
             filters: [ { name: 'flip' }]
         });
 
-        filter(project).should.be.rejected;
+        filter(project).should.be.rejected.notify(done);
     });
 });

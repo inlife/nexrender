@@ -28,14 +28,14 @@ function getLogs(project, callback) {
 module.exports = function(project) {
     return new Promise((resolve, reject) => {
 
-        console.log(`[${project.uid}] verifying project...`);
+        console.info(`[${project.uid}] verifying project...`);
 
         // read stats for file
         fs.stat( path.join( 
             project.workpath, 
             project.resultname 
         ), (err, stats) => {
-            if (err || stats.size < 1) {
+            if (err || !stats || stats.size < 1) {
                 getLogs(project, (logs) => {
                     return reject(logs);
                 })

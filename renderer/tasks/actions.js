@@ -32,7 +32,7 @@ let actions = {};
 module.exports = function(project) {
     return new Promise((resolve, reject) => {
 
-        console.log(`[${project.uid}] applying actions...`);
+        console.info(`[${project.uid}] applying actions...`);
 
         // initialize empty call-queue array
         let calls = [];

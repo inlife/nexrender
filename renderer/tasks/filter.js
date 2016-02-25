@@ -38,7 +38,11 @@ module.exports = function(project) {
                     // if that function is defined in jimp library
                     if (image[filter.name]) {
                         // call it
-                        image[filter.name].apply(image, filter.params || []);
+                        try {
+                            image[filter.name].apply(image, filter.params || []);
+                        } catch (err) {
+                            reject(err);
+                        }
                     }
                 }
 

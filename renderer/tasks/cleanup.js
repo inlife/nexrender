@@ -10,7 +10,7 @@ const async     = require('async');
 module.exports = function(project) {
     return new Promise((resolve, reject) => {
 
-        console.log(`[${project.uid}] cleaning up...`);
+        console.info(`[${project.uid}] cleaning up...`);
 
         fs.remove( project.workpath, (err) => {
             return (err) ? reject(err) : resolve(project);

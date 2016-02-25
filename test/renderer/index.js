@@ -7,9 +7,9 @@ describe('Testing renderer', () => {
         require('./tasks/download');
         require('./tasks/rename');
         require('./tasks/filter');
-        require('./tasks/patch');
+        // require('./tasks/patch');
         // require('./tasks/render');
-        // require('./tasks/verify');
+        require('./tasks/verify');
         // require('./tasks/actions');
         require('./tasks/cleanup');
     });

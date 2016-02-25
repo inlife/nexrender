@@ -14,7 +14,7 @@ global.should = chai.should();
 // require module
 var cleanup = require('../../../renderer/tasks/cleanup.js');
 
-describe('Task: filter', () => {
+describe('Task: cleanup', () => {
 
     let project = { workpath: path.join('test', 'work') };
 
@@ -29,9 +29,5 @@ describe('Task: filter', () => {
             path.join('test', 'work').should.not.be.path;
             path.join('test').should.be.path;
         }).should.notify(done);
-    });
-
-    it('should throw error if path does not exist', () => {
-        cleanup(project).should.not.be.fulfilled;
     });
 });
