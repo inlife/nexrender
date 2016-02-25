@@ -24,11 +24,11 @@ describe('Task: download', () => {
         workpath: 'test',
         assets: [{
             type: 'project',
-            src: 'http://localhost:3002/proj.aep',
+            src: 'http://localhost:3322/proj.aep',
             name: 'proj.aep'
         }, {
             type: 'image',
-            src: 'http://localhost:3002/image.jpg'
+            src: 'http://localhost:3322/image.jpg'
         }]
     };
 
@@ -38,7 +38,7 @@ describe('Task: download', () => {
         fs.writeFile( path.join('test', 'public', 'image.jpg'), 'dummy');
 
         app.use( express.static( path.join('test', 'public') ));
-        server = app.listen(3002, done);
+        server = app.listen(3322, done);
     });
 
     after(() => {
@@ -73,7 +73,7 @@ describe('Task: download', () => {
         before(() => {
             project.assets.push({
                 type: 'audio',
-                src: 'http://localhost:3002/notfound.mp3'
+                src: 'http://localhost:3322/notfound.mp3'
             });
         });
 

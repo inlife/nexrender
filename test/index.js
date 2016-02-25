@@ -8,6 +8,7 @@ const path = require('path');
 // override paths for test folder
 process.env.TEMP_DIRECTORY      = path.join('test', 'temp');
 process.env.TEMPLATES_DIRECTORY = path.join('test', 'res');
+process.env.RESULTS_DIR         = 'test';
 
 const nexrender = require('..');
 

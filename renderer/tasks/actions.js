@@ -5,7 +5,7 @@ const fs    = require('fs-extra');
 const dir   = require('node-dir');
 const async = require('async');
 
-// plugin storage
+// action storage
 let actions = {};
 
 // register actions
@@ -14,15 +14,17 @@ let actions = {};
     let actionsdir = path.join(__dirname, '..', 'actions');
 
     // read every file and load it into actions storage
-    dir.readFiles(actionsdir, (err, cnt, filename, next) => {
-        let plugin = require(filename);
+    let files = fs.readdirSync(actionsdir);
 
-        // push plugin to storage
-        actions[plugin.name] = plugin;
+    for (let filename of files) {
+        if (filename.indexOf('.js') !== -1) {
+            let action = require( path.join(actionsdir, filename) );
 
-        // go to next plugin file
-        next();
-    });
+            // push plugin to storage
+            actions[action.name] = action;
+        }
+    }
+
 })();
 
 /**
@@ -38,13 +40,15 @@ module.exports = function(project) {
         let calls = [];
 
         // call copy to results plugin by default
-        calls.push((callback) => {
-            actions['copy-to-results'].plugin(project, {}, callback);
-        });
+        if (actions.hasOwnProperty('copy-to-results')) {
+            calls.push((callback) => {
+                actions['copy-to-results'].plugin(project, {}, callback);
+            });
+        }
 
         // iterate over activated actions for project
         for (let action of project.actions) {
-            if (!actions[action.name]) continue;
+            if (!actions.hasOwnProperty(action.name)) continue;
 
             // and call them
             calls.push((callback) => {

@@ -1,0 +1,17 @@
+nexrender:
+
+global:
+  test coverage:
+    ☐ api
+    ☐ server
+    ☐ renderer @high @started
+
+renderer:
+  ☐ progress evaluation
+  ☐ parallell rendering
+  actions:
+    ☐ youtube uploading
+    ☐ email notifications
+
+server:
+  ☐ security (key sharing)

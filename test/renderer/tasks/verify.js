@@ -14,7 +14,7 @@ global.should = chai.should();
 // require module
 var verify = require('../../../renderer/tasks/verify.js');
 
-describe('Task: filter', () => {
+describe('Task: verify', () => {
 
     let project = { workpath: 'test', resultname: 'result' };;
 
