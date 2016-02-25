@@ -11,7 +11,7 @@ global.should = chai.should();
 
 // override paths for test folder
 process.env.TEMP_DIRECTORY      = path.join('test', 'temp');
-process.env.TEMPLATES_DIRECTORY = path.join('test', 'templates');
+process.env.TEMPLATES_DIRECTORY = path.join('test', 'res');
 
 // require module
 var setup = require("../../../renderer/tasks/setup.js");
@@ -40,7 +40,9 @@ describe('Task: setup', () => {
     });
 
     it('should set project\'s workpath', () => {
-        project.should.have.property('workpath').and.equal('test/temp/mytestid');
+        project.should.have.property('workpath').and.equal( 
+            path.join('test', 'temp', 'mytestid')
+        );
     });
 
     it('should have created temp folder if it not existed', () => {
