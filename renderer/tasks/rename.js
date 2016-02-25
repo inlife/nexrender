@@ -11,7 +11,7 @@ const async     = require('async');
 module.exports = function(project) {
     return new Promise((resolve, reject) => {
 
-        console.log(`[${project.uid}] renaming assets...`);
+        console.info(`[${project.uid}] renaming assets...`);
 
         // initialize empty call-queue array
         let calls = [];
@@ -22,6 +22,9 @@ module.exports = function(project) {
             let dst = path.join( project.workpath, asset.name );
 
             if (src === dst) continue;
+
+            // remove file if it existed
+            fs.unlink(dst, () => {});
 
             calls.push((callback) => {
                 fs.move(src, dst, callback);

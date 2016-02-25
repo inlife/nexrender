@@ -1,6 +1,6 @@
 {
   "name": "nexrender",
-  "version": "0.3.3",
+  "version": "0.4.0",
   "description": "Automate your After Effects project creation and rendering routine.",
   "main": "index.js",
   "bin": {
@@ -42,6 +42,7 @@
     "gulp-mocha": "^2.2.0",
     "istanbul": "^0.4.2",
     "jshint": "^2.9.1",
-    "mocha": "^2.4.5"
+    "mocha": "^2.4.5",
+    "rewire": "^2.5.1"
   }
 }
