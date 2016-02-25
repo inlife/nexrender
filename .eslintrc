@@ -1,0 +1,12 @@
+{
+    "env": {
+        "node": true,
+        "mocha": true,
+        "es6": true
+    },
+    "rules": {
+        "eqeqeq": 0,
+        "curly": 2,
+        "quotes": [2, "single"]
+    }
+}

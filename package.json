@@ -7,7 +7,8 @@
     "nexrender": "./cli.js"
   },
   "scripts": {
-    "test": "mocha test",
+    "test": "gulp test",
+    "lint": "eslint .",
     "coverage": "./node_modules/.bin/istanbul cover _mocha -- -R spec"
   },
   "author": {
@@ -36,6 +37,11 @@
     "chai": "^3.5.0",
     "chai-as-promised": "^5.2.0",
     "chai-fs": "^0.1.0",
-    "istanbul": "^0.4.2"
+    "gulp": "^3.9.1",
+    "gulp-eslint": "^2.0.0",
+    "gulp-mocha": "^2.2.0",
+    "istanbul": "^0.4.2",
+    "jshint": "^2.9.1",
+    "mocha": "^2.4.5"
   }
 }
