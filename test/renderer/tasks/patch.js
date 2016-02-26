@@ -33,6 +33,11 @@ describe('Task: patch', () => {
         patch(project).should.be.fulfilled.notify(done);
     });
 
+    it('should skip other assets thet were passed', (done) => {
+        project.assets = [{ type: 'image' }];
+        patch(project).should.be.fulfilled.notify(done);
+    });
+
     it('should raise error if project file was not found', (done) => {
         patch(project).should.be.rejected.notify(done);
     });
