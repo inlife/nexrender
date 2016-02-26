@@ -36,7 +36,7 @@
   "devDependencies": {
     "chai": "^3.5.0",
     "chai-as-promised": "^5.2.0",
-    "chai-fs": "^0.1.0",
+    "chai-fs": "git+https://github.com/zapatek/chai-fs.git",
     "gulp": "^3.9.1",
     "gulp-eslint": "^2.0.0",
     "gulp-mocha": "^2.2.0",
