@@ -9,12 +9,12 @@
   "scripts": {
     "test": "gulp test",
     "lint": "eslint .",
-    "coverage": "./node_modules/.bin/istanbul cover _mocha -- -R spec"
+    "coverage": "./node_modules/.bin/istanbul cover ./node_modules/.bin/_mocha -- -R spec"
   },
   "author": {
     "name": "Inlife",
     "email": "vladgritsenko@gmail.com",
-    "url": "http://github.com/inlife"
+    "url": "https://github.com/inlife"
   },
   "repository": "inlife/nexrender",
   "license": "MIT",

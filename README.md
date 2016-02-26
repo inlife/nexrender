@@ -9,7 +9,7 @@
 [![Build Status](https://travis-ci.org/Inlife/nexrender.svg?branch=master)](https://travis-ci.org/Inlife/nexrender)
 [![Test Coverage](https://codeclimate.com/github/Inlife/nexrender/badges/coverage.svg)](https://codeclimate.com/github/Inlife/nexrender/coverage)
 [![Code Climate](https://codeclimate.com/github/Inlife/nexrender/badges/gpa.svg)](https://codeclimate.com/github/Inlife/nexrender)
-[![License](http://img.shields.io/:license-mit-blue.svg)](http://doge.mit-license.org)
+[![License](http://img.shields.io/:license-MIT-blue.svg)](http://doge.mit-license.org)
 
 Automate your After Effects project creation and rendering routine. Create your own render network.
 

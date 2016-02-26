@@ -9,6 +9,8 @@ global:
 
 renderer:
   ☐ fix renaming error (conflict file with same name)
+  ☐ make renderer task loading inject-based and testable
+  ☐ get rid of env globals (process.env)
 
 
   long term:

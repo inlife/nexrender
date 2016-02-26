@@ -1,6 +1,7 @@
 'use strict';
 
-const api           = require('../api');
+// can be overrided in test
+let api             = require('../api');
 
 const setup         = require('./tasks/setup');
 const download      = require('./tasks/download');
@@ -12,7 +13,7 @@ const verify        = require('./tasks/verify');
 const actions       = require('./tasks/actions');
 const cleanup       = require('./tasks/cleanup');
 
-const API_REQUEST_INTERVAL = 15 * 60 * 1000 || process.env.API_REQUEST_INTERVAL; // 15 minutes
+const API_REQUEST_INTERVAL = process.env.API_REQUEST_INTERVAL || 15 * 60 * 1000; // 15 minutes
 
 /**
  * Apply tasks one by one
@@ -35,9 +36,9 @@ function applyTasks(project, resolve, reject) {
         .then(cleanup)
         .then((project) => {
 
-            console.log('----------------------------');
-            console.log(`[${project.uid}] project finished`);
-            console.log('----------------------------\n');
+            console.info('----------------------------');
+            console.info(`[${project.uid}] project finished`);
+            console.info('----------------------------\n');
 
             // project is finished
             project.finish().then(() => {
@@ -46,11 +47,11 @@ function applyTasks(project, resolve, reject) {
         })
         .catch((err) => {
 
-            console.log('--------------------------');
-            console.log(`[${project.uid}] project failed`);
-            console.log('--------------------------\n');
+            console.info('--------------------------');
+            console.info(`[${project.uid}] project failed`);
+            console.info('--------------------------\n');
 
-            console.log('Error message:', err.message || err);
+            console.info('Error message:', err.message || err);
 
             // project encountered an error
             project.failure(err).then(() => {
@@ -67,12 +68,12 @@ function applyTasks(project, resolve, reject) {
 function requestNextProject() {
     return new Promise((resolve, reject) => {
 
-        console.log('making request for projects...');
+        console.info('making request for projects...');
 
         // request list
         api.get().then((results) => {
 
-            console.log('looking for suitable projects...');
+            console.info('looking for suitable projects...');
 
             // if list empty - reject
             if (!results || results.length < 1) {
@@ -95,7 +96,7 @@ function requestNextProject() {
 }
 
 /**
- * Reuqests next project
+ * Requests next project
  * if project is found - starts rendering
  * after that restarts process again
  * but if project is not found - sets timeout
@@ -105,7 +106,7 @@ function startRecursion() {
     requestNextProject().then((project) => {
         startRender(project).then(startRecursion).catch(startRecursion)
     }).catch(() => {
-        console.log('request failed or no suitable projects found. retrying in:', API_REQUEST_INTERVAL, 'sec');
+        console.info('request failed or no suitable projects found. retrying in:', API_REQUEST_INTERVAL, 'msec');
         setTimeout(() => { startRecursion() }, API_REQUEST_INTERVAL);
     });
 }
@@ -115,9 +116,9 @@ function startRecursion() {
  * @param  {Object} opts Options object
  */
 function start(opts) {
-    console.log('=========[RENDERNODE]=========\n')
-    console.log('nexrender.renderer is starting\n');
-    console.log('------------------------------');
+    console.info('=========[RENDERNODE]=========\n')
+    console.info('nexrender.renderer is starting\n');
+    console.info('------------------------------');
 
     opts = opts || {};
 
@@ -128,9 +129,9 @@ function start(opts) {
     });
 
     // set global aerender path
-    process.env.AE_BINARY       = opts.aerender;
-    process.env.AE_MULTIFRAMES  = opts.multiframes  || false;
-    process.env.AE_MEMORY       = opts.memory       || undefined;
+    process.env.AE_BINARY       = opts.aerender     || '';
+    process.env.AE_MULTIFRAMES  = opts.multiframes  || '';
+    process.env.AE_MEMORY       = opts.memory       || '';
 
     // start quering
     startRecursion();
