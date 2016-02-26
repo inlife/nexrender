@@ -4,8 +4,12 @@ temp/
 results/
 coverage/
 
+# files
+*.log
+
 # env files
 .env
+.ccupload.sh
 
 # mac crap :D
 .DS_Store
