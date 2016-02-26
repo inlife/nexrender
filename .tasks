@@ -6,12 +6,20 @@ global:
     ☐ server
     ☐ renderer @high @started
 
+
 renderer:
+  ☐ fix renaming error (conflict file with same name)
+
+
+  long term:
   ☐ progress evaluation
   ☐ parallell rendering
+
+
   actions:
     ☐ youtube uploading
     ☐ email notifications
+
 
 server:
   ☐ security (key sharing)

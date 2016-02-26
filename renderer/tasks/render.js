@@ -1,7 +1,10 @@
 'use strict';
 
-const spawn = require('child_process').spawn;
-const path  = require('path');
+const child_process = require('child_process');
+const path          = require('path');
+
+// add ability to override
+let spawn = child_process.spawn;
 
 /**
  * This task creates rendering process
@@ -31,8 +34,7 @@ module.exports = function(project) {
 
                 // if mem_usage have wrong format
                 if (process.env.AE_MEMORY.indexOf(' ') === -1) {
-                    return reject(new Error('Memory setting must look like --mem=\"50 50\". \
-Details: https://helpx.adobe.com/after-effects/using/automated-rendering-network-rendering.html'));
+                    return reject( new Error('Wrong memory format') );
                 }
 
                 // split by space and prase int's
@@ -57,7 +59,7 @@ Details: https://helpx.adobe.com/after-effects/using/automated-rendering-network
                 params.push('-mp');
 
         }
-
+        
         // spawn process and begin rendering
         let ae = spawn(process.env.AE_BINARY, params);
 
