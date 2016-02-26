@@ -131,7 +131,7 @@ describe('Task: render', () => {
     });
 
     it('should set memory setting if its provided', (done) => {
-        process.env.AE_MEMORY = "25 100";
+        process.env.AE_MEMORY = '25 100';
         code = 0;
 
         render(project).should.be.fulfilled.then(() => {
@@ -146,7 +146,7 @@ describe('Task: render', () => {
     });
 
     it('should raise error if memory format is incorrect', (done) => {
-        process.env.AE_MEMORY = "50";
+        process.env.AE_MEMORY = '50';
         code = 0;
 
         render(project).should.be.rejected.then().should.notify(done);

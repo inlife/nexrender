@@ -42,7 +42,7 @@ class Controller {
 
         // set default data
         data.uid = data.uid || shortid();
-        data.state = data.state || "queued";
+        data.state = data.state || 'queued';
         data.createdAt = new Date;
         data.updatedAt = new Date;
 

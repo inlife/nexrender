@@ -76,7 +76,7 @@ class Project {
      */
     prepare() {
         return new Promise((resolve, reject) => {
-            this.state = "rendering";
+            this.state = 'rendering';
             this.save().then(() => {
                 resolve(this);
             })
@@ -89,7 +89,7 @@ class Project {
      */
     finish() {
         return new Promise((resolve, reject) => {
-            this.state = "finished";
+            this.state = 'finished';
             this.save().then(() => {
                 resolve(this);
             })
@@ -105,7 +105,7 @@ class Project {
         let errmsg = (err.message) ? err.message : err;
 
         return new Promise((resolve, reject) => {
-            this.state = "failure";
+            this.state = 'failure';
             this.errorMessage = errmsg; 
             this.save().then(() => {
                 resolve(this);
