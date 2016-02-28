@@ -7,7 +7,7 @@
 |
 <b><a href="#install">Install</a></b>
 |
-<b><a href="#usa">Use</a></b>
+<b><a href="#use">Use</a></b>
 |
 <b><a href="https://github.com/Inlife/nexrender/wiki">Wiki</a></b>
 |
