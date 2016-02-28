@@ -86,13 +86,13 @@ let wrapper = {
                     if (typeof data === 'string') data = JSON.parse(data);
 
                     // verify || notify about error
-                    return (err || res.statusCode != 200) ? reject(err || res.statusMessage) : resolve( new Project(data, wrapper) );
+                    return (err || res.statusCode !== 200) ? reject(err || res.statusMessage) : resolve( new Project(data, wrapper) );
                 });
             } else {
 
                 // return multiple
                 router.getAll((err, res, data) => {
-                    if (!res || res.statusCode != 200) return reject( new Error('Error occured during getting list of projects') );
+                    if (!res || res.statusCode !== 200) return reject( new Error('Error occured during getting list of projects') );
 
                     // read json
                     let results = []; if (typeof data === 'string') data = JSON.parse(data);
@@ -158,7 +158,7 @@ let wrapper = {
                 if (typeof data === 'string') data = JSON.parse(data);
 
                 // verify || notify about error
-                return (err || res.statusCode != 200) ? reject(err || res.statusMessage) : resolve(data);
+                return (err || res.statusCode !== 200) ? reject(err || res.statusMessage) : resolve(data);
             });;
         });
     }

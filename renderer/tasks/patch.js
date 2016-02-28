@@ -9,7 +9,7 @@ function getAllExpressions(data) {
 }
 
 function replacePath(src, dst) {
-    return src.replace( /(?:(?:[A-Z]\:|~){0,1}(?:\/|\\\\|\\)(?=[^\s\/]))(?:(?:[a-zA-Z\-\_\.\$\●\-]+(?:\/|\\\\|\\)))*/gm, dst);
+    return src.replace( /(?:(?:[A-Z]\:|~){0,1}(?:\/|\\\\|\\)(?=[^\s\/]))(?:(?:[a-zA-Z0-9\-\_\.\$\●\-]+(?:\/|\\\\|\\)))*/gm, dst);
 }
 
 function processTemplateFile(project, callback) {

@@ -5,8 +5,8 @@
         "es6": true
     },
     "rules": {
-        "eqeqeq": 0,
-        "curly": 2,
-        "quotes": [2, "single"]
+        "eqeqeq": 1,
+        "curly": 0,
+        "quotes": [1, "single"]
     }
 }

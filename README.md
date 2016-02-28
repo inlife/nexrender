@@ -1,6 +1,20 @@
 <p align="center">
-  <img src="https://cloud.githubusercontent.com/assets/2182108/13123763/8215afc6-d5c6-11e5-8462-039165c84e2f.png" />
+  <img src="https://cloud.githubusercontent.com/assets/2182108/13378772/f845ea52-de19-11e5-8f8d-cc1d1f1a2bf4.png" />
 </p>
+
+<p align="center">
+<b><a href="#overview">Overview</a></b>
+|
+<b><a href="#install">Install</a></b>
+|
+<b><a href="#usa">Use</a></b>
+|
+<b><a href="https://github.com/Inlife/nexrender/wiki">Wiki</a></b>
+|
+<b><a href="#support">Support</a></b>
+</p>
+
+<br>
 
 -------
 
@@ -11,29 +25,48 @@
 [![Code Climate](https://codeclimate.com/github/Inlife/nexrender/badges/gpa.svg)](https://codeclimate.com/github/Inlife/nexrender)
 [![License](http://img.shields.io/:license-MIT-blue.svg)](http://doge.mit-license.org)
 
+-------
+
 Automate your After Effects project creation and rendering routine. Create your own render network.
 
-## Purpose
-Create application, that can automatically create and render AE projects from templates, and managing rendering queue. It's can be useful for everyone out there, who have constant routine of creating big amount of very similar projects. 
+# Overview
+This project solves problem of full video production cycle *(creating, maintaining and releasing)* for Adobe After Effects oriented projects. The aim is to build easy-to-use tool for video content creators to make theirs work easier.
 
-### To understand what its really about
-I suggest you to read [WIKI](https://github.com/Inlife/nexrender/wiki).
+## What it does
+* It allows you to create your own **render network (render farm)**.
+* It allows you to create **personalized videos**.
+* It allows you to create **localized videos**.
+* It allows you to create **data driven videos**
+* It allows you to **plan and schedule** creation of video project, it's rendering and publishing.
 
-## Features
-- asset import
-- creating project from template
-- AE expressions support
-- automated rendering
-- multiple machines support
-- persistent database storage
-- api library
+## How it works
+* rendering: It uses Adobe After Effects's **aerender** command-line interface application.
+* compositing: It creates temporary folder, copies project and **replaces assets** with provided ones.
+* personalization: It uses AE's **expressions** paired with compositing *(noted above)*.
+* scheduling: It stores projects in **local database**.
+* network: It renders project per machine, and can be used to render **several projects simultaniously**.
+* farm: Can be used to render **single project on several machines** via Multi-Machine Sequence.
 
-## Use cases:
-- Create own render network (render farm)
-- Easy way to queue up projects
-- Automate creating similar projects with different assets and scripting
+## Why
+>#### Why this project was created.
 
-## Installation
+I was managing youtube channel, where every week i was posting new music mix video. This video contained background image (was changing every new video), audio track (changing, obviously) and some other components that were static. 
+
+I was fuckn tired of creating nearly same videos over and over again, so i looked up online and found that thing: [http://dataclay.com/](http://dataclay.com/). It was cool, but for non-profit oriented project, it was too pricy.
+
+Then, in a few days of thinking, **nexrender** was born :D
+
+## Alternatives
+There not so many alternative solutions to **nexrender**. As far i can tell only Datalcay's [Templater](http://dataclay.com/) bot edition includes such features. But, obviously, **nexrender** lacks many powerfull gui/user oriented features that templater have.
+Anyways, what **nexrender** do have is a very particular set of skills: 
+
+* it's free
+* it's open source
+* it does not require you to use gui (you know, cli...automation'n'stuff)
+* it does [not require you to have licensed](https://helpx.adobe.com/after-effects/using/automated-rendering-network-rendering.html#network_rendering_with_watch_folders_and_render_engines) Adobe After Effects on every rendering machine
+
+
+# Install
 Install globally to use as **cli**:
 
 ```sh
@@ -45,6 +78,9 @@ Install locally to use programmaticaly, or as **api**:
 ```sh
 $ npm install nexrender
 ```
+
+# Use
+There are 2 main ways to use this tool. First one: to use as a render node (the thing that will pull projects and render them), and the second one: to use as a api server (the thing taht will store projects inside, and give them to render nodes). See [wiki](https://github.com/Inlife/nexrender/wiki) for details.
 
 ## Usage (CLI)
 To start [**api server**:](https://github.com/Inlife/nexrender/wiki/API-server)
@@ -102,6 +138,11 @@ api.create({
 });
 ```
 
+# Support
+For more information, check out [Wiki](https://github.com/Inlife/nexrender/wiki)
+<br>
+Also you are free to ask me questions -> open an issue.
+
 ## Plans
 - cover code with tests
 - add render progress evaluation
@@ -109,8 +150,11 @@ api.create({
 - create plugin for youtube uploading
 - create plugin for email notifications
 - add feature of parallel rendering
+- add client interface to manage projects
 - test on more configurations
 
-## [Help](https://github.com/Inlife/nexrender/wiki)
+## Contribution
+Follow [this link](CONTRIBUTION.md).
 
-## [License](LICENSE)
+## License
+The project is licensed under the [MIT license](LICENSE).

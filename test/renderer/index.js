@@ -47,7 +47,7 @@ describe('Testing renderer', () => {
             });
         });
 
-        describe("#applyTasks()", () => {
+        describe('#applyTasks()', () => {
 
             it('should be rejected if task returened error', (done) => {
                 let project = {

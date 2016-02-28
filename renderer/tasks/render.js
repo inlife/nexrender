@@ -34,12 +34,20 @@ module.exports = function(project) {
                 params.push('-OMtemplate', project.settings.outputModule);
             }
 
+            if (project.settings.renderSettings) {
+                params.push('-RStemplate', project.settings.renderSettings);
+            }
+
             if (project.settings.startFrame) {
                 params.push('-s', project.settings.startFrame);
             }
 
             if (project.settings.endFrame) {
                 params.push('-e', project.settings.endFrame);
+            }
+
+            if (project.settings.incrementFrame) {
+                params.push('-i', project.settings.incrementFrame);
             }
         }
 
@@ -78,7 +86,7 @@ module.exports = function(project) {
 
         // on finish (code 0 - success, other - error)
         ae.on('close', (code) => {
-            return (code != 0) ? reject( aedata.join('') ) : resolve( project );
+            return (code !== 0) ? reject( aedata.join('') ) : resolve( project );
         });
     });
 };

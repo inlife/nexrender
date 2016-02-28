@@ -98,8 +98,10 @@ describe('Task: render', () => {
         code = 0;
         project.settings = {
             outputModule: 'testformat',
+            renderSettings: 'testtemplate',
             startFrame: 231,
-            endFrame: 12312312
+            endFrame: 12312312,
+            incrementFrame: 1
         }
 
         render(project).should.be.fulfilled.then(() => {
@@ -109,8 +111,10 @@ describe('Task: render', () => {
                 '-project', path.join( process.cwd(), 'test', 'work' ),
                 '-output',  path.join( process.cwd(), 'test', 'result.mp4' ),
                 '-OMtemplate', 'testformat',
+                '-RStemplate', 'testtemplate',
                 '-s', 231,
-                '-e', 12312312
+                '-e', 12312312,
+                '-i', 1,
             ]);
         }).should.notify(done);
     });

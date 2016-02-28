@@ -109,14 +109,14 @@ describe('Task: patch', () => {
             let pathStrings = [
                 '/final.js',
                 '/Users/final.js',
-                '/Users/sub/final.js',
-                '/Users/sub/directory/final.js',
+                '/Users/123/su123b/final.js',
+                '/Users/sub/d123irectory/final.js',
                 '/Users/sub-directory/with_symbols/final.js',
                 '~/tilda/starts_test/final.js',
 
                 'C:\\final.js',
                 'C:\\sub\\final.js',
-                'C:\\sub\\directory\\final.js',
+                'C:\\sub\\123\\directory\\final.js',
                 'D:\\sub-directory\\with_symbols\\final.js'
             ];
 
@@ -138,7 +138,7 @@ describe('Task: patch', () => {
             let data = ['<?xml',
                 `<expr bdata="${expr1}" />`,
                 `long string many things<expr bdata="${expr2}"/> other things`,
-                `just new line`,
+                'just new line',
                 `long string many things again epxr 1<expr bdata="${expr1}"/> things`,
             ];
 
