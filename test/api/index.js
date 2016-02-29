@@ -139,9 +139,9 @@ describe('Testing api', () => {
             api.get().should.be.rejected.notify(done);
         });
 
-        it('should ', (done) => {
-            api.__set__('wrapper.registered', true);
-            //apig.et
-        });
+        // it('should ', (done) => {
+        //     api.__set__('wrapper.registered', true);
+        //     //apig.et
+        // });
     });
 });
