@@ -148,13 +148,13 @@ describe('Task: patch', () => {
                 let data = fs.readFileSync( path.join('test', 'proj.aepx') ).toString('utf8');
                 let expressions = patch.__get__('getAllExpressions')(data);
 
+                let mypath = path.join( process.cwd(), project.workpath, path.sep ).replace(/\\/g, '\\\\');
+
                 for (let expr of expressions) {
                     let hex = expr.split('"')[1];
                     let dec = new Buffer(hex, 'hex').toString('utf8');
 
-                    dec.should.be.eql(bexpr.replace('[mypath]', 
-                        path.join( process.cwd(), project.workpath, path.sep )
-                    ));
+                    dec.should.be.eql(bexpr.replace('[mypath]', mypath));
                 }
             }).should.notify(done);
         });
