@@ -32,12 +32,12 @@ Automate your After Effects project creation and rendering routine. Create your 
 # Overview
 This project solves problem of full video production cycle *(creating, maintaining and releasing)* for Adobe After Effects oriented projects. The aim is to build easy-to-use tool for video content creators to make theirs work easier.
 
-## What it does
-* It allows you to create your own **render network (render farm)**.
-* It allows you to create **personalized videos**.
-* It allows you to create **localized videos**.
-* It allows you to create **data driven videos**
-* It allows you to **plan and schedule** creation of video project, it's rendering and publishing.
+## It allows you to
+* create your own **render network (render farm)**.
+* create **personalized videos**.
+* create **localized videos**.
+* create **data driven videos**
+* **plan and schedule** creation of video project, it's rendering and publishing.
 
 ## How it works
 * rendering: It uses Adobe After Effects's **aerender** command-line interface application.
