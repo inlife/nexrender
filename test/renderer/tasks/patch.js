@@ -89,14 +89,14 @@ describe('Task: patch', () => {
                 '/final.js',
                 '/Users/final.js',
                 '/Users/sub/final.js',
-                '/Users/sub/directory/final.js',
+                '/Users/sub/dir ectory/final.js',
                 '/Users/sub-directory/with_symbols/final.js',
                 '~/tilda/starts_test/final.js',
 
                 'C:\\final.js',
                 'C:\\sub\\final.js',
                 'C:\\sub\\directory\\final.js',
-                'D:\\sub-directory\\with_symbols\\final.js'
+                'D:\\sub-directory\\with _symbols\\final.js'
             ];
 
             for (let string of pathStrings) {
