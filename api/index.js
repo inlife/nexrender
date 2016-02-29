@@ -1,8 +1,10 @@
 'use strict';
 
 const assert    = require('assert');
-const router    = require('./routers/project');
-const Project   = require('./models/project');
+
+// enable overriding
+let router    = require('./routers/project');
+let Project   = require('./models/project');
 
 let DEFAULT_API_HOST = 'localhost';
 let DEFAULT_API_PORT = 3000;
@@ -20,7 +22,7 @@ let wrapper = {
         let host = opts.host || DEFAULT_API_HOST;
         let port = opts.port || DEFAULT_API_PORT;
 
-        this.registered = router.bind(host, port);
+        wrapper.registered = router.bind(host, port);
     },
 
     /**
@@ -29,26 +31,26 @@ let wrapper = {
      * @return {Promise} 
      */
     create: (data) => {
-        if (!this.registered) return console.error('[error] call config method first');
-
-        // setup default params
-        data = data || {};
-
-        // check for emptiness plain values
-        try {
-            assert( data.template );
-            assert( data.composition );
-        } catch (err) {
-            return console.error('[error] provide project properties');
-        } 
-
-        // and arrays
-        data.assets      = data.assets      || [];
-        data.settings    = data.settings    || [];
-        data.actions     = data.actions     || [];
 
         // return promise
         return new Promise((resolve, reject) => {
+            if (!wrapper.registered) return reject(new Error('[error] call config method first'));
+
+            // setup default params
+            data = data || {};
+
+            // check for emptiness plain values
+            try {
+                assert( data.template );
+                assert( data.composition );
+            } catch (err) {
+                return reject(new Error('[error] provide project properties'));
+            } 
+
+            // and arrays
+            data.assets      = data.assets      || [];
+            data.settings    = data.settings    || {};
+            data.actions     = data.actions     || [];
 
             // request creation
             router.create(data, (err, res, data) => {
@@ -73,10 +75,9 @@ let wrapper = {
      * @return {Promise}
      */
     get: (id) => {
-        if (!this.registered) return console.error('[error] call config method first');
-
         // return promise
         return new Promise((resolve, reject) => {
+            if (!wrapper.registered) return reject(new Error('[error] call config method first'));
 
             // if id provided
             if (id) {
@@ -114,8 +115,6 @@ let wrapper = {
      * @return {Promise}
      */
     update: (object) => {
-        if (!this.registered) return console.error('[error] call config method first');
-        
         let uobj = object;
 
         if (object instanceof Project) {
@@ -123,6 +122,8 @@ let wrapper = {
         }
 
         return new Promise((resolve, reject) => {
+            if (!wrapper.registered) return reject(new Error('[error] call config method first'));
+
             router.update(object.uid, uobj, (err, res, data) => {
 
                 // parse json
@@ -149,9 +150,9 @@ let wrapper = {
      * @return {Promise}
      */
     remove: (id) => {
-        if (!this.registered) return console.error('[error] call config method first');
-
         return new Promise((resolve, reject) => {
+            if (!wrapper.registered) return reject(new Error('[error] call config method first'));
+
             router.remove(id, (err, res, data) => {
 
                 // parse json
