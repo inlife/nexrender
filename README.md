@@ -154,7 +154,7 @@ Also you are free to ask me questions -> open an issue.
 - test on more configurations
 
 ## Contribution
-Follow [this link](CONTRIBUTION.md).
+Follow [this link](CONTRIBUTING.md).
 
 ## License
 The project is licensed under the [MIT license](LICENSE).
