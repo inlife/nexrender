@@ -21,11 +21,6 @@ cli.parse({
     'port':         ['p',   'Listen on port',               'number',   3000]
 });
 
-// Usage: 
-// nexrender --renderer --host=localhost:3000 --aerender='/Applications/Adobe After Effects CC 2015/aerender'
-//           -rh localhost:3000 --aerender='/Applications/Adobe After Effects CC 2015/aerender'
-// nexrender --api-server --port=3000
-//           -sp 3000
 
 cli.main(function(args, options) {
 
