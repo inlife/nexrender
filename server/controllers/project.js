@@ -2,7 +2,6 @@
 
 const shortid   = require('shortid');
 const low       = require('lowdb');
-const storage   = require('lowdb/file-sync');
 
 const SERVER_DB_PATH = process.env.SERVER_DB_PATH || 'db.json';
 
@@ -18,7 +17,7 @@ class Controller {
         initialized = true;
 
         // load file sync database
-        this.db = low(SERVER_DB_PATH, { storage })('projects');
+        this.db = low(SERVER_DB_PATH)('projects');
 
         // bind useful findAll method
         this.db.findAll = function(query) {
