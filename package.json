@@ -1,6 +1,6 @@
 {
   "name": "nexrender",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "description": "Automate your After Effects project creation and rendering routine.",
   "main": "index.js",
   "bin": {
@@ -19,14 +19,14 @@
   "repository": "inlife/nexrender",
   "license": "MIT",
   "dependencies": {
-    "async": "^1.5.2",
+    "async": "^2.0.0-rc.6",
     "body-parser": "^1.15.0",
     "cli": "^0.11.1",
-    "download": "^4.4.3",
+    "download": "^5.0.2",
     "express": "^4.13.4",
-    "fs-extra": "^0.26.5",
+    "fs-extra": "^0.30.0",
     "jimp": "^0.2.21",
-    "lowdb": "^0.12.3",
+    "lowdb": "^0.13.1",
     "mkdirp": "^0.5.1",
     "morgan": "^1.6.1",
     "node-dir": "^0.1.11",
