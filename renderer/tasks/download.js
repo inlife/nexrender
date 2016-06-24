@@ -1,6 +1,6 @@
 'use strict';
 
-const Download = require('download');
+const download = require('download');
 
 /**
  * This task is used to download every asset in the "project.asset"
@@ -10,25 +10,22 @@ module.exports = function(project) {
 
         console.info(`[${project.uid}] downloading assets...`);
 
-        // create downloader
-        let downloader = new Download();
-
-        // set download path
-        downloader.dest(project.workpath);
-
-        // iterate over each asset
+        // iterate over each asset to check for custom template
         for (let asset of project.assets) {
-            downloader.get(asset.src);
-
-            // check for custom project
+            // check for custom template
             if (asset.type === 'project') {
                 project.template = asset.name;
             }
         }
-        
-        // run download and return
-        downloader.run((err, files) => {
-            return (err) ? reject(err) : resolve(project);
+
+        // iterate over each asset and download it
+        Promise.all(project.assets.map(
+                asset => download(asset.src, project.workpath)
+        )).then(() => {
+            return resolve(project);
+        }).catch((err) => {
+            return reject(err);
         });
+
     });
 };

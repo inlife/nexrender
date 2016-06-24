@@ -34,8 +34,8 @@ describe('Task: download', () => {
 
     before((done) => {
         fs.mkdirSync( path.join('test', 'public') );
-        fs.writeFile( path.join('test', 'public', 'proj.aep'), 'dummy');
-        fs.writeFile( path.join('test', 'public', 'image.jpg'), 'dummy');
+        fs.writeFileSync( path.join('test', 'public', 'proj.aep'), 'dummy');
+        fs.writeFileSync( path.join('test', 'public', 'image.jpg'), 'dummy');
 
         app.use( express.static( path.join('test', 'public') ));
         server = app.listen(3322, done);
@@ -50,7 +50,7 @@ describe('Task: download', () => {
         download(project).then((proj) => {
             project = proj; done();
         }).catch((err) => {
-            cperror = err; 
+            cperror = err;
             setTimeout(done, 100);
         });
     });
