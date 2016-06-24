@@ -35,4 +35,9 @@ describe('Task: verify', () => {
         fs.writeFileSync( path.join('test', 'result'), '');
         verify(project).should.be.rejected.notify(done);
     });
+
+    it('should skip validation if project is jpeg sequence', (done) => {
+        project.settings = { outputExt: 'jpeg' };
+        verify(project).should.be.fulfilled.notify(done);
+    });
 });

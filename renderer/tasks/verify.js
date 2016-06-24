@@ -30,6 +30,17 @@ module.exports = function(project) {
 
         console.info(`[${project.uid}] verifying project...`);
 
+        //TEMP: workaround for JPEG sequences mode
+        if (project.settings && 
+            project.settings.outputExt && 
+            ['jpeg', 'jpg'].indexOf( 
+                project.settings.outputExt.toLowerCase() 
+            ) !== -1
+        ) {
+            console.info(`[${project.uid}] verifying: found jpeg sequence...`);
+            return resolve(project);
+        }
+
         // read stats for file
         fs.stat( path.join( 
             project.workpath, 
