@@ -17,14 +17,16 @@ class Controller {
         initialized = true;
 
         // load file sync database
-        this.db = low(SERVER_DB_PATH)('projects');
+        var db = low(SERVER_DB_PATH);
+            db.defaults({ projects: [] }).value();
+        this.db = db.get('projects');
 
         // bind useful findAll method
         this.db.findAll = function(query) {
             var query = query || {};
 
             if (query.uid) {
-                return this.find( query );
+                return this.find( query ).value();
             }
 
             return this.chain().filter( query ).value().filter( n => n !== null );
@@ -46,7 +48,7 @@ class Controller {
         data.updatedAt = new Date;
 
         // save data
-        this.db.push(data);
+        this.db.push(data).value();
 
         // return promise and get last added project
         return new Promise((resolve, reject) => {
@@ -64,7 +66,7 @@ class Controller {
         
         // get project by id, or get all items if id not provided
         return new Promise((resolve, reject) => {
-            resolve( this.db.findAll( id ? { uid: id } : {} ) || reject( {} ) );
+            resolve( this.db.findAll( id ? { uid: id } : {} ) || reject( {} ).value() );
         });
     }
 
@@ -96,7 +98,7 @@ class Controller {
         
         // remove project by id
         return new Promise((resolve, reject) => {
-            resolve( this.db.remove({ uid : id }) );
+            resolve( this.db.remove({ uid : id }).value() );
         });
     }
 }
