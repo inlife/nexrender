@@ -33,19 +33,21 @@ function processTemplateFile(project, callback) {
         // search for expressions
         let expressions = getAllExpressions(data);
 
-        for (let expr of expressions) {
-            // extract hex from xml tag and decode it
-            let hex = expr.split('"')[1];
-            let dec = new Buffer(hex, 'hex').toString('utf8');
-
-            // do patch and encode back to hex
-            // using regex file path pattern
-            let enc = new Buffer( replacePath( dec, replaceToPath ) ).toString('hex');
-
-            // replace patched hex
-            data = data.replace( hex, enc );
+        if (expressions != null) {
+            for (let expr of expressions) {
+                // extract hex from xml tag and decode it
+                let hex = expr.split('"')[1];
+                let dec = new Buffer(hex, 'hex').toString('utf8');
+    
+                // do patch and encode back to hex
+                // using regex file path pattern
+                let enc = new Buffer( replacePath( dec, replaceToPath ) ).toString('hex');
+    
+                // replace patched hex
+                data = data.replace( hex, enc );
+            }
         }
-
+        
         // save result
         fs.writeFile(projectName, data, callback);
     });
