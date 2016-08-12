@@ -100,12 +100,12 @@ describe('Testing renderer', () => {
 
             it('should reject if task returned error', (done) => {
                 result = false;
-                renderer.render({}).should.be.rejected.notify(done);
+                renderer.__get__('startRender')({}).should.be.rejected.notify(done);
             });
 
             it('should fulfil if task returned error', (done) => {
                 result = true;
-                renderer.render({}).should.be.fulfilled.notify(done);
+                renderer.__get__('startRender')({}).should.be.fulfilled.notify(done);
             });
         });
 
