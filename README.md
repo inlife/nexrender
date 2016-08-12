@@ -138,6 +138,46 @@ api.create({
 });
 ```
 
+# Usage (without API)
+Creating and rendering project on local machine without an API server:
+
+```js
+'use strict';
+
+const Project   = require('nexrender/api/models/project');
+const renderer  = require('nexrender/renderer');
+
+let project = new Project({
+    'template': 'MyTemplate.aepx',
+    'composition': 'MainComp',
+    'settings': {
+        'outputModule': 'JPEG',
+        'outputExt': 'jpg'
+    },
+    'assets': [
+        {
+            'type': 'project',
+            'src': 'http://127.0.0.1:31999/MyTemplate.aepx.aepx',
+            'name': 'MyTemplate.aepx'
+        }, {
+            'type': 'image',
+            'src': 'http://127.0.0.1:31999/HotAirBalloon.png',
+            'name': 'HotAirBalloon.png'
+        }, {
+            'type': 'script',
+            'src': 'http://127.0.0.1:31999/test.js',
+            'name': 'test.js'
+        }
+    ]
+});
+
+renderer.render('/Applications/Adobe After Effects CC 2015.3/aerender', project);
+
+```
+#### **Note:** For now you need to start local/remote web-server that will be handling asset distribution. 
+____
+
+
 # Support
 For more information, check out [Wiki](https://github.com/Inlife/nexrender/wiki)
 <br>
@@ -147,8 +187,6 @@ Also you are free to ask me questions -> open an issue.
 - cover code with tests
 - add render progress evaluation
 - add security to rest api layer
-- create plugin for youtube uploading
-- create plugin for email notifications
 - add feature of parallel rendering
 - add client interface to manage projects
 - test on more configurations

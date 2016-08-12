@@ -1,5 +1,10 @@
 # Changelog
 
+## v0.4.4 - v0.4.7
+ * JPEG sequence rendering
+ * updated dependencies
+ * removed actions from renderer
+ * project model can be now used without api
 
 ## v0.4
 Testing era
