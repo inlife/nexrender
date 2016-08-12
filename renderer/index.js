@@ -13,6 +13,8 @@ const verify        = require('./tasks/verify');
 const actions       = require('./tasks/actions');
 const cleanup       = require('./tasks/cleanup');
 
+const Project       = require('../api/models/project');
+
 const API_REQUEST_INTERVAL = process.env.API_REQUEST_INTERVAL || 15 * 60 * 1000; // 15 minutes
 
 /**
@@ -150,5 +152,24 @@ function startRender(project) {
 
 module.exports = {
     start: start,
-    render: startRender
+    render: (binary, opts = null, project = null) => {
+        if (typeof binary !== 'string') {
+            throw new Error('nexrender.renderer.render: first argument must be a string, pointing to "aerender" binary');
+        }
+
+        if (!project && opts instanceof Project) {
+            project = opts;
+            opts    = {};
+        }
+
+        if (!project && !opts instanceof Project) {
+            throw new Error('nexrender.renderer.render: second optional argument is options, third required is a Project ');
+        }
+
+        process.env.AE_BINARY       = binary            || '';
+        process.env.AE_MULTIFRAMES  = opts.multiframes  || '';
+        process.env.AE_MEMORY       = opts.memory       || '';
+
+        startRender(project);
+    }
 };
