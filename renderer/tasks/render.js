@@ -20,7 +20,19 @@ module.exports = function(project) {
 
         let outext = (project.settings && project.settings.outputExt) ? project.settings.outputExt : 'mp4';
 
+        // set default project result file name
         project.resultname = 'result' + '.' + outext;
+
+        // NOTE: for still (jpg) image sequence frame filename will be changed to result_[#####].jpg
+        // NOTE: if you want to change this field, also goto actions/copy-to-results.js, and apply changes there too
+        if (project.settings && 
+            project.settings.outputExt && 
+            ['jpeg', 'jpg'].indexOf( 
+                project.settings.outputExt.toLowerCase() 
+            ) !== -1
+        ) {
+            project.resultname = 'result_[#####]' + '.' + outext;
+        }
 
         // setup parameters
         params.push('-comp',        project.composition);

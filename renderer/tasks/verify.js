@@ -46,7 +46,11 @@ module.exports = function(project) {
             project.workpath, 
             project.resultname 
         ), (err, stats) => {
-            if (err || !stats || stats.size < 1) {
+            if (err) {
+                // if file doesn't exists
+                return reject(err);
+            } else if (!stats || stats.size < 1) {
+                // if file is empty
                 getLogs(project, (logs) => {
                     return reject(logs);
                 })
