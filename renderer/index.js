@@ -25,6 +25,9 @@ const API_REQUEST_INTERVAL = process.env.API_REQUEST_INTERVAL || 15 * 60 * 1000;
  * @param  {Function} reject 
  */
 function applyTasks(project, resolve, reject) {
+
+    // TODO: make this ugly motherfucker
+    // down below look nicer :D
     project
         .prepare()
         .then(setup)

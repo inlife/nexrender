@@ -1,64 +1,89 @@
 'use strict';
 
-const path  = require('path');
-const fs    = require('fs-extra');
-const dir   = require('node-dir');
-const async = require('async');
+const mkdirp    = require('mkdirp');
+const path      = require('path');
+const fs        = require('fs-extra');
+const async     = require('async');
 
-// action storage
-let actions = {};
-
-// register actions
-(function() {
-    // set actions dir
-    let actionsdir = path.join(__dirname, '..', 'actions');
-
-    // read every file and load it into actions storage
-    let files = fs.readdirSync(actionsdir);
-
-    for (let filename of files) {
-        if (filename.indexOf('.js') !== -1) {
-            let action = require( path.join(actionsdir, filename) );
-
-            // push plugin to storage
-            actions[action.name] = action;
-        }
-    }
-
-})();
+const RESULTS_DIR = process.env.RESULTS_DIR || 'results';
 
 /**
- * run post render actions from actions folder
- * upload, copy to local folder, email, etc.
+ * actions is a backward compability term
+ * currently only means a synomym for 
+ * "moving files from temp dir to results dir"
  */
 module.exports = function(project) {
     return new Promise((resolve, reject) => {
 
-        console.info(`[${project.uid}] applying actions...`);
+        let src = path.join( project.workpath, project.resultname );
+        let dst = path.join( RESULTS_DIR, project.uid + '_' + project.resultname );
 
-        // initialize empty call-queue array
-        let calls = [];
+        // create, if it does not exists
+        mkdirp.sync(RESULTS_DIR);
 
-        // call copy to results plugin by default
-        if (actions.hasOwnProperty('copy-to-results')) {
-            calls.push((callback) => {
-                actions['copy-to-results'].plugin(project, {}, callback);
+        //TEMP: workaround for JPEG sequences mode
+        if (project.settings && 
+            project.settings.outputExt && 
+            ['jpeg', 'jpg'].indexOf( 
+                project.settings.outputExt.toLowerCase() 
+            ) !== -1
+        ) {
+            console.info(`[${project.uid}] applying actions: found jpeg sequence...`);
+            
+            // scan folder
+            fs.readdir(project.workpath, (err, files) => {
+                if (err) return callback(err);
+
+                // initialize empty call-queue array
+                let calls = [];
+
+                // resulting file sequrence filenames
+                // NOTE: if you want to change this field, also goto tasks/render.js, and apply changes there too
+                let exprs = new RegExp('result_[0-9]{5}');
+
+                // override destination path for images
+                let dst = path.join( RESULTS_DIR, project.uid );
+                
+                // create subdir for storing images in results folder for overrided path
+                mkdirp.sync(dst);
+
+                // look for still image sequence results
+                for (let file of files) {
+                    if (!exprs.test(file)) continue;
+
+                    let local_src = path.join( project.workpath, file );
+                    let local_dst = path.join( dst, file );
+
+                    // add each move-file request to call queue
+                    calls.push((callback) => {
+                        
+                        // if file exists -> remove it
+                        fs.unlink(local_dst, () => {
+                            //move file from src to dst
+                            fs.move(local_src, local_dst, callback);
+                        })
+                    });
+                }
+
+                // start 'em in parallel
+                async.parallel(calls, (err, results) => {
+                    return (err) ? reject(err) : resolve(project);
+                });
             });
+
+            return;
         }
 
-        // iterate over activated actions for project
-        for (let action of project.actions) {
-            if (!actions.hasOwnProperty(action.name)) continue;
+        // remove file if exists 
+        fs.unlink(dst, (err) => {
+            if (err) return reject(err);
 
-            // and call them
-            calls.push((callback) => {
-                actions[action.name].plugin(project, action, callback);
+            console.info(`[${project.uid}] applying actions: moving result file...`);
+
+            // start file moving
+            fs.move(src, dst, (err) => {
+                return (err) ? reject(err) : resolve(project);
             });
-        }
-
-        // run rename(move) callbacks in parallel
-        async.parallel(calls, (err, results) => {
-            return (err) ? reject(err) : resolve(project);
-        });
+        })
     });
 };
