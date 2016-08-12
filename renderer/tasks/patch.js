@@ -8,6 +8,16 @@ function getAllExpressions(data) {
     return data.match(/\<expr bdata=\"([a-f0-9]+)\"\s*\/\>/gi);
 }
 
+/**
+ * This function tries to find and replace path to a data/script file
+ * via regular expressions
+ * It will match paths looking something like that:
+ *     "/Users/Name/Projects/MyProject/"
+ *     "C:\\Projects\\MyNewProject\\"
+ *     "/usr/var/tmp/projects/123/"
+ * 
+ * And will replace them to string `dst`
+ */
 function replacePath(src, dst) {
     return src.replace( /(?:(?:[A-Z]\:|~){0,1}(?:\/|\\\\|\\)(?=[^\s\/]))(?:(?:[\ a-zA-Z0-9\-\_\.\$\●\-]+(?:\/|\\\\|\\)))*/gm, dst);
 }
@@ -33,8 +43,12 @@ function processTemplateFile(project, callback) {
         // search for expressions
         let expressions = getAllExpressions(data);
 
-        if (expressions != null) {
+        // check for existing expressions
+        if (expressions !== null) {
+
+            // then iterate over them
             for (let expr of expressions) {
+
                 // extract hex from xml tag and decode it
                 let hex = expr.split('"')[1];
                 let dec = new Buffer(hex, 'hex').toString('utf8');
