@@ -76,8 +76,6 @@ module.exports = function(project) {
 
         // remove file if exists 
         fs.unlink(dst, (err) => {
-            if (err) return reject(err);
-
             console.info(`[${project.uid}] applying actions: moving result file...`);
 
             // start file moving
