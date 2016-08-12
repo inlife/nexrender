@@ -135,7 +135,7 @@ class Project {
      * @return {Promise}
      */
     save() {
-        return (this.api !== null) ? this.api.update(this) : true;
+        return (this.api !== null) ? this.api.update(this) : new Promise(r => r());
     }
 
     /**
@@ -143,7 +143,7 @@ class Project {
      * @return {Promise}
      */
     remove() {
-        return (this.api !== null) ? this.api.remove(this) : true;
+        return (this.api !== null) ? this.api.remove(this) : new Promise(r => r());
     }
 
     /**
