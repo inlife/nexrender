@@ -152,7 +152,7 @@ function startRender(project) {
 
 module.exports = {
     start: start,
-    render: (binary, opts = null, project = null) => {
+    render: (binary, opts, project) => {
         if (typeof binary !== 'string') {
             throw new Error('nexrender.renderer.render: first argument must be a string, pointing to "aerender" binary');
         }
