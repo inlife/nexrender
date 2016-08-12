@@ -68,7 +68,7 @@ class Project {
         return this;
     }
 
-    // RENDERER ONLY SIZE METHODS
+    // RENDERER ONLY SIDE METHODS
 
     /**
      * Sets state of project to 'rendering' (render started)
@@ -120,6 +120,8 @@ class Project {
      * to check project state on server
      */
     onTick() {
+        if (this.api === null) return;
+        
         this.api.get(this.uid).then((project) => {
             if (this.state !== project.state) {
                 this.deserialize( project );
@@ -133,7 +135,7 @@ class Project {
      * @return {Promise}
      */
     save() {
-        return this.api.update(this);
+        return (this.api !== null) ? this.api.update(this) : true;
     }
 
     /**
@@ -141,7 +143,7 @@ class Project {
      * @return {Promise}
      */
     remove() {
-        return this.api.remove(this.uid);
+        return (this.api !== null) ? this.api.remove(this) : true;
     }
 
     /**
@@ -149,9 +151,10 @@ class Project {
      * @param  {String}   method   Event name
      * @param  {Function} callback Event handelr
      * @return {[type]}            [description]
+     * TODO: get rid of setInterval memory leaking
      */
     on(method, callback) {
-        if (!this.ticker) {
+        if (!this.ticker && this.api !== null) {
             this.ticker = setInterval(() => { this.onTick(); }, TICKER_INTERVAL);
         }
 
