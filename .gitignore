@@ -9,7 +9,6 @@ coverage/
 
 # env files
 .env
-.ccupload.sh
 
 # mac crap :D
 .DS_Store
