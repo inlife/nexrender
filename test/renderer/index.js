@@ -28,12 +28,8 @@ describe('Testing renderer', () => {
         require('./tasks/patch');
         require('./tasks/render');
         require('./tasks/verify');
-        // require('./tasks/actions');
+        require('./tasks/actions');
         require('./tasks/cleanup');
-    });
-
-    describe('Testing actions', () => {
-        //TODO
     });
 
     describe('Testing renderer methods', () => {

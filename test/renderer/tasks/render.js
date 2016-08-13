@@ -165,4 +165,13 @@ describe('Task: render', () => {
             data.should.be.equal(ldata + lerrors);
         }).should.notify(done);
     });
+
+    it('should set special name for jpeg sequence', (done) => {
+        code = 0;
+        project.settings = { outputExt: 'jpg' };
+
+        render(project).should.be.fulfilled.then((prj) => {
+            prj.should.have.property('resultname').and.be.eql('result_[#####].jpg');
+        }).should.notify(done);
+    });
 });
