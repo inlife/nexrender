@@ -19,7 +19,7 @@ function getAllExpressions(data) {
  * And will replace them to string `dst`
  */
 function replacePath(src, dst) {
-    return src.replace( /(?:(?:[A-Z]\:|~){0,1}(?:\/|\\\\|\\)(?=[^\s\/]))(?:(?:[\ a-zA-Z0-9+\-\_\.\$\●\-]+(?:\/|\\\\|\\)))*/gm, dst);
+    return src.replace( /(?:(?:[A-Z]\:|~){0,1}(?:\/|\\\\|\\)(?=[^\s\/]))(?:(?:[\ a-zA-Z0-9\+\-\_\.\$\●\-]+(?:\/|\\\\|\\)))*/gm, dst);
 }
 
 function processTemplateFile(project, callback) {
