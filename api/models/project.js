@@ -68,19 +68,32 @@ class Project {
         return this;
     }
 
-    // RENDERER ONLY SIDE METHODS
+    /**
+     * Sets project state
+     * @private
+     * @param {String} state
+     */
+    setStateAndSave(err, state) {
+        return new Promise((resolve, reject) => {
+            // chage state
+            this.state = state;
+
+            // call inner method (for project entity created on renderer side)
+            this.callMethod( project.state );
+
+            // save entity and resolve promise
+            this.save().then(() => {
+                resolve(this);
+            });
+        });
+    }
 
     /**
      * Sets state of project to 'rendering' (render started)
      * @return {Promise}
      */
     prepare() {
-        return new Promise((resolve, reject) => {
-            this.state = 'rendering';
-            this.save().then(() => {
-                resolve(this);
-            })
-        });
+        return this.setStateAndSave('rendering');
     }
 
     /**
@@ -88,12 +101,7 @@ class Project {
      * @return {Promise}
      */
     finish() {
-        return new Promise((resolve, reject) => {
-            this.state = 'finished';
-            this.save().then(() => {
-                resolve(this);
-            })
-        });
+        return this.setStateAndSave('finished');
     }
 
     /**
@@ -102,18 +110,9 @@ class Project {
      * @return {Promise}
      */
     failure(err) {
-        let errmsg = (err.message) ? err.message : err;
-
-        return new Promise((resolve, reject) => {
-            this.state = 'failure';
-            this.errorMessage = errmsg; 
-            this.save().then(() => {
-                resolve(this);
-            })
-        });
+        this.errorMessage = (err.message) ? err.message : err;;
+        return this.setStateAndSave('failed');
     }
-
-    // END RENDERER ONLY SIDE METHODS
 
     /**
      * Function get called every TICKER_INTERVAL
@@ -172,7 +171,7 @@ class Project {
     callMethod(method) {
         if (this.callbacks[method]) {
             for (let callback of this.callbacks[method]) {
-                callback( this.errorMsg, this);
+                callback( this.errorMessage, this);
             }
         }
     }
