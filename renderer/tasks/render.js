@@ -86,6 +86,10 @@ module.exports = function(project) {
         // spawn process and begin rendering
         let ae = spawn(process.env.AE_BINARY, params);
 
+        ae.on('error', (err) => {
+            return reject(new Error('Error starting aerender process, did you set up the path correctly?'));
+        });
+
         // on data (logs)
         ae.stdout.on('data', (data) => {
             aedata.push(data.toString());
