@@ -79,7 +79,7 @@ class Project {
             this.state = state;
 
             // call inner method (for project entity created on renderer side)
-            this.callMethod( project.state );
+            this.callMethod( state );
 
             // save entity and resolve promise
             this.save().then(() => {
