@@ -155,7 +155,17 @@ function startRender(project) {
 
 module.exports = {
     start: start,
+
+    /**
+     * Local project model renderer method wrapper
+     * 
+     * @param  {string} binary  path to Adobe After Effects aerender binary
+     * @param  {Array} opts    optional options array
+     * @param  {Project} project project model
+     * @return {Promise} rendering promise
+     */
     render: (binary, opts, project) => {
+        // parameters validation
         if (typeof binary !== 'string') {
             throw new Error('nexrender.renderer.render: first argument must be a string, pointing to "aerender" binary');
         }
@@ -169,10 +179,12 @@ module.exports = {
             throw new Error('nexrender.renderer.render: second optional argument is options, third required is a Project ');
         }
 
+        // set up default global constatns
         process.env.AE_BINARY       = binary            || '';
         process.env.AE_MULTIFRAMES  = opts.multiframes  || '';
         process.env.AE_MEMORY       = opts.memory       || '';
 
-        startRender(project);
+        // return promise and start rendering
+        return startRender(project);
     }
 };
