@@ -23,6 +23,7 @@ module.exports = function(project) {
 
             if (src === dst) continue;
 
+            // TODO: check for sync
             // remove file if it existed
             fs.unlink(dst, () => {});
 

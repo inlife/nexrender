@@ -60,7 +60,7 @@ function applyTasks(project, resolve, reject) {
 
             // project encountered an error
             project.failure(err).then(() => {
-                reject(project);
+                reject(err, project);
             })
         });
 };

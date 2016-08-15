@@ -20,7 +20,7 @@ module.exports = function(project) {
 
         // iterate over each asset and download it
         Promise.all(project.assets.map(
-                asset => download(asset.src, project.workpath)
+            asset => download(asset.src, project.workpath)
         )).then(() => {
             return resolve(project);
         }).catch((err) => {
