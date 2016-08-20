@@ -22,7 +22,7 @@
   "dependencies": {
     "async": "^2.0.0-rc.6",
     "body-parser": "^1.15.0",
-    "cli": "^0.11.1",
+    "cli": "^1.0.0",
     "download": "^5.0.2",
     "express": "^4.13.4",
     "fs-extra": "^0.30.0",
