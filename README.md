@@ -80,9 +80,57 @@ $ npm install nexrender
 ```
 
 # Use
-There are 2 main ways to use this tool. First one: to use as a render node (the thing that will pull projects and render them), and the second one: to use as a api server (the thing taht will store projects inside, and give them to render nodes). See [wiki](https://github.com/Inlife/nexrender/wiki) for details.
+There are 2 main ways to use this tool. First one: to use as a isolated local render node, which will be just renderning projects that you'll want it to. And the second one: to create a render network, which will be pulling registered projects in api-server database, render them, and update their status on that server. `api server + render nodes * N = network (farm)`. See [wiki](https://github.com/Inlife/nexrender/wiki) for details.
 
-## Usage (CLI)
+# Usage (Simple Example)
+Run http server to serve static asset files, for example on port `31999`. Then create 
+
+```js
+'use strict';
+
+var Project   = require('nexrender').Project;
+var renderer  = require('nexrender').renderer;
+
+var project = new Project({
+    'template': 'MyTemplate.aepx',
+    'composition': 'MainComp',
+    'settings': {
+        'outputModule': 'JPEG', // check your AE for existing output module
+        'outputExt': 'jpg'
+    },
+    'assets': [
+        {
+            'type': 'project',
+            'src': 'http://127.0.0.1:31999/MyTemplate.aepx',
+            'name': 'MyTemplate.aepx'
+        }, {
+            'type': 'image',
+            'src': 'http://127.0.0.1:31999/HotAirBalloon.png',
+            'name': 'HotAirBalloon.png'
+        }, {
+            'type': 'script',
+            'src': 'http://127.0.0.1:31999/test.js',
+            'name': 'test.js'
+        }
+    ]
+});
+
+// start rendering
+// NOTE: i inserted path to my aerender binary
+// if you are on windows, your path might look like:
+// 'C:\\Program Files\Adobe\After Effects CC 2015\aerender.exe'
+var rendered = renderer.render('/Applications/Adobe After Effects CC 2015.3/aerender', project);
+
+rendered.then(function() {
+    // successfully rendered
+    console.log('yay!');
+});
+
+```
+#### **Note:** You need to start local/remote web-server that will be handling asset distribution. Or put assets on other web-server.
+
+
+## Usage (Render network (farm))
 To start [**api server**:](https://github.com/Inlife/nexrender/wiki/API-server)
 
 ```sh
@@ -95,7 +143,11 @@ To start [**render node**:](https://github.com/Inlife/nexrender/wiki/Rendering-n
 $ nexrender --renderer --host=localhost:3000 --aerender=/path/to/aerender
 ```
 
-## Usage (API)
+What you need next, is to POST [project](https://github.com/Inlife/nexrender/wiki/Project-model) data to api server. More info: [https://github.com/Inlife/nexrender/issues/7](https://github.com/Inlife/nexrender/issues/7)
+
+## Usage (Render network + node.js API wrapper)
+
+If you want to manage your projects rendering and render network from a node.js application, you can write an simple extension do make all things cool and nifty.
 
 Creating [**project**:](https://github.com/Inlife/nexrender/wiki/Project-model)
 
@@ -138,43 +190,6 @@ api.create({
 });
 ```
 
-# Usage (without API)
-Creating and rendering project on local machine without an API server:
-
-```js
-'use strict';
-
-const Project   = require('nexrender/api/models/project');
-const renderer  = require('nexrender/renderer');
-
-let project = new Project({
-    'template': 'MyTemplate.aepx',
-    'composition': 'MainComp',
-    'settings': {
-        'outputModule': 'JPEG',
-        'outputExt': 'jpg'
-    },
-    'assets': [
-        {
-            'type': 'project',
-            'src': 'http://127.0.0.1:31999/MyTemplate.aepx.aepx',
-            'name': 'MyTemplate.aepx'
-        }, {
-            'type': 'image',
-            'src': 'http://127.0.0.1:31999/HotAirBalloon.png',
-            'name': 'HotAirBalloon.png'
-        }, {
-            'type': 'script',
-            'src': 'http://127.0.0.1:31999/test.js',
-            'name': 'test.js'
-        }
-    ]
-});
-
-renderer.render('/Applications/Adobe After Effects CC 2015.3/aerender', project);
-
-```
-#### **Note:** For now you need to start local/remote web-server that will be handling asset distribution. 
 ____
 
 
@@ -188,7 +203,6 @@ Also you are free to ask me questions -> open an issue.
 - add render progress evaluation
 - add security to rest api layer
 - add feature of parallel rendering
-- add client interface to manage projects
 - test on more configurations
 
 ## Contribution
