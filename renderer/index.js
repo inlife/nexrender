@@ -66,8 +66,8 @@ function applyTasks(project, resolve, reject) {
 };
 
 /**
- * Reqeusts list of all projects
- * itearate over each and returst first one that's state is 'queued'
+ * Requests list of all projects
+ * iterate over each and return first one that is state as 'queued'
  * @return {Promise}
  */
 function requestNextProject() {
@@ -117,7 +117,7 @@ function startRecursion() {
 }
 
 /**
- * Start automated reqeusting projects and rendering them
+ * Start automated requesting projects and rendering them
  * @param  {Object} opts Options object
  */
 function start(opts) {
