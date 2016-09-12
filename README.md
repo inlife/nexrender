@@ -80,6 +80,9 @@ $ npm install nexrender
 ```
 
 # Use
+## Update
+There is a boilerplate project (kinda demo). It includes a created project ready to render, and all different aspects of nexrender (asset substitution, dynamic data processing, etc.). You can checkout the project here: [https://github.com/inlife/nexrender-boilerplate](https://github.com/inlife/nexrender-boilerplate)
+
 There are 2 main ways to use this tool. First one: to use as a isolated local render node, which will be just renderning projects that you'll want it to. And the second one: to create a render network, which will be pulling registered projects in api-server database, render them, and update their status on that server. `api server + render nodes * N = network (farm)`. See [wiki](https://github.com/Inlife/nexrender/wiki) for details.
 
 # Usage (Simple Example)
