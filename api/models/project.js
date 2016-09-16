@@ -73,7 +73,7 @@ class Project {
      * @private
      * @param {String} state
      */
-    setStateAndSave(err, state) {
+    setStateAndSave(state) {
         return new Promise((resolve, reject) => {
             // chage state
             this.state = state;
