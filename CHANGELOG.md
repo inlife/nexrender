@@ -1,5 +1,13 @@
 # Changelog
 
+## v0.5.0
+ * added files ability to use local rendernode-side files
+
+## v0.4.8 - v0.4.12
+ * added ability to setup local renderning with single rendernode
+ * improved program interface
+ * bug fixes
+
 ## v0.4.4 - v0.4.7
  * JPEG sequence rendering
  * updated dependencies
@@ -10,7 +18,7 @@
 Testing era
 
 * renderer covered with tests
-* imporoved error handling
+* improved error handling
 
 ## v0.3
 Renderer perfomance
