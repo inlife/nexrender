@@ -24,6 +24,7 @@
 [![Test Coverage](https://codeclimate.com/github/Inlife/nexrender/badges/coverage.svg)](https://codeclimate.com/github/Inlife/nexrender/coverage)
 [![Code Climate](https://codeclimate.com/github/Inlife/nexrender/badges/gpa.svg)](https://codeclimate.com/github/Inlife/nexrender)
 [![License](http://img.shields.io/:license-MIT-blue.svg)](http://doge.mit-license.org)
+[![Discord](https://img.shields.io/badge/discord-inlife-green.svg)](https://discord.gg/S2JtRcB)
 
 -------
 
