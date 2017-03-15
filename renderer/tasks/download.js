@@ -2,14 +2,16 @@
 
 const download = require('download');
 const fs       = require('fs-extra');
+const path     = require('path');
 
 function isLocalPath(src) {
     return src.indexOf('http://') === -1 && src.indexOf('https://') === -1;
 }
 
-function copy(src, path) {
+function copy(src, dstDir) {
     return new Promise((resolve, reject) => {
-        fs.copy(src, path, (err) => {
+        const dstPath = path.join(dstDir, path.basename(src));
+        fs.copy(src, dstPath, (err) => {
             return (err ? reject(err) : resolve());
         });
     });
@@ -35,7 +37,7 @@ module.exports = function(project) {
         Promise.all(project.assets.map((asset) => {
             if (asset.type === 'url' || !isLocalPath(asset.src)) {
                 return download(asset.src, project.workpath);
-            } else if (asset.type === 'path' || isLocalPath()) {
+            } else if (asset.type === 'path' || isLocalPath(asset.src)) {
                 return copy(asset.src, project.workpath);
             }
         })).then(() => {
