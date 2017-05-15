@@ -21,6 +21,7 @@ describe('Task: rename', () => {
     beforeEach(() => {
         fs.writeFileSync( path.join('test', 'file1src') );
         fs.writeFileSync( path.join('test', 'file2src') );
+        fs.writeFileSync( path.join('test', 'file3src') );
 
         project = {
             workpath: 'test',
@@ -30,6 +31,9 @@ describe('Task: rename', () => {
             }, {
                 src: 'url/file2src',
                 name: 'file2dst'
+            }, {
+                src: 'url/file3src?q=test',
+                name: 'file3dst'
             }]
         }
     });
@@ -37,14 +41,17 @@ describe('Task: rename', () => {
     afterEach(() => {
         fs.removeSync( path.join('test', 'file1src') );
         fs.removeSync( path.join('test', 'file2src') );
+        fs.removeSync( path.join('test', 'file3src') );
         fs.removeSync( path.join('test', 'file1dst') );
         fs.removeSync( path.join('test', 'file2dst') );
+        fs.removeSync( path.join('test', 'file3dst') );
     })
 
     it('should rename each asset file to asset.name', (done) => {
         rename(project).should.be.fulfilled.then(() => {
             path.join('test', 'file1dst').should.be.a.path();
             path.join('test', 'file2dst').should.be.a.path();
+            path.join('test', 'file3dst').should.be.a.path();
         }).should.notify(done);
     });
 
@@ -54,6 +61,7 @@ describe('Task: rename', () => {
         rename(project).should.be.fulfilled.then(() => {
             path.join('test', 'file1src').should.be.a.path();
             path.join('test', 'file2dst').should.be.a.path();
+            path.join('test', 'file3dst').should.be.a.path();
         }).should.notify(done);
     });
 
@@ -63,6 +71,7 @@ describe('Task: rename', () => {
         rename(project).should.be.fulfilled.then(() => {
             path.join('test', 'file1dst').should.be.a.path();
             path.join('test', 'file2dst').should.be.a.path();
+            path.join('test', 'file3dst').should.be.a.path();
         }).should.notify(done);
     });
 });
