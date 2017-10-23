@@ -71,7 +71,8 @@ http://github.com/Inlife/nexrender
             port: uri[1],
             aerender: options.aerender,
             memory: options.mem || undefined,
-            multiframes: options.mp || false
+            multiframes: options.mp || false,
+            log: options.log || undefined
         });
     }
 });
