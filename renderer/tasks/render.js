@@ -63,8 +63,12 @@ module.exports = function(project) {
             }
         }
 
-        if (process.env.AE_MULTIFRAMES){
+        if (process.env.AE_MULTIFRAMES) {
             params.push('-mp');
+        }
+
+        if (process.env.AE_LOG && process.env.AE_LOG.length > 0) {
+            params.push('-log', process.env.AE_LOG);
         }
 
         if (process.env.AE_MEMORY && process.env.AE_MEMORY.length > 0) {

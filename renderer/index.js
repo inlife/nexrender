@@ -137,6 +137,7 @@ function start(opts) {
     process.env.AE_BINARY       = opts.aerender     || '';
     process.env.AE_MULTIFRAMES  = opts.multiframes  || '';
     process.env.AE_MEMORY       = opts.memory       || '';
+    process.env.AE_LOG          = opts.log          || '';
 
     // start quering
     startRecursion();
@@ -183,6 +184,7 @@ module.exports = {
         process.env.AE_BINARY       = binary            || '';
         process.env.AE_MULTIFRAMES  = opts.multiframes  || '';
         process.env.AE_MEMORY       = opts.memory       || '';
+        process.env.AE_LOG          = opts.log          || '';
 
         // return promise and start rendering
         return startRender(project);
