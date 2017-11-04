@@ -5,6 +5,14 @@ const fs        = require('fs-extra');
 const async     = require('async');
 
 function getAllExpressions(data) {
+    return data.match(/evalFile\((.*?)\)/g)
+    .map(function(x) { 
+        x = x.replace("evalFile(", '').replace(")",'');
+        return x.substr(1, x.length-2);
+    });
+}
+
+function getAllOldExpressions(data) {
     return data.match(/\<expr bdata=\"([a-f0-9]+)\"\s*\/\>/gi);
 }
 
@@ -40,25 +48,22 @@ function processTemplateFile(project, callback) {
         // check for valid project template
         if (data.indexOf('<?xml') !== 0) return callback(new Error('Project is not valid xml project template'));
 
-        // search for expressions
-        let expressions = getAllExpressions(data);
-
-        // check for existing expressions
-        if (expressions !== null) {
-
-            // then iterate over them
-            for (let expr of expressions) {
-
-                // extract hex from xml tag and decode it
-                let hex = expr.split('"')[1];
-                let dec = new Buffer(hex, 'hex').toString('utf8');
-    
-                // do patch and encode back to hex
-                // using regex file path pattern
-                let enc = new Buffer( replacePath( dec, replaceToPath ) ).toString('hex');
-    
-                // replace patched hex
-                data = data.replace( hex, enc );
+        if(data.includes('evalFile')){
+            let expressions = getAllExpressions(data);
+            if (expressions !== null) {
+                for (let expr of expressions) {
+                    data = data.replace( expr, replaceToPath + path.basename(expr));
+                }
+            }
+        }else{
+            let expressions = getAllOldExpressions(data);
+            if (expressions !== null) {
+                for (let expr of expressions) {
+                    let hex = expr.split('"')[1];
+                    let dec = new Buffer(hex, 'hex').toString('utf8');
+                    let enc = new Buffer( replacePath( dec, replaceToPath ) ).toString('hex');
+                    data = data.replace( hex, enc );
+                }
             }
         }
         
