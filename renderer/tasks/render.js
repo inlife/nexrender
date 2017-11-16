@@ -38,6 +38,7 @@ module.exports = function(project) {
         params.push('-comp',        project.composition);
         params.push('-project',     path.join( process.cwd(), project.workpath, project.template ));
         params.push('-output',      path.join( process.cwd(), project.workpath, project.resultname ));
+        params.push('-continueOnMissingFootage');
 
         // advanced parameters
         if (project.settings) {
