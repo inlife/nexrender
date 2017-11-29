@@ -52,7 +52,8 @@ module.exports = function(project) {
         // iterate over each asset and download it (copy it)
         Promise.all(project.assets.map((asset) => {
             if (asset.type === 's3') {
-                return downloadFromS3(asset.bucket, asset.key, project.workpath, asset.name)
+                let dstFile =  asset.src.substring( asset.src.lastIndexOf('/') + 1 );
+                return downloadFromS3(asset.bucket, asset.key, project.workpath, dstFile);
             } else if (asset.type === 'url' || !isLocalPath(asset.src)) {
                 return download(asset.src, project.workpath);
             } else if (asset.type === 'path' || isLocalPath(asset.src)) {
