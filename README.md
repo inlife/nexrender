@@ -20,9 +20,9 @@
 
 [![npm version](https://badge.fury.io/js/nexrender.svg)](https://badge.fury.io/js/nexrender)
 [![Dependency Status](https://david-dm.org/inlife/nexrender.svg)](https://david-dm.org/inlife/nexrender)
-[![Build Status](https://travis-ci.org/Inlife/nexrender.svg?branch=master)](https://travis-ci.org/Inlife/nexrender)
-[![Test Coverage](https://codeclimate.com/github/Inlife/nexrender/badges/coverage.svg)](https://codeclimate.com/github/Inlife/nexrender/coverage)
-[![Code Climate](https://codeclimate.com/github/Inlife/nexrender/badges/gpa.svg)](https://codeclimate.com/github/Inlife/nexrender)
+[![Build Status](https://travis-ci.org/inlife/nexrender.svg?branch=master)](https://travis-ci.org/inlife/nexrender)
+[![Test Coverage](https://codeclimate.com/github/inlife/nexrender/badges/coverage.svg)](https://codeclimate.com/github/inlife/nexrender/coverage)
+[![Code Climate](https://codeclimate.com/github/inlife/nexrender/badges/gpa.svg)](https://codeclimate.com/github/inlife/nexrender)
 [![License](http://img.shields.io/:license-MIT-blue.svg)](http://doge.mit-license.org)
 [![Discord](https://img.shields.io/badge/discord-inlife-green.svg)](https://discord.gg/S2JtRcB)
 
