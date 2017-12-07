@@ -15,6 +15,7 @@ cli.parse({
     'host':         ['h',   'Remote HOST:PORT to connect',  'string',   'localhost:3000'],
     'mem':          [false, 'aerender % of memory',         'string'],
     'mp':           [false, 'aerender multi frames'],
+    'log':          [false, 'file path or URI specifying the location of the log file.'],
 
     // api server params
     'api-server':   ['s',   'Start api server'],
