@@ -2,6 +2,7 @@
 
 const shortid   = require('shortid');
 const low       = require('lowdb');
+const FileSync = require('lowdb/adapters/FileSync')
 
 const SERVER_DB_PATH = process.env.SERVER_DB_PATH || 'db.json';
 
@@ -17,12 +18,14 @@ class Controller {
         initialized = true;
 
         // load file sync database
-        var db = low(SERVER_DB_PATH);
-            db.defaults({ projects: [] }).value();
-        this.db = db.get('projects');
+        const adapter = new FileSync(SERVER_DB_PATH)
+        const db = low(adapter);
 
-        // bind useful findAll method
+        db.defaults({ projects: [] }).value();
+
+        this.db = db.get('projects');
         this.db.findAll = function(query) {
+            // bind useful findAll method
             var query = query || {};
 
             if (query.uid) {

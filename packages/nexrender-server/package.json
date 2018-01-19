@@ -15,5 +15,12 @@
   "bugs": {
     "url": "https://github.com/inlife/nexrender/issues"
   },
-  "homepage": "https://github.com/inlife/nexrender#readme"
+  "homepage": "https://github.com/inlife/nexrender#readme",
+  "dependencies": {
+    "body-parser": "^1.18.2",
+    "express": "^4.16.2",
+    "lowdb": "^1.0.0",
+    "morgan": "^1.9.0",
+    "shortid": "^2.2.8"
+  }
 }

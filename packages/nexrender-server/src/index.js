@@ -14,9 +14,9 @@ app.use(morgan('tiny'));
 app.use('/api', router);
 
 module.exports = {
-    start: function(port) {
+    start: function(port, dbPath = './db.json') {
         app.listen(port, function () {
-            console.log('nexrender.server is listening on port:', port);
+            console.log('nexrender-server is listening on port:', port);
         });
     }
 };
