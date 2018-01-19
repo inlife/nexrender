@@ -1,31 +1,15 @@
-'use strict';
-
-const shortid   = require('shortid');
-const low       = require('lowdb');
-const FileSync = require('lowdb/adapters/FileSync')
-
-const SERVER_DB_PATH = process.env.SERVER_DB_PATH || 'db.json';
-
-let initialized = false;
+const shortid = require('shortid');
 
 class Controller {
-
     /**
      * Called on loading, creates db connection
      * Binds methods
      */
-    initialize() {
-        initialized = true;
+    use(database) {
+        this.db = database.get('projects');
 
-        // load file sync database
-        const adapter = new FileSync(SERVER_DB_PATH)
-        const db = low(adapter);
-
-        db.defaults({ projects: [] }).value();
-
-        this.db = db.get('projects');
+        // bind useful findAll method
         this.db.findAll = function(query) {
-            // bind useful findAll method
             var query = query || {};
 
             if (query.uid) {
@@ -42,8 +26,6 @@ class Controller {
      * @return {Promise}
      */
     create(data) {
-        if (!initialized) this.initialize();
-
         // set default data
         data.uid = data.uid || shortid();
         data.state = data.state || 'queued';
@@ -51,7 +33,7 @@ class Controller {
         data.updatedAt = new Date;
 
         // save data
-        this.db.push(data).value();
+        this.db.push(data).write();
 
         // return promise and get last added project
         return new Promise((resolve, reject) => {
@@ -65,8 +47,6 @@ class Controller {
      * @return {Promise}
      */
     get(id) {
-        if (!initialized) this.initialize();
-        
         // get project by id, or get all items if id not provided
         return new Promise((resolve, reject) => {
             resolve( this.db.findAll( id ? { uid: id } : {} ) || reject( {} ).value() );
@@ -80,14 +60,12 @@ class Controller {
      * @return {Promise}
      */
     update(id, data) {
-        if (!initialized) this.initialize();
-        
         // set default data
         data.updatedAt = new Date;
 
         // update data and return
         return new Promise((resolve, reject) => {
-            resolve( this.db.chain().find({ uid: id }).assign( data ).value() );
+            resolve( this.db.chain().find({ uid: id }).assign( data ).write() );
         });
     }
 
@@ -97,11 +75,9 @@ class Controller {
      * @return {Promise}
      */
     delete(id) {
-        if (!initialized) this.initialize();
-        
         // remove project by id
         return new Promise((resolve, reject) => {
-            resolve( this.db.remove({ uid : id }).value() );
+            resolve( this.db.remove({ uid : id }).write() );
         });
     }
 }
