@@ -45,6 +45,7 @@
     "gulp-mocha": "^2.2.0",
     "istanbul": "^0.4.2",
     "jshint": "^2.9.1",
+    "lerna": "^2.7.1",
     "mocha": "^2.4.5",
     "rewire": "^2.5.1"
   }
