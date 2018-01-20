@@ -32,7 +32,7 @@ describe('Testing api', () => {
         });
 
         it('should call config connection with provided port, host and protocol', () => {
-            let client = api.create({ proto: 'https', host: '127.0.1.100', port: 3322 });
+            let client = api.create({ scheme: 'https', host: '127.0.1.100', port: 3322 });
             client.host.should.be.eql('https://127.0.1.100:3322/api');
         });
     });

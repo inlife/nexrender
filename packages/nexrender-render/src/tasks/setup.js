@@ -10,13 +10,13 @@ const TEMP_DIRECTORY        = process.env.TEMP_DIRECTORY        || 'temp';
 /**
  * This task creates working directory for current project
  */
-module.exports = function(project) {
+module.exports = function(project, settings) {
     return new Promise((resolve, reject) => {
 
         console.info(`[${project.uid}] setting up project...`);
 
         // setup project's workpath
-        project.workpath   = path.join(TEMP_DIRECTORY,      project.uid);
+        project.workpath   = path.join(settings.workdir,    project.uid);
 
         // set template path && projectname
         let templatepath   = path.join(TEMPLATES_DIRECTORY, project.template);
