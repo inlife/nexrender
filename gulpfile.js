@@ -1,10 +1,12 @@
-const fs    = require('fs')
-const path  = require('path')
-var gulp    = require('gulp');
-var mocha   = require('gulp-mocha');
-var eslint  = require('gulp-eslint');
+'use strict'
 
-const packages = fs.readdirSync('./packages');
+const fs        = require('fs')
+const path      = require('path')
+const gulp      = require('gulp')
+const mocha     = require('gulp-mocha')
+const eslint    = require('gulp-eslint')
+
+const packages  = fs.readdirSync('./packages')
 
 gulp.task('test', function () {
     const tests = packages
@@ -13,12 +15,12 @@ gulp.task('test', function () {
 
     console.log('testing following packages:', tests)
 
-  return gulp.src(tests)
-    .pipe(mocha({reporter: 'spec'}))
-    // // Creating the reports after tests ran
-    // .pipe(istanbul.writeReports())
-    // // Enforce a coverage of at least 90%
-    // .pipe(istanbul.enforceThresholds({ thresholds: { global: 90 } }));
+    return gulp.src(tests)
+        .pipe(mocha({reporter: 'spec'}))
+        // // Creating the reports after tests ran
+        // .pipe(istanbul.writeReports())
+        // // Enforce a coverage of at least 90%
+        // .pipe(istanbul.enforceThresholds({ thresholds: { global: 90 } }));
 });
 
 

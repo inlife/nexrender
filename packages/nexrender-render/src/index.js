@@ -12,7 +12,7 @@ module.exports = (project, settings) => {
     settings.multiframes    = settings.multiframes  || '';
     settings.memory         = settings.memory       || '';
     settings.log            = settings.log          || '';
-
+    settings.addlicense     = settings.addlicense   || false;
     settings.workdir        = settings.workdir      || './temp';
 
     return project.prepare()
