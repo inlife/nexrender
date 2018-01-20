@@ -20,9 +20,10 @@ module.exports = function(project, settings) {
 
             if (src === dst) return Promise.resolve();
 
-            // TODO: check for sync
             // remove file if it existed
-            fs.unlink(dst, () => {});
+            if (fs.existsSync(dst)) {
+                fs.unlinkSync(dst, () => {});
+            }
 
             return new Promise((resolve, reject) => {
                 fs.rename(src, dst, err => err ? reject(err) : resolve());
