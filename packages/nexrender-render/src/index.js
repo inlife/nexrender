@@ -1,4 +1,15 @@
-const fs = require('fs')
+const fs        = require('fs')
+
+const license   = require('./tasks/license')
+const setup     = require('./tasks/setup')
+const download  = require('./tasks/download')
+const rename    = require('./tasks/rename')
+const filter    = require('./tasks/filter')
+const patch     = require('./tasks/patch')
+const render    = require('./tasks/render')
+const verify    = require('./tasks/verify')
+const actions   = require('./tasks/actions')
+const cleanup   = require('./tasks/cleanup')
 
 module.exports = (project, settings) => {
     if (!project.prepare) {
@@ -13,16 +24,20 @@ module.exports = (project, settings) => {
     settings.memory         = settings.memory       || '';
     settings.log            = settings.log          || '';
     settings.addlicense     = settings.addlicense   || false;
-    settings.workdir        = settings.workdir      || './temp';
+    settings.workdir        = settings.workdir      || process.env.TEMP_DIRECTORY || './temp';
+
+    if (settings.addlicense) {
+        license(settings)
+    }
 
     return project.prepare()
-        .then(project => setup(project))
-        .then(project => download(project))
-        .then(project => rename(project))
-        .then(project => filter(project))
-        .then(project => patch(project))
-        .then(project => render(project))
-        .then(project => verify(project))
-        .then(project => actions(project))
-        .then(project => cleanup(project))
+        .then(project => setup(project, settings))
+        .then(project => download(project, settings))
+        .then(project => rename(project, settings))
+        .then(project => filter(project, settings))
+        .then(project => patch(project, settings))
+        .then(project => render(project, settings))
+        .then(project => verify(project, settings))
+        .then(project => actions(project, settings))
+        .then(project => cleanup(project, settings))
 }

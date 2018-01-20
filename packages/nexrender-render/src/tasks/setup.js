@@ -5,7 +5,6 @@ const path        = require('path');
 const fs          = require('fs-extra');
 
 const TEMPLATES_DIRECTORY   = process.env.TEMPLATES_DIRECTORY   || 'templates';
-const TEMP_DIRECTORY        = process.env.TEMP_DIRECTORY        || 'temp';
 
 /**
  * This task creates working directory for current project
