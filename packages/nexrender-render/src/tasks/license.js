@@ -11,5 +11,7 @@ module.exports = (settings) => {
         fs.mkdirSync(adobe)
     }
 
-    fs.writeFileSync(nodefile, '')
+    if (!fs.existsSync(nodefile)) {
+        fs.writeFileSync(nodefile, '')
+    }
 }

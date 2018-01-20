@@ -1,3 +1,5 @@
+'use strict';
+
 const api = require('../src');
 
 // Configure api connection

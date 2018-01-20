@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+'use strict';
 
 const os        = require('os');
 const cli       = require('cli').enable('version');

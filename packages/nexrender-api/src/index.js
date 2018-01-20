@@ -1,3 +1,5 @@
+'use strict';
+
 const projects  = require('./projects')
 
 const DEFAULT_API_SCHEME    = 'http';

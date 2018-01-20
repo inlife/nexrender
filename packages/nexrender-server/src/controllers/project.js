@@ -1,3 +1,5 @@
+'use strict';
+
 const shortid = require('shortid');
 
 class Controller {
