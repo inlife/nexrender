@@ -1,15 +1,12 @@
-const chai      = require('chai');
-const chaiAsFs  = require('chai-fs');
-const chaiProm  = require('chai-as-promised');
-const fs        = require('fs-extra');
-const path      = require('path');
-const rewire    = require('rewire');
+const path      = require('path')
+const chai      = require('chai')
+const chaiAsFs  = require('chai-fs')
+const chaiProm  = require('chai-as-promised')
 
-chai.use(chaiAsFs);
-chai.use(chaiProm);
+chai.use(chaiAsFs)
+chai.use(chaiProm)
 
-global.should = chai.should();
-
+global.should = chai.should()
 
 /* special mock for fetch method */
 global.__fetch_mock = (a, b) => {
@@ -20,10 +17,6 @@ global.__fetch_mock = (a, b) => {
 const api = require('../src/index.js');
 
 describe('Testing api', () => {
-    before(() => {
-        // api.__set__('router.bind', (h, p) => {data.host = h; data.port = p; return true});
-        // api.__set__('Project', function(dt) { this.data = dt; });
-    });
 
     describe('#config()', () => {
         it('should fallback to default configuration without provided data', () => {
