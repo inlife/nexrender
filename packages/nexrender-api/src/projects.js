@@ -3,7 +3,11 @@ const Project   = require('@nexrender/project')
 
 const fetch     = global.__fetch_mock ? global.__fetch_mock : require('node-fetch');
 
-module.exports = (apiurl, instance) => ({
+const uri = (apiurl, secret = '', id = '') => {
+    return `${apiurl}/projects` + (id ? `/${id}` : '') + (secret ? `?secret=${secret}` : '')
+}
+
+module.exports = (apiurl, secret, instance) => ({
     /**
      * Creates new Project object, saves to server's database
      * @param  {Object} data  Plain object for project
@@ -26,7 +30,7 @@ module.exports = (apiurl, instance) => ({
         data.settings    = data.settings    || {};
         data.actions     = data.actions     || [];
 
-        return fetch(`${apiurl}/projects`, {
+        return fetch(uri(apiurl, secret), {
                 method:  'POST',
                 body:    JSON.stringify(data),
                 headers: { 'Content-Type': 'application/json' },
@@ -43,14 +47,14 @@ module.exports = (apiurl, instance) => ({
     get: (id = null) => {
         // return single
         if (id !== null) {
-            return fetch(`${apiurl}/projects/${id}`)
+            return fetch(uri(apiurl, secret, id))
                 .then(res => res.ok ? res : Promise.reject('cannot find project with id: ' + id) )
                 .then(res => res.json())
                 .then(json => new Project(json, instance))
         }
         // return multiple
         else {
-            return fetch(`${apiurl}/projects`)
+            return fetch(uri(apiurl, secret))
                 .then(res => res.ok ? res : Promise.reject('error listing all projects') )
                 .then(res => res.json())
                 .then(projects => projects
@@ -70,7 +74,7 @@ module.exports = (apiurl, instance) => ({
             uobj = object.serialize();
         }
 
-        return fetch(`${apiurl}/projects/${uobj.id}`, {
+        return fetch(uri(apiurl, secret, uobj.id), {
                 method:  'PUT',
                 body:    JSON.stringify(uobj),
                 headers: { 'Content-Type': 'application/json' },
@@ -92,7 +96,7 @@ module.exports = (apiurl, instance) => ({
      * @return {Promise}
      */
     remove: (id) => {
-        return fetch(`${apiurl}/projects/${id}`, { method: 'DELETE' })
+        return fetch(uri(apiurl, secret, id), { method: 'DELETE' })
             .then(res => res.ok ? res : Promise.reject('cannot remove project with id: ' + id))
             .then(res => res.json())
     }

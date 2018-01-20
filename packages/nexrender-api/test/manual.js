@@ -3,7 +3,8 @@ const api = require('../src');
 // Configure api connection
 let client = api.create({
     host: "localhost",
-    port: 3000
+    port: 3000,
+    secret: 'hhhhhh',
 });
 
 // Define project properties

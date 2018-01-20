@@ -23,7 +23,7 @@ gulp.task('test', function () {
 
 
 gulp.task('lint', function() {
-  return gulp.src(['*.js', 'lib/**/*.js', 'test/**/*.js'])
-    .pipe(eslint())
-    .pipe(eslint.format());
+    return gulp.src(['*.js', 'lib/**/*.js', 'test/**/*.js'])
+        .pipe(eslint())
+        .pipe(eslint.format());
 });

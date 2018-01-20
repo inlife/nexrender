@@ -1,5 +1,3 @@
-'use strict';
-
 const express       = require('express');
 const bodyParser    = require('body-parser');
 const morgan        = require('morgan');
@@ -8,15 +6,6 @@ const lowfile       = require('lowdb/adapters/FileSync')
 
 const project       = require('./controllers/project')
 const router        = require('./routers/');
-
-let app = express();
-
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
-app.use(morgan('tiny'));
-
-app.use('/api', router);
-app.get('/', (req, res) => res.send('<h1>nexrender-server</h1>\nUse /api/projects to list projects.'))
 
 const setupdb = (dbpath) => {
     // load file sync database
@@ -27,14 +16,33 @@ const setupdb = (dbpath) => {
     return database;
 }
 
-module.exports = {
-    start: function(port, dbpath = './db.json') {
-        const database = setupdb(dbpath);
+const setupweb = (options) => {
+    const app = express();
 
+    app.use(bodyParser.urlencoded({ extended: true }));
+    app.use(bodyParser.json());
+    app.use(morgan('tiny'));
+    app.use('/api', router(options))
+
+    return app
+}
+
+module.exports = {
+    start: function(options = {}) {
+        options.dbpath  = options.dbpath    || './db.json';
+        options.host    = options.host      || '0.0.0.0';
+        options.port    = options.port      || 3000;
+        options.secret  = options.secret    || '';
+
+        // create local db and webapp
+        const database = setupdb(options.dbpath);
+        const webapp   = setupweb(options);
+
+        // inject db into submodules
         project.use(database)
 
-        app.listen(port, function () {
-            console.log('nexrender-server is listening on port:', port);
-        });
+        return new Promise((resolve) => {
+            webapp.listen(options.port, options.host, () => resolve(webapp, database));
+        })
     }
 };

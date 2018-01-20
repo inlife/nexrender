@@ -57,7 +57,7 @@ http://github.com/Inlife/nexrender
 
     if (options['api-server'] || options['server']) {
         process.title = 'nexrender.api';
-        server.start(options.port);
+        server.start({ port: options.port });
     }
 
     if (options['renderer']) {

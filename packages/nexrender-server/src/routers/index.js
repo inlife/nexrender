@@ -6,13 +6,17 @@ const middleware    = require('../middleware');
 const project       = require('./project');
 const rendernode    = require('./rendernode');
 
-let router = express.Router();
 
-// middleware
-router.use(middleware);
+module.exports = (options) => {
+    let router = express.Router();
 
-// set up routes
-project.use(router);
-rendernode.use(router);
+    // middleware
+    router.use(middleware(options));
+    router.get('/', (req, res) => res.send('<h1>nexrender-server</h1>\nUse /api/projects to list projects.'))
 
-module.exports = router;
+    // set up routes
+    project.use(router);
+    rendernode.use(router);
+
+    return router;
+};
