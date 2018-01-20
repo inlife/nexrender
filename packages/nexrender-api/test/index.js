@@ -1,3 +1,5 @@
+'use strict'
+
 const path      = require('path')
 const chai      = require('chai')
 const chaiAsFs  = require('chai-fs')
