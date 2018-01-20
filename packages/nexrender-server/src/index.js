@@ -38,5 +38,3 @@ module.exports = {
         });
     }
 };
-
-module.exports.start(3000)

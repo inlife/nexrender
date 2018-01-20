@@ -1,5 +1,5 @@
 {
-  "name": "nexrender-cli",
+  "name": "@nexrender/cli",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -14,6 +14,14 @@
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/inlife/nexrender/issues"
+  },
+  "devDependencies": {
+    "@nexrender/server": "^1.0",
+    "@nexrender/node": "^1.0"
+  },
+  "peerDependencies": {
+    "@nexrender/server": "^1.0",
+    "@nexrender/node": "^1.0"
   },
   "homepage": "https://github.com/inlife/nexrender#readme"
 }

@@ -1,6 +1,4 @@
-'use strict';
-
-const shortid = require('shortid');
+const shortid               = require('shortid');
 
 const DEFAULT_STATE         = 'queued';
 const DEFAULT_TEMPLATE      = 'template.aep';
@@ -9,9 +7,9 @@ const DEFAULT_PROJECT_TYPE  = 'default';
 
 const TICKER_INTERVAL       = 60 * 1000 || process.env.API_UPDATE_INTERVAL; // 1 minute
 
+// TODO: remove h264 and mp4 as defaults
 const AE_OUTPUT_MODULE      = process.env.AE_OUTPUT_MODULE || 'h264';
 const AE_OUTPUT_EXT         = 'mp4';
-
 
 class Project {
 
@@ -32,7 +30,7 @@ class Project {
 
     /**
      * Serialize project properties to plain object
-     * @return {Object} 
+     * @return {Object}
      */
     serialize() {
         return {
@@ -50,7 +48,7 @@ class Project {
 
     /**
      * Desirialize data from plain object to Project object
-     * @param  {Object} params 
+     * @param  {Object} params
      */
     deserialize(params) {
         let data            = params            || {};
@@ -120,8 +118,8 @@ class Project {
      */
     onTick() {
         if (this.api === null) return;
-        
-        this.api.get(this.uid).then((project) => {
+
+        this.api.projects.get(this.uid).then((project) => {
             if (this.state !== project.state) {
                 this.deserialize( project );
                 this.callMethod( project.state );
@@ -134,7 +132,7 @@ class Project {
      * @return {Promise}
      */
     save() {
-        return (this.api !== null) ? this.api.update(this) : new Promise(r => r());
+        return (this.api !== null) ? this.api.projects.update(this) : new Promise(r => r());
     }
 
     /**
@@ -142,7 +140,7 @@ class Project {
      * @return {Promise}
      */
     remove() {
-        return (this.api !== null) ? this.api.remove(this) : new Promise(r => r());
+        return (this.api !== null) ? this.api.projects.remove(this) : new Promise(r => r());
     }
 
     /**
@@ -165,7 +163,7 @@ class Project {
     }
 
     /**
-     * Event caller 
+     * Event caller
      * @param  {String} method Event name
      */
     callMethod(method) {

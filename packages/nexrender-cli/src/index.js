@@ -1,10 +1,21 @@
 #!/usr/bin/env node
 
-'use strict';
-
 const os        = require('os');
 const cli       = require('cli').enable('version');
-const nexrender = require('./index.js');
+const nexrender = { version: '1.0.0' }
+
+// var m;
+// try {
+//     m = require(modulePath);
+// } catch (e) {
+//     if (e.code !== 'MODULE_NOT_FOUND') {
+//         throw e;
+//     }
+//     m = backupModule;
+// }
+
+const server = require('@nexrender/server')
+const node   = require('@nexrender/node')
 
 cli.parse({
     'version':      ['v',   'Get version'],
@@ -18,7 +29,8 @@ cli.parse({
     'log':          [false, 'file path or URI specifying the location of the log file.', 'string'],
 
     // api server params
-    'api-server':   ['s',   'Start api server'],
+    'api-server':   [false, 'Start server (alias to --server)'],
+    'server':       ['s',   'Start server'],
     'port':         ['p',   'Listen on port',               'number',   3000]
 });
 
@@ -27,13 +39,13 @@ cli.main(function(args, options) {
 
 // fancy logo
 console.log(`
-                                   | |          
- _ __   _____  ___ __ ___ _ __   __| | ___ _ __ 
+                                   | |
+ _ __   _____  ___ __ ___ _ __   __| | ___ _ __
 | '_ \\ / _ \\ \\/ / '__/ _ \\ '_ \\ / _\` |/ _ \\ '__|
-| | | |  __/>  <| | |  __/ | | | (_| |  __/ |   
-|_| |_|\\___/_/\\_\\_|  \\___|_| |_|\\__,_|\\___|_|   
+| | | |  __/>  <| | |  __/ | | | (_| |  __/ |
+|_| |_|\\___/_/\\_\\_|  \\___|_| |_|\\__,_|\\___|_|
 
-                  VERSION: ${nexrender.version} 
+                  VERSION: ${nexrender.version}
 
 For support and information, please visit:
 http://github.com/Inlife/nexrender
@@ -43,10 +55,9 @@ http://github.com/Inlife/nexrender
         return console.log('nexrender version:', nexrender.version)
     }
 
-    if (options['api-server']) {
+    if (options['api-server'] || options['server']) {
         process.title = 'nexrender.api';
-
-        nexrender.server.start(options.port);
+        server.start(options.port);
     }
 
     if (options['renderer']) {

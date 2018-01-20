@@ -1,9 +1,19 @@
-var gulp = require('gulp');
-var mocha = require('gulp-mocha');
-var eslint = require('gulp-eslint');
+const fs    = require('fs')
+const path  = require('path')
+var gulp    = require('gulp');
+var mocha   = require('gulp-mocha');
+var eslint  = require('gulp-eslint');
+
+const packages = fs.readdirSync('./packages');
 
 gulp.task('test', function () {
-  return gulp.src(['test/*.js'])
+    const tests = packages
+        .map(p => path.join('packages', p, 'test', 'index.js'))
+        .filter(p => fs.existsSync(p))
+
+    console.log('testing following packages:', tests)
+
+  return gulp.src(tests)
     .pipe(mocha({reporter: 'spec'}))
     // // Creating the reports after tests ran
     // .pipe(istanbul.writeReports())
