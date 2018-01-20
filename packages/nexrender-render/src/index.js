@@ -13,6 +13,8 @@ const verify    = require('./tasks/verify')
 const actions   = require('./tasks/actions')
 const cleanup   = require('./tasks/cleanup')
 
+// https://video.stackexchange.com/questions/16706/rendered-file-with-after-effects-is-very-huge
+
 module.exports = (project, settings) => {
     if (!project.prepare) {
         return Promise.reject('you should provide an instance of @nexrender/project')
@@ -26,7 +28,8 @@ module.exports = (project, settings) => {
     settings.memory         = settings.memory       || '';
     settings.log            = settings.log          || '';
     settings.addlicense     = settings.addlicense   || false;
-    settings.workdir        = settings.workdir      || process.env.TEMP_DIRECTORY || './temp';
+    settings.workpath       = settings.workpath     || process.env.TEMP_DIRECTORY || './temp';
+    settings.logger         = settings.logger       || () => {};
 
     if (settings.addlicense) {
         license(settings)

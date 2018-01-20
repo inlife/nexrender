@@ -1,8 +1,8 @@
 'use strict';
 
-const download = require('download');
-const fs       = require('fs-extra');
-const path     = require('path');
+const fs       = require('fs')
+const path     = require('path')
+const download = require('download')
 
 function isLocalPath(src) {
     return src.indexOf('http://') === -1 && src.indexOf('https://') === -1;
@@ -11,7 +11,7 @@ function isLocalPath(src) {
 function copy(src, dstDir) {
     return new Promise((resolve, reject) => {
         const dstPath = path.join(dstDir, path.basename(src));
-        fs.copy(src, dstPath, (err) => {
+        fs.copyFile(src, dstPath, (err) => {
             return (err ? reject(err) : resolve());
         });
     });
@@ -20,10 +20,10 @@ function copy(src, dstDir) {
 /**
  * This task is used to download every asset in the "project.asset"
  */
-module.exports = function(project) {
+module.exports = function(project, settings) {
     return new Promise((resolve, reject) => {
 
-        console.info(`[${project.uid}] downloading assets...`);
+        settings.logger(`[${project.uid}] downloading assets...`);
 
         // iterate over each asset to check for custom template
         for (let asset of project.assets) {

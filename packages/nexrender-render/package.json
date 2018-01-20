@@ -6,6 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "homepage": "https://github.com/inlife/nexrender#readme",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/inlife/nexrender.git"
@@ -15,5 +16,10 @@
   "bugs": {
     "url": "https://github.com/inlife/nexrender/issues"
   },
-  "homepage": "https://github.com/inlife/nexrender#readme"
+  "dependencies": {
+    "download": "^6.2.5"
+  },
+  "devDependencies": {
+    "express": "^4.16.2"
+  }
 }

@@ -18,7 +18,7 @@ global.__fetch_mock = (a, b) => {
 // require module
 const api = require('../src/index.js');
 
-describe('Testing api', () => {
+describe('Testing @nexrender/api', () => {
 
     describe('#config()', () => {
         it('should fallback to default configuration without provided data', () => {

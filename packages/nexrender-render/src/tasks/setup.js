@@ -1,9 +1,11 @@
 'use strict';
 
-const mkdirp      = require('mkdirp');
-const path        = require('path');
-const fs          = require('fs-extra');
+const fs      = require('fs')
+const path    = require('path')
+const mkdirp  = require('mkdirp')
 
+// @deprecated
+// TODO: remove
 const TEMPLATES_DIRECTORY   = process.env.TEMPLATES_DIRECTORY   || 'templates';
 
 /**
@@ -11,11 +13,10 @@ const TEMPLATES_DIRECTORY   = process.env.TEMPLATES_DIRECTORY   || 'templates';
  */
 module.exports = function(project, settings) {
     return new Promise((resolve, reject) => {
-
-        console.info(`[${project.uid}] setting up project...`);
+        settings.logger(`[${project.uid}] setting up project...`);
 
         // setup project's workpath
-        project.workpath   = path.join(settings.workdir,    project.uid);
+        project.workpath   = path.join(settings.workpath,   project.uid);
 
         // set template path && projectname
         let templatepath   = path.join(TEMPLATES_DIRECTORY, project.template);
@@ -32,8 +33,9 @@ module.exports = function(project, settings) {
             }
         }
 
+        // @deprecated
         // copy project file
-        fs.copy(templatepath, workingProject, (err) => {
+        fs.copyFile(templatepath, workingProject, (err) => {
             return (err) ? reject(err) : resolve(project);
         });
     });

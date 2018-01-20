@@ -1,41 +1,36 @@
 'use strict';
 
-const fs        = require('fs-extra');
-const path      = require('path');
-const url      = require('url');
-const async     = require('async');
+const fs        = require('fs')
+const path      = require('path')
+const url       = require('url')
 
 /**
  * This task renames assets from their original name
  * to one, that is provided under "asset.name"
  */
-module.exports = function(project) {
+module.exports = function(project, settings) {
     return new Promise((resolve, reject) => {
 
-        console.info(`[${project.uid}] renaming assets...`);
+        settings.logger(`[${project.uid}] renaming assets...`);
 
-        // initialize empty call-queue array
-        let calls = [];
-
-        // iterate over each file and create rename(move) callback
-        for (let asset of project.assets) {
+        // iterate over each file and create rename(move) promises
+        const promises = project.assets.map(asset => {
             let src = path.join( project.workpath, path.basename(url.parse(asset.src).pathname));
             let dst = path.join( project.workpath, asset.name );
 
-            if (src === dst) continue;
+            if (src === dst) return Promise.resolve();
 
             // TODO: check for sync
             // remove file if it existed
             fs.unlink(dst, () => {});
 
-            calls.push((callback) => {
-                fs.move(src, dst, callback);
-            });
-        }
+            return new Promise((resolve, reject) => {
+                fs.rename(src, dst, err => err ? reject(err) : resolve());
+            })
+        });
 
-        // run rename(move) callbacks in parallel
-        async.parallel(calls, (err, results) => {
-            return (err) ? reject(err) : resolve(project);
-        })
+        return Promise.all(promises)
+            .then(_ => resolve(project))
+            .catch(err => reject(err))
     });
 };
