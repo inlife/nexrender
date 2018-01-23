@@ -17,6 +17,7 @@
     "url": "https://github.com/inlife/nexrender/issues"
   },
   "dependencies": {
+    "mkdirp": "^0.5.1",
     "download": "^6.2.5"
   },
   "devDependencies": {

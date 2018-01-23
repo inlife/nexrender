@@ -17,14 +17,7 @@
   },
   "repository": "inlife/nexrender",
   "license": "MIT",
-  "dependencies": {
-    "async": "^2.0.0-rc.6",
-    "download": "^6.1.0",
-    "fs-extra": "^0.30.0",
-    "jimp": "^0.2.21",
-    "mkdirp": "^0.5.1",
-    "node-dir": "^0.1.11"
-  },
+  "dependencies": {},
   "devDependencies": {
     "chai": "^3.5.0",
     "chai-as-promised": "^5.2.0",

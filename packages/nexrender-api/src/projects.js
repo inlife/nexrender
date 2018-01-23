@@ -3,7 +3,7 @@
 const assert    = require('assert')
 const Project   = require('@nexrender/project')
 
-const fetch     = global.__fetch_mock ? global.__fetch_mock : require('node-fetch');
+const fetch     = global.__fetch_mock ? global.__fetch_mock : require('node-fetch')
 
 /* simple uri formatter (shortcut) */
 const uri = (apiurl, secret, id) => {
@@ -22,16 +22,16 @@ module.exports = (apiurl, secret, instance) => ({
 
         // check for emptiness plain values
         try {
-            assert( data.template );
-            assert( data.composition );
+            assert(data.template);
+            assert(data.composition);
         } catch (err) {
             return Promise.reject('[error] you need to provide project properties')
         }
 
         // and arrays
-        data.assets      = data.assets      || [];
-        data.settings    = data.settings    || {};
-        data.actions     = data.actions     || [];
+        data.assets   = data.assets   || [];
+        data.settings = data.settings || {};
+        data.actions  = data.actions  || [];
 
         return fetch(uri(apiurl, secret), {
                 method:  'POST',
@@ -102,5 +102,5 @@ module.exports = (apiurl, secret, instance) => ({
         return fetch(uri(apiurl, secret, id), { method: 'DELETE' })
             .then(res => res.ok ? res : Promise.reject('cannot remove project with id: ' + id))
             .then(res => res.json())
-    }
+    },
 })

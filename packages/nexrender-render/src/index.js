@@ -19,33 +19,34 @@ const cleanup   = require('./tasks/cleanup')
 //
 
 module.exports = (project, settings) => {
-    if (!project.prepare) {
-        return Promise.reject('you should provide an instance of @nexrender/project')
+    settings = Object.assign({}, settings);
+
+    const binaryAuto = autofind(settings);
+    const binaryUser = settings.binary && fs.existsSync(settings.binary) ? settings.binary : null;
+
+    if (!binaryUser && !binaryAuto) {
+        return Promise.reject('you should provide a proper path to After Effects\' \"aerender\" binary')
     }
 
-    if (!settings.binary || !fs.existsSync(settings.binary)) {
-        const foundBinary = autofind(settings);
-
-        if (foundBinary) {
-            if (settings.logger) settings.logger('[info] using found aerender at path: ' + foundBinary)
-            settings.binary = foundBinary;
-        } else {
-            return Promise.reject('you should provide a proper path to After Effects\' \"aerender\" binary')
-        }
-    }
-
-    settings.multiframes    = settings.multiframes  || '';
+    settings.binary         = binaryUser || binaryAuto;
+    settings.multiframes    = settings.multiframes  || false;
     settings.memory         = settings.memory       || '';
     settings.log            = settings.log          || '';
     settings.addlicense     = settings.addlicense   || false;
     settings.workpath       = settings.workpath     || process.env.TEMP_DIRECTORY || './temp';
     settings.logger         = settings.logger       || () => {};
 
+    // make sure we will have absolute path
+    if (!path.isAbsolute(settings.workpath)) {
+        settings.workpath = path.join(process.cwd(), settings.workpath);
+    }
+
+    // add license helper
     if (settings.addlicense) {
         license(settings)
     }
 
-    return project.prepare()
+    return Promise.resolve(project)
         .then(project => setup(project, settings))
         .then(project => download(project, settings))
         .then(project => rename(project, settings))

@@ -22,16 +22,7 @@ function copy(src, dstDir) {
  */
 module.exports = function(project, settings) {
     return new Promise((resolve, reject) => {
-
         if (settings.logger) settings.logger(`[${project.uid}] downloading assets...`);
-
-        // iterate over each asset to check for custom template
-        for (let asset of project.assets) {
-            // check for custom template
-            if (asset.type === 'project') {
-                project.template = asset.name;
-            }
-        }
 
         // iterate over each asset and download it (copy it)
         Promise.all(project.assets.map((asset) => {
