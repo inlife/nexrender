@@ -29,8 +29,7 @@ module.exports = (project, settings) => {
         if (foundBinary) {
             if (settings.logger) settings.logger('[info] using found aerender at path: ' + foundBinary)
             settings.binary = foundBinary;
-        }
-        else {
+        } else {
             return Promise.reject('you should provide a proper path to After Effects\' \"aerender\" binary')
         }
     }

@@ -6,7 +6,7 @@ const Project   = require('@nexrender/project')
 const fetch     = global.__fetch_mock ? global.__fetch_mock : require('node-fetch');
 
 /* simple uri formatter (shortcut) */
-const uri = (apiurl, secret = '', id = '') => {
+const uri = (apiurl, secret, id) => {
     return `${apiurl}/projects` + (id ? `/${id}` : '') + (secret ? `?secret=${secret}` : '')
 }
 

@@ -1,17 +1,14 @@
-'use strict';
+'use strict'
 
-const shortid               = require('shortid');
+const shortid = require('shortid')
 
 const DEFAULT_STATE         = 'queued';
-const DEFAULT_TEMPLATE      = 'template.aep';
+const DEFAULT_TEMPLATE      = 'template.aepx';
 const DEFAULT_COMPOSITION   = 'comp1';
 const DEFAULT_PROJECT_TYPE  = 'default';
 
+// TODO: refactor
 const TICKER_INTERVAL       = 60 * 1000 || process.env.API_UPDATE_INTERVAL; // 1 minute
-
-// TODO: remove h264 and mp4 as defaults
-const AE_OUTPUT_MODULE      = process.env.AE_OUTPUT_MODULE || 'h264';
-const AE_OUTPUT_EXT         = 'mp4';
 
 class Project {
 
@@ -62,7 +59,7 @@ class Project {
         this.type           = data.type         || DEFAULT_PROJECT_TYPE;
         this.assets         = data.assets       || [];
         this.actions        = data.actions      || [];
-        this.settings       = data.settings     || { outputModule: AE_OUTPUT_MODULE, outputExt: AE_OUTPUT_EXT };
+        this.settings       = data.settings     || {};
         this.errorMessage   = data.errorMessage || null;
 
         return this;

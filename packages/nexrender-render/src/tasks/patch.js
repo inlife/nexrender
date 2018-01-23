@@ -15,7 +15,7 @@ function getAllExpressions(data) {
  *     "/Users/Name/Projects/MyProject/"
  *     "C:\\Projects\\MyNewProject\\"
  *     "/usr/var/tmp/projects/123/"
- * 
+ *
  * And will replace them to string `dst`
  */
 function replacePath(src, dst) {
@@ -52,16 +52,16 @@ function processTemplateFile(project, callback) {
                 // extract hex from xml tag and decode it
                 let hex = expr.split('"')[1];
                 let dec = new Buffer(hex, 'hex').toString('utf8');
-    
+
                 // do patch and encode back to hex
                 // using regex file path pattern
                 let enc = new Buffer( replacePath( dec, replaceToPath ) ).toString('hex');
-    
+
                 // replace patched hex
                 data = data.replace( hex, enc );
             }
         }
-        
+
         // save result
         fs.writeFile(projectName, data, callback);
     });
@@ -77,8 +77,8 @@ module.exports = function(project) {
 
         console.info(`[${project.uid}] patching project...`);
 
-        // Iterate over assets, 
-        // skip those that are not data/script files, 
+        // Iterate over assets,
+        // skip those that are not data/script files,
         for (let asset of project.assets) {
             if (['script', 'data'].indexOf(asset.type) === -1) continue;
 

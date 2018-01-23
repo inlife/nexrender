@@ -9,7 +9,7 @@ const RESULTS_DIR = process.env.RESULTS_DIR || 'results';
 
 /**
  * actions is a backward compability term
- * currently only means a synomym for 
+ * currently only means a synomym for
  * "moving files from temp dir to results dir"
  */
 module.exports = function(project) {
@@ -22,14 +22,14 @@ module.exports = function(project) {
         mkdirp.sync(RESULTS_DIR);
 
         //TEMP: workaround for JPEG sequences mode
-        if (project.settings && 
-            project.settings.outputExt && 
-            ['jpeg', 'jpg'].indexOf( 
-                project.settings.outputExt.toLowerCase() 
+        if (project.settings &&
+            project.settings.outputExt &&
+            ['jpeg', 'jpg'].indexOf(
+                project.settings.outputExt.toLowerCase()
             ) !== -1
         ) {
             console.info(`[${project.uid}] applying actions: found jpeg sequence...`);
-            
+
             // scan folder
             fs.readdir(project.workpath, (err, files) => {
                 if (err) return callback(err);
@@ -43,7 +43,7 @@ module.exports = function(project) {
 
                 // override destination path for images
                 let dst = path.join( RESULTS_DIR, project.uid );
-                
+
                 // create subdir for storing images in results folder for overrided path
                 mkdirp.sync(dst);
 
@@ -56,7 +56,7 @@ module.exports = function(project) {
 
                     // add each move-file request to call queue
                     calls.push((callback) => {
-                        
+
                         // if file exists -> remove it
                         fs.unlink(local_dst, () => {
                             //move file from src to dst
@@ -74,7 +74,7 @@ module.exports = function(project) {
             return;
         }
 
-        // remove file if exists 
+        // remove file if exists
         fs.unlink(dst, () => {
             console.info(`[${project.uid}] applying actions: moving result file...`);
 
