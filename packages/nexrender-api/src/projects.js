@@ -47,7 +47,9 @@ module.exports = (apiurl, secret, instance) => ({
      * @optional @param {Number} id
      * @return {Promise}
      */
-    get: (id = null) => {
+    get: (id) => {
+        id = id || null;
+
         // return single
         if (id !== null) {
             return fetch(uri(apiurl, secret, id))

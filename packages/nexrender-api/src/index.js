@@ -20,7 +20,9 @@ module.exports = {
      * Configuration for api connections
      * @param  {Object} opts
      */
-    create: (options = {}) => {
+    create: (options) => {
+        options     = options           ||{};
+
         let scheme  = options.scheme    || DEFAULT_API_SCHEME;
         let host    = options.host      || DEFAULT_API_HOST;
         let port    = options.port      || DEFAULT_API_PORT;
