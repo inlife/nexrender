@@ -13,7 +13,7 @@ const TEMPLATES_DIRECTORY   = process.env.TEMPLATES_DIRECTORY   || 'templates';
  */
 module.exports = function(project, settings) {
     return new Promise((resolve, reject) => {
-        settings.logger(`[${project.uid}] setting up project...`);
+        if (settings.logger) settings.logger(`[${project.uid}] setting up project...`);
 
         // setup project's workpath
         project.workpath   = path.join(settings.workpath,   project.uid);

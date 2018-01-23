@@ -15,7 +15,6 @@ describe('Testing @nexrender/render', () => {
         require('./tasks/setup');
         require('./tasks/download');
         require('./tasks/rename');
-        // require('./tasks/filter');
         // require('./tasks/patch');
         // require('./tasks/render');
         // require('./tasks/verify');

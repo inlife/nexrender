@@ -11,7 +11,7 @@ const url       = require('url')
 module.exports = function(project, settings) {
     return new Promise((resolve, reject) => {
 
-        settings.logger(`[${project.uid}] renaming assets...`);
+        if (settings.logger) settings.logger(`[${project.uid}] renaming assets...`);
 
         // iterate over each file and create rename(move) promises
         const promises = project.assets.map(asset => {
