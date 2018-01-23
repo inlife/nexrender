@@ -71,10 +71,6 @@ describe('Task: download', () => {
             path.join(__dirname, 'image.jpg').should.be.a.path();
         });
 
-        it('should set project.template to asset.name if its project', () => {
-            project.template.should.be.eql('proj.aepx');
-        });
-
         describe('(with file 404)', () => {
             before(() => {
                 project.assets.push({
@@ -131,10 +127,6 @@ describe('Task: download', () => {
         it('should download each asset', () => {
             path.join(__dirname, 'proj.aepx').should.be.a.path();
             path.join(__dirname, 'image.jpg').should.be.a.path();
-        });
-
-        it('should set project.template to asset.name if its project', () => {
-            project.template.should.be.eql('proj.aepx');
         });
     });
 

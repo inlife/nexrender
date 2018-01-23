@@ -28,13 +28,13 @@ module.exports = (project, settings) => {
         return Promise.reject('you should provide a proper path to After Effects\' \"aerender\" binary')
     }
 
-    settings.binary         = binaryUser || binaryAuto;
+    settings.binary         = binaryUser            || binaryAuto;
+    settings.workpath       = settings.workpath     || process.env.TEMP_DIRECTORY || './temp';
     settings.multiframes    = settings.multiframes  || false;
+    settings.addlicense     = settings.addlicense   || false;
+    settings.logger         = settings.logger       || () => {};
     settings.memory         = settings.memory       || '';
     settings.log            = settings.log          || '';
-    settings.addlicense     = settings.addlicense   || false;
-    settings.workpath       = settings.workpath     || process.env.TEMP_DIRECTORY || './temp';
-    settings.logger         = settings.logger       || () => {};
 
     // make sure we will have absolute path
     if (!path.isAbsolute(settings.workpath)) {

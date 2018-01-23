@@ -50,16 +50,6 @@ describe('Task: setup', () => {
         );
     });
 
-    it('should have created temp folder if it not existed', () => {
-        path.join(__dirname, 'temp', 'mytestid').should.be.a.path();
-    });
-
-    describe('(without project-as-asset)', () => {
-        it('should have copied project file from templates to workpath dir', () => {
-            path.join(__dirname, 'temp', 'mytestid', 'project.aepx').should.be.a.path();
-        });
-    });
-
     describe('(with project-as-asset)', () => {
         before(() => {
             project.assets.push({
@@ -71,15 +61,9 @@ describe('Task: setup', () => {
         it('should not copy project if project asset is provided', () => {
             path.join(__dirname, 'temp', 'mytestid', 'project.aep').should.not.be.a.path();
         });
-    });
 
-    describe('(without project-as-asset and template field)', () => {
-        before(() => {
-            delete project.template;
-        });
-
-        it('should raise copy error', () => {
-            cperror.should.not.be.undefined;
+        it('should set project.template to asset.name', () => {
+            project.template.should.be.eql('project.aepx');
         });
     });
 });
