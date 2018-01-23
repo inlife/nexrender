@@ -1,9 +1,10 @@
 'use strict';
 
+const fs        = require('fs')
+const path      = require('path')
+const exec      = require('child_process').exec
 const chai      = require('chai')
 const chaiAsFs  = require('chai-fs')
-const fs        = require('fs-extra')
-const path      = require('path')
 
 chai.use(chaiAsFs);
 
@@ -40,8 +41,7 @@ describe('Task: setup', () => {
     });
 
     afterEach(() => {
-        fs.removeSync( path.join(__dirname, 'temp',' mytestid') );
-        fs.removeSync( path.join(__dirname, 'temp') );
+        exec('rm -r ' + path.join(__dirname, 'temp'));
     });
 
     it('should set project\'s workpath', () => {
