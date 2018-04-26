@@ -5,16 +5,16 @@ const path      = require('path')
 const url       = require('url')
 
 /**
- * This task renames assets from their original name
+ * This task renames files from their original name
  * to one, that is provided under "asset.name"
  */
 module.exports = function(job, settings) {
     return new Promise((resolve, reject) => {
 
-        if (settings.logger) settings.logger(`[${job.uid}] renaming assets...`);
+        if (settings.logger) settings.logger(`[${job.uid}] renaming files...`);
 
         // iterate over each file and create rename(move) promises
-        const promises = job.assets.map(asset => {
+        const promises = job.files.map(asset => {
             let src = path.join( job.workpath, path.basename(url.parse(asset.src).pathname));
             let dst = path.join( job.workpath, asset.name );
 

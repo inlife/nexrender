@@ -26,7 +26,7 @@ describe('Task: rename', () => {
 
         job = {
             workpath: __dirname,
-            assets: [{
+            files: [{
                 src: 'url/file1src',
                 name: 'file1dst'
             }, {
@@ -57,7 +57,7 @@ describe('Task: rename', () => {
     });
 
     it('should not rename file if src and dst are the same', (done) => {
-        job.assets[0].name = 'file1src';
+        job.files[0].name = 'file1src';
 
         rename(job, settings).should.be.fulfilled.then(() => {
             path.join(__dirname, 'file1src').should.be.a.path();

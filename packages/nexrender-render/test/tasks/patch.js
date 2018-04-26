@@ -21,7 +21,7 @@ describe('Task: patch', () => {
     let job;
 
     beforeEach(() => {
-        job = { template: 'proj.aepx', workpath: 'test', assets: [{ type: 'script' }] }
+        job = { template: 'proj.aepx', workpath: 'test', files: [{ type: 'script' }] }
     });
 
     afterEach(() => {
@@ -29,12 +29,12 @@ describe('Task: patch', () => {
     });
 
     it('should not patch if no script or data asset were passed', (done) => {
-        job.assets = [];
+        job.files = [];
         patch(job).should.be.fulfilled.notify(done);
     });
 
-    it('should skip other assets thet were passed', (done) => {
-        job.assets = [{ type: 'image' }];
+    it('should skip other files thet were passed', (done) => {
+        job.files = [{ type: 'image' }];
         patch(job).should.be.fulfilled.notify(done);
     });
 

@@ -27,7 +27,7 @@ describe('Task: download', () => {
             uid: 'mytestid',
             template: 'job.aepx',
             workpath: __dirname,
-            assets: [{
+            files: [{
                 type: 'job',
                 src: 'http://localhost:3322/proj.aepx',
                 name: 'proj.aepx'
@@ -73,7 +73,7 @@ describe('Task: download', () => {
 
         describe('(with file 404)', () => {
             before(() => {
-                job.assets.push({
+                job.files.push({
                     type: 'audio',
                     src: 'http://localhost:3322/notfound.mp3'
                 });
@@ -86,31 +86,31 @@ describe('Task: download', () => {
     });
 
     describe('local file', () => {
-        const assetsDir = path.join(__dirname, 'assets')
+        const filesDir = path.join(__dirname, 'files')
 
         let job = {
             uid: 'mytestid',
             template: 'job.aepx',
             workpath: __dirname,
-            assets: [{
+            files: [{
                 type: 'job',
-                src: path.join(assetsDir, 'proj.aepx'),
+                src: path.join(filesDir, 'proj.aepx'),
                 name: 'proj.aepx'
             }, {
                 type: 'image',
-                src: path.join(assetsDir, 'image.jpg')
+                src: path.join(filesDir, 'image.jpg')
             }]
         };
 
         before(() => {
-            fs.mkdirSync( assetsDir );
-            job.assets.forEach((asset) => {
+            fs.mkdirSync( filesDir );
+            job.files.forEach((asset) => {
                 fs.writeFileSync(asset.src, 'dummy');
             });
         });
 
         after(() => {
-            exec('rm -r ' + assetsDir);
+            exec('rm -r ' + filesDir);
         });
 
         beforeEach((done) => {

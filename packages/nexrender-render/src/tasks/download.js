@@ -25,10 +25,10 @@ function copy(src, dstDir) {
  */
 module.exports = function(job, settings) {
     return new Promise((resolve, reject) => {
-        if (settings.logger) settings.logger(`[${job.uid}] downloading assets...`);
+        if (settings.logger) settings.logger(`[${job.uid}] downloading files...`);
 
         // iterate over each asset and download it (copy it)
-        Promise.all(job.assets.map((asset) => {
+        Promise.all(job.files.map((asset) => {
             if (asset.type === 'url' || !isLocalPath(asset.src)) {
                 return download(asset.src, job.workpath);
             } else if (asset.type === 'path' || isLocalPath(asset.src)) {

@@ -36,12 +36,12 @@ class Job {
             uid:            this.uid,
             type:           this.type,
             state:          this.state,
-            assets:         this.assets,
+            files:          this.files,
             template:       this.template,
             settings:       this.settings,
             composition:    this.composition,
             actions:        this.actions,
-            errorMessage:   this.errorMessage
+            errors:         this.errors
         };
     }
 
@@ -57,10 +57,10 @@ class Job {
         this.template       = data.template     || DEFAULT_TEMPLATE;
         this.composition    = data.composition  || DEFAULT_COMPOSITION;
         this.type           = data.type         || DEFAULT_PROJECT_TYPE;
-        this.assets         = data.assets       || [];
+        this.files          = data.files        || [];
         this.actions        = data.actions      || [];
         this.settings       = data.settings     || {};
-        this.errorMessage   = data.errorMessage || null;
+        this.errors         = data.errors       || [];
 
         return this;
     }
@@ -107,7 +107,7 @@ class Job {
      * @return {Promise}
      */
     failure(err) {
-        this.errorMessage = (err.message) ? err.message : err;;
+        this.errors.push((err.message) ? err.message : err);
         return this.setStateAndSave('failed');
     }
 
@@ -168,7 +168,7 @@ class Job {
     callMethod(method) {
         if (this.callbacks[method]) {
             for (let callback of this.callbacks[method]) {
-                callback( this.errorMessage, this);
+                callback(this.errors.length > 0 ? this.errors.pop() : null, this);
             }
         }
     }
