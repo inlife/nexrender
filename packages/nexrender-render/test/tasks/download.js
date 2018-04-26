@@ -23,12 +23,12 @@ describe('Task: download', () => {
         let app = express();
         let server = null;
         let cperror = undefined;
-        let project = {
+        let job = {
             uid: 'mytestid',
-            template: 'project.aepx',
+            template: 'job.aepx',
             workpath: __dirname,
             assets: [{
-                type: 'project',
+                type: 'job',
                 src: 'http://localhost:3322/proj.aepx',
                 name: 'proj.aepx'
             }, {
@@ -53,8 +53,8 @@ describe('Task: download', () => {
         });
 
         beforeEach((done) => {
-            download(project, settings).then((proj) => {
-                project = proj; done();
+            download(job, settings).then((proj) => {
+                job = proj; done();
             }).catch((err) => {
                 cperror = err;
                 setTimeout(done, 100);
@@ -73,7 +73,7 @@ describe('Task: download', () => {
 
         describe('(with file 404)', () => {
             before(() => {
-                project.assets.push({
+                job.assets.push({
                     type: 'audio',
                     src: 'http://localhost:3322/notfound.mp3'
                 });
@@ -88,12 +88,12 @@ describe('Task: download', () => {
     describe('local file', () => {
         const assetsDir = path.join(__dirname, 'assets')
 
-        let project = {
+        let job = {
             uid: 'mytestid',
-            template: 'project.aepx',
+            template: 'job.aepx',
             workpath: __dirname,
             assets: [{
-                type: 'project',
+                type: 'job',
                 src: path.join(assetsDir, 'proj.aepx'),
                 name: 'proj.aepx'
             }, {
@@ -104,7 +104,7 @@ describe('Task: download', () => {
 
         before(() => {
             fs.mkdirSync( assetsDir );
-            project.assets.forEach((asset) => {
+            job.assets.forEach((asset) => {
                 fs.writeFileSync(asset.src, 'dummy');
             });
         });
@@ -114,8 +114,8 @@ describe('Task: download', () => {
         });
 
         beforeEach((done) => {
-            download(project, settings).then((proj) => {
-                project = proj; done();
+            download(job, settings).then((proj) => {
+                job = proj; done();
             }).catch(console.log);
         });
 

@@ -1,6 +1,6 @@
 'use strict';
 
-const projects  = require('./projects')
+const jobs = require('./jobs')
 
 const DEFAULT_API_SCHEME    = 'http';
 const DEFAULT_API_HOST      = 'localhost';
@@ -11,7 +11,7 @@ class client {
         this.host   = host;
         this.secret = secret;
 
-        this.projects = projects(host, secret, this)
+        this.jobs = jobs(host, secret, this)
     }
 };
 

@@ -18,7 +18,7 @@ const cleanup   = require('./tasks/cleanup')
 // https://video.stackexchange.com/questions/16706/rendered-file-with-after-effects-is-very-huge
 //
 
-module.exports = (project, settings) => {
+module.exports = (job, settings) => {
     settings = Object.assign({}, settings);
 
     const binaryAuto = autofind(settings);
@@ -46,13 +46,13 @@ module.exports = (project, settings) => {
         license(settings)
     }
 
-    return Promise.resolve(project)
-        .then(project => setup(project, settings))
-        .then(project => download(project, settings))
-        .then(project => rename(project, settings))
-        .then(project => patch(project, settings))
-        .then(project => render(project, settings))
-        .then(project => verify(project, settings))
-        .then(project => actions(project, settings))
-        .then(project => cleanup(project, settings))
+    return Promise.resolve(job)
+        .then(job => setup(job, settings))
+        .then(job => download(job, settings))
+        .then(job => rename(job, settings))
+        .then(job => patch(job, settings))
+        .then(job => render(job, settings))
+        .then(job => verify(job, settings))
+        .then(job => actions(job, settings))
+        .then(job => cleanup(job, settings))
 }

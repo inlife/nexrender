@@ -11,17 +11,16 @@ chai.use(chaiAsFs);
 global.should = chai.should();
 
 // override paths for test folder
-process.env.TEMP_DIRECTORY      = path.join(__dirname, 'temp');
-process.env.TEMPLATES_DIRECTORY = path.join(__dirname, '..', 'res');
+process.env.TEMP_DIRECTORY = path.join(__dirname, 'temp');
 
 // require module
 var setup = require('../../src/tasks/setup.js');
 
 describe('Task: setup', () => {
 
-    let project = {
+    let job = {
         uid: 'mytestid',
-        template: 'project.aepx',
+        template: 'job.aepx',
         assets: []
     };
 
@@ -33,8 +32,8 @@ describe('Task: setup', () => {
     let cperror = undefined;
 
     beforeEach((done) => {
-        setup(project, settings).then((proj) => {
-            project = proj; done();
+        setup(job, settings).then((proj) => {
+            job = proj; done();
         }).catch((err)=> {
             cperror = err; done();
         });
@@ -44,26 +43,26 @@ describe('Task: setup', () => {
         exec('rm -r ' + path.join(__dirname, 'temp'));
     });
 
-    it('should set project\'s workpath', () => {
-        project.should.have.property('workpath').and.equal(
+    it('should set job\'s workpath', () => {
+        job.should.have.property('workpath').and.equal(
             path.join(__dirname, 'temp', 'mytestid')
         );
     });
 
-    describe('(with project-as-asset)', () => {
+    describe('(with job-as-asset)', () => {
         before(() => {
-            project.assets.push({
-                name: 'project.aepx',
-                type: 'project'
+            job.assets.push({
+                name: 'job.aepx',
+                type: 'job'
             });
         })
 
-        it('should not copy project if project asset is provided', () => {
-            path.join(__dirname, 'temp', 'mytestid', 'project.aep').should.not.be.a.path();
+        it('should not copy job if job asset is provided', () => {
+            path.join(__dirname, 'temp', 'mytestid', 'job.aep').should.not.be.a.path();
         });
 
-        it('should set project.template to asset.name', () => {
-            project.template.should.be.eql('project.aepx');
+        it('should set job.template to asset.name', () => {
+            job.template.should.be.eql('job.aepx');
         });
     });
 });

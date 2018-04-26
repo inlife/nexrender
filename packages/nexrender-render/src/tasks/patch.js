@@ -14,7 +14,7 @@ function getAllExpressions(data) {
  * It will match paths looking something like that:
  *     "/Users/Name/Projects/MyProject/"
  *     "C:\\Projects\\MyNewProject\\"
- *     "/usr/var/tmp/projects/123/"
+ *     "/usr/var/tmp/jobs/123/"
  *
  * And will replace them to string `dst`
  */
@@ -22,23 +22,23 @@ function replacePath(src, dst) {
     return src.replace( /(?:(?:[A-Z]\:|~){0,1}(?:\/|\\\\|\\)(?=[^\s\/]))(?:(?:[\ a-zA-Z0-9\+\-\_\.\$\●\-]+(?:\/|\\\\|\\)))*/gm, dst);
 }
 
-function processTemplateFile(project, callback) {
-    // project file template name
-    let projectName     = path.join( project.workpath, project.template );
-    let replaceToPath   = path.join( process.cwd(), project.workpath, path.sep); // absolute path
+function processTemplateFile(job, callback) {
+    // job file template name
+    let jobName         = path.join( job.workpath, job.template );
+    let replaceToPath   = path.join( process.cwd(), job.workpath, path.sep); // absolute path
 
     // escape single backslash to double in win
     replaceToPath = replaceToPath.replace(/\\/g, '\\\\');
 
-    // read project file contents
-    fs.readFile(projectName, (err, bin) => {
+    // read job file contents
+    fs.readFile(jobName, (err, bin) => {
         if (err) return callback(err);
 
         // convert to utf8 string
         let data = bin.toString('utf8');
 
-        // check for valid project template
-        if (data.indexOf('<?xml') !== 0) return callback(new Error('Project is not valid xml project template'));
+        // check for valid job template
+        if (data.indexOf('<?xml') !== 0) return callback(new Error('Project is not valid xml job template'));
 
         // search for expressions
         let expressions = getAllExpressions(data);
@@ -63,31 +63,31 @@ function processTemplateFile(project, callback) {
         }
 
         // save result
-        fs.writeFile(projectName, data, callback);
+        fs.writeFile(jobName, data, callback);
     });
 }
 
 /**
- * This task patches project
+ * This task patches job
  * and replaces all the paths to srcripts
- * to ones that provided in project
+ * to ones that provided in job
  */
-module.exports = function(project) {
+module.exports = function(job) {
     return new Promise((resolve, reject) => {
 
-        console.info(`[${project.uid}] patching project...`);
+        console.info(`[${job.uid}] patching job...`);
 
         // Iterate over assets,
         // skip those that are not data/script files,
-        for (let asset of project.assets) {
+        for (let asset of job.assets) {
             if (['script', 'data'].indexOf(asset.type) === -1) continue;
 
-            return processTemplateFile(project, (err) => {
-                return (err) ? reject(err) : resolve(project);
+            return processTemplateFile(job, (err) => {
+                return (err) ? reject(err) : resolve(job);
             });
         }
 
-        // project contains no data/script assets, pass
-        resolve(project);
+        // job contains no data/script assets, pass
+        resolve(job);
     });
 };

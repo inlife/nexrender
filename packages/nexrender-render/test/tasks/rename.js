@@ -16,7 +16,7 @@ global.should = chai.should();
 var rename = require('../../src/tasks/rename.js');
 
 describe('Task: rename', () => {
-    let project;
+    let job;
     let settings = { logger: () => {} }
 
     beforeEach(() => {
@@ -24,7 +24,7 @@ describe('Task: rename', () => {
         fs.writeFileSync( path.join(__dirname, 'file2src') );
         fs.writeFileSync( path.join(__dirname, 'file3src') );
 
-        project = {
+        job = {
             workpath: __dirname,
             assets: [{
                 src: 'url/file1src',
@@ -49,7 +49,7 @@ describe('Task: rename', () => {
     })
 
     it('should rename each asset file to asset.name', (done) => {
-        rename(project, settings).should.be.fulfilled.then(() => {
+        rename(job, settings).should.be.fulfilled.then(() => {
             path.join(__dirname, 'file1dst').should.be.a.path();
             path.join(__dirname, 'file2dst').should.be.a.path();
             path.join(__dirname, 'file3dst').should.be.a.path();
@@ -57,9 +57,9 @@ describe('Task: rename', () => {
     });
 
     it('should not rename file if src and dst are the same', (done) => {
-        project.assets[0].name = 'file1src';
+        job.assets[0].name = 'file1src';
 
-        rename(project, settings).should.be.fulfilled.then(() => {
+        rename(job, settings).should.be.fulfilled.then(() => {
             path.join(__dirname, 'file1src').should.be.a.path();
             path.join(__dirname, 'file2dst').should.be.a.path();
             path.join(__dirname, 'file3dst').should.be.a.path();
@@ -69,7 +69,7 @@ describe('Task: rename', () => {
     it('should overwrite file if it already exists', (done) => {
         fs.writeFileSync( path.join(__dirname, 'file2dst') );
 
-        rename(project, settings).should.be.fulfilled.then(() => {
+        rename(job, settings).should.be.fulfilled.then(() => {
             path.join(__dirname, 'file1dst').should.be.a.path();
             path.join(__dirname, 'file2dst').should.be.a.path();
             path.join(__dirname, 'file3dst').should.be.a.path();

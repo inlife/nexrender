@@ -18,10 +18,10 @@ var patch = rewire('../../../renderer/tasks/patch.js');
 
 describe('Task: patch', () => {
 
-    let project;
+    let job;
 
     beforeEach(() => {
-        project = { template: 'proj.aepx', workpath: 'test', assets: [{ type: 'script' }] }
+        job = { template: 'proj.aepx', workpath: 'test', assets: [{ type: 'script' }] }
     });
 
     afterEach(() => {
@@ -29,22 +29,22 @@ describe('Task: patch', () => {
     });
 
     it('should not patch if no script or data asset were passed', (done) => {
-        project.assets = [];
-        patch(project).should.be.fulfilled.notify(done);
+        job.assets = [];
+        patch(job).should.be.fulfilled.notify(done);
     });
 
     it('should skip other assets thet were passed', (done) => {
-        project.assets = [{ type: 'image' }];
-        patch(project).should.be.fulfilled.notify(done);
+        job.assets = [{ type: 'image' }];
+        patch(job).should.be.fulfilled.notify(done);
     });
 
-    it('should raise error if project file was not found', (done) => {
-        patch(project).should.be.rejected.notify(done);
+    it('should raise error if job file was not found', (done) => {
+        patch(job).should.be.rejected.notify(done);
     });
 
-    it('should raise error if project is not valid', (done) => {
+    it('should raise error if job is not valid', (done) => {
         fs.writeFileSync( path.join('test', 'proj.aepx'), 'some invalid format');
-        patch(project).should.be.rejected.notify(done);
+        patch(job).should.be.rejected.notify(done);
     });
 
     describe('#getAllExpressions()', () => {
@@ -128,7 +128,7 @@ describe('Task: patch', () => {
             }
         });
 
-        it('should patch all different paths in the project file', (done) => {
+        it('should patch all different paths in the job file', (done) => {
             // prepare data
             let bexpr = '$.evalFile(\"[mypath]final.js\"); exports.get(\"sometnigs\", time / 24)';
             let expr1 = new Buffer(bexpr.replace('[mypath]', '/Users/sub-directory/with_symbols/')).toString('hex');
@@ -144,11 +144,11 @@ describe('Task: patch', () => {
 
             fs.writeFileSync( path.join('test', 'proj.aepx'), data.join('\n') );
 
-            patch(project).should.be.fulfilled.then(() => {
+            patch(job).should.be.fulfilled.then(() => {
                 let data = fs.readFileSync( path.join('test', 'proj.aepx') ).toString('utf8');
                 let expressions = patch.__get__('getAllExpressions')(data);
 
-                let mypath = path.join( process.cwd(), project.workpath, path.sep ).replace(/\\/g, '\\\\');
+                let mypath = path.join( process.cwd(), job.workpath, path.sep ).replace(/\\/g, '\\\\');
 
                 for (let expr of expressions) {
                     let hex = expr.split('"')[1];

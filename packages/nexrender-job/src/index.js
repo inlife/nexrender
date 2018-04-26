@@ -8,15 +8,15 @@ const DEFAULT_COMPOSITION   = 'comp1';
 const DEFAULT_PROJECT_TYPE  = 'default';
 
 // TODO: refactor
-const TICKER_INTERVAL       = 60 * 1000 || process.env.API_UPDATE_INTERVAL; // 1 minute
+const TICKER_INTERVAL = 60 * 1000 || process.env.API_UPDATE_INTERVAL; // 1 minute
 
-class Project {
+class Job {
 
     /**
-     * Creates project entity from params
+     * Creates job entity from params
      * @param  {Object}
      * @param  {Object} api Inject connected api
-     * @return {Project}
+     * @return {Job}
      */
     constructor(params, api) {
         this.deserialize( params );
@@ -28,7 +28,7 @@ class Project {
     }
 
     /**
-     * Serialize project properties to plain object
+     * Serialize job properties to plain object
      * @return {Object}
      */
     serialize() {
@@ -46,7 +46,7 @@ class Project {
     }
 
     /**
-     * Desirialize data from plain object to Project object
+     * Desirialize data from plain object to Job object
      * @param  {Object} params
      */
     deserialize(params) {
@@ -66,7 +66,7 @@ class Project {
     }
 
     /**
-     * Sets project state
+     * Sets job state
      * @private
      * @param {String} state
      */
@@ -75,7 +75,7 @@ class Project {
             // chage state
             this.state = state;
 
-            // call inner method (for project entity created on renderer side)
+            // call inner method (for job entity created on renderer side)
             this.callMethod( state );
 
             // save entity and resolve promise
@@ -86,7 +86,7 @@ class Project {
     }
 
     /**
-     * Sets state of project to 'rendering' (render started)
+     * Sets state of job to 'rendering' (render started)
      * @return {Promise}
      */
     prepare() {
@@ -94,7 +94,7 @@ class Project {
     }
 
     /**
-     * Sets state of project to 'finished' (render succeeded)
+     * Sets state of job to 'finished' (render succeeded)
      * @return {Promise}
      */
     finish() {
@@ -102,7 +102,7 @@ class Project {
     }
 
     /**
-     * Sets state of project to 'error' (render failed)
+     * Sets state of job to 'error' (render failed)
      * @param {Mixed} err
      * @return {Promise}
      */
@@ -113,15 +113,15 @@ class Project {
 
     /**
      * Function get called every TICKER_INTERVAL
-     * to check project state on server
+     * to check job state on server
      */
     onTick() {
         if (this.api === null) return;
 
-        this.api.projects.get(this.uid).then((project) => {
-            if (this.state !== project.state) {
-                this.deserialize( project );
-                this.callMethod( project.state );
+        this.api.jobs.get(this.uid).then((job) => {
+            if (this.state !== job.state) {
+                this.deserialize( job );
+                this.callMethod( job.state );
             }
         })
     }
@@ -131,7 +131,7 @@ class Project {
      * @return {Promise}
      */
     save() {
-        return (this.api !== null) ? this.api.projects.update(this) : new Promise(r => r());
+        return (this.api !== null) ? this.api.jobs.update(this) : new Promise(r => r());
     }
 
     /**
@@ -139,7 +139,7 @@ class Project {
      * @return {Promise}
      */
     remove() {
-        return (this.api !== null) ? this.api.projects.remove(this) : new Promise(r => r());
+        return (this.api !== null) ? this.api.jobs.remove(this) : new Promise(r => r());
     }
 
     /**
@@ -174,4 +174,4 @@ class Project {
     }
 }
 
-module.exports = Project;
+module.exports = Job;

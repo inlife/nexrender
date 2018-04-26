@@ -33,14 +33,14 @@ describe('Testing @nexrender/api', () => {
     });
 
     describe('#create()', () => {
-        let projects = api.create().projects;
+        let jobs = api.create().jobs;
 
         it('should raise error if template or composition fields were not provided', (done) => {
-            projects.create().should.be.rejected.notify(done);
+            jobs.create().should.be.rejected.notify(done);
         });
 
         it('should send request to create object with basic params', (done) => {
-            projects.create({ template: 'a', composition: 'b' }).should.be.fulfilled.then((data) => {
+            jobs.create({ template: 'a', composition: 'b' }).should.be.fulfilled.then((data) => {
                 data.should.not.be.empty;
             }).should.notify(done);
         });

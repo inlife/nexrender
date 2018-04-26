@@ -12,26 +12,26 @@ const RESULTS_DIR = process.env.RESULTS_DIR || 'results';
  * currently only means a synomym for
  * "moving files from temp dir to results dir"
  */
-module.exports = function(project) {
+module.exports = function(job) {
     return new Promise((resolve, reject) => {
 
-        let src = path.join( project.workpath, project.resultname );
-        let dst = path.join( RESULTS_DIR, project.uid + '_' + project.resultname );
+        let src = path.join( job.workpath, job.resultname );
+        let dst = path.join( RESULTS_DIR, job.uid + '_' + job.resultname );
 
         // create, if it does not exists
         mkdirp.sync(RESULTS_DIR);
 
         //TEMP: workaround for JPEG sequences mode
-        if (project.settings &&
-            project.settings.outputExt &&
+        if (job.settings &&
+            job.settings.outputExt &&
             ['jpeg', 'jpg'].indexOf(
-                project.settings.outputExt.toLowerCase()
+                job.settings.outputExt.toLowerCase()
             ) !== -1
         ) {
-            console.info(`[${project.uid}] applying actions: found jpeg sequence...`);
+            console.info(`[${job.uid}] applying actions: found jpeg sequence...`);
 
             // scan folder
-            fs.readdir(project.workpath, (err, files) => {
+            fs.readdir(job.workpath, (err, files) => {
                 if (err) return callback(err);
 
                 // initialize empty call-queue array
@@ -42,7 +42,7 @@ module.exports = function(project) {
                 let exprs = new RegExp('result_[0-9]{5}');
 
                 // override destination path for images
-                let dst = path.join( RESULTS_DIR, project.uid );
+                let dst = path.join( RESULTS_DIR, job.uid );
 
                 // create subdir for storing images in results folder for overrided path
                 mkdirp.sync(dst);
@@ -51,7 +51,7 @@ module.exports = function(project) {
                 for (let file of files) {
                     if (!exprs.test(file)) continue;
 
-                    let local_src = path.join( project.workpath, file );
+                    let local_src = path.join( job.workpath, file );
                     let local_dst = path.join( dst, file );
 
                     // add each move-file request to call queue
@@ -67,7 +67,7 @@ module.exports = function(project) {
 
                 // start 'em in parallel
                 async.parallel(calls, (err, results) => {
-                    return (err) ? reject(err) : resolve(project);
+                    return (err) ? reject(err) : resolve(job);
                 });
             });
 
@@ -76,11 +76,11 @@ module.exports = function(project) {
 
         // remove file if exists
         fs.unlink(dst, () => {
-            console.info(`[${project.uid}] applying actions: moving result file...`);
+            console.info(`[${job.uid}] applying actions: moving result file...`);
 
             // start file moving
             fs.move(src, dst, (err) => {
-                return (err) ? reject(err) : resolve(project);
+                return (err) ? reject(err) : resolve(job);
             });
         })
     });

@@ -18,7 +18,7 @@ process.env.RESULTS_DIR = path.join('test', 'results');
 var actions = rewire('../../../renderer/tasks/actions.js');
 
 describe('Task: actions', () => {
-    let project = {
+    let job = {
         uid: 'work',
         resultname: 'result.mp4',
         workpath: path.join('test', 'work')
@@ -35,15 +35,15 @@ describe('Task: actions', () => {
     });
 
     it('should create results folder if it doesn\'t exists', (done) => {
-        actions(project).should.be.fulfilled.then(() => {
+        actions(job).should.be.fulfilled.then(() => {
             path.join('test', 'results').should.be.a.directory().and.not.empty;
         }).should.notify(done);
     });
 
     it('should move resulted file from temp to results', (done) => {
-        actions(project).should.be.fulfilled.then(() => {
+        actions(job).should.be.fulfilled.then(() => {
             path.join('test', 'temp', 'result.mp4').should.not.be.path();
-            path.join('test', 'results', project.uid + '_result.mp4').should.be.a.path();
+            path.join('test', 'results', job.uid + '_result.mp4').should.be.a.path();
         }).should.notify(done);
     });
 
@@ -51,41 +51,41 @@ describe('Task: actions', () => {
         fs.mkdirSync(path.join('test', 'results'));
         fs.writeFileSync(path.join('test', 'results', 'work_result.mp4'));
 
-        actions(project).should.be.fulfilled.then(() => {
+        actions(job).should.be.fulfilled.then(() => {
             path.join('test', 'temp', 'result.mp4').should.not.be.path();
-            path.join('test', 'results', project.uid + '_result.mp4').should.be.a.path();
+            path.join('test', 'results', job.uid + '_result.mp4').should.be.a.path();
         }).should.notify(done);
     });
 
-    describe('when project is jpeg sequence', () => {
+    describe('when job is jpeg sequence', () => {
 
         beforeEach(() => {
-            project.settings = { outputExt: 'jpg' };
+            job.settings = { outputExt: 'jpg' };
 
             fs.writeFileSync(path.join('test', 'work', 'result_00001.jpg'));
             fs.writeFileSync(path.join('test', 'work', 'result_00002.jpg'));
         });
 
         it('should create subfolder, and move all resulted images into it', (done) => {
-            actions(project).should.be.fulfilled.then(() => {
+            actions(job).should.be.fulfilled.then(() => {
                 path.join('test', 'work', 'result_00001.jpg').should.not.be.path();
                 path.join('test', 'work', 'result_00002.jpg').should.not.be.path();
-                path.join('test', 'results', project.uid, 'result_00001.jpg').should.be.a.path();
-                path.join('test', 'results', project.uid, 'result_00002.jpg').should.be.a.path();
+                path.join('test', 'results', job.uid, 'result_00001.jpg').should.be.a.path();
+                path.join('test', 'results', job.uid, 'result_00002.jpg').should.be.a.path();
             }).should.notify(done);
         });
 
         it('should override images if they are already exist', (done) => {
             fs.mkdirSync(path.join('test', 'results'));
-            fs.mkdirSync(path.join('test', 'results', project.uid));
-            fs.writeFileSync(path.join('test', 'results', project.uid, 'result_00001.jpg'));
-            fs.writeFileSync(path.join('test', 'results', project.uid, 'result_00002.jpg'));
+            fs.mkdirSync(path.join('test', 'results', job.uid));
+            fs.writeFileSync(path.join('test', 'results', job.uid, 'result_00001.jpg'));
+            fs.writeFileSync(path.join('test', 'results', job.uid, 'result_00002.jpg'));
 
-            actions(project).should.be.fulfilled.then(() => {
+            actions(job).should.be.fulfilled.then(() => {
                 path.join('test', 'work', 'result_00001.jpg').should.not.be.path();
                 path.join('test', 'work', 'result_00002.jpg').should.not.be.path();
-                path.join('test', 'results', project.uid, 'result_00001.jpg').should.be.a.path();
-                path.join('test', 'results', project.uid, 'result_00002.jpg').should.be.a.path();
+                path.join('test', 'results', job.uid, 'result_00001.jpg').should.be.a.path();
+                path.join('test', 'results', job.uid, 'result_00002.jpg').should.be.a.path();
             }).should.notify(done);
         });
     });

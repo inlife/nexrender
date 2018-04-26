@@ -6,45 +6,45 @@ const path    = require('path')
 const mkdirp  = require('mkdirp')
 
 /**
- * This task creates working directory for current project
+ * This task creates working directory for current job
  */
-module.exports = function(project, settings) {
+module.exports = function(job, settings) {
     return new Promise((resolve, reject) => {
-        if (settings.logger) settings.logger(`[${project.uid}] setting up project...`);
+        if (settings.logger) settings.logger(`[${job.uid}] setting up job...`);
 
-        // setup project's workpath
-        project.workpath = path.join(settings.workpath,   project.uid);
+        // setup job's workpath
+        job.workpath = path.join(settings.workpath,   job.uid);
 
-        // set default project result file name
-        if (project.settings.outputExt) {
-            project.resultname = 'result.' + project.settings.outputExt;
+        // set default job result file name
+        if (job.settings.outputExt) {
+            job.resultname = 'result.' + job.settings.outputExt;
         }
         else {
-            project.resultname = 'result.' + (os.platform() === 'darwin' ? 'mov' : 'avi');
+            job.resultname = 'result.' + (os.platform() === 'darwin' ? 'mov' : 'avi');
         }
 
         // NOTE: for still (jpg) image sequence frame filename will be changed to result_[#####].jpg
-        if (project.settings &&
-            project.settings.outputExt &&
+        if (job.settings &&
+            job.settings.outputExt &&
             ['jpeg', 'jpg'].indexOf(
-                project.settings.outputExt.toLowerCase()
+                job.settings.outputExt.toLowerCase()
             ) !== -1
         ) {
-            project.resultname = 'result_[#####]' + project.settings.outputExt;
+            job.resultname = 'result_[#####]' + job.settings.outputExt;
         }
 
 
         // create if it does not exists
-        mkdirp.sync(project.workpath);
+        mkdirp.sync(job.workpath);
 
-        // check if we have project (template) as an asset
-        for (let asset of project.assets) {
-            if (asset.type && ['project', 'template'].indexOf(asset.type) !== -1) {
-                project.template = asset.name;
-                return resolve(project);
+        // check if we have job (template) as an asset
+        for (let asset of job.assets) {
+            if (asset.type && ['job', 'template'].indexOf(asset.type) !== -1) {
+                job.template = asset.name;
+                return resolve(job);
             }
         }
 
-        return reject(new Error("You should provide a project template file (aepx) as an asset."));
+        return reject(new Error("You should provide a job template file (aepx) as an asset."));
     });
 };

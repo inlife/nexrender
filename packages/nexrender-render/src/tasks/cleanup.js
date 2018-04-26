@@ -7,13 +7,13 @@ const async     = require('async');
 /**
  * Clean up all workpath files and remove folder
  */
-module.exports = function(project) {
+module.exports = function(job) {
     return new Promise((resolve, reject) => {
 
-        console.info(`[${project.uid}] cleaning up...`);
+        console.info(`[${job.uid}] cleaning up...`);
 
-        fs.remove( project.workpath, (err) => {
-            return (err) ? reject(err) : resolve(project);
+        fs.remove( job.workpath, (err) => {
+            return (err) ? reject(err) : resolve(job);
         })
     });
 };

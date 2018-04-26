@@ -16,14 +16,14 @@ var cleanup = require('../../../renderer/tasks/cleanup.js');
 
 describe('Task: cleanup', () => {
 
-    let project = { workpath: path.join('test', 'work') };
+    let job = { workpath: path.join('test', 'work') };
 
     it('should delete all files inside workpath', (done) => {
         fs.mkdirSync( path.join('test', 'work') );
         fs.writeFile( path.join('test', 'work', 'file1') );
         fs.writeFile( path.join('test', 'work', 'file2') );
 
-        cleanup(project).should.be.fulfilled.then(() => {
+        cleanup(job).should.be.fulfilled.then(() => {
             path.join('test', 'work', 'file1').should.not.be.path;
             path.join('test', 'work', 'file2').should.not.be.path;
             path.join('test', 'work').should.not.be.path;

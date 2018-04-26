@@ -5,12 +5,12 @@ const fs    = require('fs-extra');
 const dir   = require('node-dir');
 
 /**
- * Function tries to read logs from folder with project
- * @param  {Project}   project
+ * Function tries to read logs from folder with job
+ * @param  {Object}   job
  * @param  {Function} callback
  */
-function getLogs(project, callback) {
-    let logsdir = path.join( project.workpath, project.template + ' Logs' );
+function getLogs(job, callback) {
+    let logsdir = path.join( job.workpath, job.template + ' Logs' );
     let msg = '';
 
     dir.readFiles(logsdir, (err, cnt, filename, next) => {
@@ -22,40 +22,40 @@ function getLogs(project, callback) {
 }
 
 /**
- * verify that project rendered:
+ * verify that job rendered:
  * file result.$EXT exists, and its size > 0
  */
-module.exports = function(project) {
+module.exports = function(job) {
     return new Promise((resolve, reject) => {
 
-        console.info(`[${project.uid}] verifying project...`);
+        console.info(`[${job.uid}] verifying job...`);
 
         //TEMP: workaround for JPEG sequences mode
-        if (project.settings &&
-            project.settings.outputExt &&
+        if (job.settings &&
+            job.settings.outputExt &&
             ['jpeg', 'jpg'].indexOf(
-                project.settings.outputExt.toLowerCase()
+                job.settings.outputExt.toLowerCase()
             ) !== -1
         ) {
-            console.info(`[${project.uid}] verifying: found jpeg sequence...`);
-            return resolve(project);
+            console.info(`[${job.uid}] verifying: found jpeg sequence...`);
+            return resolve(job);
         }
 
         // read stats for file
         fs.stat( path.join(
-            project.workpath,
-            project.resultname
+            job.workpath,
+            job.resultname
         ), (err, stats) => {
             if (err) {
                 // if file doesn't exists
                 return reject(err);
             } else if (!stats || stats.size < 1) {
                 // if file is empty
-                getLogs(project, (logs) => {
+                getLogs(job, (logs) => {
                     return reject(logs);
                 })
             } else {
-                return resolve(project);
+                return resolve(job);
             }
         })
     });

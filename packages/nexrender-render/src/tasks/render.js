@@ -6,39 +6,39 @@ const spawn = require('child_process').spawn
 /**
  * This task creates rendering process
  */
-module.exports = function(project, settings) {
+module.exports = function(job, settings) {
     return new Promise((resolve, reject) => {
-        if (settings.logger) settings.logger(`[${project.uid}] rendering project...`);
+        if (settings.logger) settings.logger(`[${job.uid}] rendering job...`);
 
         // create container for data and parameters
         let aedata = [];
         let params = [];
 
         // setup parameters
-        params.push('-comp',        project.composition);
-        params.push('-project',     path.join(project.workpath, project.template));
-        params.push('-output',      path.join(project.workpath, project.resultname));
+        params.push('-comp',    job.composition);
+        params.push('-job',     path.join(job.workpath, job.template));
+        params.push('-output',  path.join(job.workpath, job.resultname));
 
         // advanced parameters
-        if (project.settings) {
-            if (project.settings.outputModule) {
-                params.push('-OMtemplate', project.settings.outputModule);
+        if (job.settings) {
+            if (job.settings.outputModule) {
+                params.push('-OMtemplate', job.settings.outputModule);
             }
 
-            if (project.settings.renderSettings) {
-                params.push('-RStemplate', project.settings.renderSettings);
+            if (job.settings.renderSettings) {
+                params.push('-RStemplate', job.settings.renderSettings);
             }
 
-            if (project.settings.startFrame) {
-                params.push('-s', project.settings.startFrame);
+            if (job.settings.startFrame) {
+                params.push('-s', job.settings.startFrame);
             }
 
-            if (project.settings.endFrame) {
-                params.push('-e', project.settings.endFrame);
+            if (job.settings.endFrame) {
+                params.push('-e', job.settings.endFrame);
             }
 
-            if (project.settings.incrementFrame) {
-                params.push('-i', project.settings.incrementFrame);
+            if (job.settings.incrementFrame) {
+                params.push('-i', job.settings.incrementFrame);
             }
         }
 
@@ -84,7 +84,7 @@ module.exports = function(project, settings) {
 
         // on finish (code 0 - success, other - error)
         ae.on('close', (code) => {
-            return (code !== 0) ? reject(aedata.join('')) : resolve(project);
+            return (code !== 0) ? reject(aedata.join('')) : resolve(job);
         });
     });
 };

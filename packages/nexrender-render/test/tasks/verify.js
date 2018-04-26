@@ -16,7 +16,7 @@ var verify = require('../../../renderer/tasks/verify.js');
 
 describe('Task: verify', () => {
 
-    let project = { workpath: 'test', resultname: 'result' };;
+    let job = { workpath: 'test', resultname: 'result' };;
 
     afterEach(() => {
         fs.removeSync( path.join('test', 'result') );
@@ -24,20 +24,20 @@ describe('Task: verify', () => {
 
     it('should pass validation if file exists and size > 0', (done) => {
         fs.writeFileSync( path.join('test', 'result'), 'some test info');
-        verify(project).should.be.fulfilled.notify(done);
+        verify(job).should.be.fulfilled.notify(done);
     });
 
     it('should not pass validation if file doesnt exist', (done) => {
-        verify(project).should.be.rejected.notify(done);
+        verify(job).should.be.rejected.notify(done);
     });
 
     it('should not pass validation if file exist but its empty', (done) => {
         fs.writeFileSync( path.join('test', 'result'), '');
-        verify(project).should.be.rejected.notify(done);
+        verify(job).should.be.rejected.notify(done);
     });
 
-    it('should skip validation if project is jpeg sequence', (done) => {
-        project.settings = { outputExt: 'jpeg' };
-        verify(project).should.be.fulfilled.notify(done);
+    it('should skip validation if job is jpeg sequence', (done) => {
+        job.settings = { outputExt: 'jpeg' };
+        verify(job).should.be.fulfilled.notify(done);
     });
 });

@@ -1,19 +1,18 @@
 'use strict';
 
 const assert    = require('assert')
-const Project   = require('@nexrender/project')
-
+const Job       = require('@nexrender/job')
 const fetch     = global.__fetch_mock ? global.__fetch_mock : require('node-fetch')
 
 /* simple uri formatter (shortcut) */
 const uri = (apiurl, secret, id) => {
-    return `${apiurl}/projects` + (id ? `/${id}` : '') + (secret ? `?secret=${secret}` : '')
+    return `${apiurl}/jobs` + (id ? `/${id}` : '') + (secret ? `?secret=${secret}` : '')
 }
 
 module.exports = (apiurl, secret, instance) => ({
     /**
-     * Creates new Project object, saves to server's database
-     * @param  {Object} data  Plain object for project
+     * Creates new Job object, saves to server's database
+     * @param  {Object} data  Plain object for job
      * @return {Promise}
      */
     create: (data) => {
@@ -25,7 +24,7 @@ module.exports = (apiurl, secret, instance) => ({
             assert(data.template);
             assert(data.composition);
         } catch (err) {
-            return Promise.reject('[error] you need to provide project properties')
+            return Promise.reject('[error] you need to provide job properties')
         }
 
         // and arrays
@@ -39,11 +38,11 @@ module.exports = (apiurl, secret, instance) => ({
                 headers: { 'Content-Type': 'application/json' },
             })
             .then(res => res.json())
-            .then(json => new Project(json, instance))
+            .then(json => new Job(json, instance))
     },
 
     /**
-     * Get single or multiple entities of Project
+     * Get single or multiple entities of Job
      * @optional @param {Number} id
      * @return {Promise}
      */
@@ -53,29 +52,29 @@ module.exports = (apiurl, secret, instance) => ({
         // return single
         if (id !== null) {
             return fetch(uri(apiurl, secret, id))
-                .then(res => res.ok ? res : Promise.reject('cannot find project with id: ' + id) )
+                .then(res => res.ok ? res : Promise.reject('cannot find job with id: ' + id) )
                 .then(res => res.json())
-                .then(json => new Project(json, instance))
+                .then(json => new Job(json, instance))
         }
         // return multiple
         else {
             return fetch(uri(apiurl, secret))
-                .then(res => res.ok ? res : Promise.reject('error listing all projects') )
+                .then(res => res.ok ? res : Promise.reject('error listing all jobs') )
                 .then(res => res.json())
-                .then(projects => projects
-                    .map(json => new Project(json, instance)))
+                .then(jobs => jobs
+                    .map(json => new Job(json, instance)))
         }
     },
 
     /**
      * Update object on server
-     * @param  {Object || Project} object
+     * @param  {Object || Job} object
      * @return {Promise}
      */
     update: (object) => {
         let uobj = object;
 
-        if (object instanceof Project) {
+        if (object instanceof Job) {
             uobj = object.serialize();
         }
 
@@ -84,25 +83,25 @@ module.exports = (apiurl, secret, instance) => ({
                 body:    JSON.stringify(uobj),
                 headers: { 'Content-Type': 'application/json' },
             })
-            .then(res => res.ok ? res : Promise.reject('cannot update project with id: ' + id))
+            .then(res => res.ok ? res : Promise.reject('cannot update job with id: ' + id))
             .then(res => res.json())
             .then(data => {
-                if (object instanceof Project) {
+                if (object instanceof Job) {
                     return object.deserialize(data);
                 } else {
-                    return new Project(data, instance);
+                    return new Job(data, instance);
                 }
             })
     },
 
     /**
      * Remove object from server
-     * @param  {Number} id project uid
+     * @param  {Number} id job uid
      * @return {Promise}
      */
     remove: (id) => {
         return fetch(uri(apiurl, secret, id), { method: 'DELETE' })
-            .then(res => res.ok ? res : Promise.reject('cannot remove project with id: ' + id))
+            .then(res => res.ok ? res : Promise.reject('cannot remove job with id: ' + id))
             .then(res => res.json())
     },
 })
