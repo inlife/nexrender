@@ -4,7 +4,6 @@ const fs        = require('fs')
 const path      = require('path')
 const gulp      = require('gulp')
 const mocha     = require('gulp-mocha')
-const eslint    = require('gulp-eslint')
 
 const packages  = fs.readdirSync('./packages')
 
@@ -21,11 +20,4 @@ gulp.task('test', function () {
         // .pipe(istanbul.writeReports())
         // // Enforce a coverage of at least 90%
         // .pipe(istanbul.enforceThresholds({ thresholds: { global: 90 } }));
-});
-
-
-gulp.task('lint', function() {
-    return gulp.src(['*.js', 'lib/**/*.js', 'test/**/*.js'])
-        .pipe(eslint())
-        .pipe(eslint.format());
 });
