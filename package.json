@@ -17,13 +17,12 @@
   },
   "repository": "inlife/nexrender",
   "license": "MIT",
-  "dependencies": {},
   "devDependencies": {
     "codeclimate-test-reporter": "^0.5.0",
     "gulp": "^3.9.1",
     "gulp-mocha": "^5.0.0",
     "istanbul": "^0.4.5",
-    "lerna": "^2.11.0",
+    "lerna": "^2.7.1",
     "mocha": "^5.1.1"
   }
 }

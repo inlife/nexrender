@@ -17,11 +17,11 @@
   },
   "devDependencies": {
     "@nexrender/server": "^1.0",
-    "@nexrender/agent": "^1.0"
+    "@nexrender/render": "^1.0"
   },
   "peerDependencies": {
     "@nexrender/server": "^1.0",
-    "@nexrender/agent": "^1.0"
+    "@nexrender/render": "^1.0"
   },
   "homepage": "https://github.com/inlife/nexrender#readme"
 }

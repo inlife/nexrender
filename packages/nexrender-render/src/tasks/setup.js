@@ -39,6 +39,6 @@ module.exports = function(job, settings) {
             }
         }
 
-        return reject(new Error("You should provide a job template (aepx) as a file."));
+        return reject(new Error("You should provide a job template (aepx) as a file."))
     });
 };
