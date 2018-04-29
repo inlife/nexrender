@@ -1,44 +1,62 @@
 'use strict';
 
-const fs       = require('fs')
-const path     = require('path')
-const download = require('download')
+const fs    = require('fs')
+const url   = require('url')
+const path  = require('path')
+const fetch = require('node-fetch')
 
-function isLocalPath(src) {
-    return src.indexOf('http://') === -1 && src.indexOf('https://') === -1;
-}
-
-function copy(src, dstDir) {
-    return new Promise((resolve, reject) => {
-        const dstPath = path.join(dstDir, path.basename(src));
-        fs.readFile(src, (err, data) => {
-            if (err) { return reject(err); }
-            fs.writeFile(dstPath, data, (err) => {
-                return (err ? reject(err) : resolve());
-            });
-        })
-    });
+function isRemoteFileURL(src) {
+    return src.indexOf('http://') !== -1 || src.indexOf('https://') !== -1;
 }
 
 /**
- * This task is used to download every asset in the "job.asset"
+ * This task is used to download/copy every entry in the "job.files"
+ * and place it nearby the project file
  */
 module.exports = function(job, settings) {
-    return new Promise((resolve, reject) => {
-        if (settings.logger) settings.logger(`[${job.uid}] downloading files...`);
+    if (settings.logger) settings.logger(`[${job.uid}] downloading files...`)
 
-        // iterate over each asset and download it (copy it)
-        Promise.all(job.files.map((asset) => {
-            if (asset.type === 'url' || !isLocalPath(asset.src)) {
-                return download(asset.src, job.workpath);
-            } else if (asset.type === 'path' || isLocalPath(asset.src)) {
-                return copy(asset.src, job.workpath);
-            }
-        })).then(() => {
-            return resolve(job);
-        }).catch((err) => {
-            return reject(err);
-        });
+    const promises = job.files.map(file => {
+        const destPath = path.join(job.workpath, file.name || path.basename(file.src))
 
-    });
-};
+        // additional helper to guess that file is an url
+        if (isRemoteFileURL(file.src)) {
+            file.provider = 'http'
+        }
+
+        // handle different providers of files
+        switch (file.provider) {
+            case 'http':
+                return fetch(file.src)
+                    .then(res => {
+                        const dest = fs.createWriteStream(destPath, {
+                            autoClose: true,
+                        })
+
+                        res.body.pipe(dest)
+                    })
+                break;
+
+            case 'ftp': Promise.reject(new Error('ftp provider not implemeneted')); break;
+            case 's3':  Promise.reject(new Error('s3 provider not implemeneted')); break;
+
+            // plain file stream copy
+            default:
+                const rd = fs.createReadStream(file.src)
+                const wr = fs.createWriteStream(destPath)
+
+                return new Promise(function(resolve, reject) {
+                    rd.on('error', reject)
+                    wr.on('error', reject)
+                    wr.on('finish', resolve)
+                    rd.pipe(wr);
+                }).catch(function(error) {
+                    rd.destroy()
+                    wr.end()
+                    throw error
+                })
+        }
+    })
+
+    return Promise.all(promises)
+}

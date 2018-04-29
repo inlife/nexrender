@@ -7,7 +7,6 @@ const autofind  = require('./helpers/autofind')
 
 const setup     = require('./tasks/setup')
 const download  = require('./tasks/download')
-const rename    = require('./tasks/rename')
 const patch     = require('./tasks/patch')
 const render    = require('./tasks/render')
 const verify    = require('./tasks/verify')
@@ -25,7 +24,7 @@ module.exports = (job, settings) => {
     const binaryUser = settings.binary && fs.existsSync(settings.binary) ? settings.binary : null;
 
     if (!binaryUser && !binaryAuto) {
-        return Promise.reject('you should provide a proper path to After Effects\' \"aerender\" binary')
+        return Promise.reject(new Error('you should provide a proper path to After Effects\' \"aerender\" binary'))
     }
 
     settings.binary         = binaryUser            || binaryAuto;
@@ -35,6 +34,8 @@ module.exports = (job, settings) => {
     settings.logger         = settings.logger       || () => {};
     settings.memory         = settings.memory       || '';
     settings.log            = settings.log          || '';
+
+    settings.outputExt      = settings.outputExt.toLowerCase() || null;
 
     // make sure we will have absolute path
     if (!path.isAbsolute(settings.workpath)) {
@@ -49,7 +50,6 @@ module.exports = (job, settings) => {
     return Promise.resolve(job)
         .then(job => setup(job, settings))
         .then(job => download(job, settings))
-        .then(job => rename(job, settings))
         .then(job => patch(job, settings))
         .then(job => render(job, settings))
         .then(job => verify(job, settings))

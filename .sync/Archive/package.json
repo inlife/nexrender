@@ -19,11 +19,15 @@
   "license": "MIT",
   "dependencies": {},
   "devDependencies": {
+    "chai": "^3.5.0",
+    "chai-as-promised": "^5.2.0",
+    "chai-fs": "git+https://github.com/zapatek/chai-fs.git",
     "codeclimate-test-reporter": "^0.5.0",
     "gulp": "^3.9.1",
     "gulp-mocha": "^5.0.0",
     "istanbul": "^0.4.5",
     "lerna": "^2.11.0",
-    "mocha": "^5.1.1"
+    "mocha": "^5.1.1",
+    "rewire": "^4.0.1"
   }
 }

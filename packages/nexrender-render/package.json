@@ -18,9 +18,7 @@
   },
   "dependencies": {
     "mkdirp": "^0.5.1",
-    "download": "^6.2.5"
+    "node-fetch": "^2.1.2"
   },
-  "devDependencies": {
-    "express": "^4.16.3"
-  }
+  "devDependencies": {}
 }

@@ -1,133 +1,119 @@
 'use strict';
 
 const fs        = require('fs')
+const url       = require('url')
+const http      = require('http')
 const path      = require('path')
-const chai      = require('chai')
-const chaiAsFs  = require('chai-fs')
-const express   = require('express')
 const exec      = require('child_process').exec
-
-chai.use(chaiAsFs);
-
-global.should = chai.should();
+const assert    = require('assert')
 
 // require module
-var download = require('../../src/tasks/download.js');
+const download = require('../../src/tasks/download.js');
 
 describe('Task: download', () => {
     const settings = {
         logger: () => {},
     }
 
-    describe('remote file', () => {
-        let app = express();
-        let server = null;
-        let cperror = undefined;
-        let job = {
-            uid: 'mytestid',
-            template: 'job.aepx',
-            workpath: __dirname,
-            files: [{
-                type: 'job',
-                src: 'http://localhost:3322/proj.aepx',
-                name: 'proj.aepx'
-            }, {
-                type: 'image',
-                src: 'http://localhost:3322/image.jpg'
-            }]
-        };
+    describe('remote file via http(s)', () => {
+        // simple http static server
+        const server = http.createServer((req, res) => {
+            let uri         = url.parse(req.url).pathname;
+            let filename    = path.join(__dirname, '..', 'res', uri);
 
+            fs.exists(filename, (exists) => {
+                if (!exists) {
+                    res.writeHead(404, {"Content-Type": "text/plain"});
+                    res.write("404 Not Found\n");
+                    return res.end();
+                }
 
-        before((done) => {
-            fs.mkdirSync( path.join(__dirname, 'public') );
-            fs.writeFileSync( path.join(__dirname, 'public', 'proj.aepx'), 'dummy');
-            fs.writeFileSync( path.join(__dirname, 'public', 'image.jpg'), 'dummy');
+                fs.readFile(filename, "binary", function(err, file) {
+                    if (err) {
+                        res.writeHead(500, {"Content-Type": "text/plain"});
+                        res.write(err + "\n");
+                        return res.end();
+                    }
 
-            app.use( express.static( path.join(__dirname, 'public') ));
-            server = app.listen(3322, done);
-        });
-
-        after(() => {
-            exec('rm -r ' + path.join(__dirname, 'public'));
-            server.close();
-        });
-
-        beforeEach((done) => {
-            download(job, settings).then((proj) => {
-                job = proj; done();
-            }).catch((err) => {
-                cperror = err;
-                setTimeout(done, 100);
-            });
-        });
-
-        afterEach(() => {
-            fs.unlinkSync( path.join(__dirname, 'proj.aepx') );
-            fs.unlinkSync( path.join(__dirname, 'image.jpg') );
-        });
-
-        it('should download each asset', () => {
-            path.join(__dirname, 'proj.aepx').should.be.a.path();
-            path.join(__dirname, 'image.jpg').should.be.a.path();
-        });
-
-        describe('(with file 404)', () => {
-            before(() => {
-                job.files.push({
-                    type: 'audio',
-                    src: 'http://localhost:3322/notfound.mp3'
+                    // send 200
+                    res.writeHead(200);
+                    res.write(file, "binary");
+                    return res.end();
                 });
             });
-
-            it('should throw error if file cannot be downloaded', () => {
-                cperror.should.not.be.undefined;
-            });
-        });
-    });
-
-    describe('local file', () => {
-        const filesDir = path.join(__dirname, 'files')
+        })
 
         let job = {
             uid: 'mytestid',
-            template: 'job.aepx',
-            workpath: __dirname,
+            template: 'proj.aepx',
+            workpath: path.join(__dirname, '..'),
             files: [{
-                type: 'job',
-                src: path.join(filesDir, 'proj.aepx'),
+                type: 'project',
+                src: 'http://localhost:3322/project.aepx',
                 name: 'proj.aepx'
             }, {
                 type: 'image',
-                src: path.join(filesDir, 'image.jpg')
-            }]
-        };
+                src: 'http://localhost:3322/img.jpg',
+                provider: 'http',
+            }],
+        }
 
-        before(() => {
-            fs.mkdirSync( filesDir );
-            job.files.forEach((asset) => {
-                fs.writeFileSync(asset.src, 'dummy');
-            });
-        });
+        before(done => {
+            server.listen(3322, done)
+        })
 
         after(() => {
-            exec('rm -r ' + filesDir);
-        });
+            server.close()
+        })
 
-        beforeEach((done) => {
-            download(job, settings).then((proj) => {
-                job = proj; done();
-            }).catch(console.log);
-        });
+        it('should download each asset', (done) => {
+            download(job, settings)
+                .then(prj => {
+                    const file1 = path.join(__dirname, '..', 'proj.aepx')
+                    const file2 = path.join(__dirname, '..', 'img.jpg')
 
-        afterEach(() => {
-            fs.unlinkSync( path.join(__dirname, 'proj.aepx') );
-            fs.unlinkSync( path.join(__dirname, 'image.jpg') );
-        });
+                    assert(fs.existsSync(file1))
+                    assert(fs.existsSync(file2))
 
-        it('should download each asset', () => {
-            path.join(__dirname, 'proj.aepx').should.be.a.path();
-            path.join(__dirname, 'image.jpg').should.be.a.path();
-        });
-    });
+                    fs.unlinkSync(file1)
+                    fs.unlinkSync(file2)
 
-});
+                    done()
+                })
+                .catch(done)
+        })
+    })
+
+    describe('local file', () => {
+        let job = {
+            uid: 'mytestid',
+            template: 'proj.aepx',
+            workpath: path.join(__dirname, '..'),
+            files: [{
+                type: 'project',
+                src: path.join(__dirname, '..', 'res', 'project.aepx'),
+                name: 'proj.aepx'
+            }, {
+                type: 'image',
+                src: path.join(__dirname, '..', 'res', 'img.jpg'),
+            }],
+        }
+
+        it('should copy each asset', (done) => {
+            download(job, settings)
+                .then(prj => {
+                    const file1 = path.join(__dirname, '..', 'proj.aepx')
+                    const file2 = path.join(__dirname, '..', 'img.jpg')
+
+                    assert(fs.existsSync(file1))
+                    assert(fs.existsSync(file2))
+
+                    fs.unlinkSync(file1)
+                    fs.unlinkSync(file2)
+
+                    done()
+                })
+                .catch(done)
+        })
+    })
+})

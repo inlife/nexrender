@@ -13,38 +13,32 @@ module.exports = function(job, settings) {
         if (settings.logger) settings.logger(`[${job.uid}] setting up job...`);
 
         // setup job's workpath
-        job.workpath = path.join(settings.workpath,   job.uid);
+        job.workpath = path.join(settings.workpath, job.uid);
+        job.settings = job.settings || {};
 
         // set default job result file name
         if (job.settings.outputExt) {
             job.resultname = 'result.' + job.settings.outputExt;
-        }
-        else {
+        } else {
             job.resultname = 'result.' + (os.platform() === 'darwin' ? 'mov' : 'avi');
         }
 
         // NOTE: for still (jpg) image sequence frame filename will be changed to result_[#####].jpg
-        if (job.settings &&
-            job.settings.outputExt &&
-            ['jpeg', 'jpg'].indexOf(
-                job.settings.outputExt.toLowerCase()
-            ) !== -1
-        ) {
+        if (job.settings.outputExt && ['jpeg', 'jpg'].indexOf(job.settings.outputExt) !== -1) {
             job.resultname = 'result_[#####]' + job.settings.outputExt;
         }
-
 
         // create if it does not exists
         mkdirp.sync(job.workpath);
 
-        // check if we have job (template) as an asset
-        for (let asset of job.assets) {
-            if (asset.type && ['job', 'template'].indexOf(asset.type) !== -1) {
-                job.template = asset.name;
+        // check if we have job (template) as an file
+        for (let file of job.files) {
+            if (file.type && ['project', 'template'].indexOf(file.type) !== -1) {
+                job.template = file.name;
                 return resolve(job);
             }
         }
 
-        return reject(new Error("You should provide a job template file (aepx) as an asset."));
+        return reject(new Error("You should provide a job template (aepx) as a file."));
     });
 };

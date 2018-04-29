@@ -1,14 +1,12 @@
 {
-  "name": "@nexrender/ae-format",
+  "name": "@nexrender/render",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
-  "directories": {
-    "test": "test"
-  },
+  "main": "src/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "homepage": "https://github.com/inlife/nexrender#readme",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/inlife/nexrender.git"
@@ -18,5 +16,9 @@
   "bugs": {
     "url": "https://github.com/inlife/nexrender/issues"
   },
-  "homepage": "https://github.com/inlife/nexrender#readme"
+  "dependencies": {
+    "mkdirp": "^0.5.1",
+    "node-fetch": "^2.1.2"
+  },
+  "devDependencies": {}
 }

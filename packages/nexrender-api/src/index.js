@@ -21,7 +21,7 @@ module.exports = {
      * @param  {Object} opts
      */
     create: (options) => {
-        options     = options           ||{};
+        options     = options           || {};
 
         let scheme  = options.scheme    || DEFAULT_API_SCHEME;
         let host    = options.host      || DEFAULT_API_HOST;

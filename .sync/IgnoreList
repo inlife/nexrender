@@ -1,0 +1,39 @@
+﻿# IgnoreList is a UTF-8 encoded .txt file that helps you specify single files, paths and rules 
+# for ignoring during the synchronization job. It supports "?" and "*" wildcard symbols.
+#
+#
+# OS generated files #
+$RECYCLE.BIN
+$Recycle.Bin
+lost+found
+.DocumentRevisions-V100
+.TemporaryItems
+.fseventsd
+.iCloud
+.DS_Store
+.DS_Store?
+.Spotlight-V100
+.Trashes
+.Trash-*
+ehthumbs.db
+desktop.ini
+Thumbs.db
+~*
+*~
+.~lock.*
+*.part
+*.filepart
+.csync_journal.db
+.csync_journal.db.tmp
+*.swn
+*.swp
+*.swo
+.dropbox
+.dropbox.attr
+*.crdownload
+@eaDir
+@SynoResource
+.@__thumb
+.thumbnails
+._*
+node_modules/
