@@ -47,7 +47,7 @@ describe('Task: download', () => {
             uid: 'mytestid',
             template: 'proj.aepx',
             workpath: path.join(__dirname, '..'),
-            files: [{
+            assets: [{
                 type: 'project',
                 src: 'http://localhost:3322/project.aepx',
                 name: 'proj.aepx'
@@ -89,7 +89,7 @@ describe('Task: download', () => {
             uid: 'mytestid',
             template: 'proj.aepx',
             workpath: path.join(__dirname, '..'),
-            files: [{
+            assets: [{
                 type: 'project',
                 src: path.join(__dirname, '..', 'res', 'project.aepx'),
                 name: 'proj.aepx'

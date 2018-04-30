@@ -77,9 +77,9 @@ module.exports = function(job) {
 
         console.info(`[${job.uid}] patching job...`);
 
-        // Iterate over files,
-        // skip those that are not data/script files,
-        for (let asset of job.files) {
+        // Iterate over assets,
+        // skip those that are not data/script assets,
+        for (let asset of job.assets) {
             if (['script', 'data'].indexOf(asset.type) === -1) continue;
 
             return processTemplateFile(job, (err) => {
@@ -87,7 +87,7 @@ module.exports = function(job) {
             });
         }
 
-        // job contains no data/script files, pass
+        // job contains no data/script assets, pass
         resolve(job);
     });
 };

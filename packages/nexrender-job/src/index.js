@@ -36,7 +36,7 @@ class Job {
             uid:            this.uid,
             type:           this.type,
             state:          this.state,
-            files:          this.files,
+            assets:         this.assets,
             template:       this.template,
             settings:       this.settings,
             composition:    this.composition,
@@ -57,7 +57,7 @@ class Job {
         this.template       = data.template     || DEFAULT_TEMPLATE;
         this.composition    = data.composition  || DEFAULT_COMPOSITION;
         this.type           = data.type         || DEFAULT_PROJECT_TYPE;
-        this.files          = data.files        || [];
+        this.assets         = data.assets       || [];
         this.actions        = data.actions      || [];
         this.settings       = data.settings     || {};
         this.errors         = data.errors       || [];

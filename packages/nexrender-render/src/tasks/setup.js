@@ -32,7 +32,7 @@ module.exports = function(job, settings) {
         mkdirp.sync(job.workpath);
 
         // check if we have job (template) as an file
-        for (let file of job.files) {
+        for (let file of job.assets) {
             if (file.type && ['project', 'template'].indexOf(file.type) !== -1) {
                 job.template = file.name;
                 return resolve(job);

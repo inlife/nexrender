@@ -13,7 +13,7 @@ describe('Task: setup', () => {
     const job = {
         uid: 'mytestid',
         template: 'project.aepx',
-        files: [{
+        assets: [{
             type: 'project',
             src: 'somefilename.aepx',
             name: 'project.aepx',

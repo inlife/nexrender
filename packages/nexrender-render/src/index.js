@@ -30,7 +30,7 @@ module.exports = (job, settings) => {
     settings.binary         = binaryUser            || binaryAuto;
     settings.workpath       = settings.workpath     || process.env.TEMP_DIRECTORY || './temp';
     settings.multiframes    = settings.multiframes  || false;
-    settings.addlicense     = settings.addlicense   || false;
+    settings.addlicense     = settings.addlicense   || true;
     settings.logger         = settings.logger       || () => {};
     settings.memory         = settings.memory       || '';
     settings.log            = settings.log          || '';

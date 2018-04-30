@@ -16,7 +16,7 @@ module.exports = function(job, settings) {
 
         // setup parameters
         params.push('-comp',    job.composition);
-        params.push('-job',     path.join(job.workpath, job.template));
+        params.push('-project', path.join(job.workpath, job.template));
         params.push('-output',  path.join(job.workpath, job.resultname));
 
         // advanced parameters

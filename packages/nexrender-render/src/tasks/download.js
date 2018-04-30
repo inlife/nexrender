@@ -10,24 +10,24 @@ function isRemoteFileURL(src) {
 }
 
 /**
- * This task is used to download/copy every entry in the "job.files"
- * and place it nearby the project file
+ * This task is used to download/copy every entry in the "job.assets"
+ * and place it nearby the project asset
  */
 module.exports = function(job, settings) {
-    if (settings.logger) settings.logger(`[${job.uid}] downloading files...`)
+    if (settings.logger) settings.logger(`[${job.uid}] downloading assets...`)
 
-    const promises = job.files.map(file => {
-        const destPath = path.join(job.workpath, file.name || path.basename(file.src))
+    const promises = job.assets.map(asset => {
+        const destPath = path.join(job.workpath, asset.name || path.basename(asset.src))
 
-        // additional helper to guess that file is an url
-        if (isRemoteFileURL(file.src)) {
-            file.provider = 'http'
+        // additional helper to guess that asset is an url
+        if (isRemoteFileURL(asset.src)) {
+            asset.provider = 'http'
         }
 
-        // handle different providers of files
-        switch (file.provider) {
+        // handle different providers of assets
+        switch (asset.provider) {
             case 'http':
-                return fetch(file.src)
+                return fetch(asset.src)
                     .then(res => {
                         const dest = fs.createWriteStream(destPath, {
                             autoClose: true,
@@ -40,9 +40,9 @@ module.exports = function(job, settings) {
             case 'ftp': Promise.reject(new Error('ftp provider not implemeneted')); break;
             case 's3':  Promise.reject(new Error('s3 provider not implemeneted')); break;
 
-            // plain file stream copy
+            // plain asset stream copy
             default:
-                const rd = fs.createReadStream(file.src)
+                const rd = fs.createReadStream(asset.src)
                 const wr = fs.createWriteStream(destPath)
 
                 return new Promise(function(resolve, reject) {

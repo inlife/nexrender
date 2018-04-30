@@ -10,7 +10,7 @@ let client = api.create({
 });
 
 // Define job properties
-var files = [{
+var assets = [{
     type: 'image',
     src: 'https://dl.dropboxusercontent.com/u/28013196/avatar/mario.jpeg',
     name: 'image.jpg'
@@ -20,7 +20,7 @@ var files = [{
 // client.jobs.create({
 //     template: 'template1.aepx',
 //     composition: 'base',
-//     files: files
+//     assets: assets
 // }).then((job) => {
 //     console.log('job saved', job);
 
@@ -39,7 +39,7 @@ var files = [{
 //     console.error(err)
 // });
 
-// client.jobs.create({ template: 'template1.aepx', composition: 'base', files: files })
+// client.jobs.create({ template: 'template1.aepx', composition: 'base', assets: assets })
 
 client.jobs.get().then(console.log)
 // client.jobs.update({ id: 'B1uINAxHz', state: 'falled' }).then(console.log).catch(console.log)
