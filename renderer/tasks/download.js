@@ -4,6 +4,7 @@ const download = require('download');
 const fs       = require('fs-extra');
 const path     = require('path');
 const AWS      = require('aws-sdk');
+const url      = require('url');
 
 
 function isLocalPath(src) {
@@ -52,8 +53,7 @@ module.exports = function(project) {
         // iterate over each asset and download it (copy it)
         Promise.all(project.assets.map((asset) => {
             if (asset.type === 's3') {
-                let dstFile =  asset.src.substring( asset.src.lastIndexOf('/') + 1 );
-                return downloadFromS3(asset.bucket, asset.key, project.workpath, dstFile);
+                return downloadFromS3(asset.bucket, asset.key, project.workpath, path.basename(url.parse(asset.src).pathname));
             } else if (asset.type === 'url' || !isLocalPath(asset.src)) {
                 return download(asset.src, project.workpath);
             } else if (asset.type === 'path' || isLocalPath(asset.src)) {
