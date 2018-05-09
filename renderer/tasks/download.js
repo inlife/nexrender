@@ -3,6 +3,9 @@
 const download = require('download');
 const fs       = require('fs-extra');
 const path     = require('path');
+const AWS      = require('aws-sdk');
+const url      = require('url');
+
 
 function isLocalPath(src) {
     return src.indexOf('http://') === -1 && src.indexOf('https://') === -1;
@@ -14,6 +17,20 @@ function copy(src, dstDir) {
         fs.copy(src, dstPath, (err) => {
             return (err ? reject(err) : resolve());
         });
+    });
+}
+
+function downloadFromS3(bucket, key, dstDir, dstName) {
+    var s3 = new AWS.S3();
+    var params = {Bucket: bucket, Key: key};
+    var file = fs.createWriteStream(path.join(dstDir, dstName));
+    return new Promise((resolve, reject) => {
+        file.on('close', function(){
+            resolve();
+        });
+        s3.getObject(params).createReadStream().on('error', function(err) {
+            reject(err);
+        }).pipe(file);
     });
 }
 
@@ -35,7 +52,9 @@ module.exports = function(project) {
 
         // iterate over each asset and download it (copy it)
         Promise.all(project.assets.map((asset) => {
-            if (asset.type === 'url' || !isLocalPath(asset.src)) {
+            if (asset.type === 's3') {
+                return downloadFromS3(asset.bucket, asset.key, project.workpath, path.basename(url.parse(asset.src).pathname));
+            } else if (asset.type === 'url' || !isLocalPath(asset.src)) {
                 return download(asset.src, project.workpath);
             } else if (asset.type === 'path' || isLocalPath(asset.src)) {
                 return copy(asset.src, project.workpath);
