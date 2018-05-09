@@ -1,4 +1,5 @@
 # folders
+.sync/
 node_modules/
 temp/
 results/
