@@ -1,6 +1,6 @@
 'use strict';
 
-describe('Testing @nexrender/render', () => {
+describe('Testing @nexrender/core', () => {
     describe('Testing tasks', () => {
         require('./tasks/setup')
         require('./tasks/download')
