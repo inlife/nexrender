@@ -1,5 +1,8 @@
 # Changelog
 
+## v0.6.0
+ * added ability to use s3 file type as asset, details: https://github.com/inlife/nexrender/pull/61
+
 ## v0.5.0
  * added files ability to use local rendernode-side files
 
