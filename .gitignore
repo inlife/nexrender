@@ -4,6 +4,7 @@ node_modules/
 temp/
 results/
 coverage/
+misc/
 
 # files
 *.log

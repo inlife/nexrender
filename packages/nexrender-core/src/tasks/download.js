@@ -38,7 +38,16 @@ module.exports = function(job, settings) {
                 break;
 
             case 'ftp': Promise.reject(new Error('ftp provider not implemeneted')); break;
-            case 's3':  Promise.reject(new Error('s3 provider not implemeneted')); break;
+            case 's3':
+                try {
+                    require('@nexrender/aws-s3').download(
+                        asset.src, destPath,
+                        { Bucket: asset.bucket, Key: asset.key }
+                    );
+                } catch (e) {
+                    Promise.reject(new Error('AWS S3 module is not installed, use \"npm i @nexrender/aws-s3 -g\" to install it.'))
+                }
+                break;
 
             // plain asset stream copy
             default:
