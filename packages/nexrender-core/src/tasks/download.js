@@ -40,7 +40,7 @@ module.exports = function(job, settings) {
             case 'ftp': Promise.reject(new Error('ftp provider not implemeneted')); break;
             case 's3':
                 try {
-                    require('@nexrender/aws-s3').download(
+                    return require('@nexrender/aws-s3').download(
                         asset.src, destPath,
                         { Bucket: asset.bucket, Key: asset.key }
                     );
