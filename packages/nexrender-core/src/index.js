@@ -1,6 +1,7 @@
 'use strict'
 
 const fs        = require('fs')
+const os        = require('os')
 
 const license   = require('./helpers/license')
 const autofind  = require('./helpers/autofind')
@@ -28,7 +29,7 @@ module.exports = (job, settings) => {
     }
 
     settings.binary         = binaryUser            || binaryAuto;
-    settings.workpath       = settings.workpath     || process.env.TEMP_DIRECTORY || './temp';
+    settings.workpath       = settings.workpath     || os.tmpdir();
     settings.multiframes    = settings.multiframes  || false;
     settings.addlicense     = settings.addlicense   || true;
     settings.logger         = settings.logger       || () => {};
@@ -44,7 +45,7 @@ module.exports = (job, settings) => {
 
     // add license helper
     if (settings.addlicense) {
-        license(settings)
+        license(settings);
     }
 
     return Promise.resolve(job)

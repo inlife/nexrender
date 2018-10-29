@@ -6,7 +6,6 @@
   "scripts": {
     "server": "node packages/nexrender-cli/src/index.js --server",
     "test": "./node_modules/.bin/lerna bootstrap && gulp test",
-    "lint": "eslint .",
     "coverage_upload": "CODECLIMATE_REPO_TOKEN=844102481459628ff8cbfa403603abd6841e8d9f58e0578b684e4bfe17471d3e ./node_modules/.bin/codeclimate-test-reporter < ./coverage/lcov.info",
     "coverage": "./node_modules/.bin/istanbul cover ./node_modules/.bin/_mocha -- -R spec"
   },
