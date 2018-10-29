@@ -16,7 +16,7 @@ const nexrender = { version: '1.0.0' }
 // }
 
 const server = require('@nexrender/server')
-const node   = require('@nexrender/node')
+// const node   = require('@nexrender/node')
 
 cli.parse({
     'version':      ['v',   'Get version'],
