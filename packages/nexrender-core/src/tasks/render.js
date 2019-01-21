@@ -8,7 +8,7 @@ const spawn = require('child_process').spawn
  */
 module.exports = function(job, settings) {
     return new Promise((resolve, reject) => {
-        if (settings.logger) settings.logger(`[${job.uid}] rendering job...`);
+        if (settings.logger) settings.logger.log(`[${job.uid}] rendering job...`);
 
         // create container for data and parameters
         let aedata = [];

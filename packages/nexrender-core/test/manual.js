@@ -1,6 +1,6 @@
 const render = require('../src')
 
-render({}, {
+render({uid:'test'}, {
     logger: console.log,
     addlicense: 1,
 })

@@ -10,7 +10,7 @@ const mkdirp  = require('mkdirp')
  */
 module.exports = function(job, settings) {
     return new Promise((resolve, reject) => {
-        if (settings.logger) settings.logger(`[${job.uid}] setting up job...`);
+        if (settings.logger) settings.logger.log(`[${job.uid}] setting up job...`);
 
         // setup job's workpath
         job.workpath = path.join(settings.workpath, job.uid);

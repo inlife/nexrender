@@ -22,7 +22,7 @@ const download  = require('./tasks/download')
 
 module.exports = (job, settings) => {
     settings = Object.assign({}, settings);
-    settings.logger = settings.logger || function() {};
+    settings.logger = settings.logger || { log: function() {} };
 
     if (!job || !job.uid) {
         return Promise.reject(new Error('you must provide a valid configured nexrender job'))
@@ -36,8 +36,8 @@ module.exports = (job, settings) => {
     }
 
     if (binaryAuto && !binaryUser) {
-        settings.logger('using automatically determined directory of After Effects installation:')
-        settings.logger(' -', binaryAuto)
+        settings.logger.log('using automatically determined directory of After Effects installation:')
+        settings.logger.log(' -', binaryAuto)
     }
 
     settings.binary         = binaryUser            || binaryAuto;

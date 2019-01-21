@@ -14,7 +14,7 @@ function isRemoteFileURL(src) {
  * and place it nearby the project asset
  */
 module.exports = function(job, settings) {
-    if (settings.logger) settings.logger(`[${job.uid}] downloading assets...`)
+    if (settings.logger) settings.logger.log(`[${job.uid}] downloading assets...`)
 
     const promises = job.assets.map(asset => {
         const destPath = path.join(job.workpath, asset.name || path.basename(asset.src))
