@@ -1,20 +1,19 @@
 'use strict';
 
-const fs        = require('fs')
-const os        = require('os')
-const path      = require('path')
+const fs         = require('fs')
+const os         = require('os')
+const path       = require('path')
 
-const license   = require('./helpers/license')
-const autofind  = require('./helpers/autofind')
-const patch     = require('./helpers/patch')
+const license    = require('./helpers/license')
+const autofind   = require('./helpers/autofind')
+const patch      = require('./helpers/patch')
 
-const setup     = require('./tasks/setup')
-const download  = require('./tasks/download')
-
-// const render    = require('./tasks/render')
-// const verify    = require('./tasks/verify')
-// const actions   = require('./tasks/actions')
-// const cleanup   = require('./tasks/cleanup')
+const setup      = require('./tasks/setup')
+const download   = require('./tasks/download')
+const prerender  = require('./tasks/actions')('prerender')
+const render     = require('./tasks/render')
+const prerender  = require('./tasks/actions')('postrender')
+const cleanup    = require('./tasks/cleanup')
 
 //
 // https://video.stackexchange.com/questions/16706/rendered-file-with-after-effects-is-very-huge
@@ -23,10 +22,6 @@ const download  = require('./tasks/download')
 module.exports = (job, settings) => {
     settings = Object.assign({}, settings);
     settings.logger = settings.logger || { log: function() {} };
-
-    if (!job || !job.uid) {
-        return Promise.reject(new Error('you must provide a valid configured nexrender job'))
-    }
 
     const binaryAuto = autofind(settings);
     const binaryUser = settings.binary && fs.existsSync(settings.binary) ? settings.binary : null;
@@ -40,13 +35,17 @@ module.exports = (job, settings) => {
         settings.logger.log(' -', binaryAuto)
     }
 
-    settings.binary         = binaryUser            || binaryAuto;
-    settings.workpath       = settings.workpath     || os.tmpdir();
-    settings.multiframes    = settings.multiframes  || false;
-    settings.addlicense     = settings.addlicense   || true;
-    settings.memory         = settings.memory       || '';
-    settings.log            = settings.log          || '';
-    settings.outputExt      = (settings.outputExt   || '').toLowerCase() || null;
+    settings = Object.assign({
+        binary: binaryUser || binaryAuto,
+        workpath: os.tmpdir(),
+
+        addLicense: true,
+        forceCommandLinePatch: false,
+
+        multiFrames: false,
+        maxMemoryPercent: undefined,
+        imageCachePercent: undefined,
+    }, settings)
 
     // make sure we will have absolute path
     if (!path.isAbsolute(settings.workpath)) {
@@ -54,7 +53,7 @@ module.exports = (job, settings) => {
     }
 
     // add license helper
-    if (settings.addlicense) {
+    if (settings.addLicense) {
         license(settings);
     }
 
@@ -65,8 +64,8 @@ module.exports = (job, settings) => {
     return Promise.resolve(job)
         .then(job => setup(job, settings))
         .then(job => download(job, settings))
-        // .then(job => render(job, settings))
-        // .then(job => verify(job, settings))
-        // .then(job => actions(job, settings))
-        // .then(job => cleanup(job, settings))
+        .then(job => prerender(job, settings))
+        .then(job => render(job, settings))
+        .then(job => postrender(job, settings))
+        .then(job => cleanup(job, settings))
 }

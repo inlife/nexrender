@@ -17,6 +17,6 @@
   },
   "homepage": "https://github.com/inlife/nexrender#readme",
   "dependencies": {
-    "shortid": "^2.2.8"
+    "nanoid": "^2.0.1"
   }
 }

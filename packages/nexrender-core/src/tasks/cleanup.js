@@ -1,19 +1,31 @@
 'use strict';
 
-const fs        = require('fs-extra');
-const path      = require('path');
-const async     = require('async');
+const fs   = require('fs')
+const path = require('path')
+
+/**
+ * Remove directory recursively
+ */
+const rmdirRecursively(target) => {
+    if (!fs.existsSync(target)) return;
+
+    fs.readdirSync(target).map(entry => {
+        const entryPath = path.join(target, entry);
+        const result = fs.lstatSync(entryPath).isDirectory()
+            ? rmdirRecursively(entryPath)
+            : fs.unlinkSync(entryPath)
+    })
+
+    fs.rmdirSync(target)
+}
 
 /**
  * Clean up all workpath files and remove folder
  */
-module.exports = function(job) {
-    return new Promise((resolve, reject) => {
+module.exports = function(job, settings) {
+    if (settings.logger) settings.logger.log(`[${job.uid}] cleaning up...`);
 
-        console.info(`[${job.uid}] cleaning up...`);
+    rmdirRecursively(job.workpath)
 
-        fs.remove( job.workpath, (err) => {
-            return (err) ? reject(err) : resolve(job);
-        })
-    });
+    return Promise.resolve(job)
 };

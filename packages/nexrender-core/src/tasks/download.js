@@ -9,6 +9,69 @@ function isRemoteFileURL(src) {
     return src.indexOf('http://') !== -1 || src.indexOf('https://') !== -1;
 }
 
+const download = (job, asset) => {
+    const destPath = path.join(job.workpath, asset.layer || path.basename(asset.src))
+
+    // TODO: remove (deprecation)
+    // additional helper to guess that asset is an url
+    if (isRemoteFileURL(asset.src)) {
+        asset.provider = 'http'
+    }
+
+    // handle different providers of assets
+    switch (asset.provider) {
+        case 'text':
+            return Promise.reject(new Error('text data provider not implemeneted')); break;
+
+        case 'raw':
+            return Promise.reject(new Error('raw data (byte array) provider not implemeneted')); break;
+
+        case 'base64':
+            return Promise.reject(new Error('base64 data (byte array) provider not implemeneted')); break;
+
+        case 'ftp':
+            return Promise.reject(new Error('ftp provider not implemeneted')); break;
+
+        case 'http':
+            /* TODO: move to external module */
+            /* TODO: add auth handling */
+            return fetch(asset.src)
+                .then(res => {
+                    const dest = fs.createWriteStream(destPath, {
+                        autoClose: true,
+                    })
+
+                    res.body.pipe(dest)
+                })
+            break;
+
+        case 's3':
+            try {
+                return require('@nexrender/aws-s3').download(asset.src, destPath, asset.credentials);
+            } catch (e) {
+                return Promise.reject(new Error('AWS S3 module is not installed, use \"npm i -g @nexrender/aws-s3\" to install it.'))
+            }
+            break;
+
+        case 'file':
+            /* plain asset stream copy */
+            const rd = fs.createReadStream(asset.src)
+            const wr = fs.createWriteStream(destPath)
+
+            return new Promise(function(resolve, reject) {
+                rd.on('error', reject)
+                wr.on('error', reject)
+                wr.on('finish', resolve)
+                rd.pipe(wr);
+            }).catch(function(error) {
+                rd.destroy()
+                wr.end()
+                throw error
+            })
+            break;
+    }
+}
+
 /**
  * This task is used to download/copy every entry in the "job.assets"
  * and place it nearby the project asset
@@ -16,56 +79,10 @@ function isRemoteFileURL(src) {
 module.exports = function(job, settings) {
     if (settings.logger) settings.logger.log(`[${job.uid}] downloading assets...`)
 
-    const promises = job.assets.map(asset => {
-        const destPath = path.join(job.workpath, asset.name || path.basename(asset.src))
-
-        // additional helper to guess that asset is an url
-        if (isRemoteFileURL(asset.src)) {
-            asset.provider = 'http'
-        }
-
-        // handle different providers of assets
-        switch (asset.provider) {
-            case 'http':
-                return fetch(asset.src)
-                    .then(res => {
-                        const dest = fs.createWriteStream(destPath, {
-                            autoClose: true,
-                        })
-
-                        res.body.pipe(dest)
-                    })
-                break;
-
-            case 'ftp': Promise.reject(new Error('ftp provider not implemeneted')); break;
-            case 's3':
-                try {
-                    return require('@nexrender/aws-s3').download(
-                        asset.src, destPath,
-                        { Bucket: asset.bucket, Key: asset.key }
-                    );
-                } catch (e) {
-                    Promise.reject(new Error('AWS S3 module is not installed, use \"npm i @nexrender/aws-s3 -g\" to install it.'))
-                }
-                break;
-
-            // plain asset stream copy
-            default:
-                const rd = fs.createReadStream(asset.src)
-                const wr = fs.createWriteStream(destPath)
-
-                return new Promise(function(resolve, reject) {
-                    rd.on('error', reject)
-                    wr.on('error', reject)
-                    wr.on('finish', resolve)
-                    rd.pipe(wr);
-                }).catch(function(error) {
-                    rd.destroy()
-                    wr.end()
-                    throw error
-                })
-        }
-    })
+    const promises = [].concat(
+        download(job.template),
+        job.assets.map(download)
+    )
 
     return Promise.all(promises)
 }

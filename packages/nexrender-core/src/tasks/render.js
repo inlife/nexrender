@@ -3,88 +3,72 @@
 const path  = require('path')
 const spawn = require('child_process').spawn
 
+const progressRegex = /([\d]{1,2}:[\d]{2}:[\d]{2}:[\d]{2})\s+(\(\d+\))/gi;
+const durationRegex = /Duration:\s+([\d]{1,2}:[\d]{2}:[\d]{2}:[\d]{2})/gi;
+
+const option  = (params, name, value) => value ? params.push(name, value) : undefined
+const seconds = (string) => string.split(':')
+    .map((e, i) => (i < 3) ? +e * Math.pow(60, 2 - i) : +e * 10e-6)
+    .reduce((acc, val) => acc + val);
+
 /**
  * This task creates rendering process
  */
-module.exports = function(job, settings) {
+module.exports = (job, settings) => {
+    if (settings.logger) settings.logger.log(`[${job.uid}] rendering job...`);
+
+    // create container for our parameters
+    let params = [];
+
+    // setup parameters
+    option(params, '-comp',    job.template.composition);
+    option(params, '-project', path.join(job.workpath, path.basename(job.template.src)));
+    option(params, '-output',  path.join(job.workpath, job.resultname));
+
+    option(params, '-OMtemplate', job.template.outputModule);
+    option(params, '-RStemplate', job.settings.settingsTemplate);
+    option(params, '-s', job.settings.frameStart);
+    option(params, '-e', job.settings.endFrame);
+    option(params, '-i', job.settings.incrementFrame);
+    option(params, '-mp', settings.multiFrames);
+    // option(params, '-log', settings.log);
+
+    if (settings.imageCachePercent || settings.maxMemoryPercent) {
+        option(params, '-mem_usage', `${settings.imageCachePercent || 50} ${settings.maxMemoryPercent || 50}`)
+    }
+
+    // tracks progress
+    let projectDuration = null;
+    let currentProgress = null;
+
+    const parse = (data, prefix) => {
+        const string = (''+data).replace(/;/g, ':'); /* sanitize string */
+
+        // Only execute durationRegex if project duration hasnt been found
+        const matchDuration = isNaN(parseInt(projectDuration)) ? durationRegex.exec(s) : false;
+        // Only execute progressRegex if project duration has been found
+        const matchProgress = !isNaN(parseInt(projectDuration)) ? progressRegex.exec(s) : null;
+        // If durationRegex has a match convert tstamp to seconds and define projectDuration only once
+        projectDuration = (matchDuration) ? seconds(matchDuration[1]) : projectDuration;
+
+        if (matchProgress) {
+            currentProgress = Math.ceil(seconds(matchProgress[1]) * 100 / projectDuration);
+            if (settings.logger) settings.logger.log(`[${job.uid}] rendering progress ${currentProgress}%...`);
+        }
+
+        return data;
+    }
+
+    // spawn process and begin rendering
     return new Promise((resolve, reject) => {
-        if (settings.logger) settings.logger.log(`[${job.uid}] rendering job...`);
+        const instance = spawn(settings.binary, params);
+        const output = [];
 
-        // create container for data and parameters
-        let aedata = [];
-        let params = [];
+        instance.on('error', err => reject(new Error(`Error starting aerender process: ${err}`)));
+        instance.stdout.on('data', (data) => output.push(parse(data)));
+        instance.stderr.on('data', (data) => output.push(data));
 
-        // setup parameters
-        params.push('-comp',    job.composition);
-        params.push('-project', path.join(job.workpath, job.template));
-        params.push('-output',  path.join(job.workpath, job.resultname));
-
-        // advanced parameters
-        if (job.settings) {
-            if (job.settings.outputModule) {
-                params.push('-OMtemplate', job.settings.outputModule);
-            }
-
-            if (job.settings.renderSettings) {
-                params.push('-RStemplate', job.settings.renderSettings);
-            }
-
-            if (job.settings.startFrame) {
-                params.push('-s', job.settings.startFrame);
-            }
-
-            if (job.settings.endFrame) {
-                params.push('-e', job.settings.endFrame);
-            }
-
-            if (job.settings.incrementFrame) {
-                params.push('-i', job.settings.incrementFrame);
-            }
-        }
-
-        if (settings.multiframes) {
-            params.push('-mp');
-        }
-
-        if (settings.log && settings.log.length > 0) {
-            params.push('-log', settings.log);
-        }
-
-        if (settings.memory && settings.memory.length > 0) {
-            // if mem_usage have wrong format
-            if (settings.memory.indexOf(' ') === -1) {
-                return reject( new Error('Wrong memory format') );
-            }
-
-            // split by space and prase int's
-            let memcomps = settings.memory.split(' ');
-            let image_cache_percent = parseInt(memcomps[0]) || 50;
-            let max_mem_percent     = parseInt(memcomps[1]) || 50;
-
-            // pass params
-            params.push('-mem_usage', image_cache_percent, max_mem_percent);
-        }
-
-        // spawn process and begin rendering
-        let ae = spawn(settings.binary, params);
-
-        ae.on('error', (err) => {
-            return reject(new Error('Error starting aerender process, did you set up the path correctly?'));
-        });
-
-        // on data (logs)
-        ae.stdout.on('data', (data) => {
-            aedata.push(data.toString());
-        });
-
-        // on error (logs)
-        ae.stderr.on('data', (data) => {
-            aedata.push(data.toString());
-        });
-
-        // on finish (code 0 - success, other - error)
-        ae.on('close', (code) => {
-            return (code !== 0) ? reject(aedata.join('')) : resolve(job);
-        });
-    });
+        /* on finish (code 0 - success, other - error) */
+        instance.on('close', (code) => (code !== 0) ? reject(output.map(a => ''+a).join('')) : resolve(job));
+    })
 };
