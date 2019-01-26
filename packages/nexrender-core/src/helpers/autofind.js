@@ -23,6 +23,15 @@ const defaultPaths = {
         'C:\\Program Files\\Adobe\\After Effects CC 2018\\Support Files',
         'C:\\Program Files\\Adobe\\After Effects CC 2019\\Support Files',
         'C:\\Program Files\\Adobe\\After Effects CC 2020\\Support Files',
+
+        'C:\\Program Files\\Adobe\\Adobe After Effects CC',
+        'C:\\Program Files\\Adobe\\Adobe After Effects CC\\Support Files',
+        'C:\\Program Files\\Adobe\\Adobe After Effects CC 2015\\Support Files',
+        'C:\\Program Files\\Adobe\\Adobe After Effects CC 2016\\Support Files',
+        'C:\\Program Files\\Adobe\\Adobe After Effects CC 2017\\Support Files',
+        'C:\\Program Files\\Adobe\\Adobe After Effects CC 2018\\Support Files',
+        'C:\\Program Files\\Adobe\\Adobe After Effects CC 2019\\Support Files',
+        'C:\\Program Files\\Adobe\\Adobe After Effects CC 2020\\Support Files',
     ],
 }
 

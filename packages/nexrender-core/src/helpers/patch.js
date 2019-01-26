@@ -9,13 +9,14 @@ const copyTo = (source, dest) => fs.writeFileSync(dest, fs.readFileSync(source))
  * @type {Object}
  */
 module.exports = (settings) => {
+    const targetScript  = 'commandLineRenderer.jsx';
     const patchFilePath =
         process.env.NXRND_CUSTOM_PATCH_FILE ||
-        path.resolve(path.join(__dirname, '..', 'assets', 'commandLineRenderer.jsx'));
+        path.resolve(path.join(__dirname, '..', 'assets', targetScript));
 
     const afterEffects = path.dirname(settings.binary)
-    const originalFile = path.join(afterEffects, 'Scripts', 'Startup', 'commandLineRenderer.jsx')
-    const backupFile   = path.join(afterEffects, 'Backup.Scripts', 'Startup', 'commandLineRenderer.jsx')
+    const originalFile = path.join(afterEffects, 'Scripts', 'Startup', targetScript)
+    const backupFile   = path.join(afterEffects, 'Backup.Scripts', 'Startup', targetScript)
 
     const data = fs.readFileSync(originalFile, 'utf8')
     settings.logger.log('checking After Effects command line renderer patch...')
@@ -31,7 +32,7 @@ module.exports = (settings) => {
         }
     } else {
         settings.logger.log('backing up original command line script to:')
-        settings.logger.log(' -', backupFile)
+        settings.logger.log(' - ' + backupFile)
 
         mkdirp.sync(path.join(afterEffects, 'Backup.Scripts', 'Startup'))
         copyTo(originalFile, backupFile)

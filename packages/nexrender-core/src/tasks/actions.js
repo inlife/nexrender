@@ -4,9 +4,9 @@
  * @param  {Array}  handlers
  * @return {Promise}
  */
-const PromiseSerial = (value, handlers) => handlers.reduce(
+const PromiseSerial = (job, settings, handlers) => handlers.reduce(
     (cur, handler) => cur.then(handler),
-    Promise.resolve(value)
+    Promise.resolve(job, settings)
 )
 
 /**
@@ -19,7 +19,7 @@ const PromiseSerial = (value, handlers) => handlers.reduce(
 module.exports = actionType => (job, settings) => {
     if (settings.logger) settings.logger.log(`[${job.uid}] applying ${actionType} actions...`);
 
-    return PromiseSerial({ job, settings }, (job.actions[actionType] || []).map(action => ({ job, settings }) => {
+    return PromiseSerial(job, settings, (job.actions[actionType] || []).map(action => (job, settings) => {
         try {
             return require(action.module)(job, settings, action.options);
         } catch (e) {

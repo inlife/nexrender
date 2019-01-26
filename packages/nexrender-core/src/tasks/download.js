@@ -70,6 +70,8 @@ const download = (job, asset) => {
             })
             break;
     }
+
+    return job;
 }
 
 /**
@@ -80,9 +82,9 @@ module.exports = function(job, settings) {
     if (settings.logger) settings.logger.log(`[${job.uid}] downloading assets...`)
 
     const promises = [].concat(
-        download(job.template),
-        job.assets.map(download)
+        download(job, job.template),
+        job.assets.map(asset => download(job, asset))
     )
 
-    return Promise.all(promises)
+    return Promise.all(promises).then(_ => job);
 }

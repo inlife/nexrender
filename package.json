@@ -15,6 +15,7 @@
   "repository": "inlife/nexrender",
   "license": "MIT",
   "devDependencies": {
+    "extendscriptr": "^1.2.2",
     "lerna": "^2.7.1",
     "mocha": "^5.2.0"
   }

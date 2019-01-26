@@ -11,8 +11,9 @@ const patch      = require('./helpers/patch')
 const setup      = require('./tasks/setup')
 const download   = require('./tasks/download')
 const prerender  = require('./tasks/actions')('prerender')
+const script     = require('./tasks/script')
 const render     = require('./tasks/render')
-const prerender  = require('./tasks/actions')('postrender')
+const postrender = require('./tasks/actions')('postrender')
 const cleanup    = require('./tasks/cleanup')
 
 //
@@ -32,12 +33,12 @@ module.exports = (job, settings) => {
 
     if (binaryAuto && !binaryUser) {
         settings.logger.log('using automatically determined directory of After Effects installation:')
-        settings.logger.log(' -', binaryAuto)
+        settings.logger.log(' - ' + binaryAuto)
     }
 
     settings = Object.assign({
         binary: binaryUser || binaryAuto,
-        workpath: os.tmpdir(),
+        workpath: path.join(os.tmpdir(), 'nexrender'),
 
         addLicense: true,
         forceCommandLinePatch: false,
@@ -65,6 +66,7 @@ module.exports = (job, settings) => {
         .then(job => setup(job, settings))
         .then(job => download(job, settings))
         .then(job => prerender(job, settings))
+        .then(job => script(job, settings))
         .then(job => render(job, settings))
         .then(job => postrender(job, settings))
         .then(job => cleanup(job, settings))

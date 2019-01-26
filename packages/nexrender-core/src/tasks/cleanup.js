@@ -6,7 +6,7 @@ const path = require('path')
 /**
  * Remove directory recursively
  */
-const rmdirRecursively(target) => {
+const rmdirRecursively = (target) => {
     if (!fs.existsSync(target)) return;
 
     fs.readdirSync(target).map(entry => {
@@ -23,9 +23,12 @@ const rmdirRecursively(target) => {
  * Clean up all workpath files and remove folder
  */
 module.exports = function(job, settings) {
-    if (settings.logger) settings.logger.log(`[${job.uid}] cleaning up...`);
-
-    rmdirRecursively(job.workpath)
+    if (!settings.skipCleanup) {
+        if (settings.logger) settings.logger.log(`[${job.uid}] cleaning up...`);
+        rmdirRecursively(job.workpath)
+    } else {
+        if (settings.logger) settings.logger.log(`[${job.uid}] skipping the clean up...`);
+    }
 
     return Promise.resolve(job)
 };

@@ -8,7 +8,7 @@ module.exports = (settings) => {
     const nodefile  = path.join(adobe, 'ae_render_only_node.txt')
 
     settings.logger.log('adding default render-only-node license for After Effects at:')
-    settings.logger.log(' -', nodefile)
+    settings.logger.log(' - ' + nodefile)
 
     if (!fs.existsSync(adobe)) {
         fs.mkdirSync(adobe)
