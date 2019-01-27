@@ -71,6 +71,10 @@ module.exports = function(project) {
             params.push('-log', process.env.AE_LOG);
         }
 
+        if (process.env.AE_CONTINUE_MISSING) {
+            params.push('-continueOnMissingFootage')
+        }
+
         if (process.env.AE_MEMORY && process.env.AE_MEMORY.length > 0) {
 
             // if mem_usage have wrong format

@@ -134,10 +134,11 @@ function start(opts) {
     });
 
     // set global aerender path
-    process.env.AE_BINARY       = opts.aerender     || '';
-    process.env.AE_MULTIFRAMES  = opts.multiframes  || '';
-    process.env.AE_MEMORY       = opts.memory       || '';
-    process.env.AE_LOG          = opts.log          || '';
+    process.env.AE_BINARY              = opts.aerender          || '';
+    process.env.AE_MULTIFRAMES         = opts.multiframes       || '';
+    process.env.AE_MEMORY              = opts.memory            || '';
+    process.env.AE_LOG                 = opts.log               || '';
+    process.env.AE_CONTINUE_ON_MISSING = opts.continueOnMissing || '';
 
     // start quering
     startRecursion();
