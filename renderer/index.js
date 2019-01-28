@@ -182,10 +182,11 @@ module.exports = {
         }
 
         // set up default global constatns
-        process.env.AE_BINARY       = binary            || '';
-        process.env.AE_MULTIFRAMES  = opts.multiframes  || '';
-        process.env.AE_MEMORY       = opts.memory       || '';
-        process.env.AE_LOG          = opts.log          || '';
+        process.env.AE_BINARY              = binary                 || '';
+        process.env.AE_MULTIFRAMES         = opts.multiframes       || '';
+        process.env.AE_MEMORY              = opts.memory            || '';
+        process.env.AE_LOG                 = opts.log               || '';
+        process.env.AE_CONTINUE_ON_MISSING = opts.continueOnMissing || '';
 
         // return promise and start rendering
         return startRender(project);

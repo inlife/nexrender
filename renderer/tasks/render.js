@@ -71,7 +71,7 @@ module.exports = function(project) {
             params.push('-log', process.env.AE_LOG);
         }
 
-        if (process.env.AE_CONTINUE_MISSING) {
+        if (process.env.AE_CONTINUE_ON_MISSING) {
             params.push('-continueOnMissingFootage')
         }
 
