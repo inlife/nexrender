@@ -34,7 +34,7 @@ module.exports = (job, settings) => {
     option(params, '-r', job.scriptfile);
 
     if (settings.multiFrames) params.push('-mp');
-    // option(params, '-log', path.join(job.workpath, 'output.log'));
+    if (job.template.continueOnMissing) params.push('-continueOnMissingFootage')
 
     if (settings.imageCachePercent || settings.maxMemoryPercent) {
         option(params, '-mem_usage', `${settings.imageCachePercent || 50} ${settings.maxMemoryPercent || 50}`)
@@ -86,7 +86,7 @@ module.exports = (job, settings) => {
                 .join('\n');
 
             if (code !== 0) {
-                return reject()
+                return reject(outputStr)
             }
 
             if (settings.renderLogs) {

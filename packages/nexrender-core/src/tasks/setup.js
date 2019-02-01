@@ -30,7 +30,7 @@ module.exports = (job, settings) => {
     }
 
     // NOTE: for still (jpg) image sequence frame filename will be changed to result_[#####].jpg
-    if (job.template.outputExt && ['jpeg', 'jpg'].indexOf(job.template.outputExt) !== -1) {
+    if (job.template.outputExt && ['jpeg', 'jpg', 'png'].indexOf(job.template.outputExt) !== -1) {
         job.resultname    = 'result_[#####].' + job.template.outputExt;
         job.imageSequence = true;
     }
