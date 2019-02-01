@@ -4,19 +4,21 @@
   "version": "1.0.0",
   "description": "Automate your After Effects project creation and rendering routine.",
   "scripts": {
+    "start": "./node_modules/.bin/lerna bootstrap",
     "server": "node packages/nexrender-cli/src/index.js --server",
-    "test": "./node_modules/.bin/lerna bootstrap && node test.js"
+    "test": "./node_modules/.bin/lerna bootstrap && node test.js",
+    "purge-cache": "./node_modules/.bin/lerna exec 'rm -rf node_modules && rm -f package-lock.json'",
+    "purge-master": "rm -rf node_modules && rm -f package-lock.json"
   },
   "author": {
-    "name": "Inlife",
-    "email": "vladgritsenko@gmail.com",
+    "name": "inlife",
+    "email": "vladgritsenko+gh@gmail.com",
     "url": "https://github.com/inlife"
   },
   "repository": "inlife/nexrender",
   "license": "MIT",
   "devDependencies": {
-    "extendscriptr": "^1.2.2",
-    "lerna": "^2.7.1",
+    "lerna": "^3.10.7",
     "mocha": "^5.2.0"
   }
 }

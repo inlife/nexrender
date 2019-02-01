@@ -12,7 +12,7 @@ const wrapScript = (filepath) => (`(function() {
 })();\n`)
 
 module.exports = (job, settings) => {
-    if (settings.logger) settings.logger.log(`[${job.uid}] running script assemble...`);
+    settings.logger.log(`[${job.uid}] running script assemble...`);
 
     const data = [];
     const base = job.workpath;

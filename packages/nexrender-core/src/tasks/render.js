@@ -1,5 +1,6 @@
 'use strict';
 
+const fs    = require('fs')
 const path  = require('path')
 const spawn = require('child_process').spawn
 
@@ -15,7 +16,7 @@ const seconds = (string) => string.split(':')
  * This task creates rendering process
  */
 module.exports = (job, settings) => {
-    if (settings.logger) settings.logger.log(`[${job.uid}] rendering job...`);
+    settings.logger.log(`[${job.uid}] rendering job...`);
 
     // create container for our parameters
     let params = [];
@@ -59,7 +60,7 @@ module.exports = (job, settings) => {
             currentProgress = Math.ceil(seconds(matchProgress[1]) * 100 / projectDuration);
 
             if (previousProgress !== currentProgress) {
-                if (settings.logger) settings.logger.log(`[${job.uid}] rendering progress ${currentProgress}%...`);
+                settings.logger.log(`[${job.uid}] rendering progress ${currentProgress}%...`);
                 previousProgress = currentProgress;
             }
         }
@@ -80,11 +81,21 @@ module.exports = (job, settings) => {
 
         /* on finish (code 0 - success, other - error) */
         instance.on('close', (code) => {
+            const outputStr = output
+                .map(a => ''+a)
+                .join('\n');
+
             if (code !== 0) {
-                return reject(output.map(a => ''+a).join(''))
+                return reject()
             }
 
-            if (settings.logger) settings.logger.log(`[${job.uid}] rendering took ~${(Date.now() - renderStopwatch)/1000} sec.`);
+            if (settings.renderLogs) {
+                const logPath = path.resolve(job.workpath, '..', `${job.uid}-aerender.log`)
+                settings.logger.log(`[${job.uid}] writing aerender job log to: ${logPath}`);
+                fs.writeFileSync(logPath, outputStr);
+            }
+
+            settings.logger.log(`[${job.uid}] rendering took ~${(Date.now() - renderStopwatch)/1000} sec.`);
             resolve(job)
         });
     })

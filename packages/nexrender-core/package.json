@@ -19,10 +19,11 @@
   "dependencies": {
     "mkdirp": "^0.5.1",
     "nanoid": "^2.0.1",
-    "node-fetch": "^2.1.2"
+    "node-fetch": "^2.1.2",
+    "requireg": "^0.2.1"
   },
   "peerDependencies": {
-    "@nexrender/aws-s3": "^1.0.0"
+    "@nexrender/provider-aws-s3": "^1.0.0"
   },
   "devDependencies": {}
 }

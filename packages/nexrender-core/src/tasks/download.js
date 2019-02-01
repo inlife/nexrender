@@ -1,9 +1,10 @@
 'use strict';
 
-const fs    = require('fs')
-const url   = require('url')
-const path  = require('path')
-const fetch = require('node-fetch')
+const fs       = require('fs')
+const url      = require('url')
+const path     = require('path')
+const fetch    = require('node-fetch')
+const requireg = require('requireg')
 
 function isRemoteFileURL(src) {
     return src.indexOf('http://') !== -1 || src.indexOf('https://') !== -1;
@@ -47,7 +48,7 @@ const download = (job, asset) => {
 
         case 's3':
             try {
-                return require('@nexrender/aws-s3').download(asset.src, destPath, asset.credentials);
+                return requireg('@nexrender/provider-aws-s3').download(asset.src, destPath, asset.credentials);
             } catch (e) {
                 return Promise.reject(new Error('AWS S3 module is not installed, use \"npm i -g @nexrender/aws-s3\" to install it.'))
             }
@@ -79,7 +80,7 @@ const download = (job, asset) => {
  * and place it nearby the project asset
  */
 module.exports = function(job, settings) {
-    if (settings.logger) settings.logger.log(`[${job.uid}] downloading assets...`)
+    settings.logger.log(`[${job.uid}] downloading assets...`)
 
     const promises = [].concat(
         download(job, job.template),

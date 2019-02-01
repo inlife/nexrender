@@ -16,7 +16,7 @@ module.exports = (job, settings) => {
     }
 
     if (!job.uid) job.uid = nanoid();
-    if (settings.logger) settings.logger.log(`[${job.uid}] setting up job...`);
+    settings.logger.log(`[${job.uid}] setting up job...`);
 
     // setup job's workpath
     job.workpath = path.join(settings.workpath, job.uid);

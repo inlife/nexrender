@@ -1,5 +1,5 @@
 {
-  "name": "@nexrender/cli",
+  "name": "@nexrender/agent",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -16,11 +16,9 @@
     "url": "https://github.com/inlife/nexrender/issues"
   },
   "devDependencies": {
-    "@nexrender/server": "^1.0",
     "@nexrender/core": "^1.0"
   },
   "peerDependencies": {
-    "@nexrender/server": "^1.0",
     "@nexrender/core": "^1.0"
   },
   "homepage": "https://github.com/inlife/nexrender#readme"

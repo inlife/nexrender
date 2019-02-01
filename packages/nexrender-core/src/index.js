@@ -43,6 +43,7 @@ module.exports = (job, settings) => {
         addLicense: true,
         forceCommandLinePatch: false,
 
+        renderLogs: false,
         multiFrames: false,
         maxMemoryPercent: undefined,
         imageCachePercent: undefined,
