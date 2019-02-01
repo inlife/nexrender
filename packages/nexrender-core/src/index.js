@@ -37,7 +37,6 @@ module.exports = (job, settings) => {
     }
 
     settings = Object.assign({
-        binary: binaryUser || binaryAuto,
         workpath: path.join(os.tmpdir(), 'nexrender'),
 
         addLicense: true,
@@ -47,7 +46,9 @@ module.exports = (job, settings) => {
         multiFrames: false,
         maxMemoryPercent: undefined,
         imageCachePercent: undefined,
-    }, settings)
+    }, settings, {
+        binary: binaryUser || binaryAuto,
+    })
 
     // make sure we will have absolute path
     if (!path.isAbsolute(settings.workpath)) {
