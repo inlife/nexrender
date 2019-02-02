@@ -1,23 +1,9 @@
 {
   "name": "@nexrender/provider-aws-s3",
   "version": "1.0.0",
-  "description": "",
+  "author": "inlife",
   "main": "src/index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "homepage": "https://github.com/inlife/nexrender#readme",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/inlife/nexrender.git"
-  },
-  "author": "Inlife",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/inlife/nexrender/issues"
-  },
   "dependencies": {
     "aws-sdk": "^2.344.0"
-  },
-  "devDependencies": {}
+  }
 }
