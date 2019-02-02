@@ -61,7 +61,7 @@ if (args['--help']) {
 
       -h, --host {underline \{scheme\}://\{domain/ip\}:\{port\}}
                                             specify which host {cyan nexrender-server} is running at,
-                                            and where all api requests will be forwareded to
+                                            and where all api requests will be forwarded to
 
       -s, --secret {underline secret_string}            specify a secret that will be required for every
                                             incoming http request to validate again
@@ -71,6 +71,35 @@ if (args['--help']) {
 
       -w, --workpath {underline absolute_path}          manually override path to the working directory
                                             by default nexrender is using os tmpdir/nexrender folder
+
+  {bold ADVANCED OPTIONS}
+
+
+    --stop-on-error                         forces worker to stop if processing/rendering error occures,
+                                            otherwise worker will report an error, and continue working
+
+    --no-license                            prevents creation of the ae_render_only_node.txt file (enabled by default),
+                                            which allows free usage of trial version of Adobe After Effects
+
+    --force-patch                           forces commandLineRenderer.jsx patch (re)installation
+
+    --render-logs                           enables log dump from aerender utility,
+                                            log file will be places to the current workpath (tmpdir/nexrender by default)
+
+    --skip-cleanup                          forces worker to keep temporary data after rendering is finished
+
+    --multi-frames                          (from Adobe site): More processes may be created to render multiple frames simultaneously,
+                                            depending on system configuration and preference settings.
+                                            (See Memory & Multiprocessing preferences.)
+
+    --max-memory-percent                    (from Adobe site): specifies the total percentage of memory that After Effects can use.
+                                            For both values, if installed RAM is less than a given amount (n gigabytes),
+                                            the value is a percentage of the installed RAM, and is otherwise a percentage of n.
+                                            The value of n is 2 GB for 32-bit Windows, 4 GB for 64-bit Windows, and 3.5 GB for Mac OS.
+
+    --image-cache-percent                   (from Adobe site): specifies the maximum percentage of memory used
+                                            to cache already rendered images and footage.
+
 
   {bold ENV VARS}
 

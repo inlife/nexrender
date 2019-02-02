@@ -28,7 +28,7 @@
 `nexrender` is a simple, small, carefully designed application with main goal of rendering automation for Adobe After Effects based rendering workflows.
 
 At this point in time the project is mainly targeted at people at least somewhat comfortable with scripting or development,
-and that have basic knowledge of js/json language/format and specifications.
+and that have basic knowledge of `javascript` language and `json` formats.
 
 #### Features
 
@@ -56,7 +56,7 @@ and that have basic knowledge of js/json language/format and specifications.
 You can download binaries directly from the [releases](https://github.com/inlife/nexrender/releases) section,
 or install them using npm, whichever option works better for you.
 
-#### nexrender-worker
+#### `nexrender-worker`
 
 ##### Description:
 A CLI application which is responsible mainly for actual job processing and rendering,
