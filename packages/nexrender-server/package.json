@@ -1,26 +1,13 @@
 {
   "name": "@nexrender/server",
   "version": "1.0.0",
-  "description": "",
-  "main": "src/index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/inlife/nexrender.git"
-  },
   "author": "Inlife",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/inlife/nexrender/issues"
-  },
-  "homepage": "https://github.com/inlife/nexrender#readme",
+  "main": "src/index.js",
+  "scripts": { "start": "node src/bin.js" },
+  "bin": { "nexrender-server": "src/bin.js" },
   "dependencies": {
-    "body-parser": "^1.18.2",
-    "express": "^4.16.3",
-    "lowdb": "^1.0.0",
-    "morgan": "^1.9.0",
-    "shortid": "^2.2.8"
+    "@nexrender/types": "^1.0.0",
+    "micro": "^9.3.3",
+    "microrouter": "^3.1.3"
   }
 }

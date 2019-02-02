@@ -12,10 +12,6 @@ const create = job => Object.assign({
     uid: nanoid(),
     type: 'default',
     state: 'created',
-
-    resultname: '',
-    scriptfile: '',
-    workpath: '',
     output: '',
 
     template: {
