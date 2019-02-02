@@ -24,3 +24,61 @@
 </div>
 
 ## Introduction
+
+`nexrender` is a simple, small, carefully designed application with main goal of rendering automation for Adobe After Effects based rendering workflows.
+
+At this point in time the project is mainly targeted at people at least somewhat comfortable with scripting or development,
+and that have basic knowledge of js/json language/format and specifications.
+
+#### Features
+
+* data-driven, dynamic, personalized video rendering
+* automated video management, processing and delivery
+* network oriented project structure, render farm
+* highly modular nature, extensive plugin support
+* works only in cli mode, never launches After Effects GUI application
+* does not require licenses for Adobe After Effects on any worker machine
+* free to use and open source
+
+#### How it works
+
+* rendering: It uses Adobe After Effects's aerender command-line interface application.
+* compositing: It creates temporary folder, copies project and replaces assets with provided ones.
+* personalization: It uses AE's expressions, scripting and compositing (noted above).
+* scheduling: It stores projects in local database, managed from anywhere using http api.
+* network: It renders project per machine, and can be used to render several projects simultaniously.
+* farm: Can be used to render single project on several machines via Multi-Machine Sequence.
+
+## Usage
+
+### Using binaries
+
+You can download binaries directly from the [releases](https://github.com/inlife/nexrender/releases) section,
+or install them using npm, whichever option works better for you.
+
+#### nexrender-worker
+
+##### Description:
+A CLI application which is responsible mainly for actual job processing and rendering,
+communication with the `nexrender-server`, and serves mainly as a consumer in the nexrender network model.
+
+##### Supported platforms:
+Windows, macOS
+
+##### Requirements:
+Installed licensed/trial version of Adobe After Effects
+
+```sh
+$ nexrender-worker \
+        --host=https://my.server.com \
+        --secret=myapisecret
+```
+
+## Plans
+
+1. Encoding using ffmpeg `@nexrender/action-encode`
+2. Uploading to various providers `@nexrender/action-upload`
+3. Algo of splitting the main job onto subjobs, rendering them on multiple machines
+and then combining back into a single job. `@nexrender/action-merge-parent, @nexrender/action-merge-child`
+4. Adding more upload/download providers
+5. Creating fully-enclosed binary builds containing majority of the @nexrender/* npm modules
