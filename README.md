@@ -49,7 +49,16 @@ and that have basic knowledge of `javascript` language and `json` formats.
 * network: It renders project per machine, and can be used to render several projects simultaniously.
 * farm: Can be used to render single project on several machines via Multi-Machine Sequence.
 
+#### Alternatives
+
+Probably the closest (feature-wise) alternative that exists at the moment is the Datalcay's [Templater](http://dataclay.com/) bot edition.
+Compared to nexrender it has a rich GUI support and a number of enterprise scale features, however it is not free.
+
 ## Usage
+
+### Job
+
+TODO: describe the job
 
 ### Using binaries
 
