@@ -21,10 +21,10 @@ if (!fs.existsSync(defaultPath)) {
 /* internal methods */
 const save = () => fs.writeFileSync(database, JSON.stringify(data))
 
-const indexOf = (field, value) => {
+const indexOf = value => {
     for (var i = data.length - 1; i >= 0; i--) {
         const entry = data[i];
-        if (entry[field] == value) {
+        if (entry.uid == value) {
             return i;
         }
     }
@@ -33,7 +33,7 @@ const indexOf = (field, value) => {
 }
 
 /* public api */
-const fetch = uid => uid ? data[indexOf('uid', uid)] : data
+const fetch = uid => uid ? data[indexOf(uid)] : data
 
 const insert = entry => {
     data.push(entry);
@@ -41,7 +41,7 @@ const insert = entry => {
 }
 
 const update = (uid, entry) => {
-    const value = indexOf('uid', uid); if (value == -1) {
+    const value = indexOf(uid); if (value == -1) {
         return null;
     }
 
@@ -54,15 +54,12 @@ const update = (uid, entry) => {
     return data[value];
 }
 
-const remove = (uid, entry) => {
-    const value = indexOf('uid', uid); if (uid !== -1) {
-        return false
+const remove = uid => {
+    const value = indexOf(uid); if (value === -1) {
+        return null;
     }
 
-    data = data.filter(entry => (
-        entry.uid !== uid
-    ))
-
+    data.splice(value, 1)
     setImmediate(save);
     return true;
 }

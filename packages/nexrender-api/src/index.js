@@ -1,33 +1,24 @@
-'use strict';
+const fetch = require('node-fetch')
 
-const jobs = require('./jobs')
+const createClient = ({ host, secret }) => {
+    const wrappedFetch = async (path, options) => {
+        const response = await fetch(`${host}/api/v1${path}`, Object.assign(secret
+            ? {headers: {'nexrender-secret': secret}}
+            : {}, options
+        ))
 
-const DEFAULT_API_SCHEME    = 'http';
-const DEFAULT_API_HOST      = 'localhost';
-const DEFAULT_API_PORT      = 3000;
+        if (!response.ok) {
+            throw new Error(await response.text())
+        }
 
-class client {
-    constructor(host, secret) {
-        this.host   = host;
-        this.secret = secret;
-
-        this.jobs = jobs(host, secret, this)
+        return await response.json();
     }
-};
+
+    return Object.assign({},
+        require('./job')(wrappedFetch)
+    );
+}
 
 module.exports = {
-    /**
-     * Configuration for api connections
-     * @param  {Object} opts
-     */
-    create: (options) => {
-        options     = options           || {};
-
-        let scheme  = options.scheme    || DEFAULT_API_SCHEME;
-        let host    = options.host      || DEFAULT_API_HOST;
-        let port    = options.port      || DEFAULT_API_PORT;
-        let secret  = options.secret    || '';
-
-        return new client([scheme, '://', host, ':', port, '/api'].join(''), secret)
-    },
-};
+    createClient,
+}
