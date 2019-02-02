@@ -3,11 +3,13 @@
   "version": "1.0.0",
   "author": "inlife",
   "main": "src/index.js",
-  "scripts": {
-    "start": "node src/bin.js"
-  },
-  "bin": {
-    "nexrender-worker": "src/bin.js"
+  "scripts": { "start": "node src/bin.js" },
+  "bin": { "nexrender-worker": "src/bin.js" },
+  "pkg": {
+    "targets": [
+      "node10-macos-x64",
+      "node10-win-x64"
+    ]
   },
   "dependencies": {
     "@nexrender/api": "^1.0",

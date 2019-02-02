@@ -3,22 +3,30 @@
   "private": true,
   "version": "1.0.0",
   "description": "Automate your After Effects project creation and rendering routine.",
-  "scripts": {
-    "start": "./node_modules/.bin/lerna bootstrap",
-    "server": "node packages/nexrender-cli/src/index.js --server",
-    "test": "./node_modules/.bin/lerna bootstrap && node test.js",
-    "purge-cache": "./node_modules/.bin/lerna exec 'rm -rf node_modules && rm -f package-lock.json'",
-    "purge-master": "rm -rf node_modules && rm -f package-lock.json"
-  },
+  "repository": "inlife/nexrender",
+  "license": "MIT",
   "author": {
     "name": "inlife",
     "email": "vladgritsenko+gh@gmail.com",
     "url": "https://github.com/inlife"
   },
-  "repository": "inlife/nexrender",
-  "license": "MIT",
+  "scripts": {
+    "start": "lerna bootstrap",
+    "server": "node packages/nexrender-cli/src/index.js --server",
+
+    "purge-cache": "lerna exec 'rm -rf node_modules && rm -f package-lock.json'",
+    "purge-master": "rm -rf node_modules && rm -f package-lock.json",
+
+    "pkg-server": "pkg packages/nexrender-server/package.json --out-path bin/",
+    "pkg-worker": "pkg packages/nexrender-worker/package.json --out-path bin/",
+    "pkg-rename": "node misc/rename.js",
+    "pkg": "npm run pkg-server && npm run pkg-worker && npm run pkg-rename",
+
+    "test": "lerna bootstrap && node test.js"
+  },
   "devDependencies": {
     "lerna": "^3.10.7",
-    "mocha": "^5.2.0"
+    "mocha": "^5.2.0",
+    "pkg": "^4.3.7"
   }
 }

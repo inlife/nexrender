@@ -1,0 +1,19 @@
+Adobe After Effects v15.0 Windows 64 render log for project “nm05ae15.aepx”
+
+Rendering started on 4/30/2018 at 12:58:05 PM
+
+  4/30/2018 12:58:05 PM: Starting composition “main”.
+
+  Render Settings: Best Settings  Quality: Best  Resolution: Full  Size: 1280 x 720  Proxy Use: Use No Proxies  Effects: Current Settings  Disk Cache: Read Only  Color Depth: Current Settings  Frame Blending: On for Checked Layers  Field Render: Off  Pulldown: Off  Motion Blur: On for Checked Layers  Solos: Current Settings  Time Span: Custom  Start: 0:00:00:00  End: 0:01:40:00  Duration: 0:01:40:01  Frame Rate: 60.00 (comp)  Guide Layers: All Off  Skip Existing Files: Off    Output Module: Lossless  Output To: D:\Programs\Adobe After Effects CC 2018\Support Files\test.avi  Format: AVI  Output Info: None  Include: Project Link  Output Audio: On (if comp has audio)  Channels: RGB  Depth: Millions of Colors  Color: Premultiplied  Resize: -  Crop: -  Final Size: 1280 x 720  Profile:  -  Post-Render Action: None  After Effects warning: Grouped_Message_{expressions disabled as a result of errors.|||an expression was disabled as a result of an error.###@0 expression errors:}Error at line 1 in property ‘To’ of layer 10 (‘base’) in comp ‘main’.
+File or folder does not exist.After Effects warning: Grouped_Message_{expressions disabled as a result of errors.|||an expression was disabled as a result of an error.###@0 expression errors:}Error at line 1 in property ‘Position’ of layer 6 (‘progress’) in comp ‘main’.
+File or folder does not exist.After Effects warning: Grouped_Message_{expressions disabled as a result of errors.|||an expression was disabled as a result of an error.###@0 expression errors:}Error at line 1 in property ‘Source Text’ of layer 5 (‘artist’) in comp ‘main’.
+File or folder does not exist.After Effects warning: Grouped_Message_{expressions disabled as a result of errors.|||an expression was disabled as a result of an error.###@0 expression errors:}Error at line 1 in property ‘Source Text’ of layer 4 (‘track name’) in comp ‘main’.
+File or folder does not exist.After Effects warning: Grouped_Message_{expressions disabled as a result of errors.|||an expression was disabled as a result of an error.###@0 expression errors:}Error at line 1 in property ‘Source Text’ of layer 3 (‘#00’) in comp ‘main’.
+File or folder does not exist.After Effects warning: Grouped_Message_{expressions disabled as a result of errors.|||an expression was disabled as a result of an error.###@0 expression errors:}Error at line 1 in property ‘Source Text’ of layer 2 (‘00:01’) in comp ‘main’.
+File or folder does not exist.After Effects warning: Grouped_Message_{expressions disabled as a result of errors.|||an expression was disabled as a result of an error.###@0 expression errors:}Error at line 1 in property ‘Source Text’ of layer 1 (‘00:00’) in comp ‘main’.
+File or folder does not exist.After Effects error: Unable to Render: File Not Found /Users/Inlife/NXRendering/nm05/background.jpg  didn’t delete empty file “test.avi” because it was larger than expected. (26  ::  170)  4/30/2018 12:58:05 PM: Finished composition “main”.
+
+
+  Total Time Elapsed: 0 Seconds
+Log closed on 4/30/2018 at 12:58:05 PM
+

@@ -5,7 +5,7 @@ const aws   = require('aws-sdk')
 const s3instance = new aws.S3();
 
 /* define public methods */
-const download = (src, dest, options) => {
+const download = (src, dest, options, type) => {
     let file = fs.createWriteStream(dest);
 
     return new Promise((resolve, reject) => {

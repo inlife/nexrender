@@ -1,17 +1,9 @@
 # folders
 .sync/
 node_modules/
-temp/
-results/
-coverage/
-misc/
+bin/
 
 # files
 *.log
-
-# env files
 .env
-db.json
-
-# mac crap :D
 .DS_Store

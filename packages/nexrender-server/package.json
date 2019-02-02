@@ -5,6 +5,13 @@
   "main": "src/index.js",
   "scripts": { "start": "node src/bin.js" },
   "bin": { "nexrender-server": "src/bin.js" },
+  "pkg": {
+    "targets": [
+      "node10-macos-x64",
+      "node10-linux-x64",
+      "node10-win-x64"
+    ]
+  },
   "dependencies": {
     "@nexrender/types": "^1.0.0",
     "micro": "^9.3.3",
