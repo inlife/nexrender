@@ -15,6 +15,7 @@ const args = arg({
     '--binary':     String,
     '--workpath':   String,
 
+    '--skip-cleanup':   Boolean,
     '--no-license':     Boolean,
     '--force-patch':    Boolean,
     '--render-logs':    Boolean,
@@ -105,6 +106,7 @@ const opt = (key, arg) => {if (args[arg]) {
 opt('binary',               '--binary');
 opt('workpath',             '--workpath');
 opt('no-license',           '--no-license');
+opt('skipCleanup',          '--skip-cleanup');
 opt('forceCommandLinePatch','--force-patch');
 opt('renderLogs',           '--render-logs');
 opt('multiFrames',          '--multi-frames');

@@ -42,6 +42,7 @@ const init = (settings) => {
 
         addLicense: true,
         forceCommandLinePatch: false,
+        skipCleanup: false,
 
         renderLogs: false,
         multiFrames: false,
