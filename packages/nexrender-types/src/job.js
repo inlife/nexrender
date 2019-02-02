@@ -1,54 +1,81 @@
-const templateSchema = {
-    provider: '',
-    credentials: {},
-    src: '',
+const assert = require('assert')
+const nanoid = require('nanoid')
 
-    uid: '',
+/**
+ * Take an optional minimal job json/object
+ * and return a properly structured job object
+ *
+ * @param  {Object} job optional
+ * @return {Object}
+ */
+const create = job => Object.assign({
+    uid: nanoid(),
     type: 'default',
-    state: 'queued',
+    state: 'created',
 
-    composition: '',
-    frameStart: 0,
-    frameEnd: 0,
+    resultname: '',
+    scriptfile: '',
+    workpath: '',
+    output: '',
 
-    outputModule: '',
-    outputExt: '',
-}
+    template: {
+        provider: 'none',
+        src: '',
 
-const assetSchema = {
-    provider: '',
-    credentials: {},
-    src: '',
+        composition: '',
 
-    type: '',
-    layer: '',
-}
+        frameStart: undefined,
+        frameEnd: undefined,
+        frameIncrement: undefined,
 
-const actionSchema = {
-    module: '',
-    provider: '',
-    credentials: {},
-    options: {},
-}
-
-const jobSchema = {
-    template: templateSchema,
-    assets: [ assetSchema ],
+        continueOnMissing: false,
+        settingsTemplate: undefined,
+        outputModule: undefined,
+        outputExt: undefined,
+        imageSequence: false,
+    },
+    assets: [],
     actions: {
-        prerender: [ actionSchema ],
-        postrender: [ actionSchema ],
-    }
-}
+        prerender: [],
+        postrender: [],
+    },
+}, job || {})
 
-const isValid = job => {
+/**
+ * Validate a job object
+ * @param  {Object} job
+ * @return {Boolean}
+ */
+const validate = job => {
+    assert(job.uid);
+    assert(job.state);
 
-}
+    assert(job.template);
+    assert(job.template.provider);
+    assert(job.template.src);
+    assert(job.template.composition);
 
-const createNew = options => {
+    job.assets.map(asset => {
+        assert(asset);
+        assert(asset.type);
+        assert(asset.provider);
+        assert(asset.src);
+    })
 
+    assert(job.actions);
+
+    [].concat(
+        job.actions.prerender,
+        job.actions.postrender
+    ).map(action => {
+        assert(action);
+        assert(action.module);
+    });
+
+    return true;
 }
 
 module.exports = {
-    isValid,
-    createNew,
+    create,
+    validate,
 }

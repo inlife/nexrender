@@ -2,19 +2,24 @@ const os      = require('os')
 const fs      = require('fs')
 const path    = require('path')
 const mkdirp  = require('mkdirp')
-const nanoid  = require('nanoid')
+const assert  = require('assert')
+
+const { create, validate } = require('@nexrender/types').job
 
 /**
  * This task creates working directory for current job
  */
 module.exports = (job, settings) => {
-    /* TODO: add external job validation */
-    if (!job || !job.template || !job.assets || !job.actions) {
-        return Promise.reject(new Error('you must provide a configured nexrender job'))
-    }
+    /* fill default job fields */
+    job = create(job)
 
-    if (!job.uid) job.uid = nanoid();
     settings.logger.log(`[${job.uid}] setting up job...`);
+
+    try {
+        assert(validate(job) == true)
+    } catch (err) {
+        return Promise.reject('Error veryifing job: ' + err)
+    }
 
     // set default job result file name
     if (job.template.outputExt) {
@@ -25,8 +30,8 @@ module.exports = (job, settings) => {
 
     // NOTE: for still (jpg) image sequence frame filename will be changed to result_[#####].jpg
     if (job.template.outputExt && ['jpeg', 'jpg', 'png'].indexOf(job.template.outputExt) !== -1) {
-        job.resultname    = 'result_[#####].' + job.template.outputExt;
-        job.imageSequence = true;
+        job.resultname = 'result_[#####].' + job.template.outputExt;
+        job.template.imageSequence = true;
     }
 
     // setup paths

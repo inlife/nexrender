@@ -17,7 +17,7 @@
   },
   "homepage": "https://github.com/inlife/nexrender#readme",
   "dependencies": {
-    "@nexrender/job": "^1.0.0",
+    "@nexrender/types": "^1.0.0",
     "node-fetch": "^2.1.2"
   }
 }
