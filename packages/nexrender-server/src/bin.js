@@ -80,6 +80,6 @@ if (args['--secret']) {
     serverSecret = args['--secret'] || serverSecret;
 }
 
-console.log(chalk`> starting {bold.cyan nexrender-server} at {bold 0.0.0.0:${serverPort}} and secret: {bold ${serverSecret ? 'yes' : 'no'}}`)
+console.log(chalk`> starting {bold.cyan nexrender-server} at {bold 0.0.0.0:${serverPort}}; using secret: {bold ${serverSecret ? 'yes' : 'no'}}`)
 
 server.listen(serverPort, serverSecret)

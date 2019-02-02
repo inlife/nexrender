@@ -10,13 +10,21 @@ const delay = amount => (
     new Promise(resolve => setTimeout(resolve, amount))
 )
 
-const nextJob = async client => {
+const nextJob = async (client, settings) => {
     do {
-        const listing = await client.listJobs();
-        const queued  = listing.filter(job => job.state == 'queued')
+        try {
+            const listing = await client.listJobs();
+            const queued  = listing.filter(job => job.state == 'queued')
 
-        if (queued.length > 0) {
-            return queued[0];
+            if (queued.length > 0) {
+                return queued[0];
+            }
+        } catch (err) {
+            if (settings.stopOnError) {
+                throw err;
+            } else {
+                console.error(err)
+            }
         }
 
         await delay(NEXRENDER_API_POLLING)
@@ -39,7 +47,7 @@ const start = async (host, secret, settings) => {
     const client = createClient({ host, secret });
 
     do {
-        let job = await nextJob(client); {
+        let job = await nextJob(client, settings); {
             job.state = 'started';
         }
 
@@ -59,6 +67,8 @@ const start = async (host, secret, settings) => {
 
             if (settings.stopOnError) {
                 throw err;
+            } else {
+                console.log(`[${job.uid}] error occurred: ${err.stack}`)
             }
         }
     } while (active)

@@ -5,20 +5,40 @@ const client = createClient({
     secret: 'foobar123123',
 })
 
-client.addJob({
+const job = {
     template: {
-        provider: 'none',
-        src: 'none',
-        composition: 'none',
+        provider: 'file',
+        src: '/Users/inlife/Downloads/nexrender-boilerplate-master/assets/nm05ae12.aepx',
+
+        composition: 'main',
+        frameStart: 0,
+        frameEnd: 300,
     },
     assets: [
         {
-            type: 'none',
-            provider: 'http',
-            src: 'http:/fooobar.com/src.jpg',
-        }
-    ]
-}).then(result => {
+            type: 'image',
+            provider: 'file',
+            src: '/Users/inlife/Downloads/nexrender-boilerplate-master/assets/2016-aug-deep.jpg',
+            layer: 'background.jpg',
+        },
+        {
+            type: 'image',
+            provider: 'file',
+            src: '/Users/inlife/Downloads/nexrender-boilerplate-master/assets/nm.png',
+            layer: 'nm.png',
+        },
+        {
+            type: 'audio',
+            provider: 'file',
+            src: '/Users/inlife/Downloads/nexrender-boilerplate-master/assets/deep_60s.mp3',
+            layer: 'audio.mp3',
+        },
+    ],
+    // onChange: (job, state) => console.log('new job state', state)
+}
+
+
+client.addJob(job).then(result => {
     result.on('created', (job) => {
         console.log('project has been created')
     })

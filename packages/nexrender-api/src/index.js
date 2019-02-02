@@ -14,8 +14,8 @@ const createClient = ({ host, secret }) => {
         return await response.json();
     }
 
-    return Object.assign({},
-        require('./job')(wrappedFetch)
+    return Object.assign({ secret, host },
+        require('./job')(wrappedFetch),
     );
 }
 

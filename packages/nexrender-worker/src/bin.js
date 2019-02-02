@@ -14,11 +14,15 @@ const args = arg({
 
     '--binary':     String,
     '--workpath':   String,
-    '--logs':       Boolean,
 
     '--no-license':     Boolean,
     '--force-patch':    Boolean,
+    '--render-logs':    Boolean,
     '--multi-frames':   Boolean,
+    '--stop-on-error':  Boolean,
+
+    '--max-memory-percent':  Number,
+    '--image-cache-percent': Number,
 
     // Aliases
     '-v':           '--version',
@@ -91,8 +95,26 @@ if (args['--secret']) {
     serverSecret = args['--secret'] || serverSecret;
 }
 
-console.log(chalk`> starting {bold.cyan nexrender-worker} endpoint {bold ${serverHost}} and secret: {bold ${serverSecret ? 'yes' : 'no'}}`)
+console.log(chalk`> starting {bold.cyan nexrender-worker} endpoint {bold ${serverHost}}; using secret: {bold ${serverSecret ? 'yes' : 'no'}}`)
 
-start(serverHost, serverSecret, {
+let settings = {};
+const opt = (key, arg) => {if (args[arg]) {
+    settings[key] = args[arg];
+}}
 
-})
+opt('binary',               '--binary');
+opt('workpath',             '--workpath');
+opt('no-license',           '--no-license');
+opt('forceCommandLinePatch','--force-patch');
+opt('renderLogs',           '--render-logs');
+opt('multiFrames',          '--multi-frames');
+opt('stopOnError',          '--stop-on-error');
+opt('maxMemoryPercent',     '--max-memory-percent');
+opt('imageCachePercent',    '--image-cache-percent');
+
+if (settings['no-license']) {
+    settings.addLicense = false;
+    delete settings['no-license'];
+}
+
+start(serverHost, serverSecret, settings);
