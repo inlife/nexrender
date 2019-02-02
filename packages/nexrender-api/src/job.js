@@ -43,7 +43,7 @@ module.exports = fetch => ({
         await fetch(`/jobs/${id}`, {
             'method': 'put',
             'content-type': 'application/json',
-            'body': JSON.stringify(Object.assign(data, {updatedAt: new Date()})),
+            'body': JSON.stringify(data),
         }),
 
     removejob: async id =>

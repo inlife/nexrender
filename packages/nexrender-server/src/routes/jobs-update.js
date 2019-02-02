@@ -13,7 +13,7 @@ module.exports = async (req, res) => {
 
     try {
         assert(validate(job) == true);
-        send(res, 200, update(req.params.uid, data));
+        send(res, 200, update(req.params.uid, job));
     } catch (err) {
         return send(res, 400, err.stack)
     }
