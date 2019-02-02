@@ -1,8 +1,10 @@
-const fs        = require('fs')
-const path      = require('path')
-const mkdirp    = require('mkdirp')
+const fs      = require('fs')
+const path    = require('path')
+const mkdirp  = require('mkdirp')
+const patched = require('../assets/commandLineRenderer.jsx')
 
-const copyTo = (source, dest) => fs.writeFileSync(dest, fs.readFileSync(source))
+const writeTo = (data, dst) => fs.writeFileSync(dst, data)
+const copyTo = (src, dst) => fs.writeFileSync(dst, fs.readFileSync(src))
 
 /**
  * Attempt to patch the After Effect's command line renderer
@@ -10,9 +12,6 @@ const copyTo = (source, dest) => fs.writeFileSync(dest, fs.readFileSync(source))
  */
 module.exports = (settings) => {
     const targetScript  = 'commandLineRenderer.jsx';
-    const patchFilePath =
-        process.env.NXRND_CUSTOM_PATCH_FILE ||
-        path.resolve(path.join(__dirname, '..', 'assets', targetScript));
 
     const afterEffects = path.dirname(settings.binary)
     const originalFile = path.join(afterEffects, 'Scripts', 'Startup', targetScript)
@@ -28,7 +27,7 @@ module.exports = (settings) => {
 
         if (settings.forceCommandLinePatch) {
             settings.logger.log('forced rewrite of command line patch')
-            copyTo(patchFilePath, originalFile)
+            writeTo(patched, originalFile)
         }
     } else {
         settings.logger.log('backing up original command line script to:')
@@ -38,6 +37,6 @@ module.exports = (settings) => {
         copyTo(originalFile, backupFile)
 
         settings.logger.log('patching the command line script')
-        copyTo(patchFilePath, originalFile)
+        writeTo(patched, originalFile)
     }
 }

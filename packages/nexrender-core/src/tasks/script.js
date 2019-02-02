@@ -1,5 +1,6 @@
-const fs    = require('fs')
-const path  = require('path')
+const fs     = require('fs')
+const path   = require('path')
+const script = require('../assets/nexrender.jsx')
 
 const wrapFootage = (layername, filepath) => (`(function() {
     nexrender.replaceFootage('${layername}', '${filepath.replace(/\\/g, "\\\\")}');
@@ -29,12 +30,9 @@ module.exports = (job, settings) => {
         }
     });
 
-    const baseScriptPath = path.join(__dirname, '..', 'assets', 'nexrender.jsx');
-    const baseScriptData = fs.readFileSync(baseScriptPath, 'utf8');
-
     /* write out assembled custom script file in the workdir */
     job.scriptfile = path.join(base, `nexrender-${job.uid}-script.jsx`);
-    fs.writeFileSync(job.scriptfile, baseScriptData.replace('/*USERSCRIPT*/', data.join('\n')));
+    fs.writeFileSync(job.scriptfile, script.replace('/*USERSCRIPT*/', data.join('\n')));
 
     return Promise.resolve(job)
 }

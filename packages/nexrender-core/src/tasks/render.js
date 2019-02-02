@@ -20,9 +20,9 @@ module.exports = (job, settings) => {
     let params = [];
 
     // setup parameters
-    params.push('-comp',    job.template.composition);
     params.push('-project', path.join(job.workpath, path.basename(job.template.src)));
-    params.push('-output',  path.join(job.workpath, job.resultname));
+    params.push('-comp',    job.template.composition);
+    params.push('-output',  job.output);
 
     option(params, '-OMtemplate', job.template.outputModule);
     option(params, '-RStemplate', job.template.settingsTemplate);
@@ -80,20 +80,20 @@ module.exports = (job, settings) => {
         /* on finish (code 0 - success, other - error) */
         instance.on('close', (code) => {
             const outputStr = output
-                .map(a => ''+a)
-                .join('\n');
+                .map(a => ''+a).join('');
 
             if (code !== 0) {
                 return reject(outputStr)
             }
 
+            settings.logger.log(`[${job.uid}] rendering took ~${(Date.now() - renderStopwatch)/1000} sec.`);
+
             if (settings.renderLogs) {
-                const logPath = path.resolve(job.workpath, '..', `${job.uid}-aerender.log`)
+                const logPath = path.resolve(job.workpath, `../${job.uid}-aerender.log`)
                 settings.logger.log(`[${job.uid}] writing aerender job log to: ${logPath}`);
                 fs.writeFileSync(logPath, outputStr);
             }
 
-            settings.logger.log(`[${job.uid}] rendering took ~${(Date.now() - renderStopwatch)/1000} sec.`);
             resolve(job)
         });
     })

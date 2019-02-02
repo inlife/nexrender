@@ -16,10 +16,6 @@ module.exports = (job, settings) => {
     if (!job.uid) job.uid = nanoid();
     settings.logger.log(`[${job.uid}] setting up job...`);
 
-    // setup job's workpath
-    job.workpath = path.join(settings.workpath, job.uid);
-    mkdirp.sync(job.workpath);
-
     // set default job result file name
     if (job.template.outputExt) {
         job.resultname = 'result.' + job.template.outputExt;
@@ -32,6 +28,11 @@ module.exports = (job, settings) => {
         job.resultname    = 'result_[#####].' + job.template.outputExt;
         job.imageSequence = true;
     }
+
+    // setup paths
+    job.workpath = path.join(settings.workpath, job.uid);
+    job.output   = job.output || path.join(job.workpath, job.resultname);
+    mkdirp.sync(job.workpath);
 
     return Promise.resolve(job)
 };

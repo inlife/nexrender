@@ -7,12 +7,13 @@ const path       = require('path')
 const license    = require('./helpers/license')
 const autofind   = require('./helpers/autofind')
 const patch      = require('./helpers/patch')
+const state      = require('./helpers/state')
 
 const setup      = require('./tasks/setup')
 const download   = require('./tasks/download')
 const prerender  = require('./tasks/actions')('prerender')
 const script     = require('./tasks/script')
-const render     = require('./tasks/render')
+const dorender   = require('./tasks/render')
 const postrender = require('./tasks/actions')('postrender')
 const cleanup    = require('./tasks/cleanup')
 
@@ -67,15 +68,16 @@ const init = (settings) => {
     return settings;
 }
 
+
 const render = (job, settings) => {
     return Promise.resolve(job)
-        .then(job => setup(job, settings))
-        .then(job => download(job, settings))
-        .then(job => prerender(job, settings))
-        .then(job => script(job, settings))
-        .then(job => render(job, settings))
-        .then(job => postrender(job, settings))
-        .then(job => cleanup(job, settings))
+        .then(job => state(job, settings, setup, 'setup'))
+        .then(job => state(job, settings, download, 'download'))
+        .then(job => state(job, settings, prerender, 'prerender'))
+        .then(job => state(job, settings, script, 'script'))
+        .then(job => state(job, settings, dorender, 'dorender'))
+        .then(job => state(job, settings, postrender, 'postrender'))
+        .then(job => state(job, settings, cleanup, 'cleanup'))
 }
 
 module.exports = { init, render }

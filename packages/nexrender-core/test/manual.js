@@ -1,4 +1,4 @@
-const render = require('../src')
+const { init, render } = require('../src')
 
 const job = {
     template: {
@@ -7,7 +7,7 @@ const job = {
 
         composition: 'main',
         frameStart: 0,
-        frameEnd: 1500,
+        frameEnd: 300,
     },
     assets: [
         {
@@ -36,15 +36,17 @@ const job = {
         postrender: [
             { module: __dirname + '/mytest.js' }
         ]
-    }
+    },
+    // onChange: (job, state) => console.log('new job state', state)
 }
 
 const settings = {
     logger: console,
     skipCleanup: true,
+    renderLogs: true,
 }
 
-render(job, settings).then(job => {
+render(job, init(settings)).then(job => {
     console.log('finished rendering', job)
 }).catch(err => {
     console.error(err)
