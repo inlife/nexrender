@@ -6,7 +6,7 @@
   "dependencies": {
     "@nexrender/types": "^1.0.0",
     "mkdirp": "^0.5.1",
-    "node-fetch": "^2.1.2",
+    "node-fetch": "^2.3.0",
     "requireg": "^0.2.1"
   },
   "peerDependencies": {

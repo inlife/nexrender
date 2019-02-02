@@ -5,6 +5,6 @@
   "main": "src/index.js",
   "dependencies": {
     "@nexrender/types": "^1.0.0",
-    "node-fetch": "^2.1.2"
+    "node-fetch": "^2.3.0"
   }
 }
