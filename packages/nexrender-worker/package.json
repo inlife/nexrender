@@ -1,0 +1,18 @@
+{
+  "name": "@nexrender/worker",
+  "version": "1.0.0",
+  "author": "inlife",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/bin.js"
+  },
+  "bin": {
+    "nexrender-worker": "src/bin.js"
+  },
+  "dependencies": {
+    "@nexrender/api": "^1.0",
+    "@nexrender/core": "^1.0",
+    "arg": "^4.1.0",
+    "chalk": "^2.4.2"
+  }
+}
