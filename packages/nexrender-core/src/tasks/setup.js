@@ -34,6 +34,19 @@ module.exports = (job, settings) => {
         job.template.imageSequence = true;
     }
 
+    if (job.actions.postrender.length < 1 && !settings.skipCleanup) {
+        settings.logger.log(`[${job.uid}] -- W A R N I N G: --
+
+You haven't provided any post-render actions!
+After render is finished all the files inside temporary folder (INCLUDING your target video) will be removed.
+
+To prevent this from happening, please add an action to "job.actions.postrender".
+For more info checkout: https://github.com/inlife/nexrender#Actions
+
+P.S. to prevent nexrender from removing temp file data, you also can please provide an argument:
+    --skip-cleanup (or skipCleanup: true if using programmatically)\n`);
+    }
+
     // setup paths
     job.workpath = path.join(settings.workpath, job.uid);
     job.output   = job.output || path.join(job.workpath, job.resultname);
