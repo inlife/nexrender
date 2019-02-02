@@ -7,6 +7,8 @@ module.exports = async (req, res) => {
     const data = await json(req)
     const job  = create(data); {
         job.state = 'queued';
+        job.createdAt = new Date();
+        job.updatedAt = new Date();
     }
 
     console.log(`creating new job ${job.uid}`)

@@ -5,7 +5,9 @@ const { update, fetch } = require('../helpers/database')
 
 module.exports = async (req, res) => {
     const data = await json(req)
-    const job  = Object.assign({}, fetch(req.params.uid) || {}, data);
+    const job  = Object.assign({}, fetch(req.params.uid) || {}, data, {
+        updatedAt: new Date(),
+    });
 
     console.log(`updating job ${job.uid}`)
 
