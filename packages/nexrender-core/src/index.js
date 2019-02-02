@@ -20,7 +20,7 @@ const cleanup    = require('./tasks/cleanup')
 // https://video.stackexchange.com/questions/16706/rendered-file-with-after-effects-is-very-huge
 //
 
-module.exports = (job, settings) => {
+const init = (settings) => {
     settings = Object.assign({}, settings);
     settings.logger = settings.logger || { log: function() {} };
 
@@ -64,6 +64,10 @@ module.exports = (job, settings) => {
     // Scripts/commandLineRenderer.jsx
     patch(settings);
 
+    return settings;
+}
+
+const render = (job, settings) => {
     return Promise.resolve(job)
         .then(job => setup(job, settings))
         .then(job => download(job, settings))
@@ -73,3 +77,5 @@ module.exports = (job, settings) => {
         .then(job => postrender(job, settings))
         .then(job => cleanup(job, settings))
 }
+
+module.exports = { init, render }
