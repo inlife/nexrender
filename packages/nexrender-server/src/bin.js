@@ -49,6 +49,13 @@ if (args['--help']) {
 
       -s, --secret {underline secret_string}          specify a secret that will be required for every incoming http request to validate against
 
+  {bold ENV VARS}
+
+      NEXRENDER_DATABASE                  providing value will override where the database file will be read from/written to.
+
+  {bold ENV EXAMPLE}
+
+      {bold $} NEXRENDER_DATABASE=/etc/nexrender/database.json {cyan nexrender-server} -p 3000
 `);
     process.exit(2);
 }
@@ -73,6 +80,6 @@ if (args['--secret']) {
     serverSecret = args['--secret'] || serverSecret;
 }
 
-console.log(chalk`> starting {bold.cyan nexrender-server} at {bold 0.0.0.0:${serverPort}} ${serverSecret ? chalk`with secret: {bold ${serverSecret}}` : ''}`)
+console.log(chalk`> starting {bold.cyan nexrender-server} at {bold 0.0.0.0:${serverPort}} and secret: {bold ${serverSecret ? 'yes' : 'no'}}`)
 
 server.listen(serverPort, serverSecret)
