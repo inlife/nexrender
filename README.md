@@ -3,9 +3,9 @@
 </p>
 
 <div align="center">
-    <a href="https://travis-ci.org/inlife/nexrender"><img src="https://travis-ci.org/inlife/nexrender.svg?branch=next" alt="Build status" /></a>
-    <a href="https://www.npmjs.com/package/nexrender"><img src="https://img.shields.io/npm/v/nexrender.svg?maxAge=3600" alt="NPM version" /></a>
-    <a href="https://david-dm.org/inlife/nexrender"><img src="https://img.shields.io/david/inlife/nexrender.svg?maxAge=3600" alt="Dependencies" /></a>
+    <a href="https://travis-ci.org/inlife/nexrender"><img src="https://travis-ci.org/inlife/nexrender.svg?branch=master" alt="Build status" /></a>
+    <a href="https://www.npmjs.com/package/@nexrender/core"><img src="https://img.shields.io/npm/v/@nexrender/core.svg?maxAge=3600" alt="NPM version" /></a>
+    <a href="https://david-dm.org/inlife/nexrender?path=packages/nexrender-core"><img src="https://david-dm.org/inlife/nexrender/status.svg?path=packages/nexrender-core" alt="Dependencies" /></a>
     <a href="https://discord.gg/S2JtRcB"><img src="https://discordapp.com/api/guilds/354670964400848898/embed.png" alt="Discord server" /></a>
     <a href="LICENSE"><img src="https://img.shields.io/github/license/inlife/nexrender.svg" alt="license" /></a>
 </div>
