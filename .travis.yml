@@ -1,6 +1,5 @@
 language: node_js
 node_js:
-  - "8"
   - stable
 
 script:
@@ -8,15 +7,12 @@ script:
     - npm run start
     - npm run pkg
 
-before_deploy:
-    - export FILES_TO_UPLOAD=$(ls bin/)
-
 deploy:
     provider: releases
     api_key:
         - secure: "enSO+Yl62HY/XblFuRxJiNW0r6OdcWfy69jFfHLO1FuSRbPXj1tUjFMn0XnWv2OXiISB4Ln86fPN8Lhi7EJfe/tl6MFItbzxmdQGf8jjybj/TzRIXD/T6Re5FSFHthZv47DsZFxEmdNSYN7zHmguUEUrTlUnNVfGaSP9TZnHMzdmzVG9sYomEBzAMjWCaDSWywhWI2BAAjY/buLhAejJXz2/o/LgOs0oRt5UT6NbI3vnnnJiOjUm/zitcNGkGEek+Ailz3svLMPGqw1BOS2QvXJfDZk0lBc5JIX3hzm/5/yck+pXTYt1AZ7hMtstjrS7l+i/wITz2Tg32rlIZcoArL49KBCeSp7F2iK4wsK7+ksBXkVYwU4YsSIQM5ycRz7roOCMSzml8Px26dczasXHD7z7y4RDXLYDpX5aiyyXhVBOKbzwEYUQ3yScXL/SlM+JnjFDGSQmxlh7CDNlIZOqcvF6l0asce4ZPRXMHb5kp9ov8/ULaO49rOzyZs11LT27VOVWm9UrHjAOLOyM3o6oTgxtg79cQQt98Lp/xg4oz351+7dzryxMoMpYVfh1RwOo0EPNhsuh1j+hKpYrXMHjZbJM9ZnFAXDT6eLuRe24HS4oJ3J2LuI0pewv0+eZMfd4WeumRUTvTPQEeWMf82jK9joFhR6GRoF4I1dSk3KEKaY="
     file_glob: true
-    file: "${FILES_TO_UPLOAD}"
+    file: "bin/nexrender-*"
     skip_cleanup: true
     on:
         tags: true
