@@ -1,5 +1,5 @@
 <p align="center">
-    <img src="https://user-images.githubusercontent.com/2182108/52168707-e299f000-2735-11e9-9f28-5975a39c1d18.png" />
+    <img src="https://user-images.githubusercontent.com/2182108/52175653-78259600-27af-11e9-8bf7-c7dcb89e00aa.png" />
 </p>
 
 <div align="center">
@@ -222,7 +222,11 @@ And then using it:
 }
 ```
 
-Also you can [checkout packages](https://github.com/inlife/nexrender#external-packages) made by other contributors across the network:
+Also you can [checkout packages](#external-packages) made by other contributors across the network:
+
+#### Details
+
+TODO: write about additional job fields
 
 ### Using binaries
 

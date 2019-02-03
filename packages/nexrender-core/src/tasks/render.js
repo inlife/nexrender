@@ -20,7 +20,7 @@ module.exports = (job, settings) => {
     let params = [];
 
     // setup parameters
-    params.push('-project', path.join(job.workpath, path.basename(job.template.src)));
+    params.push('-project', job.template.dest);
     params.push('-comp',    job.template.composition);
     params.push('-output',  job.output);
 

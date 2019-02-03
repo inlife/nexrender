@@ -2,41 +2,49 @@ const fs       = require('fs')
 const url      = require('url')
 const path     = require('path')
 const fetch    = require('node-fetch')
+const uri2path = require('file-uri-to-path')
+const data2buf = require('data-uri-to-buffer')
+
+// TODO: redeuce dep size
 const requireg = require('requireg')
 
-function isRemoteFileURL(src) {
-    return src.indexOf('http://') !== -1 || src.indexOf('https://') !== -1;
-}
 
 const download = (job, asset) => {
-    const destPath = path.join(job.workpath, asset.layer || path.basename(asset.src))
+    const uri = new URL(asset.src);
+    const protocol = uri.protocol.replace(/\:$/, '');
+    let destName = '';
 
-    // TODO: remove (deprecation)
-    // additional helper to guess that asset is an url
-    if (isRemoteFileURL(asset.src)) {
-        asset.provider = 'http'
+    /* if asset doesnt have a file name, make up a random one */
+    if (protocol === 'data' && !asset.layer) {
+        destName = Math.random().toString(36).substring(2);
+    } else {
+        destName = asset.layer || path.basename(asset.src);
     }
 
-    // handle different providers of assets
-    switch (asset.provider) {
-        case 'text':
-            return Promise.reject(new Error('text data provider not implemeneted')); break;
+    asset.dest = path.join(job.workpath, destName);
 
-        case 'raw':
-            return Promise.reject(new Error('raw data (byte array) provider not implemeneted')); break;
+    switch (protocol) {
 
-        case 'base64':
-            return Promise.reject(new Error('base64 data (byte array) provider not implemeneted')); break;
+        /* built-in handlers */
 
-        case 'ftp':
-            return Promise.reject(new Error('ftp provider not implemeneted')); break;
+        case 'data':
+            return new Promise((resolve, reject) => {
+                try {
+                    fs.writeFile(
+                        asset.dest, data2buf(asset.src),
+                        err => err ? reject(err) : resolve()
+                    );
+                } catch (err) {
+                    reject(err)
+                }
+            });
+            break;
 
         case 'http':
-            /* TODO: move to external module */
-            /* TODO: add auth handling */
-            return fetch(asset.src)
+            /* TODO: maybe move to external packet ?? */
+            return fetch(asset.src, asset.options || {})
                 .then(res => {
-                    const dest = fs.createWriteStream(destPath, {
+                    const dest = fs.createWriteStream(asset.dest, {
                         autoClose: true,
                     })
 
@@ -44,18 +52,10 @@ const download = (job, asset) => {
                 })
             break;
 
-        case 's3':
-            try {
-                return requireg('@nexrender/provider-aws-s3').download(asset.src, destPath, asset.credentials);
-            } catch (e) {
-                return Promise.reject(new Error('AWS S3 module is not installed, use \"npm i -g @nexrender/provider-aws-s3\" to install it.'))
-            }
-            break;
-
         case 'file':
             /* plain asset stream copy */
-            const rd = fs.createReadStream(asset.src)
-            const wr = fs.createWriteStream(destPath)
+            const rd = fs.createReadStream(uri2path(asset.src))
+            const wr = fs.createWriteStream(asset.dest)
 
             return new Promise(function(resolve, reject) {
                 rd.on('error', reject)
@@ -68,9 +68,26 @@ const download = (job, asset) => {
                 throw error
             })
             break;
-    }
 
-    return job;
+        /* custom/external handlers */
+
+        case 's3':
+            try {
+                return requireg('@nexrender/provider-aws-s3').download(asset.src, asset.dest, asset.options);
+            } catch (e) {
+                return Promise.reject(new Error('AWS S3 module is not installed, use \"npm i -g @nexrender/provider-aws-s3\" to install it.'))
+            }
+            break;
+
+
+        case 'ftp':
+            return Promise.reject(new Error('ftp provider not implemeneted'));
+            break;
+
+        default:
+            return Promise.reject(new Error('unknown URI protocol provided: ' + protocol))
+            break;
+    }
 }
 
 /**

@@ -22,24 +22,24 @@ const job = {
     },
     assets: [
         {
-            type: 'image',
             src: 'http://fooo.bar/image.jpg',
+            type: 'image',
             layer: 'logo.jpg',
         },
         {
-            type: 'audio',
             src: 's3://foobar/fooo.bar/song.mp3',
+            type: 'audio',
             credentials: { Key: 'XXXX-XX111XXX-XXXX' },
             layer: 'audio.mp3',
         },
         {
-            type: 'expression',
             src: 'data:text/plain,wiggle(2)',
+            type: 'expression',
             layer: 'author',
         },
         {
-            type: 'script',
             src: 'ftp://test@fooo.bar:21/scripts/myscript.jsx',
+            type: 'script',
         }
     ],
     actions: {

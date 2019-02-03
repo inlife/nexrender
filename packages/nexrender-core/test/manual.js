@@ -2,30 +2,26 @@ const { init, render } = require('../src')
 
 const job = {
     template: {
-        provider: 'file',
-        src: '/Users/inlife/Downloads/nexrender-boilerplate-master/assets/nm05ae12.aepx',
-
+        src: 'file:///Users/inlife/Downloads/nexrender-boilerplate-master/assets/nm05ae12.aepx',
         composition: 'main',
+
         frameStart: 0,
         frameEnd: 300,
     },
     assets: [
         {
+            src: 'file:///Users/inlife/Downloads/nexrender-boilerplate-master/assets/2016-aug-deep.jpg',
             type: 'image',
-            provider: 'file',
-            src: '/Users/inlife/Downloads/nexrender-boilerplate-master/assets/2016-aug-deep.jpg',
             layer: 'background.jpg',
         },
         {
+            src: 'file:///Users/inlife/Downloads/nexrender-boilerplate-master/assets/nm.png',
             type: 'image',
-            provider: 'file',
-            src: '/Users/inlife/Downloads/nexrender-boilerplate-master/assets/nm.png',
             layer: 'nm.png',
         },
         {
+            src: 'file:///Users/inlife/Downloads/nexrender-boilerplate-master/assets/deep_60s.mp3',
             type: 'audio',
-            provider: 'file',
-            src: '/Users/inlife/Downloads/nexrender-boilerplate-master/assets/deep_60s.mp3',
             layer: 'audio.mp3',
         },
     ],

@@ -21,11 +21,11 @@ module.exports = (job, settings) => {
             case 'video':
             case 'audio':
             case 'image':
-                data.push(wrapFootage(asset.layer, path.join(base, asset.layer)));
+                data.push(wrapFootage(asset.layer, asset.dest));
                 break;
 
             case 'script':
-                data.push(wrapScript(path.join(base, path.basename(asset.src))));
+                data.push(wrapScript(asset.dest));
                 break;
         }
     });
