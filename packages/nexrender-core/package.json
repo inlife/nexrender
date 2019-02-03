@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "main": "src/index.js",
   "author": "Inlife",
+  "scripts": {
+    "pkg-prelink": "node ../../misc/prelink.js"
+  },
   "dependencies": {
     "@nexrender/types": "^1.0.0",
     "mkdirp": "^0.5.1",
@@ -10,6 +13,7 @@
     "requireg": "^0.2.1"
   },
   "peerDependencies": {
+    "@nexrender/action-copy": "^1.0.0",
     "@nexrender/provider-aws-s3": "^1.0.0"
   }
 }

@@ -17,6 +17,10 @@ const dorender   = require('./tasks/render')
 const postrender = require('./tasks/actions')('postrender')
 const cleanup    = require('./tasks/cleanup')
 
+
+const foo = require('@nexrender/action-copy')
+console.log(foo)
+
 //
 // https://video.stackexchange.com/questions/16706/rendered-file-with-after-effects-is-very-huge
 //
