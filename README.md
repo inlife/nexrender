@@ -406,4 +406,5 @@ Here you can find a list of packages published by other contributors:
 and then combining back into a single job. `@nexrender/action-merge-parent, @nexrender/action-merge-child`
 4. Adding more upload/download providers
 5. Creating fully-enclosed binary builds containing majority of the @nexrender/* npm modules
-
+6. Add info about differences 0.x vs 1.x
+7. Add info about scripting/expressions
