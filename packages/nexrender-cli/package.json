@@ -1,10 +1,14 @@
 {
   "name": "@nexrender/cli",
-  "version": "1.0.0",
+  "version": "1.0.0-alpha.0",
   "author": "inlife",
   "main": "src/index.js",
-  "scripts": { "start": "node src/bin.js" },
-  "bin": { "nexrender-cli": "src/bin.js" },
+  "scripts": {
+    "start": "node src/bin.js"
+  },
+  "bin": {
+    "nexrender-cli": "src/bin.js"
+  },
   "pkg": {
     "targets": [
       "node10-macos-x64",
@@ -12,7 +16,7 @@
     ]
   },
   "dependencies": {
-    "@nexrender/core": "^1.0",
+    "@nexrender/core": "^1.0.0-alpha.0",
     "arg": "^4.1.0",
     "chalk": "^2.4.2"
   }
