@@ -23,7 +23,7 @@
     </sub>
 </div>
 
-## Introduction
+# Introduction
 
 > Note: this is a pre-release version of software. For the stable version please refer to ["stable"](https://github.com/inlife/nexrender/tree/stable) branch.
 
@@ -32,7 +32,7 @@
 At this point in time the project is mainly targeted at people at least somewhat comfortable with scripting or development,
 and that have basic knowledge of `javascript` language and `json` formats.
 
-#### Features
+### Features
 
 * data-driven, dynamic, personalized video rendering
 * automated video management, processing and delivery
@@ -42,7 +42,7 @@ and that have basic knowledge of `javascript` language and `json` formats.
 * does not require licenses for Adobe After Effects on any worker machine
 * free to use and open source
 
-#### How it works
+### How it works
 
 * rendering: It uses Adobe After Effects's aerender command-line interface application.
 * compositing: It creates temporary folder, copies project and replaces assets with provided ones.
@@ -51,12 +51,12 @@ and that have basic knowledge of `javascript` language and `json` formats.
 * network: It renders project per machine, and can be used to render several projects simultaniously.
 * farm: Can be used to render single project on several machines via Multi-Machine Sequence.
 
-#### Alternatives
+### Alternatives
 
 Probably the closest (feature-wise) alternative that exists at the moment is the Datalcay's [Templater](http://dataclay.com/) bot edition.
 Compared to nexrender it has a rich GUI support and a number of enterprise scale features, however it is not free.
 
-## Installation
+# Installation
 
 You can download binaries directly from the [releases](https://github.com/inlife/nexrender/releases) section,
 or install them using npm, whichever option works better for you.
@@ -68,11 +68,11 @@ If you wish to install them as well, please do so by providing each one individu
 npm i -g @nexrender/cli @nexrender/action-copy ...
 ```
 
-## Usage
+# Usage
 
 We will be using `nexrender-cli` binary for this example. It's recommended to download/install it if you haven't already.
 
-### Job
+## Job
 
 Job is a single working unit in the nexrender ecosystem. It is a json document, that describes what should be done, and how it should be done.
 Minimal job description always should contain a pointer onto Adobe After Effects project, which is needed to be rendered, and a composition that will be used to render.
@@ -115,7 +115,7 @@ $ nexrender-cli --file=myjob.json
 
 > Note: its recommended to run `nexrender-cli -h` at least once, to read all useful information about available options.
 
-#### Assets
+### Assets
 
 We've successfully rendered a static project file using nexrender, however there is no much point doing that unless we
 are going to add some dynamic data in to the mix.
@@ -149,7 +149,7 @@ Fields:
 * `layer`: string, target layer name in the After Effects project, which will be used to find footage item that will be replaced
 * any additional fields specific for particular URIs or asset types
 
-#### Actions
+### Actions
 
 You might've noticed that unless you added `--skip-cleanup` flag to our command, all rendered results will be deleted,
 and a big warning message will be shown every time you attempt to run the `nexrender-cli` with our job.
@@ -228,7 +228,7 @@ And then using it:
 
 Also you can [checkout packages](#external-packages) made by other contributors across the network:
 
-#### Details
+### Details
 
 Job structure has more fields, that we haven't checked out yet. The detailed version of the structure looks like this:
 
@@ -263,7 +263,7 @@ values can be checked [here](https://helpx.adobe.com/after-effects/using/automat
 It is a callback which will be triggered every time the job has change state (happens on every task change).
 For more info please refer to the source code.
 
-### Programmatic
+## Programmatic
 
 In case you are building your own application and just need to use a rendering part, or you wanna manually trigger jobs from your code,
 there is a way to use nexrender programmatically:
@@ -290,7 +290,7 @@ const main = async () => {
 main();
 ```
 
-## Network rendering
+# Network rendering
 
 We've covered basics on how to set up a minimal rendering flow using local cli machine rendering.
 Now, what if you want to start rendering on a remote machine, to reduce load while you are working on your local machine.
@@ -298,26 +298,26 @@ Or maybe you need to render so many videos at once, that you will require a whol
 
 With nexrender you can quite quickly and easily spin up your own rendering cluster.
 
-### Using binaries
+## Using binaries
 
 You can download compiled versions of binaries directly from the [releases](https://github.com/inlife/nexrender/releases) section,
 or install them using npm, whichever option works better for you.
 
-#### `nexrender-server`
+### `nexrender-server`
 
-##### Description:
+#### Description:
 A CLI application which is responsible for job management, worker node cooperation,
 communications with the `nexrender-worker` instances, and serves mainly as a producer in the nexrender network model.
 
 Technically speaking its a very tiny HTTP server running with a minimal version of REST API.
 
-##### Supported platforms:
+#### Supported platforms:
 Windows, macOS, Linux
 
-##### Requirements:
+#### Requirements:
 None
 
-##### Example
+#### Example
 
 ```sh
 $ nexrender-server \
@@ -325,19 +325,19 @@ $ nexrender-server \
         --secret=myapisecret
 ```
 
-#### `nexrender-worker`
+### `nexrender-worker`
 
-##### Description:
+#### Description:
 A CLI application which is responsible mainly for actual job processing and rendering,
 communication with the `nexrender-server`, and serves mainly as a consumer in the nexrender network model.
 
-##### Supported platforms:
+#### Supported platforms:
 Windows, macOS
 
-##### Requirements:
+#### Requirements:
 Installed licensed/trial version of Adobe After Effects
 
-##### Example
+#### Example
 
 ```sh
 $ nexrender-worker \
@@ -347,7 +347,7 @@ $ nexrender-worker \
 
 > Note: its recommended to run `nexrender-worker -h` at least once, to read all useful information about available options.
 
-### Using API
+## Using API
 
 Now, after you've loaded up your worker and server nodes, they will need some jobs to be submitted to the server to start actual rendering.
 There are 2 main ways to do that, first one - just send a direct POST request to add a job to the server.
@@ -392,13 +392,13 @@ const main = async () => {
 main()
 ```
 
-## External Packages
+# External Packages
 
 Here you can find a list of packages published by other contributors:
 
 * [somename/package-name](#) - a nice description of a nice package doing nice things
 
-## Plans
+# Plans
 
 1. Encoding using ffmpeg `@nexrender/action-encode`
 2. Uploading to various providers `@nexrender/action-upload`
