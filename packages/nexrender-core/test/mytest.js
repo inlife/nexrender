@@ -5,5 +5,5 @@ module.exports = (job, settings) => {
 
 const url = require('url');
 
-console.log(new URL('/Documents/resource.txt'))
+console.log(new URL('d:/Documents/resource.txt'))
 console.log(new URL('data:text/plain;base64,SGVsbG8sIFdvcmxkIQ%3D%3D'))
