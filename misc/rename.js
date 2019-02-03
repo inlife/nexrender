@@ -10,3 +10,6 @@ fs.rename(path.join(bin, 'server-macos'),    path.join(bin, `nexrender-server-ma
 
 fs.rename(path.join(bin, 'worker-win.exe'),  path.join(bin, `nexrender-worker-win.exe`), () => {});
 fs.rename(path.join(bin, 'worker-macos'),    path.join(bin, `nexrender-worker-macos`), () => {});
+
+fs.rename(path.join(bin, 'cli-win.exe'),     path.join(bin, `nexrender-cli-win.exe`), () => {});
+fs.rename(path.join(bin, 'cli-macos'),       path.join(bin, `nexrender-cli-macos`), () => {});
