@@ -17,5 +17,9 @@
   "peerDependencies": {
     "@nexrender/action-copy": "^1.0.0",
     "@nexrender/provider-s3": "^1.0.0"
-  }
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "gitHead": "2782dd33f726c73bf645982c46fd83331dcf6f40"
 }

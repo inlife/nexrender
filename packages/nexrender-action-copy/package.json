@@ -2,5 +2,9 @@
   "name": "@nexrender/action-copy",
   "author": "inlife",
   "version": "1.0.0-alpha.0",
-  "main": "index.js"
+  "main": "index.js",
+  "publishConfig": {
+    "access": "public"
+  },
+  "gitHead": "2782dd33f726c73bf645982c46fd83331dcf6f40"
 }
