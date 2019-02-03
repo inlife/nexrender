@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 
+const fs               = require('fs')
 const arg              = require('arg')
 const chalk            = require('chalk')
 const {version}        = require('../package.json')
@@ -10,6 +11,7 @@ const args = arg({
     '--help':       Boolean,
     '--version':    Boolean,
 
+    '--file':       String,
     '--binary':     String,
     '--workpath':   String,
 
@@ -25,8 +27,8 @@ const args = arg({
 
     // Aliases
     '-v':           '--version',
-    '-s':           '--secret',
     '-h':           '--help',
+    '-f':           '--file',
     '-b':           '--binary',
     '-w':           '--workpath',
 });
@@ -55,6 +57,9 @@ if (args['--help']) {
       -h, --help                            shows this help message
 
       -v, --version                         displays the current version of nexrender-cli
+
+      -b, --binary {underline path}            instead of using json from argument, provide a relative
+                                            or absolute path to file with json containing job
 
       -b, --binary {underline absolute_path}            manually specify path to the {bold "aerender"} binary
                                             you can leave it empty to rely on autofinding
@@ -130,12 +135,19 @@ if (settings['no-license']) {
     delete settings['no-license'];
 }
 
-if (args._.length != 1) {
-    console.error('you need to provide a nexrender job json as the first argument');
-    process.exit(1);
+let json;
+
+if (args['--file']) {
+    json = fs.readFileSync(args['--file'], 'utf8')
+} else {
+    if (args._.length < 1) {
+        console.error('you need to provide a nexrender job json as an argument');
+        process.exit(1);
+    } else {
+        json = args._[0];
+    }
 }
 
-const json = args._[0];
 let parsedJob;
 
 try {

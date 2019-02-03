@@ -23,7 +23,7 @@ module.exports = actionType => (job, settings) => {
 
     return PromiseSerial(job, settings, (job.actions[actionType] || []).map(action => (job, settings) => {
         try {
-            return requireg(action.module)(job, settings, action.options, actionType);
+            return requireg(action.module)(job, settings, action, actionType);
         } catch (e) {
             return Promise.reject(new Error(`Could not resolve ${actionType} module ${action.module}`))
         }

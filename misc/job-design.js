@@ -8,9 +8,7 @@ const job = {
     scriptfile: '/absolute/path/script',
 
     template: {
-        provider: 'http',
-        src: 'http://fooo.bar/template.aepx',
-
+        src: 'https://fooo.bar/template.aep',
         composition: 'main',
 
         frameStart: 0,
@@ -25,27 +23,23 @@ const job = {
     assets: [
         {
             type: 'image',
-            provider: 'http',
             src: 'http://fooo.bar/image.jpg',
             layer: 'logo.jpg',
         },
         {
             type: 'audio',
-            provider: 'aws-s3',
-            credentials: { key: 'XXXX-XX111XXX-XXXX' },
-            src: 'http://fooo.bar/song.mp3',
+            src: 's3://foobar/fooo.bar/song.mp3',
+            credentials: { Key: 'XXXX-XX111XXX-XXXX' },
             layer: 'audio.mp3',
         },
         {
-            type: 'script',
-            provider: 'http',
-            src: 'http://fooo.bar/song.jsx',
+            type: 'expression',
+            src: 'data:text/plain,wiggle(2)',
+            layer: 'author',
         },
         {
-            type: 'expression',
-            provider: 'text',
-            src: '"foo bar"',
-            layer: 'author',
+            type: 'script',
+            src: 'ftp://test@fooo.bar:21/scripts/myscript.jsx',
         }
     ],
     actions: {
@@ -56,41 +50,26 @@ const job = {
             {
                 // upload original
                 module: '@nexrender/action-upload',
-                options: {
-                    provider: 'aws-s3',
-                    credentials: { key: 'XXXX-XX111XXX-XXXX' },
-                    entry: {
-                        darwin: 'result.mov',
-                        win32: 'result.avi',
-                    },
-                }
+                provider: 's3',
+                credentials: { key: 'XXXX-XX111XXX-XXXX' },
+                pattern: '*.(avi|mov)'
             },
             {
                 module: '@nexrender/action-ffmpeg',
-                options: {
-                    entry: {
-                        darwin: 'result.mov',
-                        win32: 'result.avi',
-                    },
-                    output: 'result.mp4',
-                }
+                output: 'result.mp4'
             },
             {
                 // upload processed
                 module: '@nexrender/action-upload',
-                options: {
-                    provider: 'youtube',
-                    credentials: { key: 'XXXX-XX111XXX-XXXX' },
-                    entry: 'result.mp4',
-                }
+                provider: 'youtube',
+                credentials: { key: 'XXXX-XX111XXX-XXXX' },
+                input: 'result.mp4'
             },
             {
                 module: '@nexrender/action-webhook',
-                options: {
-                    success: 'http://example.com/api/render-callback',
-                    failure: 'http://example.com/api/render-callback',
-                    header: { 'Authorization: sometoken' }
-                }
+                success: 'http://example.com/api/render-callback',
+                failure: 'http://example.com/api/render-callback',
+                header: { 'Authorization: sometoken' }
             }
         ]
     }

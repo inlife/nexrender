@@ -54,11 +54,175 @@ and that have basic knowledge of `javascript` language and `json` formats.
 Probably the closest (feature-wise) alternative that exists at the moment is the Datalcay's [Templater](http://dataclay.com/) bot edition.
 Compared to nexrender it has a rich GUI support and a number of enterprise scale features, however it is not free.
 
+## Installation
+
+You can download binaries directly from the [releases](https://github.com/inlife/nexrender/releases) section,
+or install them using npm, whichever option works better for you.
+
+However, please note: the npm version of the binaries doesn't include all optional `plugin` packages that are covered in the usage section.
+If you wish to install them as well, please do so by providing each one individually:
+
+```
+npm i -g @nexrender/cli @nexrender/action-copy ...
+```
+
 ## Usage
+
+We will be using `nexrender-cli` binary for this example. It's recommended to download/install it if you haven't already.
 
 ### Job
 
-TODO: describe the job
+Job is a single working unit in the nexrender ecosystem. It is a json document, that describes what should be done, and how it should be done.
+Minimal job description always should contain a pointer onto Adobe After Effects project, which is needed to be rendered, and a composition that will be used to render.
+
+Pointer is `src` (string) field containing a URI pointing towards specified file, followed by `composition` (string) field, containing name of the compoisition that needs to be rendered.
+
+```json
+// myjob.json
+{
+    "template": {
+        "src": "file:///users/myuser/documents/myproject.aep",
+        "composition": "main"
+    }
+}
+```
+
+or for remote file accessible via http
+
+```json
+// myjob.json
+{
+    "template": {
+        "src": "http://example.com/myproject.aep",
+        "composition": "main"
+    }
+}
+```
+
+Submitting this data to the binary will result in start of the rendering process:
+
+```sh
+$ nexrender-cli '{"template":{"src":"file:///d:/documents/myproject.aep","composition":"main"}}'
+```
+
+or more conviniently using `--file` option
+
+```sh
+$ nexrender-cli --file=myjob.json
+```
+
+#### Assets
+
+We've successfully rendered a static project file using nexrender, however there is no much point doing that unless we
+are going to add some dynamic data in to the mix.
+
+A way to implement something like that is to add an `asset` to our job definition:
+
+```json
+// myjob.json
+{
+    "template": {
+        "src": "file:///d:/documents/myproject.aep",
+        "composition": "main"
+    },
+    "assets": [
+        {
+            "src": "file:///d:/images/myimage.png",
+            "type": "image",
+            "layer": "background"
+        }
+    ]
+}
+```
+
+What we've done there is we told nexrender to use a particlar asset as a replacement for something that we had defined in our `aep` project.
+More specifically, when rendering is gonna happen, nexrender will copy/download this asset file, and attemt to find and replace `footage` entry by specified layer name.
+
+Fields:
+
+* `src`: string, a URI pointer to the specific resource
+* `type`: string, one of (`image, audio, video, script, expression`)
+* `layer`: string, target layer name in the After Effects project, which will be used to find footage item that will be replaced
+* any additional fields specific for particular URIs or asset types
+
+#### Actions
+
+You might've noticed that unless you added `--skip-cleanup` flag to our command, all rendered results are being deleted,
+and a big warning message is being shown every time you attempt to run the `nexrender-cli` with our job.
+
+The reason is that we haven't defined any actions that we need to do after we finished actual rendering. Let's fix that and add a simple one, copy.
+
+```json
+// myjob.json
+{
+    "template": {
+        "src": "file:///d:/documents/myproject.aep",
+        "composition": "main"
+    },
+    "assets": [
+        {
+            "src": "file:///d:/images/myimage.png",
+            "type": "image",
+            "layer": "background"
+        }
+    ],
+    "actions":{
+        "postrender": [
+            {
+                "module": "@nexrender/action-copy",
+                "output": "d:/mydocuments/results/myresult.avi"
+            }
+        ]
+    }
+}
+```
+
+We've just added a `postrender` action, that will occur right after we finished rendering.
+Module that we described in this case, is responsible for copying result file from a temp folder to the `output` folder.
+
+There are multiple built-in modules within nexrender ecosystem:
+
+* [@nexrender/action-copy](https://github.com/inlife/nexrender/tree/next/packages/nexrender-action-copy)
+* [@nexrender/action-upload](https://github.com/inlife/nexrender/tree/next/packages/nexrender-action-upload)
+* (list will be expanded)
+
+Every module might have his own set of fields, however `module` field is always there.
+
+Also you might've noticed that `actions` is an object, however we described only one (`postrender`) field in it.
+And there is one more, its called `prerender`. The latter one can be used to process data/assets just before the actual render will start.
+
+Also, if you are planning on having more than one action, please note: **actions are order-sensetive**,
+that means if you put let's say some encoding action after upload, the latter one might not be able to find a file that needs to be generated by former one,
+since the ordering was wrong.
+
+If you have at least some experience with `Node.js`, you might've noticed that the `module` definition looks exactly like a package name.
+And well, yes it is. When nexrender stumbles upon a `module` entry, it will try to require this package from internal storage,
+and then if no module has been found, it will attempt to look for globally installed Node.js modules with that name.
+
+That means if you are comfortable with writing `Node.js` code, you can easily create your own module, and use it by
+providing either absolute/relative path (on local machine), or publishing the module and installing it globally on your target machine.
+
+```sh
+npm i -g my-awesome-nexrender-action
+```
+
+And then using it:
+
+```json
+{
+    "actions":{
+        "postrender": [
+            {
+                "module": "my-awesome-nexrender-action",
+                "param1": "something big",
+                "param2": 15
+            }
+        ]
+    }
+}
+```
+
+Also you can [checkout packages](https://github.com/inlife/nexrender#external-packages) made by other contributors across the network:
 
 ### Using binaries
 
@@ -82,6 +246,12 @@ $ nexrender-worker \
         --host=https://my.server.com \
         --secret=myapisecret
 ```
+
+## External Packages
+
+Here you can find a list of packages published by other contributors:
+
+* [somename/package-name](#) - a nice description of a nice package doing nice things
 
 ## Plans
 

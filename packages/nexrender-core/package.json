@@ -14,6 +14,6 @@
   },
   "peerDependencies": {
     "@nexrender/action-copy": "^1.0.0",
-    "@nexrender/provider-aws-s3": "^1.0.0"
+    "@nexrender/provider-s3": "^1.0.0"
   }
 }

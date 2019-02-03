@@ -21,7 +21,7 @@ const cleanup    = require('./tasks/cleanup')
 /* so they will be picked up and resolved by pkg */
 if (process.env.NEXRENDER_REQUIRE_PLUGINS) {
     require('@nexrender/action-copy');
-    require('@nexrender/provider-aws-s3');
+    require('@nexrender/provider-s3');
 }
 
 //
