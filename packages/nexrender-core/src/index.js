@@ -17,9 +17,12 @@ const dorender   = require('./tasks/render')
 const postrender = require('./tasks/actions')('postrender')
 const cleanup    = require('./tasks/cleanup')
 
-
-const foo = require('@nexrender/action-copy')
-console.log(foo)
+/* place to register all plugins */
+/* so they will be picked up and resolved by pkg */
+if (process.env.NEXRENDER_REQUIRE_PLUGINS) {
+    require('@nexrender/action-copy');
+    require('@nexrender/provider-aws-s3');
+}
 
 //
 // https://video.stackexchange.com/questions/16706/rendered-file-with-after-effects-is-very-huge
