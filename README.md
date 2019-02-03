@@ -25,6 +25,8 @@
 
 ## Introduction
 
+> Note: this is a pre-release version of software. For the stable version please refer to ["stable"](https://github.com/inlife/nexrender/tree/stable) branch.
+
 `nexrender` is a simple, small, carefully designed application with main goal of rendering automation for Adobe After Effects based rendering workflows.
 
 At this point in time the project is mainly targeted at people at least somewhat comfortable with scripting or development,
@@ -111,6 +113,8 @@ or more conviniently using `--file` option
 $ nexrender-cli --file=myjob.json
 ```
 
+> Note: its recommended to run `nexrender-cli -h` at least once, to read all useful information about available options.
+
 #### Assets
 
 We've successfully rendered a static project file using nexrender, however there is no much point doing that unless we
@@ -147,8 +151,8 @@ Fields:
 
 #### Actions
 
-You might've noticed that unless you added `--skip-cleanup` flag to our command, all rendered results are being deleted,
-and a big warning message is being shown every time you attempt to run the `nexrender-cli` with our job.
+You might've noticed that unless you added `--skip-cleanup` flag to our command, all rendered results will be deleted,
+and a big warning message will be shown every time you attempt to run the `nexrender-cli` with our job.
 
 The reason is that we haven't defined any actions that we need to do after we finished actual rendering. Let's fix that and add a simple one, copy.
 
@@ -182,8 +186,8 @@ Module that we described in this case, is responsible for copying result file fr
 
 There are multiple built-in modules within nexrender ecosystem:
 
-* [@nexrender/action-copy](https://github.com/inlife/nexrender/tree/next/packages/nexrender-action-copy)
-* [@nexrender/action-upload](https://github.com/inlife/nexrender/tree/next/packages/nexrender-action-upload)
+* [@nexrender/action-copy](https://github.com/inlife/nexrender/tree/master/packages/nexrender-action-copy)
+* [@nexrender/action-upload](https://github.com/inlife/nexrender/tree/master/packages/nexrender-action-upload)
 * (list will be expanded)
 
 Every module might have his own set of fields, however `module` field is always there.
@@ -226,12 +230,100 @@ Also you can [checkout packages](#external-packages) made by other contributors 
 
 #### Details
 
-TODO: write about additional job fields
+Job structure has more fields, that we haven't checked out yet. The detailed version of the structure looks like this:
+
+```js
+{
+    "template": {
+        "src": String,
+        "composition": String,
+
+        "frameStart": Number,
+        "frameEnd": Number,
+        "frameIncrement": Number,
+
+        "continueOnMissing": Boolean,
+        "settingsTemplate": String,
+        "outputModule": String,
+        "outputExt": String,
+    },
+    "assets": [],
+    "actions": {
+        "prerender": [],
+        "postrender": [],
+    },
+    "onChange": Function
+}
+```
+
+Majority of the fields are just proxied to the `aerender` binary, and their descriptions and default
+values can be checked [here](https://helpx.adobe.com/after-effects/using/automated-rendering-network-rendering.html).
+
+`onChange` is a field that is possible to setup only via programamtic use.
+It is a callback which will be triggered every time the job has change state (happens on every task change).
+For more info please refer to the source code.
+
+### Programmatic
+
+In case you are building your own application and just need to use a rendering part, or you wanna manually trigger jobs from your code,
+there is a way to use nexrender programmatically:
+
+Install the [@nexrender/core](https://github.com/inlife/nexrender/tree/master/packages/nexrender-core)
+
+```sh
+$ npm install @nexrender/core --save
+```
+
+And then load it, and run it
+
+```js
+const { init, render } = require('@nexrender/core')
+
+const settings = init({
+    logger: console,
+})
+
+const main = async () => {
+    const result = await render(/*myJobJson*/, settings)
+}
+
+main();
+```
+
+## Network rendering
+
+We've covered basics on how to set up a minimal rendering flow using local cli machine rendering.
+Now, what if you want to start rendering on a remote machine, to reduce load while you are working on your local machine.
+Or maybe you need to render so many videos at once, that you will require a whole fleet of nodes running on some cloud cluster.
+
+With nexrender you can quite quickly and easily spin up your own rendering cluster.
 
 ### Using binaries
 
-You can download binaries directly from the [releases](https://github.com/inlife/nexrender/releases) section,
+You can download compiled versions of binaries directly from the [releases](https://github.com/inlife/nexrender/releases) section,
 or install them using npm, whichever option works better for you.
+
+#### `nexrender-server`
+
+##### Description:
+A CLI application which is responsible for job management, worker node cooperation,
+communications with the `nexrender-worker` instances, and serves mainly as a producer in the nexrender network model.
+
+Technically speaking its a very tiny HTTP server running with a minimal version of REST API.
+
+##### Supported platforms:
+Windows, macOS, Linux
+
+##### Requirements:
+None
+
+##### Example
+
+```sh
+$ nexrender-server \
+        --port=3050 \
+        --secret=myapisecret
+```
 
 #### `nexrender-worker`
 
@@ -245,10 +337,59 @@ Windows, macOS
 ##### Requirements:
 Installed licensed/trial version of Adobe After Effects
 
+##### Example
+
 ```sh
 $ nexrender-worker \
-        --host=https://my.server.com \
+        --host=https://my.server.com:3050 \
         --secret=myapisecret
+```
+
+> Note: its recommended to run `nexrender-worker -h` at least once, to read all useful information about available options.
+
+### Using API
+
+Now, after you've loaded up your worker and server nodes, they will need some jobs to be submitted to the server to start actual rendering.
+There are 2 main ways to do that, first one - just send a direct POST request to add a job to the server.
+
+```sh
+curl \
+    --request POST \
+    --header "nexrender-secret: myapisecret" \
+    --header "content-type: application/json" \
+    --data '{"template":{"src":"http://my.server.com/assets/project.aep","composition":"main"}}' \
+    http://my.server.com:3050/api/v1/jobs
+```
+
+Other option is to use already created API module for js:
+
+```sh
+npm isntall @nexrender/api --save
+```
+
+```js
+const { createClient } = require('@nexrender/api')
+
+const client = createClient({
+    host: 'http://my.server.com:3050',
+    secret: 'myapisecret',
+})
+
+const main = async () => {
+    const result = await client.addJob({
+        template: {
+            src: 'http://my.server.com/assets/project.aep',
+            composition: 'main',
+        }
+    })
+
+    result.on('created', job => console.log('project has been created'))
+    result.on('started', job => console.log('project rendering started'))
+    result.on('finished', job) => console.log('project rendering finished'))
+    result.on('error', err => console.log('project rendering error', err))
+}
+
+main()
 ```
 
 ## External Packages
@@ -265,3 +406,4 @@ Here you can find a list of packages published by other contributors:
 and then combining back into a single job. `@nexrender/action-merge-parent, @nexrender/action-merge-child`
 4. Adding more upload/download providers
 5. Creating fully-enclosed binary builds containing majority of the @nexrender/* npm modules
+
