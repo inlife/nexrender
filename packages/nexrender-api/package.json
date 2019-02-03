@@ -1,0 +1,14 @@
+{
+  "name": "@nexrender/api",
+  "author": "inlife",
+  "version": "1.0.0-alpha.2",
+  "main": "src/index.js",
+  "dependencies": {
+    "@nexrender/types": "^1.0.0-alpha.2",
+    "node-fetch": "^2.3.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "gitHead": "84cef65e008026f6fcf4f040943144401f101fce"
+}

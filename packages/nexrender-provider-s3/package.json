@@ -1,0 +1,13 @@
+{
+  "name": "@nexrender/provider-s3",
+  "version": "1.0.0-alpha.2",
+  "author": "inlife",
+  "main": "src/index.js",
+  "dependencies": {
+    "aws-sdk": "^2.344.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "gitHead": "84cef65e008026f6fcf4f040943144401f101fce"
+}

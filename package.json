@@ -1,52 +1,37 @@
 {
   "name": "nexrender",
-  "version": "0.6.1",
+  "private": true,
+  "version": "1.0.0",
   "description": "Automate your After Effects project creation and rendering routine.",
-  "main": "index.js",
-  "bin": {
-    "nexrender": "./cli.js"
-  },
-  "scripts": {
-    "test": "gulp test",
-    "lint": "eslint .",
-    "coverage_upload": "CODECLIMATE_REPO_TOKEN=844102481459628ff8cbfa403603abd6841e8d9f58e0578b684e4bfe17471d3e ./node_modules/.bin/codeclimate-test-reporter < ./coverage/lcov.info",
-    "coverage": "./node_modules/.bin/istanbul cover ./node_modules/.bin/_mocha -- -R spec"
-  },
-  "author": {
-    "name": "Inlife",
-    "email": "vladgritsenko@gmail.com",
-    "url": "https://github.com/inlife"
-  },
   "repository": "inlife/nexrender",
   "license": "MIT",
-  "dependencies": {
-    "async": "^2.0.0-rc.6",
-    "body-parser": "^1.15.0",
-    "cli": "^1.0.0",
-    "download": "^6.1.0",
-    "express": "^4.13.4",
-    "fs-extra": "^0.30.0",
-    "jimp": "^0.2.21",
-    "lodash": "^4.13.1",
-    "lowdb": "^0.13.1",
-    "mkdirp": "^0.5.1",
-    "morgan": "^1.6.1",
-    "node-dir": "^0.1.11",
-    "request": "^2.69.0",
-    "shortid": "^2.2.4",
-    "aws-sdk": "^2.157.0"
+  "author": {
+    "name": "inlife",
+    "email": "vladgritsenko+gh@gmail.com",
+    "url": "https://github.com/inlife"
+  },
+  "scripts": {
+    "start": "lerna bootstrap",
+    "server": "node packages/nexrender-cli/src/index.js --server",
+
+    "purge-cache": "lerna exec 'rm -rf node_modules && rm -f package-lock.json'",
+    "purge-master": "rm -rf node_modules && rm -f package-lock.json",
+
+    "publish": "lerna publish",
+    "public-publish": "lerna exec 'npm publish --access public'",
+
+    "pkg-rename": "node misc/rename.js",
+    "pkg-cli": "NEXRENDER_REQUIRE_PLUGINS=1 pkg packages/nexrender-cli/package.json --out-path bin/",
+    "pkg-worker": "NEXRENDER_REQUIRE_PLUGINS=1 pkg packages/nexrender-worker/package.json --out-path bin/",
+    "pkg-server": "pkg packages/nexrender-server/package.json --out-path bin/",
+    "pkg-prelink": "lerna exec --scope @nexrender/core 'npm run pkg-prelink'",
+    "pkg": "npm run pkg-prelink && npm run pkg-cli && npm run pkg-server && npm run pkg-worker && npm run pkg-rename",
+
+    "test": "lerna bootstrap && node test.js"
   },
   "devDependencies": {
-    "chai": "^3.5.0",
-    "chai-as-promised": "^5.2.0",
-    "chai-fs": "git+https://github.com/zapatek/chai-fs.git",
-    "codeclimate-test-reporter": "^0.3.3",
-    "gulp": "^3.9.1",
-    "gulp-eslint": "^2.0.0",
-    "gulp-mocha": "^2.2.0",
-    "istanbul": "^0.4.2",
-    "jshint": "^2.9.1",
-    "mocha": "^2.4.5",
-    "rewire": "^2.5.1"
+    "lerna": "^3.10.7",
+    "mocha": "^5.2.0",
+    "pkg": "^4.3.7"
   }
 }

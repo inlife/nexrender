@@ -1,9 +1,18 @@
 language: node_js
 node_js:
-  - "4"
-  - "5"
-  - "6"
   - stable
-addons:
-    code_climate:
-        repo_token: 844102481459628ff8cbfa403603abd6841e8d9f58e0578b684e4bfe17471d3e
+
+script:
+    - npm install
+    - npm run start
+    - npm run pkg
+
+deploy:
+    provider: releases
+    api_key:
+        - secure: "4M4z0Qeq/VrNS3FiJ55qPy48j3La2n6+7+dHFXfIqFoF2GDA6UFB0Mg9+akXrZHhMs9KYsVgRvvqLAHj6ilJrVaagY2jYC6zzI3RUfdiKC6729i842BOX1ZgN+pSw/S8fKE3Zryh9P2cVmdlFQukuqIeHboaE/avle92G5xA932ePVNDfKhAz9WjohBvkCV95R6q6M6A5I2re9The0AQo9wwhG1Q+iF22g5AvlpXCmZzH78yOCRzmz6nsvZqLHWT+33hDSD7VpEKL3U4cMgfH2zoAW2bFzrLryYjtV1ShvsCVX7PI9mdWNlC5l0BgJzM5w0r/dZMI24DRS7lP3rAWuc/6pFjp8SuoUSG98UubgLvsWJFg6C1ovENT4yZtEpT0sgDZzLV0F9pUEZ6HAmJLn2wrBLYhm4uUHpirTzpdjJnc4oOHt13/3omje7OIvb5oytUEhIs5YqcSED7y8SzGk7v/O7dh7t+fHzgKM3DEf8sMcvfn0hqo/XrssHOahBhym7PFaAfOhsAsq9cVakxJ18U1RjbDIgiY3Xu3u3jGxISGJsboP6dIOzZqU79FnaIKvPK2bu89rnbWWlaRbvAA/hOrJ5YdOu6ONkbCNQhSyWJyfL4jnKBjYbK3CCo0WRZjrjaewzhoRTIfjyK2UDkjQeEVokX8iw3qWl3oZHntCU="
+    file_glob: true
+    file: "bin/nexrender-*"
+    skip_cleanup: true
+    on:
+        tags: true
