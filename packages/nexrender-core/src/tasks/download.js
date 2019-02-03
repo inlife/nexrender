@@ -73,9 +73,9 @@ const download = (job, asset) => {
 
         case 's3':
             try {
-                return requireg('@nexrender/provider-aws-s3').download(asset.src, asset.dest, asset.options);
+                return requireg('@nexrender/provider-s3').download(asset.src, asset.dest, asset.options);
             } catch (e) {
-                return Promise.reject(new Error('AWS S3 module is not installed, use \"npm i -g @nexrender/provider-aws-s3\" to install it.'))
+                return Promise.reject(new Error('AWS S3 module is not installed, use \"npm i -g @nexrender/provider-s3\" to install it.'))
             }
             break;
 

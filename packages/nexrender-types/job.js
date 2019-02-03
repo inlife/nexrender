@@ -15,9 +15,7 @@ const create = job => Object.assign({
     output: '',
 
     template: {
-        provider: 'none',
         src: '',
-
         composition: '',
 
         frameStart: undefined,
@@ -47,15 +45,13 @@ const validate = job => {
     assert(job.state);
 
     assert(job.template);
-    assert(job.template.provider);
     assert(job.template.src);
     assert(job.template.composition);
 
     job.assets.map(asset => {
         assert(asset);
-        assert(asset.type);
-        assert(asset.provider);
         assert(asset.src);
+        assert(asset.type);
     })
 
     assert(job.actions);

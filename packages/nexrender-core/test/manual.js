@@ -25,14 +25,14 @@ const job = {
             layer: 'audio.mp3',
         },
     ],
-    actions: {
-        prerender: [
-            { module: __dirname + '/mytest.js' }
-        ],
-        postrender: [
-            { module: __dirname + '/mytest.js' }
-        ]
-    },
+    // actions: {
+    //     prerender: [
+    //         { module: __dirname + '/mytest.js' }
+    //     ],
+    //     postrender: [
+    //         { module: __dirname + '/mytest.js' }
+    //     ]
+    // },
     // onChange: (job, state) => console.log('new job state', state)
 }
 
