@@ -110,7 +110,7 @@ $ nexrender-cli '{"template":{"src":"file:///d:/documents/myproject.aep","compos
 or more conviniently using `--file` option
 
 ```sh
-$ nexrender-cli --file=myjob.json
+$ nexrender-cli --file myjob.json
 ```
 
 > Note: its recommended to run `nexrender-cli -h` at least once, to read all useful information about available options.
