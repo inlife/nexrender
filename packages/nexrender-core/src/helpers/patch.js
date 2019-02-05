@@ -33,11 +33,30 @@ module.exports = (settings) => {
         settings.logger.log('backing up original command line script to:')
         settings.logger.log(' - ' + backupFile)
 
-        mkdirp.sync(path.join(afterEffects, 'Backup.Scripts', 'Startup'))
-        copyTo(originalFile, backupFile)
+        try {
+            mkdirp.sync(path.join(afterEffects, 'Backup.Scripts', 'Startup'))
+            copyTo(originalFile, backupFile)
 
-        settings.logger.log('patching the command line script')
-        fs.chmodSync(originalFile, '755');
-        writeTo(patched, originalFile)
+            settings.logger.log('patching the command line script')
+            fs.chmodSync(originalFile, '755');
+            writeTo(patched, originalFile)
+        } catch (err) {
+            if (err.code == 'EPERM') {
+                settings.logger.log('\n\n              -- E R R O R --\n');
+                settings.logger.log('you need to run application with admin priviledges once');
+                settings.logger.log('to install Adobe After Effects commandLineRenderer.jsx patch\n');
+
+                if (process.platform == 'win32') {
+                    settings.logger.log('reading/writing inside Program Files folder on windows is blocked')
+                    settings.logger.log('please run nexrender with Administrator Privilidges only ONE TIME, to install the patch\n\n')
+                } else {
+                    settings.logger.log('you might need to try to run nexrender with "sudo" only ONE TIME to install the patch\n\n')
+                }
+
+                process.exit(2);
+            } else {
+                throw err
+            }
+        }
     }
 }

@@ -10,7 +10,7 @@ const requireg = require('requireg')
 
 
 const download = (job, asset) => {
-    const uri = new URL(asset.src);
+    const uri = global.URL ? new URL(asset.src) : url.parse(asset.src)
     const protocol = uri.protocol.replace(/\:$/, '');
     let destName = '';
 
