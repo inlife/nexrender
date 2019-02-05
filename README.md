@@ -145,7 +145,7 @@ More specifically, when rendering is gonna happen, nexrender will copy/download 
 Fields:
 
 * `src`: string, a URI pointer to the specific resource
-* `type`: string, one of (`image, audio, video, script, expression`)
+* `type`: string, one of (`image, audio, video, script`)
 * `layer`: string, target layer name in the After Effects project, which will be used to find footage item that will be replaced
 * any additional fields specific for particular URIs or asset types
 
