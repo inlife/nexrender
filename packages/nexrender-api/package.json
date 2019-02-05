@@ -1,10 +1,10 @@
 {
   "name": "@nexrender/api",
   "author": "inlife",
-  "version": "1.0.0-alpha.2",
+  "version": "1.0.0-alpha.3",
   "main": "src/index.js",
   "dependencies": {
-    "@nexrender/types": "^1.0.0-alpha.2",
+    "@nexrender/types": "^1.0.0-alpha.3",
     "node-fetch": "^2.3.0"
   },
   "publishConfig": {
