@@ -37,6 +37,7 @@ module.exports = (settings) => {
         copyTo(originalFile, backupFile)
 
         settings.logger.log('patching the command line script')
+        fs.chmodSync(originalFile, '755');
         writeTo(patched, originalFile)
     }
 }
