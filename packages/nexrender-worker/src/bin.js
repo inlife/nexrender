@@ -118,7 +118,7 @@ if (args['--version']) {
 }
 
 if (args['--host'])  {
-    serverHost = args['--secret'] || serverHost;
+    serverHost = args['--host'] || serverHost;
 }
 
 if (args['--secret']) {
