@@ -392,6 +392,31 @@ const main = async () => {
 main()
 ```
 
+# Development
+
+If you wish to contribute by taking active part in development, you might need this basic tutorial on how to get started:
+
+1. clone the repo
+2. run `npm install`
+3. run `npm start`
+
+Last command will run [lerna](https://lernajs.io/) bootstrap action to setup dependencies for all packages listed in the `packages/` folder,
+and link them togher accordingly to their dependency relations.
+
+After that you can start usual development flow of writing code and testing it with `npm start` in specific package.
+
+Why this multi-package sturcture has been choosen? It seemed like much smarter and easier way to achieve few things:
+1. separation of concerns, every module is responsible for a limited set of things
+2. modularity and plugin-friendly nature, which allows external packages to be used instead or alongside built-in ones
+3. minimal dependencym, as you might've noticed, packages in nexrender try to have as little dependencies as possible
+making it much easier to maintain and develop
+
+The recommended approach is to add only needed things as dependencies, it's better to take some time to research module that is being added
+to the project, to see how many its own dependencies it will introduce, and possibly find a better and smaller one, or even extract some specific feature
+into a new micro module.
+
+And of course the main thing about development, is that it should be fun. :)
+
 # External Packages
 
 Here you can find a list of packages published by other contributors:
