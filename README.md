@@ -25,17 +25,17 @@
 
 # Introduction
 
-> Note: this is a pre-release version of software. For the stable version please refer to ["stable"](https://github.com/inlife/nexrender/tree/stable) branch.
+> Note: this is a pre-release version of the software. For the stable version please refer to ["stable"](https://github.com/inlife/nexrender/tree/stable) branch.
 
-`nexrender` is a simple, small, carefully designed application with main goal of rendering automation for Adobe After Effects based rendering workflows.
+`nexrender` is a simple, small, carefully designed application with the main goal of rendering automation for Adobe After Effects based rendering workflows.
 
-At this point in time the project is mainly targeted at people at least somewhat comfortable with scripting or development,
+At this point in time, the project is mainly targeted at people at least somewhat comfortable with scripting or development,
 and that have basic knowledge of `javascript` language and `json` formats.
 
 ### Features
 
 * data-driven, dynamic, personalized video rendering
-* automated video management, processing and delivery
+* automated video management, processing, and delivery
 * network oriented project structure, render farm
 * highly modular nature, extensive plugin support
 * works only in cli mode, never launches After Effects GUI application
@@ -44,17 +44,17 @@ and that have basic knowledge of `javascript` language and `json` formats.
 
 ### How it works
 
-* rendering: It uses Adobe After Effects's aerender command-line interface application.
-* compositing: It creates temporary folder, copies project and replaces assets with provided ones.
-* personalization: It uses AE's expressions, scripting and compositing (noted above).
-* scheduling: It stores projects in local database, managed from anywhere using http api.
-* network: It renders project per machine, and can be used to render several projects simultaniously.
-* farm: Can be used to render single project on several machines via Multi-Machine Sequence.
+* rendering: It uses Adobe After Effects' aerender command-line interface application.
+* compositing: It creates a temporary folder, copies project and replaces assets with provided ones.
+* personalization: It uses AE's expressions, scripting, and compositing (noted above).
+* scheduling: It stores projects in a local database, managed from anywhere using http api.
+* network: It renders project per machine, and can be used to render several projects simultaneously.
+* farm: Can be used to render a single project on several machines via Multi-Machine Sequence.
 
 ### Alternatives
 
 Probably the closest (feature-wise) alternative that exists at the moment is the Datalcay's [Templater](http://dataclay.com/) bot edition.
-Compared to nexrender it has a rich GUI support and a number of enterprise scale features, however it is not free.
+Compared to nexrender it has a rich GUI support and a number of enterprise-scale features, however, it is not free.
 
 # Installation
 
@@ -74,10 +74,10 @@ We will be using `nexrender-cli` binary for this example. It's recommended to do
 
 ## Job
 
-Job is a single working unit in the nexrender ecosystem. It is a json document, that describes what should be done, and how it should be done.
+A job is a single working unit in the nexrender ecosystem. It is a json document, that describes what should be done, and how it should be done.
 Minimal job description always should contain a pointer onto Adobe After Effects project, which is needed to be rendered, and a composition that will be used to render.
 
-Pointer is `src` (string) field containing a URI pointing towards specified file, followed by `composition` (string) field, containing name of the compoisition that needs to be rendered.
+The pointer is `src` (string) field containing a URI pointing towards specified file, followed by `composition` (string) field, containing the name of the composition that needs to be rendered.
 
 ```json
 // myjob.json
@@ -107,7 +107,7 @@ Submitting this data to the binary will result in start of the rendering process
 $ nexrender-cli '{"template":{"src":"file:///d:/documents/myproject.aep","composition":"main"}}'
 ```
 
-or more conviniently using `--file` option
+or more conveniently using `--file` option
 
 ```sh
 $ nexrender-cli --file myjob.json
@@ -117,8 +117,8 @@ $ nexrender-cli --file myjob.json
 
 ### Assets
 
-We've successfully rendered a static project file using nexrender, however there is no much point doing that unless we
-are going to add some dynamic data in to the mix.
+We've successfully rendered a static project file using nexrender, however, there is no much point doing that unless we
+are going to add some dynamic data into the mix.
 
 A way to implement something like that is to add an `asset` to our job definition:
 
@@ -139,8 +139,8 @@ A way to implement something like that is to add an `asset` to our job definitio
 }
 ```
 
-What we've done there is we told nexrender to use a particlar asset as a replacement for something that we had defined in our `aep` project.
-More specifically, when rendering is gonna happen, nexrender will copy/download this asset file, and attemt to find and replace `footage` entry by specified layer name.
+What we've done there is we told nexrender to use a particular asset as a replacement for something that we had defined in our `aep` project.
+More specifically, when rendering is gonna happen, nexrender will copy/download this asset file, and attempt to find and replace `footage` entry by specified layer name.
 
 Fields:
 
@@ -182,7 +182,7 @@ The reason is that we haven't defined any actions that we need to do after we fi
 ```
 
 We've just added a `postrender` action, that will occur right after we finished rendering.
-Module that we described in this case, is responsible for copying result file from a temp folder to the `output` folder.
+A module that we described in this case, is responsible for copying result file from a temp folder to the `output` folder.
 
 There are multiple built-in modules within nexrender ecosystem:
 
@@ -190,12 +190,12 @@ There are multiple built-in modules within nexrender ecosystem:
 * [@nexrender/action-upload](https://github.com/inlife/nexrender/tree/master/packages/nexrender-action-upload)
 * (list will be expanded)
 
-Every module might have his own set of fields, however `module` field is always there.
+Every module might have his own set of fields, however, `module` field is always there.
 
-Also you might've noticed that `actions` is an object, however we described only one (`postrender`) field in it.
+Also, you might've noticed that `actions` is an object, however, we described only one (`postrender`) field in it.
 And there is one more, its called `prerender`. The latter one can be used to process data/assets just before the actual render will start.
 
-Also, if you are planning on having more than one action, please note: **actions are order-sensetive**,
+Also, if you are planning on having more than one action, please note: **actions are order-sensitive**,
 that means if you put let's say some encoding action after upload, the latter one might not be able to find a file that needs to be generated by former one,
 since the ordering was wrong.
 
@@ -204,7 +204,7 @@ And well, yes it is. When nexrender stumbles upon a `module` entry, it will try 
 and then if no module has been found, it will attempt to look for globally installed Node.js modules with that name.
 
 That means if you are comfortable with writing `Node.js` code, you can easily create your own module, and use it by
-providing either absolute/relative path (on local machine), or publishing the module and installing it globally on your target machine.
+providing either absolute/relative path (on a local machine), or publishing the module and installing it globally on your target machine.
 
 ```sh
 npm i -g my-awesome-nexrender-action
@@ -226,7 +226,7 @@ And then using it:
 }
 ```
 
-Also you can [checkout packages](#external-packages) made by other contributors across the network:
+Also, you can [checkout packages](#external-packages) made by other contributors across the network:
 
 ### Details
 
@@ -259,7 +259,7 @@ Job structure has more fields, that we haven't checked out yet. The detailed ver
 Majority of the fields are just proxied to the `aerender` binary, and their descriptions and default
 values can be checked [here](https://helpx.adobe.com/after-effects/using/automated-rendering-network-rendering.html).
 
-`onChange` is a field that is possible to setup only via programamtic use.
+`onChange` is a field that is possible to setup only via programmatic use.
 It is a callback which will be triggered every time the job has change state (happens on every task change).
 For more info please refer to the source code.
 
@@ -296,7 +296,7 @@ We've covered basics on how to set up a minimal rendering flow using local cli m
 Now, what if you want to start rendering on a remote machine, to reduce load while you are working on your local machine.
 Or maybe you need to render so many videos at once, that you will require a whole fleet of nodes running on some cloud cluster.
 
-With nexrender you can quite quickly and easily spin up your own rendering cluster.
+With nexrender, you can quite quickly and easily spin up your own rendering cluster.
 
 ## Using binaries
 
@@ -361,10 +361,10 @@ curl \
     http://my.server.com:3050/api/v1/jobs
 ```
 
-Other option is to use already created API module for js:
+Another option is to use already created API module for js:
 
 ```sh
-npm isntall @nexrender/api --save
+npm install @nexrender/api --save
 ```
 
 ```js
@@ -394,28 +394,28 @@ main()
 
 # Development
 
-If you wish to contribute by taking active part in development, you might need this basic tutorial on how to get started:
+If you wish to contribute by taking an active part in development, you might need this basic tutorial on how to get started:
 
 1. clone the repo
 2. run `npm install`
 3. run `npm start`
 
-Last command will run [lerna](https://lernajs.io/) bootstrap action to setup dependencies for all packages listed in the `packages/` folder,
-and link them togher accordingly to their dependency relations.
+The last command will run [lerna](https://lernajs.io/) bootstrap action to setup dependencies for all packages listed in the `packages/` folder,
+and link them together accordingly to their dependency relations.
 
-After that you can start usual development flow of writing code and testing it with `npm start` in specific package.
+After that, you can start the usual development flow of writing code and testing it with `npm start` in a specific package.
 
-Why this multi-package sturcture has been choosen? It seemed like much smarter and easier way to achieve few things:
+Why this multi-package structure has been chosen? It seemed like a much smarter and easier way to achieve a few things:
 1. separation of concerns, every module is responsible for a limited set of things
-2. modularity and plugin-friendly nature, which allows external packages to be used instead or alongside built-in ones
-3. minimal dependencym, as you might've noticed, packages in nexrender try to have as little dependencies as possible
+2. modularity and plugin-friendly nature, which allows external packages to be used instead, or alongside built-in ones
+3. minimal dependency, as you might've noticed, packages in nexrender try to have as little dependencies as possible
 making it much easier to maintain and develop
 
 The recommended approach is to add only needed things as dependencies, it's better to take some time to research module that is being added
 to the project, to see how many its own dependencies it will introduce, and possibly find a better and smaller one, or even extract some specific feature
 into a new micro module.
 
-And of course the main thing about development, is that it should be fun. :)
+And of course, the main thing about development is that it should be fun. :)
 
 # External Packages
 
@@ -427,9 +427,9 @@ Here you can find a list of packages published by other contributors:
 
 1. Encoding using ffmpeg `@nexrender/action-encode`
 2. Uploading to various providers `@nexrender/action-upload`
-3. Algo of splitting the main job onto subjobs, rendering them on multiple machines
+3. The algo of splitting the main job onto sub jobs, rendering them on multiple machines
 and then combining back into a single job. `@nexrender/action-merge-parent, @nexrender/action-merge-child`
 4. Adding more upload/download providers
-5. Creating fully-enclosed binary builds containing majority of the @nexrender/* npm modules
+5. Creating fully-enclosed binary builds containing the majority of the @nexrender/* npm modules
 6. Add info about differences 0.x vs 1.x
 7. Add info about scripting/expressions
