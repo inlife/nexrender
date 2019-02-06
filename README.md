@@ -287,7 +287,7 @@ const main = async () => {
     const result = await render(/*myJobJson*/, settings)
 }
 
-main();
+main().catch(console.error);
 ```
 
 # Network rendering
@@ -389,8 +389,10 @@ const main = async () => {
     result.on('error', err => console.log('project rendering error', err))
 }
 
-main()
+main().catch(console.error);
 ```
+
+More info: [@nexrender/api](packages/nexrender-api)
 
 # Development
 
