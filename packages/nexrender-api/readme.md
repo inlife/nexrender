@@ -28,7 +28,7 @@ const main = async () => {
 
     result.on('created', job => console.log('project has been created'))
     result.on('started', job => console.log('project rendering started'))
-    result.on('finished', job) => console.log('project rendering finished'))
+    result.on('finished', job => console.log('project rendering finished'))
     result.on('error', err => console.log('project rendering error', err))
 }
 
