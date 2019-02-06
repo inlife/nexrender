@@ -70,8 +70,10 @@ module.exports = (job, settings) => {
     return new Promise((resolve, reject) => {
         renderStopwatch = Date.now();
 
-        const instance = spawn(settings.binary, params);
         const output = [];
+        const instance = spawn(settings.binary, params, {
+            env: { PATH: path.dirname(settings.binary) },
+        });
 
         instance.on('error', err => reject(new Error(`Error starting aerender process: ${err}`)));
         instance.stdout.on('data', (data) => output.push(parse(data.toString('utf8'))));
