@@ -115,6 +115,8 @@ $ nexrender-cli --file myjob.json
 
 > Note: its recommended to run `nexrender-cli -h` at least once, to read all useful information about available options.
 
+More info: [@nexrender/cli](packages/nexrender-cli)
+
 ### Assets
 
 We've successfully rendered a static project file using nexrender, however, there is no much point doing that unless we
@@ -290,6 +292,8 @@ const main = async () => {
 main().catch(console.error);
 ```
 
+More info: [@nexrender/core](packages/nexrender-core)
+
 # Network rendering
 
 We've covered basics on how to set up a minimal rendering flow using local cli machine rendering.
@@ -325,6 +329,8 @@ $ nexrender-server \
         --secret=myapisecret
 ```
 
+More info: [@nexrender/server](packages/nexrender-server)
+
 ### `nexrender-worker`
 
 #### Description:
@@ -346,6 +352,8 @@ $ nexrender-worker \
 ```
 
 > Note: its recommended to run `nexrender-worker -h` at least once, to read all useful information about available options.
+
+More info: [@nexrender/worker](packages/nexrender-worker)
 
 ## Using API
 
