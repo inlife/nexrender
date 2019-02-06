@@ -425,11 +425,12 @@ Here you can find a list of packages published by other contributors:
 
 # Plans
 
-1. Encoding using ffmpeg `@nexrender/action-encode`
-2. Uploading to various providers `@nexrender/action-upload`
-3. The algo of splitting the main job onto sub jobs, rendering them on multiple machines
+1. Add Encoding using ffmpeg `@nexrender/action-encode`
+2. Add Uploading to various providers `@nexrender/action-upload`
+3. Add an algo of splitting the main job onto sub jobs, rendering them on multiple machines
 and then combining back into a single job. `@nexrender/action-merge-parent, @nexrender/action-merge-child`
 4. Adding more upload/download providers
-5. Creating fully-enclosed binary builds containing the majority of the @nexrender/* npm modules
+5. Add info about providers
 6. Add info about differences 0.x vs 1.x
 7. Add info about scripting/expressions
+8. Add more specific validators to job
