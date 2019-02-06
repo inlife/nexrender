@@ -41,6 +41,7 @@ const download = (job, asset) => {
             break;
 
         case 'http':
+        case 'https':
             /* TODO: maybe move to external packet ?? */
             return fetch(asset.src, asset.options || {})
                 .then(res => {
