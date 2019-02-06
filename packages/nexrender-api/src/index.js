@@ -1,4 +1,4 @@
-const fetch = require('node-fetch')
+const fetch = require('isomorphic-unfetch')
 
 const createClient = ({ host, secret }) => {
     const wrappedFetch = async (path, options) => {

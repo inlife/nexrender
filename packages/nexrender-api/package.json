@@ -5,7 +5,7 @@
   "main": "src/index.js",
   "dependencies": {
     "@nexrender/types": "^1.0.0-alpha.3",
-    "node-fetch": "^2.3.0"
+    "isomorphic-unfetch": "^3.0.0"
   },
   "publishConfig": {
     "access": "public"
