@@ -4,6 +4,9 @@ Copy your video/image sequence to a specified folder after rendering is finished
 
 ## Installation
 
+If you are using [binary](https://github.com/inlife/nexrender/releases) version of the nexrender,
+there is no need to install the module, it is **included** in the binary build.
+
 ```
 npm i @nexrender/action-copy -g
 ```
