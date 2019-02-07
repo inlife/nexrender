@@ -24,6 +24,10 @@ const job = {
             type: 'audio',
             layer: 'audio.mp3',
         },
+        {
+            src: 'https://raw.githubusercontent.com/inlife/nexrender-boilerplate/master/assets/2016-aug-deep.js',
+            type: 'script',
+        }
     ],
     // actions: {
     //     prerender: [

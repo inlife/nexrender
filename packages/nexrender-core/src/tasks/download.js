@@ -5,9 +5,10 @@ const fetch    = require('node-fetch')
 const uri2path = require('file-uri-to-path')
 const data2buf = require('data-uri-to-buffer')
 
+const NEXRENDER_DOWNLOAD_TIMEOUT = process.env.NEXRENDER_DOWNLOAD_TIMEOUT || 30000;
+
 // TODO: redeuce dep size
 const requireg = require('requireg')
-
 
 const download = (job, asset) => {
     const uri = global.URL ? new URL(asset.src) : url.parse(asset.src)
@@ -44,13 +45,36 @@ const download = (job, asset) => {
         case 'https':
             /* TODO: maybe move to external packet ?? */
             return fetch(asset.src, asset.options || {})
-                .then(res => {
-                    const dest = fs.createWriteStream(asset.dest, {
-                        autoClose: true,
-                    })
+                .then(res => res.ok ? res : Promise.reject({reason: 'Initial error downloading file', meta: {url, error: res.error}}))
+                .then((res) => {
+                    const stream = fs.createWriteStream(asset.dest)
+                    let timer
 
-                    res.body.pipe(dest)
-                })
+                    return new Promise((resolve, reject) => {
+                        const errorHandler = (error) => {
+                            reject({reason: 'Unable to download file', meta: {url, error}})
+                        };
+
+                        res.body
+                            .on('error', errorHandler)
+                            .pipe(stream)
+
+                        stream
+                            .on('open', () => {
+                                timer = setTimeout(() => {
+                                    stream.close()
+                                    reject({reason: 'Timed out downloading file', meta: {url}})
+                                }, NEXRENDER_DOWNLOAD_TIMEOUT)
+                            })
+                            .on('error', errorHandler)
+                            .on('finish', resolve)
+                    }).then(() => {
+                        clearTimeout(timer)
+                    }, (err) => {
+                        clearTimeout(timer)
+                        return Promise.reject(err)
+                    })
+                });
             break;
 
         case 'file':
