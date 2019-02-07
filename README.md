@@ -23,6 +23,52 @@
     </sub>
 </div>
 
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+
+
+- [Introduction](#introduction)
+    - [Features](#features)
+    - [How it works](#how-it-works)
+    - [Alternatives](#alternatives)
+- [Installation](#installation)
+- [Usage](#usage)
+  - [Job](#job)
+    - [Assets](#assets)
+    - [Actions](#actions)
+    - [Details](#details)
+  - [Programmatic](#programmatic)
+- [Template rendering](#template-rendering)
+  - [Footage items](#footage-items)
+    - [Fields](#fields)
+    - [Example](#example)
+  - [Data items](#data-items)
+    - [Fields](#fields-1)
+    - [Example](#example-1)
+  - [Script items](#script-items)
+    - [Fields](#fields-2)
+    - [Example](#example-2)
+- [Network rendering](#network-rendering)
+  - [Using binaries](#using-binaries)
+    - [`nexrender-server`](#nexrender-server)
+      - [Description:](#description)
+      - [Supported platforms:](#supported-platforms)
+      - [Requirements:](#requirements)
+      - [Example](#example-3)
+    - [`nexrender-worker`](#nexrender-worker)
+      - [Description:](#description-1)
+      - [Supported platforms:](#supported-platforms-1)
+      - [Requirements:](#requirements-1)
+      - [Example](#example-4)
+  - [Using API](#using-api)
+- [Development](#development)
+- [Protocols](#protocols)
+  - [Examples](#examples)
+- [External Packages](#external-packages)
+- [Plans](#plans)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 # Introduction
 
 > Note: this is a pre-release version of the software. For the stable version please refer to ["stable"](https://github.com/inlife/nexrender/tree/stable) branch.
