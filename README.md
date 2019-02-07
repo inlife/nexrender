@@ -79,6 +79,8 @@ Minimal job description always should contain a pointer onto Adobe After Effects
 
 The pointer is `src` (string) field containing a URI pointing towards specified file, followed by `composition` (string) field, containing the name of the composition that needs to be rendered.
 
+>Note: check out [supported protocols](#protocols) for `src` field.
+
 ```json
 // myjob.json
 {
@@ -135,7 +137,7 @@ A way to implement something like that is to add an `asset` to our job definitio
         {
             "src": "file:///d:/images/myimage.png",
             "type": "image",
-            "layer": "background"
+            "layerName": "background"
         }
     ]
 }
@@ -144,12 +146,7 @@ A way to implement something like that is to add an `asset` to our job definitio
 What we've done there is we told nexrender to use a particular asset as a replacement for something that we had defined in our `aep` project.
 More specifically, when rendering is gonna happen, nexrender will copy/download this asset file, and attempt to find and replace `footage` entry by specified layer name.
 
-Fields:
-
-* `src`: string, a URI pointer to the specific resource
-* `type`: string, one of (`image, audio, video, script`)
-* `layer`: string, target layer name in the After Effects project, which will be used to find footage item that will be replaced
-* any additional fields specific for particular URIs or asset types
+Check out: [detailed information about footage items](#footage-items).
 
 ### Actions
 
@@ -162,14 +159,14 @@ The reason is that we haven't defined any actions that we need to do after we fi
 // myjob.json
 {
     "template": {
-        "src": "file:///d:/documents/myproject.aep",
+        "src": "http://example.com/assets/myproject.aep",
         "composition": "main"
     },
     "assets": [
         {
-            "src": "file:///d:/images/myimage.png",
+            "src": "http://example.com/assets/myimage.png",
             "type": "image",
-            "layer": "background"
+            "layerName": "background"
         }
     ],
     "actions":{
@@ -293,6 +290,145 @@ main().catch(console.error);
 ```
 
 More info: [@nexrender/core](packages/nexrender-core)
+
+# Template rendering
+
+One of main benefits of using nexrender is an ability to render projects using data other than what have been used while project has been created.
+Data means any sort of source/footage material, it can be images, audio tracks, video clips, text strings, values for colors/positions, even dynamic animations using expressions.
+All of those things can be replaced for every job without even opening project file or starting After Effects.
+
+> Note: Also this process can be called in other ways: **templated**, **data-driven** or **dynamic** video generation.
+
+This approach allows you to create a .aep file once, and then reuse it for as many target results as you need to.
+However, what is needed to get started?
+
+## Footage items
+
+Footage item replacement is what breifly has been covered in `Job` section of this document.
+The idea is quite simple, you describe which asset will replace existing described footage item in specific layer,
+by specifying `src`, and one of the `layerName` or `layerIndex` options.
+
+### Fields
+
+* `src`: string, a URI pointer to the specific resource, check out [supported protocols](#protocols)
+* `type`: string, for footage items is one of (`image`, `audio`, `video`)
+* `layerName`: string, target layer name in the After Effects project
+* `layerIndex`: integer, additonally instead of `layerName` you can select layer by providing an index
+of the layer instead of maching by name starting from 1 (default behavior of AE jsx scripting env)
+
+Specified asset from `src` field will be downloaded/copied to the working directory, and just before rendering will happen,
+fotage item with specified `layerName` or `layerIndex` in the original project will be replaced with the freshly downloaded asset.
+
+This way you (if you are using network rendering) you can not only deliver assets to the target platform, but also dynamically replace them.
+
+### Example
+
+```json
+{
+    "assets": [
+        {
+            "src": "https://example.com/assets/image.jpg",
+            "type": "image",
+            "layerName": "MyNicePicture.jpg"
+        },
+        {
+            "src": "file:///home/assets/audio.mp3",
+            "type": "audio",
+            "layerIndex": 15
+        }
+    ]
+}
+```
+
+## Data items
+
+Second important point for the dynamic data-driven video generation is ability to replace/change/modify non-footage data in the project.
+To do that a special asset of type `data` can be used.
+
+### Fields
+
+* `type`: string, for data items is always `data`
+* `layerName`: string, target layer name in the After Effects project
+* `layerIndex`: integer, additonally instead of `layerName` you can select layer by providing an index
+of the layer instead of maching by name starting from 1 (default behavior of AE jsx scripting env)
+* `property`: string, indicates which layer property you want to change
+* `value`: mixed, optional, indicates which value you want set to specified property
+* `expression`: string, optional, allows you to specify an expression that can be executed every frame to calculate the value
+
+Since both `value` and `expression` are optional you can provide them in any combination, depending on the effect you want to achieve.
+Providing value will set the exact value for the property right after execution, and providing an expression will make sure it will be evaluated every frame.
+
+>Note: If you are not sure what expressions are, and how to use them, please refer [to this page](https://helpx.adobe.com/after-effects/using/expression-basics.html)
+
+And if you are not sure what is a `property` and where to get it you can refer to this image:
+
+<details>
+<summary><b>Property List Example</b></summary>
+
+>As you can see there are a few `Property Groups` like Text, Masks, Transform that include actual properties. Those properties is what can be used as target.
+
+![](https://user-images.githubusercontent.com/2182108/52443468-7270dd00-2b2e-11e9-8336-255349279c43.png)
+
+</details>
+
+### Example
+
+```json
+{
+    "assets": [
+        {
+            "type": "data",
+            "layerName": "MyNicePicture",
+            "property": "Position",
+            "value": [500, 100]
+        },
+        {
+            "type": "data",
+            "layerName": "my text field",
+            "property": "Source Text",
+            "expression": "time > 100 ? 'Bye bye' : 'Hello world'"
+        },
+        {
+            "type": "data",
+            "layerIndex": 15,
+            "property": "Scale",
+            "value": [0,0],
+            "expression": "[time * 0.1, time * 0.1]"
+        }
+    ]
+}
+```
+
+>Note: any error in expression will prevent project from rendering. Make sure to read error messages reported by After Effects binary carefuly.
+
+## Script items
+
+The last and the most complex and yet the most powerful, is an ability to execute custom `jsx` scripts just before the rendering will start.
+This approach allows you to do pretty much anyhting that is allowed for scripting,
+like creating/removing layers, adding new elements, restructuring whole composition, and probably much more.
+
+Now, actual complexity happens only from the side of actual scripting, you need to have some basic knowledge of `ExtendScript Toolkit`,
+and from the nexrender side everything is quite simple. You only need to provide an `src` pointing towards script resource, and setup proper type.
+
+### Fields
+
+* `src`: string, a URI pointer to the specific resource, check out [supported protocols](#protocols)
+* `type`: string, for script items is always `script`
+
+### Example
+
+```json
+{
+    "assets": [
+        {
+            "src": "http://example.com/scripts/myscript.jsx",
+            "type": "script"
+        }
+    ]
+}
+```
+
+That pretty much covers basics of templated rendering.
 
 # Network rendering
 
@@ -427,6 +563,29 @@ into a new micro module.
 
 And of course, the main thing about development is that it should be fun. :)
 
+# Protocols
+
+`src` field is a URI string, that describes path pointing to the specific resource. It supports a few different protocols:
+
+* Built-in:
+    * `file://`
+    * `http://`
+    * `https://`
+    * `data://`
+
+* External:
+    * `s3://` - [@nexrender/provider-s3](packages/nexrender-provider-s3)
+    * `ftp://` - [@nexrender/provider-ftp](packages/nexrender-provider-ftp) - TODO
+    * (other procotocols will be added there)
+
+## Examples
+
+```
+file:///home/assets/image.jpg
+file://d:/projects/project.aep
+
+```
+
 # External Packages
 
 Here you can find a list of packages published by other contributors:
@@ -443,4 +602,4 @@ and then combining back into a single job. `@nexrender/action-merge-parent, @nex
 5. Add info about providers
 6. Add info about differences 0.x vs 1.x
 7. Add info about scripting/expressions
-8. Add more specific validators to job
+8. Add info about asset types
