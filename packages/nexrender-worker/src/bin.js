@@ -18,7 +18,7 @@ const args = arg({
     '--skip-cleanup':   Boolean,
     '--no-license':     Boolean,
     '--force-patch':    Boolean,
-    '--render-logs':    Boolean,
+    '--debug':          Boolean,
     '--multi-frames':   Boolean,
     '--stop-on-error':  Boolean,
 
@@ -83,8 +83,7 @@ if (args['--help']) {
 
     --force-patch                           forces commandLineRenderer.jsx patch (re)installation
 
-    --render-logs                           enables log dump from aerender utility,
-                                            log file will be places to the current workpath (tmpdir/nexrender by default)
+    --debug                                 enables command dump for aerender, and other debugging stuff
 
     --skip-cleanup                          forces worker to keep temporary data after rendering is finished
 
@@ -137,7 +136,7 @@ opt('workpath',             '--workpath');
 opt('no-license',           '--no-license');
 opt('skipCleanup',          '--skip-cleanup');
 opt('forceCommandLinePatch','--force-patch');
-opt('renderLogs',           '--render-logs');
+opt('debug',                '--debug');
 opt('multiFrames',          '--multi-frames');
 opt('stopOnError',          '--stop-on-error');
 opt('maxMemoryPercent',     '--max-memory-percent');

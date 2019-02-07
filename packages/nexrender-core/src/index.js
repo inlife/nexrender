@@ -51,7 +51,7 @@ const init = (settings) => {
         forceCommandLinePatch: false,
         skipCleanup: false,
 
-        renderLogs: false,
+        debug: false,
         multiFrames: false,
         maxMemoryPercent: undefined,
         imageCachePercent: undefined,

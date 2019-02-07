@@ -70,9 +70,15 @@ module.exports = (job, settings) => {
     return new Promise((resolve, reject) => {
         renderStopwatch = Date.now();
 
+        if (settings.debug) {
+            settings.logger.log(`[${job.uid}] spawning aerender process: ${settings.binary} ${params.join(' ')}`);
+        }
+
         const output = [];
         const instance = spawn(settings.binary, params, {
-            env: { PATH: path.dirname(settings.binary) },
+            // NOTE: disabled PATH for now, there were a few
+            // issues related to plugins not working properly
+            // env: { PATH: path.dirname(settings.binary) },
         });
 
         instance.on('error', err => reject(new Error(`Error starting aerender process: ${err}`)));
@@ -90,11 +96,9 @@ module.exports = (job, settings) => {
 
             settings.logger.log(`[${job.uid}] rendering took ~${(Date.now() - renderStopwatch)/1000} sec.`);
 
-            if (settings.renderLogs) {
-                const logPath = path.resolve(job.workpath, `../${job.uid}-aerender.log`)
-                settings.logger.log(`[${job.uid}] writing aerender job log to: ${logPath}`);
-                fs.writeFileSync(logPath, outputStr);
-            }
+            const logPath = path.resolve(job.workpath, `../${job.uid}-aerender.log`)
+            settings.logger.log(`[${job.uid}] writing aerender job log to: ${logPath}`);
+            fs.writeFileSync(logPath, outputStr);
 
             resolve(job)
         });

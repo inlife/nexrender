@@ -39,7 +39,7 @@ const job = {
 const settings = {
     logger: console,
     skipCleanup: true,
-    renderLogs: true,
+    debug: true,
 }
 
 render(job, init(settings)).then(job => {
