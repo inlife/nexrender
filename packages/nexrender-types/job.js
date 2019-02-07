@@ -41,17 +41,38 @@ const create = job => Object.assign({
  * @return {Boolean}
  */
 const validate = job => {
-    assert(job.uid);
-    assert(job.state);
+    assert(job.uid, 'job must have uid');
+    assert(job.state, 'job must have state');
 
-    assert(job.template);
-    assert(job.template.src);
-    assert(job.template.composition);
+    assert(job.template, 'job must have template object defined');
+    assert(job.template.src, 'job must have src defined');
+    assert(job.template.composition, 'job must have composition defined');
 
     job.assets.map(asset => {
-        assert(asset);
-        assert(asset.src);
-        assert(asset.type);
+        assert(asset, 'job asset should not be empty');
+        assert(asset.type, 'job asset must have type defined');
+
+        switch (asset.type) {
+            case 'image':
+            case 'audio':
+            case 'video':
+                assert(asset.src, `job asset[${asset.type}] must have src defined`);
+                assert(asset.layerName || asset.layerIndex, `job asset[${asset.type}/video] must have either layerName or layerIndex defined`);
+                break;
+
+            case 'data':
+                assert(asset.layerName || asset.layerIndex, `job asset[${asset.type}] must have either layerName or layerIndex defined`);
+                assert(asset.value !== undefined || asset.expression, `job asset[${asset.type}] must have value and/or expression defined`);
+                assert(asset.property, `job asset[${asset.type}] must have property defined`);
+                break;
+
+            case 'script':
+                assert(asset.src, `job asset[${asset.type}] must have src defined`);
+                break;
+
+            default:
+                assert(false, `unknown job asset type: ${asset.type}`)
+        }
     })
 
     assert(job.actions);
@@ -60,8 +81,8 @@ const validate = job => {
         job.actions.prerender,
         job.actions.postrender
     ).map(action => {
-        assert(action);
-        assert(action.module);
+        assert(action, `job action must be defined`);
+        assert(action.module, `job action must have module defined`);
     });
 
     return true;
