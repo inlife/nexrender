@@ -12,21 +12,34 @@ const job = {
         {
             src: 'file:///Users/inlife/Downloads/nexrender-boilerplate-master/assets/2016-aug-deep.jpg',
             type: 'image',
-            layer: 'background.jpg',
+            layerName: 'background.jpg',
         },
         {
             src: 'file:///Users/inlife/Downloads/nexrender-boilerplate-master/assets/nm.png',
             type: 'image',
-            layer: 'nm.png',
+            layerName: 'nm.png',
         },
         {
             src: 'file:///Users/inlife/Downloads/nexrender-boilerplate-master/assets/deep_60s.mp3',
             type: 'audio',
-            layer: 'audio.mp3',
+            layerName: 'audio.mp3',
+        },
+        // {
+        //     src: 'https://raw.githubusercontent.com/inlife/nexrender-boilerplate/master/assets/2016-aug-deep.js',
+        //     type: 'script',
+        // },
+        {
+            type: 'data',
+            layerName: 'artist',
+            property: 'position',
+            value: [0, 250],
+            expression: `[5 * time, 250]`,
         },
         {
-            src: 'https://raw.githubusercontent.com/inlife/nexrender-boilerplate/master/assets/2016-aug-deep.js',
-            type: 'script',
+            type: 'data',
+            layerName: 'track name',
+            property: 'Source Text',
+            value: 'Hello world',
         }
     ],
     // actions: {

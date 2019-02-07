@@ -5,7 +5,10 @@ try{Object.defineProperty({},'a',{value:0})}catch(err){(function(){var definePro
 
 /* start of nexrender script */
 
-var nexrender = {};
+var nexrender = {
+    composition: null,
+    compositionName: '/*COMPOSITION*/',
+};
 
 nexrender.types = [CompItem, FolderItem, FootageItem, AVLayer, ShapeLayer, TextLayer, CameraLayer, LightLayer, Property, PropertyGroup];
 
@@ -15,21 +18,35 @@ nexrender.typesMatch = function (types, layer) {
     }).length > 0;
 };
 
-nexrender.layers = function (name, types) {
-    if (!types) types = nexrender.types;
+nexrender.getComposition = function () {
+    if (nexrender.composition) {
+        return nexrender.composition;
+    }
 
-    var layers = [];
     for (var i = 1; i <= app.project.items.length; i++) {
         var item = app.project.items[i];
         if (!item instanceof CompItem) {
             continue;
         }
 
-        for (var j = 1; j <= item.numLayers; j++) {
-            var layer = item.layer(j);
-            if (nexrender.typesMatch(types, layer)) {
-                layers.push(layer);
-            }
+        if (item.name != nexrender.compositionName) {
+            continue;
+        }
+
+        nexrender.composition = item;
+        return item;
+    }
+}
+
+nexrender.layers = function (name, types) {
+    if (!types) types = nexrender.types;
+
+    var layers = [];
+    var comp = nexrender.getComposition();
+    for (var j = 1; j <= comp.numLayers; j++) {
+        var layer = comp.layer(j);
+        if (nexrender.typesMatch(types, layer)) {
+            layers.push(layer);
         }
     }
 
@@ -38,7 +55,8 @@ nexrender.layers = function (name, types) {
     });
 };
 
-nexrender.layer = function (name, types) {
+/*return a layer by name*/
+nexrender.layerName = function (name, types) {
     var results = nexrender.layers(name, types);
 
     if (results.length > 0) {
@@ -48,20 +66,23 @@ nexrender.layer = function (name, types) {
     return null;
 };
 
-nexrender.replaceFootage = function (layername, filepath) {
+/*return a layer by index*/
+nexrender.layerIndex = function (index) {
+    return nexrender.getComposition().layer(index);
+}
+
+nexrender.replaceFootage = function (layer, filepath) {
+    if (!layer) { return false; }
+
     var file = new File(filepath);if (!file.exists) {
         return false;
     }
 
     var importOptions = new ImportOptions(file);
     //importOptions.importAs = ImportAsType.COMP; // you can do stuff like this at this point for PSDs
-
     var theImport = app.project.importFile(importOptions);
-    var layer = nexrender.layer(layername);if (!layer) {
-        return false;
-    }
-
     layer.replaceSource(theImport, true);
+
     return true;
 };
 

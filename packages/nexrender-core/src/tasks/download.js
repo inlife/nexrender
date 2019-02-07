@@ -9,15 +9,17 @@ const data2buf = require('data-uri-to-buffer')
 const requireg = require('requireg')
 
 const download = (job, asset) => {
+    if (asset.type == 'data') return Promise.resolve();
+
     const uri = global.URL ? new URL(asset.src) : url.parse(asset.src)
     const protocol = uri.protocol.replace(/\:$/, '');
     let destName = '';
 
     /* if asset doesnt have a file name, make up a random one */
-    if (protocol === 'data' && !asset.layer) {
+    if (protocol === 'data' && !asset.layerName) {
         destName = Math.random().toString(36).substring(2);
     } else {
-        destName = asset.layer || path.basename(asset.src);
+        destName = asset.layerName || path.basename(asset.src);
     }
 
     asset.dest = path.join(job.workpath, destName);

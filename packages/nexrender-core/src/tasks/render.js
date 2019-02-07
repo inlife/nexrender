@@ -60,6 +60,7 @@ module.exports = (job, settings) => {
             if (previousProgress !== currentProgress) {
                 settings.logger.log(`[${job.uid}] rendering progress ${currentProgress}%...`);
                 previousProgress = currentProgress;
+                job.renderProgress = currentProgress;
             }
         }
 
