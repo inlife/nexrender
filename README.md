@@ -63,10 +63,16 @@
       - [Requirements:](#requirements-1)
       - [Example](#example-4)
   - [Using API](#using-api)
-- [Development](#development)
 - [Protocols](#protocols)
   - [Examples](#examples)
+- [Development](#development)
 - [External Packages](#external-packages)
+- [Migrating from v0.x](#migrating-from-v0x)
+    - [Naming](#naming)
+    - [Structure](#structure)
+    - [Assets](#assets-1)
+    - [Rendering](#rendering)
+    - [CLI](#cli)
 - [Plans](#plans)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
@@ -584,30 +590,6 @@ main().catch(console.error);
 
 More info: [@nexrender/api](packages/nexrender-api)
 
-# Development
-
-If you wish to contribute by taking an active part in development, you might need this basic tutorial on how to get started:
-
-1. clone the repo
-2. run `npm install`
-3. run `npm start`
-
-The last command will run [lerna](https://lernajs.io/) bootstrap action to setup dependencies for all packages listed in the `packages/` folder,
-and link them together accordingly to their dependency relations.
-
-After that, you can start the usual development flow of writing code and testing it with `npm start` in a specific package.
-
-Why this multi-package structure has been chosen? It seemed like a much smarter and easier way to achieve a few things:
-1. separation of concerns, every module is responsible for a limited set of things
-2. modularity and plugin-friendly nature, which allows external packages to be used instead, or alongside built-in ones
-3. minimal dependency, as you might've noticed, packages in nexrender try to have as little dependencies as possible
-making it much easier to maintain and develop
-
-The recommended approach is to add only needed things as dependencies, it's better to take some time to research module that is being added
-to the project, to see how many its own dependencies it will introduce, and possibly find a better and smaller one, or even extract some specific feature
-into a new micro module.
-
-And of course, the main thing about development is that it should be fun. :)
 
 # Protocols
 
@@ -637,14 +619,100 @@ https://123.123.123.123/video.mp4
 
 data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg==
 data:text/plain;charset=UTF-8,some%20data:1234,5678
-
 ```
+
+# Development
+
+If you wish to contribute by taking an active part in development, you might need this basic tutorial on how to get started:
+
+1. clone the repo
+2. run `npm install`
+3. run `npm start`
+
+The last command will run [lerna](https://lernajs.io/) bootstrap action to setup dependencies for all packages listed in the `packages/` folder,
+and link them together accordingly to their dependency relations.
+
+After that, you can start the usual development flow of writing code and testing it with `npm start` in a specific package.
+
+Why this multi-package structure has been chosen? It seemed like a much smarter and easier way to achieve a few things:
+1. separation of concerns, every module is responsible for a limited set of things
+2. modularity and plugin-friendly nature, which allows external packages to be used instead, or alongside built-in ones
+3. minimal dependency, as you might've noticed, packages in nexrender try to have as little dependencies as possible
+making it much easier to maintain and develop
+
+The recommended approach is to add only needed things as dependencies, it's better to take some time to research module that is being added
+to the project, to see how many its own dependencies it will introduce, and possibly find a better and smaller one, or even extract some specific feature
+into a new micro module.
+
+And of course, the main thing about development is that it should be fun. :)
+
 
 # External Packages
 
 Here you can find a list of packages published by other contributors:
 
 * [somename/package-name](#) - a nice description of a nice package doing nice things
+
+# Migrating from v0.x
+
+First version of nexrender was published in 2016, and it has been used by many people for quite some time since then.
+Even though verion v1.x is based on the same concepts, it introduces major breaking changes that are incompatible with older version.
+
+However, majority of those changes were made to allow new, previously unimaginable things.
+
+<details>
+
+### Naming
+
+1. Nexrender Project -> Nexrender Job
+2. Nexrender Rendernode -> Nexrender Worker
+2. Nexrender API Server -> Nexrender Server
+
+Referring to project was confusing since it could be applied for both aep project and nexrender project.
+And rendernode name was quite too long, and unconvinient to use.
+
+### Structure
+
+The structure of the job has changed, majority of the fields were moved from the root namespace, into "template" namespace, merging it with old "project.settings" namespace.
+Assets structure remained pretty much similar. A new object actions has been introduced.
+
+### Assets
+
+Replaced http and file only assets to a URI based links, theoretically extendable without any limits.
+Many new other protocols and implementations can be added in a decentrilized manner.
+
+Strict division between asset types:
+* [image, audio, video] - footage items, behave like files
+* [data] - dynamic data assets, for direct value setting and expressions
+* [script] - files allowing full scripting limitless scripting support
+
+### Rendering
+
+The biggest change that happened, is removal of old hacky way of replacing assets and patching aepx file to write custom expressions.
+
+Instead it has been replaced with brand new, recently discovered ExtendScript based injection.
+It allows to do a few quite important things:
+
+1. Import and replace footage items via scripting, making it very reliable. (No more bugs related to same-system existing path override for aep project)
+2. Set/Replace text, expressins and other types of data via scripting. (No more bugs related to changes in aepx structure, and no need to use aepx format at all)
+3. Ability to run custom ExtendScript jsx scripts, which is limitless and revolutionary compared to previous version.
+
+### CLI
+
+Project has been devided onto multiple subprojects, and mutiple cli applications as a result.
+Every cli application is auto-compiled to a platform specific executable on publish and auto-uploaded to the releases section.
+
+This allows anyone to use nexrender cli without installing a nodejs runtime onto target system.
+
+New CLI tool allows to run render directly from console for a local job, without need to start whole cluster.
+
+Worker, and CLI apps include minor QoL improvments, such as auto creation of the ae_render_only_node.txt file that allows free licensing,
+and After Effects folder auto detection.
+
+All tools include better help screen, and a lot of customization from command line arguments.
+
+
+</details>
 
 # Plans
 
@@ -653,7 +721,3 @@ Here you can find a list of packages published by other contributors:
 3. Add an algo of splitting the main job onto sub jobs, rendering them on multiple machines
 and then combining back into a single job. `@nexrender/action-merge-parent, @nexrender/action-merge-child`
 4. Adding more upload/download providers
-5. Add info about providers
-6. Add info about differences 0.x vs 1.x
-7. Add info about scripting/expressions
-8. Add info about asset types
