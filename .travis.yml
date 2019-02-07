@@ -5,6 +5,7 @@ node_js:
 script:
     - npm install
     - npm run start
+    - npm run test
 
 before_deploy:
     - npm run pkg
