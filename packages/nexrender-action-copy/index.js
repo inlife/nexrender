@@ -1,5 +1,6 @@
 const fs = require('fs')
 const {name} = require('./package.json')
+const path = require('path')
 
 module.exports = (job, settings, { input, output }, type) => {
     if (type != 'postrender') {
