@@ -23,7 +23,8 @@
     "pkg-worker": "NEXRENDER_REQUIRE_PLUGINS=1 pkg packages/nexrender-worker/package.json --out-path bin/",
     "pkg-server": "pkg packages/nexrender-server/package.json --out-path bin/",
     "pkg-prelink": "lerna exec --scope @nexrender/core 'npm run pkg-prelink'",
-    "pkg": "npm run pkg-prelink && npm run pkg-cli && npm run pkg-server && npm run pkg-worker && npm run pkg-rename",
+    "pkg-reduce": "node misc/reduce.js",
+    "pkg": "npm run pkg-prelink && npm run pkg-reduce && npm run pkg-cli && npm run pkg-server && npm run pkg-worker && npm run pkg-rename",
     "test": "lerna bootstrap && node test.js"
   },
   "devDependencies": {
