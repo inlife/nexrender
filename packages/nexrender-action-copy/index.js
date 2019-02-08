@@ -1,13 +1,20 @@
 const fs = require('fs')
 const {name} = require('./package.json')
 
-module.exports = (job, settings, { output }, type) => {
+module.exports = (job, settings, { input, output }, type) => {
     if (type != 'postrender') {
         throw new Error(`Action ${name} can be only run in postrender mode, you provided: ${type}.`)
     }
 
+    /* check if input has been provided */
+    input = input || job.output;
+
+    /* fill absolute/relative paths */
+    if (!path.isAbsolute(input)) input = path.join(job.workpath, input);
+    if (!path.isAbsolute(output)) output = path.join(job.workpath, output);
+
     /* plain asset stream copy */
-    const rd = fs.createReadStream(job.output)
+    const rd = fs.createReadStream(input)
     const wr = fs.createWriteStream(output)
 
     return new Promise(function(resolve, reject) {

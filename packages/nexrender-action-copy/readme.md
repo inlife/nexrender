@@ -28,3 +28,8 @@ When creating your render job provide this module as one of the `postrender` act
     }
 }
 ```
+
+## Information
+
+* `output` is a path on your system where result will be saved to, can be either relative or absulte path.
+* `input` optional argument, path of the file you want to copy, , can be either relative or absulte path. Defaults to current job output video file.
