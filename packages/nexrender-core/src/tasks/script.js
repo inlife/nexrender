@@ -52,7 +52,7 @@ module.exports = (job, settings) => {
         }
     });
 
-    /* write out assembled custom script file in the workdir */
+    /* write out assembled custom script file in the workpath */
     job.scriptfile = path.join(base, `nexrender-${job.uid}-script.jsx`);
     fs.writeFileSync(job.scriptfile, script
         .replace('/*COMPOSITION*/', job.template.composition)

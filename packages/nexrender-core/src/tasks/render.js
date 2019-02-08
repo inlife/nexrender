@@ -1,6 +1,6 @@
-const fs    = require('fs')
-const path  = require('path')
-const spawn = require('child_process').spawn
+const fs      = require('fs')
+const path    = require('path')
+const {spawn} = require('child_process')
 
 const progressRegex = /([\d]{1,2}:[\d]{2}:[\d]{2}:[\d]{2})\s+(\(\d+\))/gi;
 const durationRegex = /Duration:\s+([\d]{1,2}:[\d]{2}:[\d]{2}:[\d]{2})/gi;
@@ -97,7 +97,7 @@ module.exports = (job, settings) => {
 
             settings.logger.log(`[${job.uid}] rendering took ~${(Date.now() - renderStopwatch)/1000} sec.`);
 
-            const logPath = path.resolve(job.workpath, `../${job.uid}-aerender.log`)
+            const logPath = path.resolve(job.workpath, `../aerender-${job.uid}.log`)
             settings.logger.log(`[${job.uid}] writing aerender job log to: ${logPath}`);
             fs.writeFileSync(logPath, outputStr);
 

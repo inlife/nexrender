@@ -1,0 +1,12 @@
+{
+  "name": "@nexrender/action-encode",
+  "author": "inlife",
+  "version": "1.0.0-alpha.10",
+  "main": "index.js",
+  "publishConfig": {
+    "access": "public"
+  },
+  "devDependencies": {
+    "ffmpeg-static": "^2.4.0"
+  }
+}

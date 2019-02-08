@@ -6,7 +6,7 @@ const job = {
         composition: 'main',
 
         frameStart: 0,
-        frameEnd: 300,
+        frameEnd: 500,
     },
     assets: [
         {
@@ -48,8 +48,9 @@ const job = {
         // ],
         postrender: [
             {
-                module: '@nexrender/action-copy',
-                output: '/Users/inlife/output.mov',
+                module: '@nexrender/action-encode',
+                output: 'output.mp4',
+                preset: 'mp4',
             }
         ]
     },

@@ -6,9 +6,8 @@ const requireg = require('requireg')
  * @param  {Array}  handlers
  * @return {Promise}
  */
-const PromiseSerial = (job, settings, handlers) => handlers.reduce(
-    (cur, handler) => cur.then(handler),
-    Promise.resolve(job, settings)
+const PromiseSerial = handlers => handlers.reduce(
+    (cur, handler) => cur.then(handler), Promise.resolve()
 )
 
 /**
@@ -21,11 +20,11 @@ const PromiseSerial = (job, settings, handlers) => handlers.reduce(
 module.exports = actionType => (job, settings) => {
     settings.logger.log(`[${job.uid}] applying ${actionType} actions...`);
 
-    return PromiseSerial(job, settings, (job.actions[actionType] || []).map(action => (job, settings) => {
-        try {
-            return requireg(action.module)(job, settings, action, actionType);
-        } catch (e) {
-            return Promise.reject(new Error(`Could not resolve ${actionType} module ${action.module}`))
-        }
-    }));
+    return PromiseSerial((job.actions[actionType] || []).map(action => () => {
+        return requireg(action.module)(job, settings, action, actionType).catch(err => {
+            return Promise.reject(new Error(`Error loading ${actionType} module ${action.module}: ${err}`))
+        });
+    })).then(() => {
+        return Promise.resolve(job)
+    });
 }

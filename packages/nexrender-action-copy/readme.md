@@ -22,7 +22,7 @@ When creating your render job provide this module as one of the `postrender` act
         "postrender": [
             {
                 "module": "@nexrender/action-copy",
-                "options": { "output": "/home/videos" }
+                "output": "/home/videos/myvideo.mov"
             }
         ]
     }
