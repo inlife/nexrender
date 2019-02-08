@@ -12,6 +12,7 @@
   },
   "scripts": {
     "start": "npm run bootstrap",
+    "install-child": "lerna exec -- npm i",
     "bootstrap": "lerna bootstrap -- --no-package-lock",
     "purge-cache": "lerna exec 'rm -rf node_modules && rm -f package-lock.json'",
     "purge-master": "rm -rf node_modules && rm -f package-lock.json",
