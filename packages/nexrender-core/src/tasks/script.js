@@ -3,7 +3,7 @@ const path   = require('path')
 const script = require('../assets/nexrender.jsx')
 
 const wrapLayer = (layerName, layerIndex, composition) => (layerName
-    ? `nexrender.layerName('${layerName}', ${composition !== undefined ? `'${composition}'` : `null`})`
+    ? `nexrender.layerName('${layerName}', null, ${composition !== undefined ? `'${composition}'` : `null`})`
     : `nexrender.layerIndex('${layerIndex}', ${composition !== undefined ? `'${composition}'` : `null`})`
 )
 
