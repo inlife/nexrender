@@ -376,7 +376,7 @@ by specifying `src`, and one of the `layerName` or `layerIndex` options.
 * `type`: string, for footage items, is one of (`image`, `audio`, `video`)
 * `layerName`: string, target layer name in the After Effects project
 * `layerIndex`: integer, can be used instead of `layerName` to select a layer by providing an index, starting from 1 (default behavior of AE jsx scripting env)
-* `compositionName`: string, composition where the layer is, useful for searching layer in pre-compositions. If none is provided, it uses the default composition set in the template.
+* `composition`: string, composition where the layer is, useful for searching layer in pre-compositions. If none is provided, it uses the default composition set in the template.
 
 Specified asset from `src` field will be downloaded/copied to the working directory, and just before rendering will happen,
 a fotage item with specified `layerName` or `layerIndex` in the original project will be replaced with the freshly downloaded asset.
@@ -415,7 +415,7 @@ To do that a special asset of type `data` can be used.
 * `property`: string, indicates which layer property you want to change
 * `value`: mixed, optional, indicates which value you want to be set to a specified property
 * `expression`: string, optional, allows you to specify an expression that can be executed every frame to calculate the value
-* `compositionName`: string, composition where the layer is, useful for searching layer in pre-compositions. If none is provided, it uses the default composition set in the template.
+* `composition`: string, composition where the layer is, useful for searching layer in pre-compositions. If none is provided, it uses the default composition set in the template.
 
 Since both `value` and `expression` are optional you can provide them in any combination, depending on the effect you want to achieve.
 Providing value will set the exact value for the property right after execution, and providing an expression will make sure it will be evaluated every frame.
