@@ -11,22 +11,18 @@
     "url": "https://github.com/inlife"
   },
   "scripts": {
-    "start": "lerna bootstrap",
-    "server": "node packages/nexrender-cli/src/index.js --server",
-
+    "start": "npm run bootstrap",
+    "bootstrap": "lerna bootstrap -- --no-package-lock",
     "purge-cache": "lerna exec 'rm -rf node_modules && rm -f package-lock.json'",
     "purge-master": "rm -rf node_modules && rm -f package-lock.json",
-
     "publish": "lerna publish",
     "public-publish": "lerna exec 'npm publish --access public'",
-
     "pkg-rename": "node misc/rename.js",
     "pkg-cli": "NEXRENDER_REQUIRE_PLUGINS=1 pkg packages/nexrender-cli/package.json --out-path bin/",
     "pkg-worker": "NEXRENDER_REQUIRE_PLUGINS=1 pkg packages/nexrender-worker/package.json --out-path bin/",
     "pkg-server": "pkg packages/nexrender-server/package.json --out-path bin/",
     "pkg-prelink": "lerna exec --scope @nexrender/core 'npm run pkg-prelink'",
     "pkg": "npm run pkg-prelink && npm run pkg-cli && npm run pkg-server && npm run pkg-worker && npm run pkg-rename",
-
     "test": "lerna bootstrap && node test.js"
   },
   "devDependencies": {
