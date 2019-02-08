@@ -3,6 +3,7 @@ const path    = require('path')
 const {name}  = require('./package.json')
 const {spawn} = require('child_process')
 
+// TODO: make it work
 /* make sure pkg will pick up only needed binaries */
 const binaries = {
     'darwin': path.join(__dirname, 'node_modules/ffmpeg-static/bin/darwin/x64/ffmpeg'),
@@ -40,23 +41,6 @@ const getBinary = (job, settings) => {
             resolve(require(mymodule + '-static').path)
         }
     })
-
-    // console.log()
-    // const dirname = path.resolve(path.dirname(process.pkg.defaultEntrypoint), '..')
-    // walk(__dirname)
-
-    // throw "fuck you"
-
-
-    if (process.pkg) {
-        return path.join(__dirname,
-            'node_modules', 'ffmpeg-static', 'bin', process.platform, 'x64',
-            `ffmpeg${process.platforms == 'win32' ? '.exe' : ''}`
-        );
-    } else {
-    }
-
-    return null;
 }
 
 /* pars of snippet taken from https://github.com/xonecas/ffmpeg-node/blob/master/ffmpeg-node.js#L136 */

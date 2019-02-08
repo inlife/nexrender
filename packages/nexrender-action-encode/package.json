@@ -6,7 +6,7 @@
   "publishConfig": {
     "access": "public"
   },
-  "devDependencies": {
+  "dependencies": {
     "ffmpeg-static": "^2.4.0"
   }
 }
