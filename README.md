@@ -67,6 +67,7 @@
   - [Examples](#examples)
 - [Development](#development)
 - [External Packages](#external-packages)
+    - [Custom Actions](#custom-actions)
 - [Migrating from v0.x](#migrating-from-v0x)
     - [Naming](#naming)
     - [Structure](#structure)
@@ -119,7 +120,7 @@ However, please note: the npm version of the binaries doesn't include all option
 If you wish to install them as well, please do so by providing each one individually:
 
 ```
-npm i -g @nexrender/cli @nexrender/action-copy ...
+npm i -g @nexrender/cli @nexrender/action-copy @nexrender/action-encode ...
 ```
 
 # Usage
@@ -226,8 +227,14 @@ The reason is that we haven't defined any actions that we need to do after we fi
     "actions":{
         "postrender": [
             {
+                "module": "@nexrender/action-encode",
+                "preset": "mp4",
+                "output": "encoded.mp4"
+            },
+            {
                 "module": "@nexrender/action-copy",
-                "output": "d:/mydocuments/results/myresult.avi"
+                "input": "encoded.mp4",
+                "output": "d:/mydocuments/results/myresult.mp4"
             }
         ]
     }
@@ -239,8 +246,9 @@ A module that we described in this case, is responsible for copying result file 
 
 There are multiple built-in modules within nexrender ecosystem:
 
-* [@nexrender/action-copy](https://github.com/inlife/nexrender/tree/master/packages/nexrender-action-copy)
-* [@nexrender/action-upload](https://github.com/inlife/nexrender/tree/master/packages/nexrender-action-upload)
+* [@nexrender/action-copy](packages/nexrender-action-copy)
+* [@nexrender/action-encode](packages/nexrender-action-encode)
+* [@nexrender/action-upload](packages/nexrender-action-upload) - TODO
 * (list will be expanded)
 
 Every module might have his own set of fields, however, `module` field is always there.
@@ -647,12 +655,31 @@ into a new micro module.
 
 And of course, the main thing about development is that it should be fun. :)
 
-
 # External Packages
 
 Here you can find a list of packages published by other contributors:
 
 * [somename/package-name](#) - a nice description of a nice package doing nice things
+
+Since nexrender allows to use extanral packages isntalled globally from npm, its quite easy to add your own modules
+
+### Custom Actions
+
+To add a custom action, pre- or post-render one, all you need to do is to create a at least single file, that is going to return a function with promise.
+
+```js
+// mymodule.js
+module.exports = (job, settings, action, type) => {
+    console.log('hello from my module: ' + action.module);
+    return Promose.resolve();
+}
+```
+
+From there you can build pretty much any module that could process downloaded data before starting rendering,
+or doing tranformations on data after, or just simply sending an email when rendering is finished.
+
+>Note: both `job` and `settings` are mutable structures, any modifications made to them will reflect onto the flow of the next calls.
+Hence they can be used to store state between actions.
 
 # Migrating from v0.x
 
@@ -717,8 +744,7 @@ All tools include better help screen, and a lot of customization from command li
 
 # Plans
 
-1. Add Encoding using ffmpeg `@nexrender/action-encode`
-2. Add Uploading to various providers `@nexrender/action-upload`
-3. Add an algo of splitting the main job onto sub jobs, rendering them on multiple machines
+1. Add Uploading to various providers `@nexrender/action-upload`
+2. Add an algo of splitting the main job onto sub jobs, rendering them on multiple machines
 and then combining back into a single job. `@nexrender/action-merge-parent, @nexrender/action-merge-child`
-4. Adding more upload/download providers
+3. Adding more upload/download providers

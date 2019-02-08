@@ -63,6 +63,8 @@ const settings = {
     debug: true,
 }
 
+// console.log(JSON.stringify(job))
+
 render(job, init(settings)).then(job => {
     console.log('finished rendering', job)
 }).catch(err => {

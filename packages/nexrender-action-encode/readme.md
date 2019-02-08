@@ -34,6 +34,7 @@ When creating your render job provide this module as one of the `postrender` act
 ## Information
 
 * `output` is a path on your system where result will be saved to, can be either relative or absulte path.
+* `input` optional argument, path of the file you want to encode, can be either relative or absulte path. Defaults to current job output video file.
 * `preset` optional argument, if provided will be used as a preset for the renderer, if not, will take input directly from params
 * `params` optional argument, object containing additional params that will be provided to the ffmpeg binary
 

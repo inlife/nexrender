@@ -4,6 +4,7 @@ node_js:
 
 script:
     - npm install
+    - npm run install-child
     - npm run start
     - npm run test
 
