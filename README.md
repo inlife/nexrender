@@ -743,8 +743,7 @@ All tools include better help screen, and a lot of customization from command li
 
 # Plans
 
-1. Add Encoding using ffmpeg `@nexrender/action-encode`
-2. Add Uploading to various providers `@nexrender/action-upload`
-3. Add an algo of splitting the main job onto sub jobs, rendering them on multiple machines
+1. Add Uploading to various providers `@nexrender/action-upload`
+2. Add an algo of splitting the main job onto sub jobs, rendering them on multiple machines
 and then combining back into a single job. `@nexrender/action-merge-parent, @nexrender/action-merge-child`
-4. Adding more upload/download providers
+3. Adding more upload/download providers
