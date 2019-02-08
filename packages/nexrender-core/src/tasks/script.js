@@ -2,26 +2,39 @@ const fs     = require('fs')
 const path   = require('path')
 const script = require('../assets/nexrender.jsx')
 
-const wrapLayer = (layerName, layerIndex, composition) => (layerName
-    ? `nexrender.layerName('${layerName}', null, ${composition !== undefined ? `'${composition}'` : `null`})`
-    : `nexrender.layerIndex('${layerIndex}', ${composition !== undefined ? `'${composition}'` : `null`})`
-)
+/* helpers */
 
-const wrapFootage = ({ layerName, layerIndex, dest, composition }) => (`(function() {
-    nexrender.replaceFootage(
-        ${wrapLayer(layerName, layerIndex, composition)},
-        '${dest.replace(/\\/g, "\\\\")}'
-    );
+const selectLayers = ({ composition, layerName, layerIndex }, callbackString) => {
+    const method = layerName ? 'selectLayersByName' : 'selectLayersByIndex';
+    const compo  = composition === undefined ? 'null' : `'${composition}'`;
+    const value  = layerName ? `'${layerName}'` : layerIndex;
+
+    return (`nexrender.${method}(${compo}, ${value}, ${callbackString});`);
+}
+
+const renderIf = (value, string, encode) => {
+    const encoded = !encode ? value : typeof value == 'string' ? `'${value}'` : JSON.stringify(value);
+    return value === undefined ? '' : string.replace('$value', encoded);
+}
+
+/* scripting wrappers */
+
+const wrapFootage = ({ dest, ...asset }) => (`(function() {
+    ${selectLayers(asset, `function(layer) {
+        nexrender.replaceFootage(layer, '${dest.replace(/\\/g, "\\\\")}')
+    }`)}
 })();\n`)
 
-const wrapData = ({ layerName, layerIndex, property, value, expression, composition }) => (`(function() {
-    var layer = ${wrapLayer(layerName, layerIndex, composition)}; if (!layer) return false;
-    var property = layer.property('${property}'); if (!property) return false;
+const wrapData = ({ property, value, expression, ...asset }) => (`(function() {
+    ${selectLayers(asset, `function(layer) {
+        var property = layer.property('${property}');
+        if (!property) { return false; }
 
-    ${value !== undefined ? `property.setValue(${typeof value == 'string' ? `'${value}'` : JSON.stringify(value)});` : ''}
-    ${expression !== undefined ? `property.expression = '${expression}';` : ''}
+        ${renderIf(value, `property.setValue($value);`, 1)}
+        ${renderIf(expression, `property.expression = '$value;'`, 0)}
 
-    return true;
+        return true;
+    }`)}
 })();\n`)
 
 const wrapScript = ({ dest }) => (`(function() {
