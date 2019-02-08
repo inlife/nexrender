@@ -13,6 +13,11 @@ module.exports = (job, settings, { input, output }, type) => {
     if (!path.isAbsolute(input)) input = path.join(job.workpath, input);
     if (!path.isAbsolute(output)) output = path.join(job.workpath, output);
 
+    /* output is a directory, save to input filename */
+    if (path.dirname(output) === output) {
+        output = path.join(output, path.basename(input));
+    }
+
     /* plain asset stream copy */
     const rd = fs.createReadStream(input)
     const wr = fs.createWriteStream(output)

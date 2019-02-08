@@ -229,7 +229,7 @@ The reason is that we haven't defined any actions that we need to do after we fi
             {
                 "module": "@nexrender/action-encode",
                 "preset": "mp4",
-                "output": "encoded."
+                "output": "encoded.mp4"
             },
             {
                 "module": "@nexrender/action-copy",
