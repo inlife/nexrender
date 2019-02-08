@@ -45,19 +45,18 @@ const getBinary = (job, settings) => {
 
 /* pars of snippet taken from https://github.com/xonecas/ffmpeg-node/blob/master/ffmpeg-node.js#L136 */
 const constructParams = (job, settings, { preset, input, output, params }) => {
-    const file = input ? path.join(job.workpath, input) : job.output;
+    input = input || job.output;
 
-    if (!path.isAbsolute(output)) {
-        output = path.join(job.workpath, output);
-    }
+    if (!path.isAbsolute(input)) input = path.join(job.workpath, input);
+    if (!path.isAbsolute(output)) output = path.join(job.workpath, output);
 
-    settings.logger.log(`[${job.uid}] action-encode: input file ${file}`)
+    settings.logger.log(`[${job.uid}] action-encode: input file ${input}`)
     settings.logger.log(`[${job.uid}] action-encode: output file ${output}`)
 
     switch(preset) {
         case 'mp4':
             params = Object.assign({}, {
-                '-i': file,
+                '-i': input,
                 '-acodec': 'aac',
                 '-ab': '128k',
                 '-ar': '44100',
@@ -69,7 +68,7 @@ const constructParams = (job, settings, { preset, input, output, params }) => {
 
         case 'ogg':
             params = Object.assign({}, {
-                '-i': file,
+                '-i': input,
                 '-acodec': 'libvorbis',
                 '-ab': '128k',
                 '-ar': '44100',
@@ -81,7 +80,7 @@ const constructParams = (job, settings, { preset, input, output, params }) => {
 
         case 'webm':
             params = Object.assign({}, {
-                '-i': file,
+                '-i': input,
                 '-acodec': 'libvorbis',
                 '-ab': '128k',
                 '-ar': '44100',
@@ -94,7 +93,7 @@ const constructParams = (job, settings, { preset, input, output, params }) => {
 
         case 'mp3':
             params = Object.assign({}, {
-                '-i': file,
+                '-i': input,
                 '-acodec': 'libmp3lame',
                 '-ab': '128k',
                 '-ar': '44100',
@@ -104,7 +103,7 @@ const constructParams = (job, settings, { preset, input, output, params }) => {
 
         case 'm4a':
             params = Object.assign({}, {
-                '-i': file,
+                '-i': input,
                 '-acodec': 'aac',
                 '-ab': '64k',
                 '-ar': '44100',
