@@ -4,8 +4,60 @@ const {name}  = require('./package.json')
 const {spawn} = require('child_process')
 
 /* make sure pkg will pick up only needed binaries */
-const macos = path.join(__dirname, 'node_modules/ffmpeg-static/bin/darwin/x64/ffmpeg');
-const win32 = path.join(__dirname, 'node_modules/ffmpeg-static/bin/win32/x64/ffmpeg.exe');
+const binaries = {
+    'darwin': path.join(__dirname, 'node_modules/ffmpeg-static/bin/darwin/x64/ffmpeg'),
+    'win32':  path.join(__dirname, 'node_modules/ffmpeg-static/bin/win32/x64/ffmpeg.exe'),
+}
+
+// /snapshot/nexrender/packages/nexrender-cli/node_modules/@nexrender/core/node_modules/@nexrender/action-encode/node_modules/ffmpeg-static/bin/darwin/x64/ffmpeg
+
+const getBinary = (job, settings) => {
+    return new Promise((resolve, reject) => {
+        if (process.pkg) {
+            const output = path.join(job.workpath, process.platform == 'win32' ? 'ffmpeg.exe' : 'ffmpeg')
+
+            const rd = fs.createReadStream(binaries[process.platform])
+            const wr = fs.createWriteStream(output)
+
+            const handleError = err => {
+                rd.destroy()
+                wr.end()
+                reject(err)
+            }
+
+            rd.on('error', handleError)
+            wr.on('error', handleError)
+
+            wr.on('finish', () => {
+                fs.chmodSync(output, 0o765)
+                resolve(output)
+            })
+
+            rd.pipe(wr);
+
+        } else {
+            const mymodule = 'ffmpeg'; /* prevent pkg from including everything */
+            resolve(require(mymodule + '-static').path)
+        }
+    })
+
+    // console.log()
+    // const dirname = path.resolve(path.dirname(process.pkg.defaultEntrypoint), '..')
+    // walk(__dirname)
+
+    // throw "fuck you"
+
+
+    if (process.pkg) {
+        return path.join(__dirname,
+            'node_modules', 'ffmpeg-static', 'bin', process.platform, 'x64',
+            `ffmpeg${process.platforms == 'win32' ? '.exe' : ''}`
+        );
+    } else {
+    }
+
+    return null;
+}
 
 /* pars of snippet taken from https://github.com/xonecas/ffmpeg-node/blob/master/ffmpeg-node.js#L136 */
 const constructParams = (job, settings, { preset, input, output, params }) => {
@@ -91,29 +143,23 @@ module.exports = (job, settings, options, type) => {
 
     settings.logger.log(`[${job.uid}] starting action-encode action (ffmpeg)`)
 
-    const params = constructParams(job, settings, options);
-    const binary = process.platform != 'win32'
-        ? process.platform == 'darwin' ? macos : null
-        : win32;
-
-    if (!binary || !fs.existsSync(binary)) {
-        return Promise.reject(new Error('can\'t access ffmpeg binary: ' + binary))
-    }
-
     return new Promise((resolve, reject) => {
-        const instance = spawn(binary, params);
+        const params = constructParams(job, settings, options);
+        const binary = getBinary(job, settings).then(binary => {
+            const instance = spawn(binary, params);
 
-        instance.on('error', err => reject(new Error(`Error starting ffmpeg process: ${err}`)));
-        instance.stderr.on('data', (data) => settings.logger.log(`[${job.uid}] ${data.toString()}`));
-        instance.stdout.on('data', (data) => settings.debug && settings.logger.log(`[${job.uid}] ${data.toString()}`));
+            instance.on('error', err => reject(new Error(`Error starting ffmpeg process: ${err}`)));
+            instance.stderr.on('data', (data) => settings.logger.log(`[${job.uid}] ${data.toString()}`));
+            instance.stdout.on('data', (data) => settings.debug && settings.logger.log(`[${job.uid}] ${data.toString()}`));
 
-        /* on finish (code 0 - success, other - error) */
-        instance.on('close', (code) => {
-            if (code !== 0) {
-                return reject(new Error('Error in action-encode module (ffmpeg)'))
-            }
+            /* on finish (code 0 - success, other - error) */
+            instance.on('close', (code) => {
+                if (code !== 0) {
+                    return reject(new Error('Error in action-encode module (ffmpeg)'))
+                }
 
-            resolve(job)
+                resolve(job)
+            });
         });
     });
 }
