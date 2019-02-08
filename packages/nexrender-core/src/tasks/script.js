@@ -3,8 +3,8 @@ const path   = require('path')
 const script = require('../assets/nexrender.jsx')
 
 const wrapLayer = (layerName, layerIndex, compositionName) => (layerName
-    ? `nexrender.layerName('${layerName}', ${compositionName !== undefined ? `'${compositionName}'`})`
-    : `nexrender.layerIndex('${layerIndex}', ${compositionName !== undefined ? `'${compositionName}'`})`
+    ? `nexrender.layerName('${layerName}', ${compositionName !== undefined ? `'${compositionName}'` : `null`})`
+    : `nexrender.layerIndex('${layerIndex}', ${compositionName !== undefined ? `'${compositionName}'` : `null`})`
 )
 
 const wrapFootage = ({ layerName, layerIndex, dest, compositionName }) => (`(function() {
