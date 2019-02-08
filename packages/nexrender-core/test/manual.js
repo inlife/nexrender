@@ -42,14 +42,17 @@ const job = {
             value: 'Hello world',
         }
     ],
-    // actions: {
-    //     prerender: [
-    //         { module: __dirname + '/mytest.js' }
-    //     ],
-    //     postrender: [
-    //         { module: __dirname + '/mytest.js' }
-    //     ]
-    // },
+    actions: {
+        // prerender: [
+        //     { module: __dirname + '/mytest.js' }
+        // ],
+        postrender: [
+            {
+                module: '@nexrender/action-copy',
+                output: '/Users/inlife/output.mov',
+            }
+        ]
+    },
     // onChange: (job, state) => console.log('new job state', state)
 }
 

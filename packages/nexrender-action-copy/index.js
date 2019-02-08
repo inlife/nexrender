@@ -13,7 +13,7 @@ module.exports = (job, settings, { output }, type) => {
     return new Promise(function(resolve, reject) {
         rd.on('error', reject)
         wr.on('error', reject)
-        wr.on('finish', resolve)
+        wr.on('finish', () => resolve(job))
         rd.pipe(wr);
     }).catch((error) => {
         rd.destroy()

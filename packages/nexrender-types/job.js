@@ -78,8 +78,8 @@ const validate = job => {
     assert(job.actions);
 
     [].concat(
-        job.actions.prerender,
-        job.actions.postrender
+        job.actions.prerender || [],
+        job.actions.postrender || []
     ).map(action => {
         assert(action, `job action must be defined`);
         assert(action.module, `job action must have module defined`);
