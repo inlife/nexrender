@@ -2,20 +2,20 @@ const fs     = require('fs')
 const path   = require('path')
 const script = require('../assets/nexrender.jsx')
 
-const wrapLayer = (layerName, layerIndex) => (layerName
-    ? `nexrender.layerName('${layerName}')`
-    : `nexrender.layerIndex('${layerIndex}')`
+const wrapLayer = (layerName, layerIndex, compositionName) => (layerName
+    ? `nexrender.layerName('${layerName}', ${compositionName !== undefined ? `'${compositionName}'`})`
+    : `nexrender.layerIndex('${layerIndex}', ${compositionName !== undefined ? `'${compositionName}'`})`
 )
 
-const wrapFootage = ({ layerName, layerIndex, dest }) => (`(function() {
+const wrapFootage = ({ layerName, layerIndex, dest, compositionName }) => (`(function() {
     nexrender.replaceFootage(
-        ${wrapLayer(layerName, layerIndex)},
+        ${wrapLayer(layerName, layerIndex, compositionName)},
         '${dest.replace(/\\/g, "\\\\")}'
     );
 })();\n`)
 
-const wrapData = ({ layerName, layerIndex, property, value, expression }) => (`(function() {
-    var layer = ${wrapLayer(layerName, layerIndex)}; if (!layer) return false;
+const wrapData = ({ layerName, layerIndex, property, value, expression, compositionName }) => (`(function() {
+    var layer = ${wrapLayer(layerName, layerIndex, compositionName)}; if (!layer) return false;
     var property = layer.property('${property}'); if (!property) return false;
 
     ${value !== undefined ? `property.setValue(${typeof value == 'string' ? `'${value}'` : JSON.stringify(value)});` : ''}

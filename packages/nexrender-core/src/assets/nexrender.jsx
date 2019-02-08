@@ -18,9 +18,12 @@ nexrender.typesMatch = function (types, layer) {
     }).length > 0;
 };
 
-nexrender.getComposition = function () {
-    if (nexrender.composition) {
-        return nexrender.composition;
+nexrender.getComposition = function (composition, callback) {
+    if(!composition){ composition = nexrender.compositionName; }
+
+    if (composition == nexrender.compositionName && nexrender.composition) {
+        callback(nexrender.composition);
+        return;
     }
 
     for (var i = 1; i <= app.project.items.length; i++) {
@@ -29,35 +32,46 @@ nexrender.getComposition = function () {
             continue;
         }
 
-        if (item.name != nexrender.compositionName) {
+        if(composition == "*"){
+            callback(item)
             continue;
         }
 
-        nexrender.composition = item;
-        return item;
+        if (item.name != composition) {
+            continue;
+        }
+
+        if(item.name == nexrender.compositionName){
+            nexrender.composition = item;
+        }
+
+        callback(item);
+        return;
     }
 }
 
-nexrender.layers = function (name, types) {
+nexrender.layers = function (name, types, composition) {
     if (!types) types = nexrender.types;
 
     var layers = [];
-    var comp = nexrender.getComposition();
-    for (var j = 1; j <= comp.numLayers; j++) {
-        var layer = comp.layer(j);
-        if (nexrender.typesMatch(types, layer)) {
-            layers.push(layer);
-        }
-    }
 
-    return layers.filter(function (l) {
-        return l.name == name;
+    nexrender.getComposition(composition, function(comp){
+        for (var j = 1; j <= comp.numLayers; j++) {
+            var layer = comp.layer(j);
+            if (nexrender.typesMatch(types, layer)) {
+                layers.push(layer);
+            }
+        }
+
+        return layers.filter(function (l) {
+            return l.name == name;
+        });
     });
 };
 
 /*return a layer by name*/
-nexrender.layerName = function (name, types) {
-    var results = nexrender.layers(name, types);
+nexrender.layerName = function (name, types, composition) {
+    var results = nexrender.layers(name, types, composition);
 
     if (results.length > 0) {
         return results[0];
@@ -67,8 +81,10 @@ nexrender.layerName = function (name, types) {
 };
 
 /*return a layer by index*/
-nexrender.layerIndex = function (index) {
-    return nexrender.getComposition().layer(index);
+nexrender.layerIndex = function (index, composition) {
+    return nexrender.getComposition(composition, function(comp){
+        return comp.layer(index);
+    })
 }
 
 nexrender.replaceFootage = function (layer, filepath) {
