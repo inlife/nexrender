@@ -4,16 +4,18 @@ const script = require('../assets/nexrender.jsx')
 
 /* helpers */
 
+const escape = string => `'${string.replace(/\'/g, '\\\'')}'`
+
 const selectLayers = ({ composition, layerName, layerIndex }, callbackString) => {
     const method = layerName ? 'selectLayersByName' : 'selectLayersByIndex';
-    const compo  = composition === undefined ? 'null' : `'${composition}'`;
-    const value  = layerName ? `'${layerName}'` : layerIndex;
+    const compo  = composition === undefined ? 'null' : escape(composition);
+    const value  = layerName ? escape(layerName) : layerIndex;
 
     return (`nexrender.${method}(${compo}, ${value}, ${callbackString});`);
 }
 
-const renderIf = (value, string, encode) => {
-    const encoded = !encode ? value : typeof value == 'string' ? `'${value}'` : JSON.stringify(value);
+const renderIf = (value, string) => {
+    const encoded = typeof value == 'string' ? escape(value) : JSON.stringify(value);
     return value === undefined ? '' : string.replace('$value', encoded);
 }
 
@@ -30,8 +32,8 @@ const wrapData = ({ property, value, expression, ...asset }) => (`(function() {
         var property = layer.property('${property}');
         if (!property) { return false; }
 
-        ${renderIf(value, `property.setValue($value);`, 1)}
-        ${renderIf(expression, `property.expression = '$value;'`, 0)}
+        ${renderIf(value, `property.setValue($value);`)}
+        ${renderIf(expression, `property.expression = $value;`)}
 
         return true;
     }`)}
