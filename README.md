@@ -74,6 +74,7 @@
     - [Assets](#assets-1)
     - [Rendering](#rendering)
     - [CLI](#cli)
+- [Customers](#customers)
 - [Plans](#plans)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
@@ -741,8 +742,16 @@ and After Effects folder auto detection.
 
 All tools include better help screen, and a lot of customization from command line arguments.
 
-
 </details>
+
+# Customers
+
+Techinically, since the tool is free, custormers should be called users.
+In any case this section describes a list of users or companies that are proud users of nexrender.
+If you've used nexrender, and you like it, please feel free to add yourself into the list.
+
+* [Noxcaos Music](https://www.youtube.com/channel/UC2D9WSUKnyTX8wWqNVITTAw)
+* you name goes here
 
 # Plans
 
