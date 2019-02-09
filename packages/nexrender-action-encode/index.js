@@ -62,8 +62,9 @@ const constructParams = (job, settings, { preset, input, output, params }) => {
                 '-ar': '44100',
                 '-vcodec': 'libx264',
                 '-r': '25',
-                '-y': output
-            }, params);
+            }, params, {
+              '-y': output
+            });
         break;
 
         case 'ogg':
@@ -74,8 +75,9 @@ const constructParams = (job, settings, { preset, input, output, params }) => {
                 '-ar': '44100',
                 '-vcodec': 'libtheora',
                 '-r': '25',
+            }, params, {
                 '-y': output
-            }, params);
+            });
         break;
 
         case 'webm':
@@ -87,8 +89,9 @@ const constructParams = (job, settings, { preset, input, output, params }) => {
                 '-vcodec': 'libvpx',
                 '-b': '614400',
                 '-aspect': '16:9',
+            }, params, {
                 '-y': output
-            }, params);
+            });
         break;
 
         case 'mp3':
@@ -97,8 +100,9 @@ const constructParams = (job, settings, { preset, input, output, params }) => {
                 '-acodec': 'libmp3lame',
                 '-ab': '128k',
                 '-ar': '44100',
+            }, params, {
                 '-y': output
-            }, params);
+            });
         break;
 
         case 'm4a':
@@ -108,8 +112,9 @@ const constructParams = (job, settings, { preset, input, output, params }) => {
                 '-ab': '64k',
                 '-ar': '44100',
                 '-strict': '-2',
+            }, params, {
                 '-y': output
-            }, params);
+            });
         break;
     }
 
