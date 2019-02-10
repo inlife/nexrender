@@ -109,7 +109,7 @@ and that have basic knowledge of `javascript` language and `json` formats.
 
 ### Alternatives
 
-Probably the closest (feature-wise) alternative that exists at the moment is the Datalcay's [Templater](http://dataclay.com/) bot edition.
+Probably the closest (feature-wise) alternative that exists at the moment is the Dataclay's [Templater](http://dataclay.com/) bot edition.
 Compared to nexrender it has a rich GUI support and a number of enterprise-scale features, however, it is not free.
 
 # Installation
