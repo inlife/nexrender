@@ -17,6 +17,10 @@ const getBinary = (job, settings) => {
         if (process.pkg) {
             const output = path.join(job.workpath, process.platform == 'win32' ? 'ffmpeg.exe' : 'ffmpeg')
 
+            if (fs.existsSync(output)) {
+                return resolve(output);
+            }
+
             const rd = fs.createReadStream(binaries[process.platform])
             const wr = fs.createWriteStream(output)
 
