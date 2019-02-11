@@ -162,7 +162,9 @@ or for remote file accessible via http
 Submitting this data to the binary will result in start of the rendering process:
 
 ```sh
-$ nexrender-cli '{"template":{"src":"file:///d:/documents/myproject.aep","composition":"main"}}'
+$ nexrender-cli '{"template":{"src":"
+
+:/documents/myproject.aep","composition":"main"}}'
 ```
 
 or more conveniently using the `--file` option
@@ -626,7 +628,7 @@ Here are some examples of src paths:
 
 ```
 file:///home/assets/image.jpg
-file://d:/projects/project.aep
+file:///d:/projects/project.aep
 
 http://somehost.com:8080/assets/image.jpg?key=foobar
 https://123.123.123.123/video.mp4
