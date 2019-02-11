@@ -193,7 +193,7 @@ A way to implement something like that is to add an `asset` to our job definitio
         {
             "src": "file:///d:/images/myimage.png",
             "type": "image",
-            "layerName": "background"
+            "layerName": "background.png"
         }
     ]
 }
@@ -222,7 +222,7 @@ The reason is that we haven't defined any actions that we need to do after we fi
         {
             "src": "http://example.com/assets/myimage.png",
             "type": "image",
-            "layerName": "background"
+            "layerName": "background.png"
         }
     ],
     "actions":{
@@ -385,6 +385,8 @@ a fotage item with specified `layerName` or `layerIndex` in the original project
 
 This way you (if you are using network rendering) you can not only deliver assets to the target platform but also dynamically replace them.
 
+>Note: if `layerName` is used for footage file asset, it should always contain the extension in the name as well.
+
 ### Example
 
 ```json
@@ -442,7 +444,7 @@ And if you are not sure what is a `property` and where to get it you can refer t
     "assets": [
         {
             "type": "data",
-            "layerName": "MyNicePicture",
+            "layerName": "MyNicePicture.jpg",
             "property": "Position",
             "value": [500, 100]
         },
