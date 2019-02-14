@@ -163,9 +163,7 @@ or for remote file accessible via http
 Submitting this data to the binary will result in start of the rendering process:
 
 ```sh
-$ nexrender-cli '{"template":{"src":"
-
-:/documents/myproject.aep","composition":"main"}}'
+$ nexrender-cli '{"template":{"src":"file:///home/documents/myproject.aep","composition":"main"}}'
 ```
 
 or more conveniently using the `--file` option
