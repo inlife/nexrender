@@ -63,25 +63,26 @@
       - [Requirements:](#requirements-1)
       - [Example](#example-4)
   - [Using API](#using-api)
-- [Protocols](#protocols)
-  - [Examples](#examples)
-- [Development](#development)
-- [External Packages](#external-packages)
+- [Additional Information](#additional-information)
+  - [Protocols](#protocols)
+    - [Examples](#examples)
+  - [Development](#development)
+  - [External Packages](#external-packages)
     - [Custom Actions](#custom-actions)
-- [Migrating from v0.x](#migrating-from-v0x)
+  - [Migrating from v0.x](#migrating-from-v0x)
     - [Naming](#naming)
     - [Structure](#structure)
     - [Assets](#assets-1)
     - [Rendering](#rendering)
     - [CLI](#cli)
-- [Customers](#customers)
-- [Plans](#plans)
+  - [Customers](#customers)
+  - [Plans](#plans)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 # Introduction
 
-> Note: this is a pre-release version of the software. For the stable version please refer to ["stable"](https://github.com/inlife/nexrender/tree/stable) branch.
+> Note: this is a newly released major version of the software. For older, more "stable" version please refer to ["stable"](https://github.com/inlife/nexrender/tree/stable) branch.
 
 `nexrender` is a simple, small, carefully designed application with the main goal of rendering automation for Adobe After Effects based rendering workflows.
 
@@ -604,8 +605,9 @@ main().catch(console.error);
 
 More info: [@nexrender/api](packages/nexrender-api)
 
+# Additional Information
 
-# Protocols
+## Protocols
 
 `src` field is a URI string, that describes path pointing to the specific resource. It supports a few different protocols:
 
@@ -620,7 +622,7 @@ More info: [@nexrender/api](packages/nexrender-api)
     * `ftp://` - [@nexrender/provider-ftp](packages/nexrender-provider-ftp) - TODO
     * (other procotocols will be added there)
 
-## Examples
+### Examples
 
 Here are some examples of src paths:
 
@@ -635,7 +637,7 @@ data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12
 data:text/plain;charset=UTF-8,some%20data:1234,5678
 ```
 
-# Development
+## Development
 
 If you wish to contribute by taking an active part in development, you might need this basic tutorial on how to get started:
 
@@ -660,7 +662,7 @@ into a new micro module.
 
 And of course, the main thing about development is that it should be fun. :)
 
-# External Packages
+## External Packages
 
 Here you can find a list of packages published by other contributors:
 
@@ -686,7 +688,7 @@ or doing tranformations on data after, or just simply sending an email when rend
 >Note: both `job` and `settings` are mutable structures, any modifications made to them will reflect onto the flow of the next calls.
 Hence they can be used to store state between actions.
 
-# Migrating from v0.x
+## Migrating from v0.x
 
 First version of nexrender was published in 2016, and it has been used by many people for quite some time since then.
 Even though verion v1.x is based on the same concepts, it introduces major breaking changes that are incompatible with older version.
@@ -746,7 +748,7 @@ All tools include better help screen, and a lot of customization from command li
 
 </details>
 
-# Customers
+## Customers
 
 Techinically, since the tool is free, custormers should be called users.
 In any case this section describes a list of users or companies that are proud users of nexrender.
@@ -755,7 +757,7 @@ If you've used nexrender, and you like it, please feel free to add yourself into
 * [Noxcaos Music](https://www.youtube.com/channel/UC2D9WSUKnyTX8wWqNVITTAw)
 * you name goes here
 
-# Plans
+## Plans
 
 1. Add Uploading to various providers `@nexrender/action-upload`
 2. Add an algo of splitting the main job onto sub jobs, rendering them on multiple machines
