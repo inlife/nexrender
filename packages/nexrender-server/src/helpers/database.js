@@ -3,7 +3,7 @@ const fs   = require('fs')
 const path = require('path')
 
 /* initial data */
-const defaultPath = path.join(os.tmpdir(), 'nexrender')
+const defaultPath = path.join(os.homedir(), 'nexrender')
 const defaultName = 'database.js'
 
 const database = process.env.NEXRENDER_DATABASE
