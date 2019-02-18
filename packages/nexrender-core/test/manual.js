@@ -39,7 +39,7 @@ const job = {
             type: 'data',
             layerName: 'track name',
             property: 'Source Text',
-            value: 'Hello world',
+            value: 'Привет мир',
         }
     ],
     actions: {
@@ -58,6 +58,7 @@ const job = {
 }
 
 const settings = {
+    forceCommandLinePatch: true,
     logger: console,
     skipCleanup: true,
     debug: true,

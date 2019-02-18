@@ -607,6 +607,7 @@ function AECommandLineRenderer() {
                 this.log_file.writeln("Running Script: " + this.in_script_path);
                 var scriptFile = new File(this.in_script_path);
 
+                scriptFile.encoding = "UTF-8";
                 if (!scriptFile.open("r")) {
                     if (this.log_file) {
                         this.log_file.writeln(this.MSG_SCRIPT_CAN_NOT_OPEN + this.in_script_path);
