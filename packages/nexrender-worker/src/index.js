@@ -27,7 +27,7 @@ const nextJob = async (client, settings) => {
             }
         }
 
-        await delay(NEXRENDER_API_POLLING)
+        await delay(settings.polling || NEXRENDER_API_POLLING)
     } while (active)
 }
 
