@@ -1,8 +1,8 @@
 const EventEmitter = require('events');
 
-const NEXRENDER_JOB_POLLING = process.env.NEXRENDER_JOB_POLLING || 1000 * 10;
+const NEXRENDER_JOB_POLLING = process.env.NEXRENDER_JOB_POLLING || 10 * 1000;
 
-const withEventEmitter = (fetch, job) => {
+const withEventEmitter = (fetch, job, polling = NEXRENDER_JOB_POLLING) => {
     const emitter  = new EventEmitter();
     const interval = setInterval(async () => {
         try {
@@ -21,7 +21,7 @@ const withEventEmitter = (fetch, job) => {
             emitter.emit('error', err);
         }
 
-    }, NEXRENDER_JOB_POLLING);
+    }, polling);
 
     /* trigger first callback */
     setImmediate(() => emitter.emit('created', job))
@@ -29,7 +29,7 @@ const withEventEmitter = (fetch, job) => {
     return emitter;
 }
 
-module.exports = fetch => ({
+module.exports = (fetch, polling) => ({
     listJobs: async () => await fetch(`/jobs`),
 
     addJob: async data =>
@@ -37,7 +37,7 @@ module.exports = fetch => ({
             'method': 'post',
             'content-type': 'application/json',
             'body': JSON.stringify(data),
-        })),
+        }), polling),
 
     updateJob: async (id, data) =>
         await fetch(`/jobs/${id}`, {
