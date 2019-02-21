@@ -4,6 +4,7 @@ const {spawn} = require('child_process')
 
 const progressRegex = /([\d]{1,2}:[\d]{2}:[\d]{2}:[\d]{2})\s+(\(\d+\))/gi;
 const durationRegex = /Duration:\s+([\d]{1,2}:[\d]{2}:[\d]{2}:[\d]{2})/gi;
+const startRegex = /Start:\s+([\d]{1,2}:[\d]{2}:[\d]{2}:[\d]{2})/gi;
 
 const option  = (params, name, value) => value !== undefined ? params.push(name, value) : undefined
 const seconds = (string) => string.split(':')
@@ -43,19 +44,24 @@ module.exports = (job, settings) => {
     let currentProgress  = null;
     let previousProgress = undefined;
     let renderStopwatch  = null;
+    let projectStart     = null;
 
     const parse = (data) => {
         const string = (''+data).replace(/;/g, ':'); /* sanitize string */
 
+        // Only execute startRegex if project start hasnt been found
+        const matchStart = isNaN(parseInt(projectStart)) ? startRegex.exec(string) : false;
         // Only execute durationRegex if project duration hasnt been found
         const matchDuration = isNaN(parseInt(projectDuration)) ? durationRegex.exec(string) : false;
         // Only execute progressRegex if project duration has been found
         const matchProgress = !isNaN(parseInt(projectDuration)) ? progressRegex.exec(string) : null;
         // If durationRegex has a match convert tstamp to seconds and define projectDuration only once
         projectDuration = (matchDuration) ? seconds(matchDuration[1]) : projectDuration;
+        // If startRegex has a match convert tstamp to seconds and define projectStart only once
+        projectStart = (matchStart) ? seconds(matchStart[1]) : projectStart;
 
         if (matchProgress) {
-            currentProgress = Math.ceil(seconds(matchProgress[1]) * 100 / projectDuration);
+            currentProgress = Math.ceil((seconds(matchProgress[1]) - projectStart) * 100 / projectDuration);
 
             if (previousProgress !== currentProgress) {
                 settings.logger.log(`[${job.uid}] rendering progress ${currentProgress}%...`);
