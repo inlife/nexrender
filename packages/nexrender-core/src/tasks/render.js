@@ -33,6 +33,7 @@ module.exports = (job, settings) => {
     option(params, '-r', job.scriptfile);
 
     if (settings.multiFrames) params.push('-mp');
+    if (settings.reuse) params.push('-reuse');
     if (job.template.continueOnMissing) params.push('-continueOnMissingFootage')
 
     if (settings.imageCachePercent || settings.maxMemoryPercent) {
