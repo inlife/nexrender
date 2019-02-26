@@ -17,7 +17,7 @@ const nextJob = async (client, settings) => {
             const queued  = listing.filter(job => job.state == 'queued')
 
             if (queued.length > 0) {
-                return queued[0];
+                return queued[Math.floor(Math.random() * queued.length)];
             }
         } catch (err) {
             if (settings.stopOnError) {
@@ -51,7 +51,12 @@ const start = async (host, secret, settings) => {
             job.state = 'started';
         }
 
-        await client.updateJob(job.uid, job)
+        try {
+            await client.updateJob(job.uid, job)
+        } catch(err) {
+            console.log(`[${job.uid}] error while updating job state to ${job.state}. Job abandoned.`)
+            continue;
+        }
 
         try {
             job = await render(job, settings); {
