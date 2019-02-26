@@ -20,6 +20,7 @@ const args = arg({
     '--force-patch':    Boolean,
     '--debug':          Boolean,
     '--multi-frames':   Boolean,
+    '--reuse':          Boolean,
     '--stop-on-error':  Boolean,
 
     '--max-memory-percent':  Number,
@@ -94,6 +95,12 @@ if (args['--help']) {
     --image-cache-percent                   (from Adobe site): specifies the maximum percentage of memory used
                                             to cache already rendered images and footage.
 
+    --reuse                                 (from Adobe site): Reuse the currently running instance of After Effects (if found) to 
+                                            perform the render. When an already running instance is used, aerender saves preferences 
+                                            to disk when rendering has completed, but does not quit After Effects. If this argument 
+                                            is not used, aerender starts a new instance of After Effects, even if one is already 
+                                            running. It quits that instance when rendering has completed, and does not save 
+                                            preferences.
 
   {bold ENV VARS}
 
@@ -125,6 +132,7 @@ opt('skipCleanup',          '--skip-cleanup');
 opt('forceCommandLinePatch','--force-patch');
 opt('debug',                '--debug');
 opt('multiFrames',          '--multi-frames');
+opt('reuse',                '--reuse');
 opt('stopOnError',          '--stop-on-error');
 opt('maxMemoryPercent',     '--max-memory-percent');
 opt('imageCachePercent',    '--image-cache-percent');
