@@ -1,5 +1,27 @@
 # Changelog
 
+## 1.1.0
+ * added --reuse flag
+ * fixed issue with same projects being picked up by differnt workers
+
+## 1.0.3
+ * added ability to override worker polling settings
+ * fixed percentage calculation
+
+## 1.0.2
+ * added ability to override api polling settings
+
+## 1.0.1
+ * fixed issues with encoding
+
+## 1.0.0
+Biggest update since first version has been released
+
+ * project has been rewritten, it now consists of multiple packages
+ * a conceptually new way of dealing with after effects has been introduced
+ * new structures for jobs, allowing more developer friedly way of adding new features
+ * full documentation/readme rewrite
+
 ## v0.6.0
  * added ability to use s3 file type as asset, details: https://github.com/inlife/nexrender/pull/61
 
