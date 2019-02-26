@@ -37,8 +37,10 @@ const fetch = uid => uid ? data[indexOf(uid)] : data
 
 const insert = entry => {
     const now = new Date()
-    entry.updatedAt = now
-    entry.createdAt = now
+    Object.assign({}, entry, {
+        updatedAt: now,
+        createdAt: now
+    })
     data.push(entry);
     setImmediate(save);
 }
@@ -54,10 +56,7 @@ const update = (uid, entry) => {
         throw new Error(`Someone else updated that entry at ${data[value].updatedAt}. Your entry updatedAt is ${entry.updatedAt}`)
     }
 
-    data[value] = Object.assign({},
-        data[value],
-        entry,
-        {
+    data[value] = Object.assign({}, data[value], entry, {
             updatedAt: now
         }
     );
