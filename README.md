@@ -672,7 +672,7 @@ Since nexrender allows to use extanral packages isntalled globally from npm, its
 
 ### Custom Actions
 
-To add a custom action, pre- or post-render one, all you need to do is to create a at least single file, that is going to return a function with promise.
+To add a custom pre- or post-render action, all you need to do is to create a at least single file, that is going to return a function with promise.
 
 ```js
 // mymodule.js
@@ -682,6 +682,35 @@ module.exports = (job, settings, action, type) => {
 }
 ```
 
+To use that action locally you can then require it by either using relative or global path.
+Additionally you can create a private npm module and link it, so it would become visible globally or even publish it to npm/your own private repo and use it.
+
+```json
+// example 1
+{
+    "module": "d:/myprojects/mymodule/index.js",
+    "somearg1": "hello world",
+    "somearg2": 123456
+}
+```
+
+```json
+// example 2
+{
+    "module": "my-super-cool-module",
+    "somearg1": "hello world",
+    "somearg2": 123456
+}
+```
+
+```json
+// example 3
+{
+    "module": "@myorg/mymodule",
+    "somearg1": "hello world",
+    "somearg2": 123456
+}
+```
 From there you can build pretty much any module that could process downloaded data before starting rendering,
 or doing tranformations on data after, or just simply sending an email when rendering is finished.
 
