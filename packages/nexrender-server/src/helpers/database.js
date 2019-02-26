@@ -50,8 +50,9 @@ const update = (uid, entry) => {
 
     const now = new Date()
     
-    if(data[value].updatedAt !== entry.updatedAt)
-        throw new Error(`Someone else updated that entry.`)
+    if(data[value].updatedAt !== entry.updatedAt) {
+        throw new Error(`Someone else updated that entry at ${data[value].updatedAt}. Your entry updatedAt is ${entry.updatedAt}`)
+    }
 
     data[value] = Object.assign({},
         data[value],
