@@ -17,7 +17,7 @@ const nextJob = async (client, settings) => {
             const queued  = listing.filter(job => job.state == 'queued')
 
             if (queued.length > 0) {
-                return queued[0];
+                return queued[Math.floor(Math.random() * queued.length)];
             }
         } catch (err) {
             if (settings.stopOnError) {
