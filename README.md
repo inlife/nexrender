@@ -666,6 +666,7 @@ And of course, the main thing about development is that it should be fun. :)
 
 Here you can find a list of packages published by other contributors:
 
+* [HarryLafranc/nexrender-action-handbrake](https://github.com/HarryLafranc/nexrender-action-handbrake) - Encode a video with Handbrake on nexrender-postrender
 * [somename/package-name](#) - a nice description of a nice package doing nice things
 
 Since nexrender allows to use extanral packages isntalled globally from npm, its quite easy to add your own modules
