@@ -662,6 +662,28 @@ into a new micro module.
 
 And of course, the main thing about development is that it should be fun. :)
 
+## Project Values
+
+This project has a few principle-based goals that guide its development:
+
+* **Do our thing really well.** Our thing is data-based automating of the rendering, and hanlding other interactive related components of that task set. It is not meant to be a replacement for specific corporate tools templater bot, rendergarden, etc. that have lots of features and customizability. (Some customizability is OK, but not to the extent that it becomes overly complicated or error-prone.)
+
+* **Limit dependencies.** Keep the packages lightweight.
+
+* **Pure nodejs.** This means no native module or other external/system dependencies. This package should be able to stand on its own and cross-compile easily to any platform -- and that includes its library dependencies.
+
+* **Idiomatic nodejs.** Keep modules small, minimal exported names, promise based async handling.
+
+* **Be elegant.** This package should be elegant to use and its code should be elegant when reading and testing. If it doesn't feel good, fix it up.
+
+* **Well-documented.** Use comments prudently; explain why non-obvious code is necessary (and use tests to enforce it). Keep the docs updated, and have examples where helpful.
+
+* **Keep it efficient.** This often means keep it simple. Fast code is valuable.
+
+* **Consensus.** Contributions should ideally be approved by multiple reviewers before being merged. Generally, avoid merging multi-chunk changes that do not go through at least one or two iterations/reviews. Except for trivial changes, PRs are seldom ready to merge right away.
+
+* **Have fun contributing.** Coding is awesome!
+
 ## External Packages
 
 Here you can find a list of packages published by other contributors:
