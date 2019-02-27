@@ -25,6 +25,7 @@ const args = arg({
 
     '--max-memory-percent':  Number,
     '--image-cache-percent': Number,
+    '--polling':             Number,
 
     // Aliases
     '-v':           '--version',
@@ -88,6 +89,9 @@ if (args['--help']) {
 
     --skip-cleanup                          forces worker to keep temporary data after rendering is finished
 
+    --polling                               amount of miliseconds to wait before checking queued projects from the api,
+                                            if specified will be used instead of NEXRENDER_API_POLLING env variable
+
     --multi-frames                          (from Adobe site): More processes may be created to render multiple frames simultaneously,
                                             depending on system configuration and preference settings.
                                             (See Memory & Multiprocessing preferences.)
@@ -150,6 +154,7 @@ opt('reuse',                '--reuse');
 opt('stopOnError',          '--stop-on-error');
 opt('maxMemoryPercent',     '--max-memory-percent');
 opt('imageCachePercent',    '--image-cache-percent');
+opt('polling',              '--polling');
 
 if (settings['no-license']) {
     settings.addLicense = false;
