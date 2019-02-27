@@ -67,6 +67,7 @@
   - [Protocols](#protocols)
     - [Examples](#examples)
   - [Development](#development)
+  - [Project Values](#project-values)
   - [External Packages](#external-packages)
     - [Custom Actions](#custom-actions)
   - [Migrating from v0.x](#migrating-from-v0x)
