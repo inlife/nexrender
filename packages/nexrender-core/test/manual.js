@@ -58,7 +58,6 @@ const job = {
 }
 
 const settings = {
-    forceCommandLinePatch: true,
     logger: console,
     skipCleanup: true,
     debug: true,
