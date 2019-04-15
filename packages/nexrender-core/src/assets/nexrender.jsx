@@ -35,7 +35,7 @@ nexrender.replaceFootage = function (layer, filepath) {
 nexrender.selectCompositionsByName = function(name, callback) {
     for (var i = 1; i <= app.project.items.length; i++) {
         var item = app.project.items[i];
-        if (!item instanceof CompItem) continue;
+        if (!(item instanceof CompItem)) continue;
 
         if (name == "*") {
             callback(item);
