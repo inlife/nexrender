@@ -808,6 +808,7 @@ In any case this section describes a list of users or companies that are proud u
 If you've used nexrender, and you like it, please feel free to add yourself into the list.
 
 * [Noxcaos Music](https://www.youtube.com/channel/UC2D9WSUKnyTX8wWqNVITTAw)
+* [Two Bit Circus](https://twobitcircus.com)
 * you name goes here
 
 ## Plans
