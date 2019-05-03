@@ -29,7 +29,7 @@
   },
   "devDependencies": {
     "lerna": "^3.13.4",
-    "mocha": "^5.2.0",
+    "mocha": "^6.1.4",
     "pkg": "^4.3.8"
   }
 }
