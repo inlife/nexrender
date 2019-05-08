@@ -66,6 +66,7 @@ const constructParams = (job, settings, { preset, input, output, params }) => {
                 '-ar': '44100',
                 '-vcodec': 'libx264',
                 '-r': '25',
+                '-pix_fmt' : 'yuv420p',
             }, params, {
               '-y': output
             });
