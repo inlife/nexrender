@@ -16,7 +16,9 @@ const download = (job, asset) => {
     let destName = '';
 
     /* if asset doesnt have a file name, make up a random one */
-    if (protocol === 'data' && !asset.layerName) {
+    if (asset.destName) {
+        destName = asset.destName;
+    } else if (protocol === 'data' && !asset.layerName) {
         destName = Math.random().toString(36).substring(2);
     } else {
         destName = asset.layerName || path.basename(asset.src);
