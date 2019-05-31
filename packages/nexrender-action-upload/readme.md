@@ -1,6 +1,6 @@
 # Action: Upload
 
-Upload video to an external storageprovider ie. Amazon S3.
+Upload video to an external storage provider ie. Amazon S3.
 
 ## Installation
 
@@ -41,10 +41,19 @@ When creating your render job provide this module as one of the `postrender` act
 
 ## Providers
 
-### s3
-Format of `params` object for Amazon S3:
+Currently, only Amazon S3 is supported at this time.
 
-* `region` required argument, the region ie. "us-east-1"
-* `bucket` required argument, the S3 bucket "name-of-your-bucket".
-* `key` required argument, the S3 key ie. "folder/output.mp4"
-* `acl` required argument, the S3 ACL ie. "public-read"
+### s3
+
+```js
+{
+    'region': 'us-east-1',
+    'bucket': 'name-of-your-bucket',
+    'key': 'folder/output.mp4',
+    'acl': 'public-read'
+}
+```
+* `region` required argument, the S3 bucket region
+* `bucket` required argument, the S3 bucket
+* `key` required argument, the object key
+* `acl` required argument, the ACL
