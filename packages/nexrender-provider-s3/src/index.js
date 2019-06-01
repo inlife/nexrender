@@ -28,28 +28,33 @@ const download = (src, dest, options, type) => {
 }
 
 const upload = (src, region, bucket, key, acl, onProgress, onComplete) => {
+    let file = fs.createReadStream(src);
+
     return new Promise((resolve, reject) => {
-        fs.readFile(input, (err, data) => {
-            if (err) {
-                reject(err)
-            }
+        file.on('error', (err) => {
+            reject(err)
+            return
+        })
 
-            const params = {
-                Bucket: bucket,
-                Key: key,
-                ACL: acl
-            }
+        const params = {
+            Bucket: bucket,
+            Key: key,
+            ACL: acl,
+            Body: file
+        }
 
-            s3instanceWithRegion(region)
-                .putObject(params, (err, data) => {
-                    if (err) {
-                        reject(err)
-                    }
+        s3instanceWithRegion(region)
+            .upload(params, (err, data) => {
+                if (err) {
+                    reject(err)
+                }
+                else
+                {
                     onComplete()
                     resolve()
-                })
-                .on('httpUploadProgress', onProgress)
-        })
+                }
+            })
+            .on('httpUploadProgress', onProgress)
     })
 }
 
