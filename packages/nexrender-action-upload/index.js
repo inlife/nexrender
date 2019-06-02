@@ -43,7 +43,7 @@ module.exports = (job, settings, { input, provider, params }, type) => {
                 
                 const onProgress = (e) => {
                     var progress = e.loaded / e.total * 100
-                    settings.logger.log(`[${job.uid}] action-upload: upload progress ${progress}%...`)
+                    settings.logger.log(`[${job.uid}] action-upload: upload progress ${progress.toFixed(0)}%...`)
                 }
 
                 const onComplete = () => {
