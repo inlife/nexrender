@@ -1,0 +1,12 @@
+{
+  "name": "@nexrender/action-upload",
+  "author": "inlife",
+  "version": "1.0.0",
+  "main": "index.js",
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "aws-sdk": "^2.463.0"
+  }
+}
