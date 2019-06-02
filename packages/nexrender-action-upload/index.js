@@ -42,8 +42,8 @@ module.exports = (job, settings, { input, provider, params }, type) => {
                 const s3 = requireg('@nexrender/provider-s3')
                 
                 const onProgress = (e) => {
-                    var progress = e.loaded / e.total * 100
-                    settings.logger.log(`[${job.uid}] action-upload: upload progress ${progress.toFixed(0)}%...`)
+                    var progress = Math.ceil(e.loaded / e.total * 100)
+                    settings.logger.log(`[${job.uid}] action-upload: upload progress ${progress}%...`)
                 }
 
                 const onComplete = () => {
