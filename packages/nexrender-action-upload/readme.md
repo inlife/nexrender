@@ -44,6 +44,7 @@ When creating your render job provide this module as one of the `postrender` act
 Currently, only Amazon S3 is supported at this time.
 
 ### s3
+Refer to [AWS SDK Documentation](https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/setting-credentials-node.html) for information on setting credentials.
 
 ```js
 {

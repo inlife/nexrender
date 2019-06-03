@@ -251,7 +251,7 @@ There are multiple built-in modules within nexrender ecosystem:
 
 * [@nexrender/action-copy](packages/nexrender-action-copy)
 * [@nexrender/action-encode](packages/nexrender-action-encode)
-* [@nexrender/action-upload](packages/nexrender-action-upload) - TODO
+* [@nexrender/action-upload](packages/nexrender-action-upload)
 * (list will be expanded)
 
 Every module might have his own set of fields, however, `module` field is always there.
