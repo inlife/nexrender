@@ -1,7 +1,7 @@
 {
   "name": "@nexrender/action-upload",
   "author": "inlife",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "main": "index.js",
   "publishConfig": {
     "access": "public"
