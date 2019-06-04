@@ -316,16 +316,20 @@ Job structure has more fields, that we haven't checked out yet. The detailed ver
         "prerender": [],
         "postrender": [],
     },
-    "onChange": Function
+    "onChange": Function,
+    "onRenderProgress": Function
 }
 ```
 
 Majority of the fields are just proxied to the `aerender` binary, and their descriptions and default
 values can be checked [here](https://helpx.adobe.com/after-effects/using/automated-rendering-network-rendering.html).
 
-`onChange` is a field that is possible to setup only via programmatic use.
-It is a callback which will be triggered every time the job has change state (happens on every task change).
-For more info please refer to the source code.
+- `onChange` is a [callback](https://github.com/inlife/nexrender/blob/master/packages/nexrender-core/src/helpers/state.js) which will be triggered every time the job state is changed (happens on every task change).
+
+- `onRenderProgress` is a [callback](https://github.com/inlife/nexrender/blob/master/packages/nexrender-core/src/tasks/render.js) which will be triggered every time the rendering progress has changed.
+
+
+Note: Callback functions are only available via programmatic use. For more information, please refer to the source code.
 
 ## Programmatic
 
