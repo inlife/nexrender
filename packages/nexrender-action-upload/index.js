@@ -1,7 +1,7 @@
-const {name} = require('./package.json')
-const fs = require('fs')
-const path = require('path')
-const AWS = require('aws-sdk')
+const fs       = require('fs')
+const path     = require('path')
+const {name}   = require('./package.json')
+const awss3    = requireg('@nexrender/provider-s3')
 
 module.exports = (job, settings, { input, provider, params }, type) => {
     if (type != 'postrender') {
@@ -39,8 +39,6 @@ module.exports = (job, settings, { input, provider, params }, type) => {
             }
 
             try {
-                const s3 = requireg('@nexrender/provider-s3')
-                
                 const onProgress = (e) => {
                     const progress = Math.ceil(e.loaded / e.total * 100)
                     settings.logger.log(`[${job.uid}] action-upload: upload progress ${progress}%...`)
@@ -53,8 +51,8 @@ module.exports = (job, settings, { input, provider, params }, type) => {
                 const output = `https://s3-${params.region}.amazonaws.com/${params.bucket}/${params.key}`
                 settings.logger.log(`[${job.uid}] action-upload: input file ${input}`)
                 settings.logger.log(`[${job.uid}] action-upload: output file ${output}`)
-                
-                return s3.upload(input, params.region, params.bucket, params.key, params.acl, onProgress, onComplete);
+
+                return awss3.upload(input, params.region, params.bucket, params.key, params.acl, onProgress, onComplete);
             } catch (e) {
                 return Promise.reject(new Error('AWS S3 module is not installed, use \"npm i -g @nexrender/provider-s3\" to install it.'))
             }

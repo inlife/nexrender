@@ -7,6 +7,6 @@
     "access": "public"
   },
   "dependencies": {
-    "aws-sdk": "^2.463.0"
+    "@nexrender/provider-s3": "^1.2.0"
   }
 }
