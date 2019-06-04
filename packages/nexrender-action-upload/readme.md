@@ -19,7 +19,7 @@ When creating your render job provide this module as one of the `postrender` act
         "postrender": [
             {
                 "module": "@nexrender/action-upload",
-                "input": "",
+                "input": "output.mp4",
                 "provider": "s3",
                 "params": {
                     "region": "us-east-1",
@@ -35,7 +35,7 @@ When creating your render job provide this module as one of the `postrender` act
 
 ## Information
 
-* `input` optional argument, path of the file you want to encode, can be either relative or absulte path. Defaults to current job output video file.
+* `input` optional argument, path of the file you want to upload, can be either relative or absulte path. If skipped, defaults to current job output video file.
 * `provider` required argument, object containing the name of the provider
 * `params` required argument, object containing parameters for the upload (provider-specific)
 
