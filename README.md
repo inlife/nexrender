@@ -63,6 +63,7 @@
       - [Requirements:](#requirements-1)
       - [Example](#example-4)
   - [Using API](#using-api)
+- [Tested with](#tested-with)
 - [Additional Information](#additional-information)
   - [Protocols](#protocols)
     - [Examples](#examples)
@@ -609,6 +610,16 @@ main().catch(console.error);
 ```
 
 More info: [@nexrender/api](packages/nexrender-api)
+
+# Tested with
+
+Current software was successfully tested on:
+
+* Adobe After Effects CS 5.5 [OS X 10.14.2]
+* Adobe After Effects CC (version 12.1.168) [OS X 10.11.2, Windows 10 64bit]
+* Adobe After Effects CC 2015 (version 13.6.0) [OS X 10.11.2]
+* Adobe After Effects CC 2018.3 [Windows 2012 Server R2 Datacenter]
+* Adobe After Effects CC 2019 [OS X 10.14.2, Windows Server 2019 (AWS)]
 
 # Additional Information
 
