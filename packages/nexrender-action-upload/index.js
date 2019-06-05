@@ -1,7 +1,7 @@
 const fs       = require('fs')
 const path     = require('path')
 const {name}   = require('./package.json')
-const awss3    = requireg('@nexrender/provider-s3')
+const requireg = require('requireg')
 
 module.exports = (job, settings, { input, provider, params }, type) => {
     if (type != 'postrender') {
@@ -52,7 +52,7 @@ module.exports = (job, settings, { input, provider, params }, type) => {
                 settings.logger.log(`[${job.uid}] action-upload: input file ${input}`)
                 settings.logger.log(`[${job.uid}] action-upload: output file ${output}`)
 
-                return awss3.upload(input, params.region, params.bucket, params.key, params.acl, onProgress, onComplete);
+                return requireg('@nexrender/provider-s3').upload(input, params.region, params.bucket, params.key, params.acl, onProgress, onComplete);
             } catch (e) {
                 return Promise.reject(new Error('AWS S3 module is not installed, use \"npm i -g @nexrender/provider-s3\" to install it.'))
             }
