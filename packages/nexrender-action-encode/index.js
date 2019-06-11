@@ -48,7 +48,7 @@ const getBinary = (job, settings) => {
 }
 
 /* pars of snippet taken from https://github.com/xonecas/ffmpeg-node/blob/master/ffmpeg-node.js#L136 */
-const constructParams = (job, settings, { preset, input, output, params }) => {
+const constructParams = (job, settings, { preset, input, output, fps, params }) => {
     input = input || job.output;
 
     if (!path.isAbsolute(input)) input = path.join(job.workpath, input);
@@ -65,7 +65,7 @@ const constructParams = (job, settings, { preset, input, output, params }) => {
                 '-ab': '128k',
                 '-ar': '44100',
                 '-vcodec': 'libx264',
-                '-r': '25',
+                '-r': fps || '25',
                 '-pix_fmt' : 'yuv420p',
             }, params, {
               '-y': output
@@ -79,7 +79,7 @@ const constructParams = (job, settings, { preset, input, output, params }) => {
                 '-ab': '128k',
                 '-ar': '44100',
                 '-vcodec': 'libtheora',
-                '-r': '25',
+                '-r': fps || '25',
             }, params, {
                 '-y': output
             });
