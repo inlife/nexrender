@@ -23,7 +23,9 @@ if (process.env.NEXRENDER_REQUIRE_PLUGINS) {
     require('@nexrender/action-copy');
     require('@nexrender/action-encode');
     require('@nexrender/action-upload');
+
     require('@nexrender/provider-s3');
+    require('@nexrender/provider-ftp');
 }
 
 //

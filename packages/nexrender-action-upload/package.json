@@ -7,8 +7,10 @@
     "access": "public"
   },
   "dependencies": {
-    "@nexrender/provider-s3": "^1.2.0",
-    "@nexrender/provider-ftp": "^1.2.1",
     "requireg": "^0.2.1"
+  },
+  "peerDependencies": {
+    "@nexrender/provider-s3": "^1.2.0",
+    "@nexrender/provider-ftp": "^1.2.1"
   }
 }

@@ -41,8 +41,6 @@ When creating your render job provide this module as one of the `postrender` act
 
 ## Providers
 
-Currently, only Amazon S3 is supported at this time.
-
 ### s3
 Refer to [AWS SDK Documentation](https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/setting-credentials-node.html) for information on setting credentials.
 
@@ -58,3 +56,26 @@ Refer to [AWS SDK Documentation](https://docs.aws.amazon.com/sdk-for-javascript/
 * `bucket` required argument, the S3 bucket
 * `key` required argument, the object key
 * `acl` required argument, the ACL
+
+
+### ftp
+
+Refer to [mscdex/node-ftp](https://github.com/mscdex/node-ftp) for information regarding porams and usage.
+
+Basic params info:
+
+* `host` - string - The hostname or IP address of the FTP server. Default: 'localhost'
+* `port` - integer - The port of the FTP server. Default: 21
+* `user` - string - Username for authentication. Default: 'anonymous'
+* `password` - string - Password for authentication. Default: 'anonymous@'
+
+Example:
+
+```js
+{
+    'host': 'ftp.example.com',
+    'port': 21,
+    'user': 'myuser',
+    'password': 'mypassword123'
+}
+```

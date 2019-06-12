@@ -25,9 +25,7 @@ const download = (job, asset) => {
     asset.dest = path.join(job.workpath, destName);
 
     switch (protocol) {
-
         /* built-in handlers */
-
         case 'data':
             return new Promise((resolve, reject) => {
                 try {
@@ -43,8 +41,8 @@ const download = (job, asset) => {
 
         case 'http':
         case 'https':
-            /* TODO: maybe move to external packet ?? */
-            return fetch(asset.src, asset.options || {})
+            /* TODO: maybe move to external package ?? */
+            return fetch(asset.src, asset.params || {})
                 .then(res => res.ok ? res : Promise.reject({reason: 'Initial error downloading file', meta: {url, error: res.error}}))
                 .then(res => {
                     const stream = fs.createWriteStream(asset.dest)
@@ -52,7 +50,7 @@ const download = (job, asset) => {
 
                     return new Promise((resolve, reject) => {
                         const errorHandler = (error) => {
-                            reject({reason: 'Unable to download file', meta: {url, error}})
+                            reject(new Error({reason: 'Unable to download file', meta: {url, error}}))
                         };
 
                         res.body
@@ -84,22 +82,18 @@ const download = (job, asset) => {
             break;
 
         /* custom/external handlers */
-
-        case 's3':
-            try {
-                return requireg('@nexrender/provider-s3').download(asset.src, asset.dest, asset.options);
-            } catch (e) {
-                return Promise.reject(new Error('AWS S3 module is not installed, use \"npm i -g @nexrender/provider-s3\" to install it.'))
-            }
-            break;
-
-
-        case 'ftp':
-            return Promise.reject(new Error('ftp provider not implemeneted'));
-            break;
-
         default:
-            return Promise.reject(new Error('unknown URI protocol provided: ' + protocol))
+
+            try {
+                return requireg('@nexrender/provider-' + protocol).download(job, settings, asset.src, asset.dest, asset.params || {});
+            } catch (e) {
+                if (e.message.indexOf('Could not require module') !== -1) {
+                    return Promise.reject(new Error(`Couldn\'t find module @nexrender/provider-${protocol}, Unknown protocol provided.`))
+                }
+
+                throw e;
+            }
+
             break;
     }
 }
