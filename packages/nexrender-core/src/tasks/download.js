@@ -19,7 +19,12 @@ const download = (job, asset) => {
     if (protocol === 'data' && !asset.layerName) {
         destName = Math.random().toString(36).substring(2);
     } else {
-        destName = asset.layerName || path.basename(asset.src);
+        destName = path.basename(asset.src);
+
+        /* prevent same name file collisions */
+        if (fs.existsSync(path.join(job.workpath, destName))) {
+            destName = Math.random().toString(36).substring(2) + '.' + path.extname(asset.src);
+        }
     }
 
     asset.dest = path.join(job.workpath, destName);
