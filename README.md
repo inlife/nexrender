@@ -635,7 +635,7 @@ Current software was successfully tested on:
 
 * External:
     * `s3://` - [@nexrender/provider-s3](packages/nexrender-provider-s3) - Amazon S3 provider
-    * `ftp://` - [@nexrender/provider-ftp](packages/nexrender-provider-ftp) - TODO
+    * `ftp://` - [@nexrender/provider-ftp](packages/nexrender-provider-ftp) - Node.js FTP provider
     * (other procotocols will be added there)
 
 ### Examples
@@ -828,7 +828,6 @@ If you've used nexrender, and you like it, please feel free to add yourself into
 
 ## Plans
 
-1. Add Uploading to various providers `@nexrender/action-upload`
+1. Adding more upload/download providers
 2. Add an algo of splitting the main job onto sub jobs, rendering them on multiple machines
 and then combining back into a single job. `@nexrender/action-merge-parent, @nexrender/action-merge-child`
-3. Adding more upload/download providers
