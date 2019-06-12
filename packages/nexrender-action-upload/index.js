@@ -57,6 +57,27 @@ module.exports = (job, settings, { input, provider, params }, type) => {
                 return Promise.reject(new Error('AWS S3 module is not installed, use \"npm i -g @nexrender/provider-s3\" to install it.'))
             }
             break;
+        case 'ftp':
+            if (!params.host) {
+                return Promise.reject(new Error('FTP Host not provided.'))
+            }
+            if (!params.port) {
+                return Promise.reject(new Error('FTP Port not provided.'))
+            }
+            if (!params.username) {
+                return Promise.reject(new Error('FTP Username not provided.'))
+            }
+            if (!params.password) {
+                return Promise.reject(new Error('FTP Password not provided.'))
+            }
+
+            try {
+
+                return requireg('@nexrender/provider-ftp').upload(input, params.host, params.port, params.username, params.password);
+            } catch (e) {
+                return Promise.reject(new Error('FTP module is not installed, use \"npm i -g @nexrender/provider-ftp\" to install it.'))
+            }
+            break;
         default:
             return Promise.reject(new Error('unknown provider: ' + provider))
             break;

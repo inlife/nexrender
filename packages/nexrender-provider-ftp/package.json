@@ -1,0 +1,13 @@
+{
+  "name": "@nexrender/provider-ftp",
+  "version": "1.2.1",
+  "author": "zuntah",
+  "main": "src/index.js",
+  "dependencies": {
+    "ftp": "^0.3.10"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "gitHead": "84cef65e008026f6fcf4f040943144401f101fce"
+}
