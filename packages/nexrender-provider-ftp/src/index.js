@@ -8,7 +8,7 @@ const download = (job, settings, src, dest, params) => {
     if (!params.port) {
         throw new Error('FTP Port not provided.')
     }
-    if (!params.username) {
+    if (!params.user) {
         throw new Error('FTP Username not provided.')
     }
     if (!params.password) {
@@ -34,7 +34,7 @@ const upload = (job, settings, src, params) => {
     if (!params.port) {
         throw new Error('FTP Port not provided.')
     }
-    if (!params.username) {
+    if (!params.user) {
         throw new Error('FTP Username not provided.')
     }
     if (!params.password) {
