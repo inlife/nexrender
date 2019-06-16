@@ -22,7 +22,7 @@ nexrender.replaceFootage = function (layer, filepath) {
     var file = new File(filepath);
 
     if (!file.exists) {
-        throw new Error("nexrender: Trying to create a file replacement for an unknown file: " + filepath)
+        throw new Error("nexrender: Trying to create a file replacement for an unknown file: " + filepath);
     }
 
     var importOptions = new ImportOptions(file);

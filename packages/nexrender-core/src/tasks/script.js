@@ -3,7 +3,6 @@ const path   = require('path')
 const script = require('../assets/nexrender.jsx')
 
 /* helpers */
-
 const escape = string => `'${string.replace(/\'/g, '\\\'')}'`
 
 const selectLayers = ({ composition, layerName, layerIndex }, callbackString) => {
@@ -20,7 +19,6 @@ const renderIf = (value, string) => {
 }
 
 /* scripting wrappers */
-
 const wrapFootage = ({ dest, ...asset }) => (`(function() {
     ${selectLayers(asset, `function(layer) {
         nexrender.replaceFootage(layer, '${dest.replace(/\\/g, "\\\\")}')
@@ -28,9 +26,20 @@ const wrapFootage = ({ dest, ...asset }) => (`(function() {
 })();\n`)
 
 const wrapData = ({ property, value, expression, ...asset }) => (`(function() {
-    ${selectLayers(asset, `function(layer) {
-        var property = layer.property('${property}');
-        if (!property) { return false; }
+    ${selectLayers(asset, /* syntax:js */`function(layer) {
+        var parts = '${property}'.split('->');
+        if (parts.length === 1) {
+            parts = '${property}'.split('.');
+        }
+
+        var iterator = layer;
+        for (var i = 0; i < parts.length; i++) {
+            iterator = iterator.property(parts[i]);
+
+            if (!iterator) {
+                throw new Error("nexrender: Can't find a property sequence (${property}) at part: " + parts[i]);
+            }
+        }
 
         ${renderIf(value, `property.setValue($value);`)}
         ${renderIf(expression, `property.expression = $value;`)}
