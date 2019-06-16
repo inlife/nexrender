@@ -41,8 +41,8 @@ const wrapData = ({ property, value, expression, ...asset }) => (`(function() {
             }
         }
 
-        ${renderIf(value, `property.setValue($value);`)}
-        ${renderIf(expression, `property.expression = $value;`)}
+        ${renderIf(value, `iterator.setValue($value);`)}
+        ${renderIf(expression, `iterator.expression = $value;`)}
 
         return true;
     }`)}
