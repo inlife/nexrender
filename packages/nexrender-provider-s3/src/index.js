@@ -1,5 +1,6 @@
 const fs  = require('fs')
-const aws = require('aws-sdk')
+const uri = require('amazon-s3-uri')
+const aws = require('aws-sdk/clients/s3')
 
 let regions = {}
 
@@ -8,7 +9,11 @@ const s3instanceWithRegion = region => {
     const key = region || 0
 
     if (!regions.hasOwnProperty(key)) {
-        regions[key] = new aws.S3({ region: region })
+        regions[key] = new aws({
+            accessKeyId: process.env.AWS_ACCESS_KEY,
+            secretAccessKey: process.env.AWS_SECRET_KEY,
+            region: region,
+        })
     }
 
     return regions[key]
@@ -16,15 +21,22 @@ const s3instanceWithRegion = region => {
 
 /* define public methods */
 const download = (job, settings, src, dest, params, type) => {
+    src = src.replace('s3://', 'http://')
+
+    if (src.indexOf('digitaloceanspaces.com') !== -1) {
+        throw new Error('nexrender: Digital Ocean Spaces is not yet supported by the package: amazon-s3-uri')
+    }
+
+    const parsed = uri(src)
     const file = fs.createWriteStream(dest);
 
-    if (!params.region) {
-        return Promise.reject(new Error('S3 region not provided.'))
-    }
-    if (!params.bucket) {
+    console.log(parsed)
+
+    if (!parsed.bucket) {
         return Promise.reject(new Error('S3 bucket not provided.'))
     }
-    if (!params.key) {
+
+    if (!parsed.key) {
         return Promise.reject(new Error('S3 key not provided.'))
     }
 
@@ -32,11 +44,11 @@ const download = (job, settings, src, dest, params, type) => {
         file.on('close', resolve);
 
         const awsParams = {
-            Bucket: params.bucket,
-            Key: params.key,
+            Bucket: parsed.bucket,
+            Key: parsed.key,
         }
 
-        s3instanceWithRegion(params.region)
+        s3instanceWithRegion(parsed.region)
             .getObject(awsParams)
             .createReadStream()
             .on('error', reject)
@@ -103,3 +115,7 @@ module.exports = {
     download,
     upload,
 }
+
+/* tests */
+// download({}, {}, 's3://BUCKET.s3.REGION.amazonaws.com/KEY', 'test.txt')
+// download({}, {}, 's3://BUCKET.REGION.digitaloceanspaces.com/KEY', 'test.txt')

@@ -35,7 +35,7 @@ To download assets from an FTP server you would need to specify relevant informa
 
 ## Usage (upload)
 
-Upload via FTP can be done using [@nexrender/action-upload](packages/nexrender-action-upload)
+Upload via FTP can be done using [@nexrender/action-upload](../nexrender-action-upload)
 
 Basic params info:
 

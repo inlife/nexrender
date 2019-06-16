@@ -4,6 +4,7 @@
   "author": "inlife",
   "main": "src/index.js",
   "dependencies": {
+    "amazon-s3-uri": "0.0.3",
     "aws-sdk": "^2.344.0"
   },
   "publishConfig": {
