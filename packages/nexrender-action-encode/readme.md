@@ -1,6 +1,6 @@
 # Action: Encode
 
-Encode you video to a specified format using built-in ffmpeg utility. You don't need to have ffmpeg installed on your system.
+Encode your video to a specified format using built-in ffmpeg utility. You don't need to have ffmpeg installed on your system.
 
 ## Installation
 
@@ -40,7 +40,7 @@ When creating your render job provide this module as one of the `postrender` act
 
 ## Presets
 
-There are a couple of default presents included with the build. You can provide `params` field to override any of the values there.
+There are a couple of default presets included with the build. You can provide `params` field to override any of the values there.
 
 ### mp4
 
