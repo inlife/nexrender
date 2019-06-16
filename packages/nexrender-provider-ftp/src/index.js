@@ -1,27 +1,23 @@
-const fs        = require('fs')
-const ftpClient = require('ftp')
+const fs  = require('fs')
+const url = require('url')
+const FTP = require('ftp')
 
 const download = (job, settings, src, dest, params) => {
-    if (!params.host) {
-        throw new Error('FTP Host not provided.')
-    }
-    if (!params.port) {
-        throw new Error('FTP Port not provided.')
-    }
-    if (!params.user) {
-        throw new Error('FTP Username not provided.')
-    }
-    if (!params.password) {
-        throw new Error('FTP Password not provided.')
-    }
+    let parsed = global.URL ? new URL(asset.src) : url.parse(src)
+
+    params.host = parsed.hostname || parsed.host || 'localhost';
+    params.port = parseInt(parsed.port, 10) || 21;
+    params.user = parsed.username;
+    params.password = parsed.password;
 
     return new Promise((resolve, reject) => {
-        const con = new ftpClient();
+        const connection = new FTP();
+        const filepath   = uri.pathname;
 
-        con.connect(params);
-        con.get(src, function(err, stream) {
+        connection.connect(params);
+        connection.get(filepath, function(err, stream) {
             if (err) throw err;
-            stream.once('close', function() { con.end(); });
+            stream.once('close', function() { connection.end(); });
             stream.pipe(fs.createWriteStream(dest));
         });
     })
@@ -43,7 +39,7 @@ const upload = (job, settings, src, params) => {
 
     return new Promise((resolve, reject) => {
         const file = fs.createReadStream(src);
-        const con = new ftpClient();
+        const con = new FTP();
 
         file.on('error', (err) => reject(err))
 
