@@ -19,8 +19,10 @@ nexrender.typesMatch = function (types, layer) {
 nexrender.replaceFootage = function (layer, filepath) {
     if (!layer) { return false; }
 
-    var file = new File(filepath);if (!file.exists) {
-        return false;
+    var file = new File(filepath);
+
+    if (!file.exists) {
+        throw new Error("nexrender: Trying to create a file replacement for an unknown file: " + filepath)
     }
 
     var importOptions = new ImportOptions(file);
@@ -55,6 +57,8 @@ nexrender.selectCompositionsByName = function(name, callback) {
 
 /* call callback for an every layer matching specific name and composition */
 nexrender.selectLayersByName = function(compositionName, name, callback, types) {
+    var foundOnce = false;
+
     if (!compositionName) compositionName = nexrender.defaultCompositionName;
     if (!types) types = nexrender.types;
 
@@ -65,20 +69,34 @@ nexrender.selectLayersByName = function(compositionName, name, callback, types) 
 
             if (nexrender.typesMatch(types, layer)) {
                 callback(layer, name);
+                foundOnce = true;
             }
         }
     })
+
+    if (!foundOnce) {
+        throw new Error("nexrender: Cound't find any layers by provided name (" + name + ") inside a composition: " + compositionName);
+    }
 };
 
 /* call callback for an every layer matching specific index and composition */
 nexrender.selectLayersByIndex = function(compositionName, index, callback, types) {
+    var foundOnce = false;
+
     if (!compositionName) compositionName = nexrender.defaultCompositionName;
     if (!types) types = nexrender.types;
 
     nexrender.selectCompositionsByName(compositionName, function(comp) {
         var layer = comp.layer(index)
-        if (layer) { callback(layer, index); }
+        if (layer) {
+            callback(layer, index);
+            foundOnce = true;
+        }
     })
+
+    if (!foundOnce) {
+        throw new Error("nexrender: Cound't find any layers by provided index (" + index + ") inside a composition: " + compositionName);
+    }
 };
 
 /* end of nexrender script */
