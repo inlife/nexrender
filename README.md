@@ -436,11 +436,18 @@ Providing value will set the exact value for the property right after execution,
 And if you are not sure what is a `property` and where to get it you can refer to this image:
 
 <details>
-<summary><b>Property List Example</b></summary>
+<summary><b>Property Example</b></summary>
 
 >As you can see there are a few `Property Groups` like Text, Masks, Transform that include actual properties. Those properties are what can be used as a target.
 
 ![](https://user-images.githubusercontent.com/2182108/52443468-7270dd00-2b2e-11e9-8336-255349279c43.png)
+
+In case you need to change some **deep properties**, like show on this image:
+
+![](https://user-images.githubusercontent.com/7440211/59557356-6fa45e00-8fe0-11e9-84d4-f4e8152f2913.png)
+
+You can do that by providing the property name using a dot `.` separator. (Example: "Effects.Skin_Color.Color")
+In case your property already has `.` in the name, and you are sure it will lead to a collision, while parsing, you can also use arrow symbol `->` instead.
 
 </details>
 
@@ -460,6 +467,12 @@ And if you are not sure what is a `property` and where to get it you can refer t
             "layerName": "my text field",
             "property": "Source Text",
             "expression": "time > 100 ? 'Bye bye' : 'Hello world'"
+        },
+        {
+            "type": "data",
+            "layerName": "background",
+            "property": "Effect.BorderColor.Border",
+            "value": [1, 0, 0]
         },
         {
             "type": "data",
