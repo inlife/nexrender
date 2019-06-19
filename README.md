@@ -471,7 +471,7 @@ In case your property already has `.` in the name, and you are sure it will lead
         {
             "type": "data",
             "layerName": "background",
-            "property": "Effect.BorderColor.Border",
+            "property": "Effects.Skin_Color.Color",
             "value": [1, 0, 0]
         },
         {
