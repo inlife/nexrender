@@ -103,7 +103,16 @@ module.exports = (job, settings) => {
                 .map(a => ''+a).join('');
 
             if (code !== 0) {
-                return reject(outputStr)
+                if (outputStr != undefined || !fs.existsSync(job.output)) {
+                    return reject(outputStr || 'aerender.exe failed to render the output into the file due to an unknown reason');
+                } else {
+                    /* assuming there is no actual error, lets check the rendered file */
+                    const stats = fs.statSync(job.output);
+
+                    if (stats.size < 1) {
+                        return reject("Rendered file is empty, please check your settings and used AE plugins.");
+                    }
+                }
             }
 
             settings.logger.log(`[${job.uid}] rendering took ~${(Date.now() - renderStopwatch)/1000} sec.`);
