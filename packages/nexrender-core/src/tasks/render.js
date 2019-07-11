@@ -104,13 +104,13 @@ module.exports = (job, settings) => {
 
             if (code !== 0) {
                 if (outputStr != undefined || !fs.existsSync(job.output)) {
-                    return reject(outputStr || 'aerender.exe failed to render the output into the file due to an unknown reason');
+                    return reject(new Error(outputStr || 'aerender.exe failed to render the output into the file due to an unknown reason'));
                 } else {
                     /* assuming there is no actual error, lets check the rendered file */
                     const stats = fs.statSync(job.output);
 
                     if (stats.size < 1) {
-                        return reject("Rendered file is empty, please check your settings and used AE plugins.");
+                        return reject(new Error("Rendered file is empty, please check your settings and used AE plugins."));
                     }
                 }
             }
