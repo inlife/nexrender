@@ -54,6 +54,7 @@ const init = (settings) => {
         addLicense: true,
         forceCommandLinePatch: false,
         skipCleanup: false,
+        stopOnError: true,
 
         debug: false,
         multiFrames: false,

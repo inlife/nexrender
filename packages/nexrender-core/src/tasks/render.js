@@ -102,7 +102,7 @@ module.exports = (job, settings) => {
             const outputStr = output
                 .map(a => ''+a).join('');
 
-            if (code !== 0 && settings.stopOnError !== false) {
+            if (code !== 0 && settings.stopOnError) {
                 return reject(new Error(outputStr || 'aerender.exe failed to render the output into the file due to an unknown reason'));
             }
 
