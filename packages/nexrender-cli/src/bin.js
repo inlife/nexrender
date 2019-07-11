@@ -15,13 +15,14 @@ const args = arg({
     '--binary':     String,
     '--workpath':   String,
 
+    '--stop-on-error':  String,
+
     '--skip-cleanup':   Boolean,
     '--no-license':     Boolean,
     '--force-patch':    Boolean,
     '--debug':          Boolean,
     '--multi-frames':   Boolean,
     '--reuse':          Boolean,
-    '--stop-on-error':  Boolean,
 
     '--max-memory-percent':  Number,
     '--image-cache-percent': Number,
@@ -136,6 +137,9 @@ opt('reuse',                '--reuse');
 opt('stopOnError',          '--stop-on-error');
 opt('maxMemoryPercent',     '--max-memory-percent');
 opt('imageCachePercent',    '--image-cache-percent');
+
+/* convert string arugument into a boolean */
+settings['stopOnError'] == settings['stopOnError'] == 'true';
 
 if (settings['no-license']) {
     settings.addLicense = false;
