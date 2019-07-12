@@ -131,6 +131,11 @@ npm i -g @nexrender/cli @nexrender/action-copy @nexrender/action-encode ...
 
 We will be using `nexrender-cli` binary for this example. It's recommended to download/install it if you haven't already.
 
+Check out these example/tutorial videos made by our community:
+
+* ["Creating automated music video"](https://www.youtube.com/channel/UCDFTT_oX6VwmANKMng0-NUA) by **[douglas prod.](https://www.youtube.com/channel/UCDFTT_oX6VwmANKMng0-NUA)**
+
+
 ## Job
 
 A job is a single working unit in the nexrender ecosystem. It is a json document, that describes what should be done, and how it should be done.
