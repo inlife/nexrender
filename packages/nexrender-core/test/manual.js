@@ -54,7 +54,9 @@ const job = {
             }
         ]
     },
-    // onChange: (job, state) => console.log('new job state', state)
+
+    onChange: (job, state) => console.log('testing onChange:', state),
+    onRenderProgress: (job, value) => console.log('testing onRenderProgress:', value)
 }
 
 const settings = {

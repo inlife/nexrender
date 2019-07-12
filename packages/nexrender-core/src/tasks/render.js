@@ -67,9 +67,9 @@ module.exports = (job, settings) => {
             if (previousProgress !== currentProgress) {
                 settings.logger.log(`[${job.uid}] rendering progress ${currentProgress}%...`);
                 previousProgress = currentProgress;
-
                 job.renderProgress = currentProgress;
-                if (job.onRenderProgress) {
+
+                if (job.hasOwnProperty('onRenderProgress') && typeof job['onRenderProgress'] == 'function') {
                     job.onRenderProgress(job, job.renderProgress);
                 }
             }
