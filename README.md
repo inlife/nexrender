@@ -131,10 +131,8 @@ npm i -g @nexrender/cli @nexrender/action-copy @nexrender/action-encode ...
 
 We will be using `nexrender-cli` binary for this example. It's recommended to download/install it if you haven't already.
 
-Check out these example/tutorial videos made by our community:
-
-* ["Creating automated music video"](https://www.youtube.com/channel/UCDFTT_oX6VwmANKMng0-NUA) by **[douglas prod.](https://www.youtube.com/channel/UCDFTT_oX6VwmANKMng0-NUA)**
-
+Also, check out these example/tutorial videos made by our community:
+* ["Creating automated music video with nexrender"](https://www.youtube.com/watch?v=E64dXZ_AReQ) by **[douglas prod.](https://www.youtube.com/channel/UCDFTT_oX6VwmANKMng0-NUA)**
 
 ## Job
 
