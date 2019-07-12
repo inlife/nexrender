@@ -28,8 +28,8 @@
     "test": "lerna bootstrap && node test.js"
   },
   "devDependencies": {
-    "lerna": "^3.15.0",
+    "lerna": "^3.13.4",
     "mocha": "^6.1.4",
-    "pkg": "^4.4.0"
+    "pkg": "^4.3.8"
   }
 }
