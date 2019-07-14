@@ -121,6 +121,14 @@ const constructParams = (job, settings, { preset, input, output, params }) => {
                 '-y': output
             });
         break;
+
+        default:
+            params = Object.assign({}, {
+                '-i': input
+            }, params, {
+                '-y': output
+            });
+        break;
     }
 
     /* convert to plain array */
