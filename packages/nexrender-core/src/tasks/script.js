@@ -25,7 +25,7 @@ const wrapFootage = ({ dest, ...asset }) => (`(function() {
     }`)}
 })();\n`)
 
-const wrapData = ({ property, value, expression, ...asset }) => (`(function() {
+const wrapDataProperty = ({ property, value, expression, ...asset }) => (`(function() {
     ${selectLayers(asset, /* syntax:js */`function(layer) {
         var parts = '${property}'.split('->');
         if (parts.length === 1) {
@@ -47,6 +47,13 @@ const wrapData = ({ property, value, expression, ...asset }) => (`(function() {
         return true;
     }`)}
 })();\n`)
+
+const wrapDataAttribute = (attribute, { value, expression, ...asset }) => (`(function() {
+})();\n`)
+
+const wrapData = ({ attribute, ...asset }) => (
+    (attribute === undefined) ? wrapDataProperty(asset) : wrapDataAttribute(attribute, asset)
+)
 
 const wrapScript = ({ dest }) => (`(function() {
     ${fs.readFileSync(dest, 'utf8')}
