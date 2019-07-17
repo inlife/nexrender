@@ -19,8 +19,8 @@
     "publish": "lerna publish",
     "public-publish": "lerna exec 'npm publish --access public'",
     "pkg-rename": "node misc/rename.js",
-    "pkg-cli": "NEXRENDER_REQUIRE_PLUGINS=1 pkg packages/nexrender-cli/package.json --out-path bin/",
-    "pkg-worker": "NEXRENDER_REQUIRE_PLUGINS=1 pkg packages/nexrender-worker/package.json --out-path bin/",
+    "pkg-cli": "cross-env NEXRENDER_REQUIRE_PLUGINS=1 pkg packages/nexrender-cli/package.json --out-path bin/",
+    "pkg-worker": "cross-env NEXRENDER_REQUIRE_PLUGINS=1 pkg packages/nexrender-worker/package.json --out-path bin/",
     "pkg-server": "pkg packages/nexrender-server/package.json --out-path bin/",
     "pkg-prelink": "lerna exec --scope @nexrender/core 'npm run pkg-prelink'",
     "pkg-reduce": "node misc/reduce.js",
@@ -28,6 +28,7 @@
     "test": "lerna bootstrap && node test.js"
   },
   "devDependencies": {
+    "cross-env": "^5.2.0",
     "lerna": "^3.13.4",
     "mocha": "^6.1.4",
     "pkg": "^4.3.8"
