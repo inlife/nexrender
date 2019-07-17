@@ -83,7 +83,7 @@ const upload = (job, settings, src, params) => {
     }
 
     const output = `https://s3-${params.region}.amazonaws.com/${params.bucket}/${params.key}`
-    settings.logger.log(`[${job.uid}] action-upload: input file ${input}`)
+    settings.logger.log(`[${job.uid}] action-upload: input file ${src}`)
     settings.logger.log(`[${job.uid}] action-upload: output file ${output}`)
 
     return new Promise((resolve, reject) => {
@@ -96,7 +96,7 @@ const upload = (job, settings, src, params) => {
             Body: file,
         }
 
-        s3instanceWithRegion(region)
+        s3instanceWithRegion(params.region)
             .upload(awsParams, (err, data) => {
                 if (err) {
                     reject(err)
