@@ -8,7 +8,7 @@ const data2buf = require('data-uri-to-buffer')
 // TODO: redeuce dep size
 const requireg = require('requireg')
 
-const download = (job, asset) => {
+const download = (job, settings, asset) => {
     if (asset.type == 'data') return Promise.resolve();
 
     const uri = global.URL ? new URL(asset.src) : url.parse(asset.src)
@@ -111,8 +111,8 @@ module.exports = function(job, settings) {
     settings.logger.log(`[${job.uid}] downloading assets...`)
 
     const promises = [].concat(
-        download(job, job.template),
-        job.assets.map(asset => download(job, asset))
+        download(job, settings, job.template),
+        job.assets.map(asset => download(job, settings, asset))
     )
 
     return Promise.all(promises).then(_ => job);
