@@ -30,55 +30,40 @@ const wrapFootage = ({ dest, ...asset }) => (`(function() {
     }`)}
 })();\n`)
 
-const wrapDataProperty = ({ property, value, expression, ...asset }) => (`(function() {
+const wrapData = ({ property, value, expression, ...asset }) => (`(function() {
     ${selectLayers(asset, /* syntax:js */`function(layer) {
         var parts = ${partsOfKeypath(property)};
 
+        var processAttribute = false;
         var iterator = layer;
         for (var i = 0; i < parts.length; i++) {
-            iterator = iterator.property(parts[i]);
-
-            if (!iterator) {
-                throw new Error("nexrender: Can't find a property sequence (${property}) at part: " + parts[i]);
+            var part = parts[i];
+            if (iterator.property(part)) {
+                iterator = iterator.property(part);     
+            } else if (part in iterator) {
+                if (i + 1 < parts.length) {
+                    iterator = iterator[part]
+                } else {
+                    processAttribute = true;
+                }
+            } else {
+                throw new Error("nexrender: Can't find a property sequence (${property}) at part: " + part);                
             }
         }
 
-        ${renderIf(value, `iterator.setValue($value);`)}
-        ${renderIf(expression, `iterator.expression = $value;`)}
+        if (processAttribute) {
+            ${renderIf(value, `iterator[parts[parts.length - 1]] = $value;`)}
+
+            /* note that for attributes an expression must be an evaluable js block like "function(){ return 6 * 7 }()" */
+            ${renderIf(expression, `iterator[parts[parts.length - 1]] = $value;`)}
+        } else {
+            ${renderIf(value, `iterator.setValue($value);`)}
+            ${renderIf(expression, `iterator.expression = $value;`)}
+        }
 
         return true;
     }`)}
 })();\n`)
-
-const wrapDataAttribute = (attribute, { value, expression, ...asset }) => (`(function() {
-    ${selectLayers(asset, /* syntax:js */`function(layer) {
-        var parts = ${partsOfKeypath(attribute)};
-
-        var obj = layer;
-        var part = "${attribute}";
-
-        for (var i = 0; i < parts.length; i++) {
-            part = parts[i];
-            if (i + 1 < parts.length) {
-              obj = obj[part];
-            }
-            if (!obj) {
-                throw new Error("nexrender: Can't find an attribute sequence (${attribue}) at part: " + part);
-            }
-        }
-
-        ${renderIf(value, `obj.[part] = $value;`)}
-
-        /* note that an expression must be an evaluable js block like "function(){ return 3+4 }();" */
-        ${renderIf(expression, `obj.[part] = $value;`)}
-
-        return true;
-    }`)}
-})();\n`)
-
-const wrapData = ({ attribute, ...asset }) => (
-    (attribute === undefined) ? wrapDataProperty(asset) : wrapDataAttribute(attribute, asset)
-)
 
 const wrapScript = ({ dest }) => (`(function() {
     ${fs.readFileSync(dest, 'utf8')}
