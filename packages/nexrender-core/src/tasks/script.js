@@ -32,13 +32,13 @@ const wrapFootage = ({ dest, ...asset }) => (`(function() {
 
 const wrapData = ({ property, value, expression, ...asset }) => (`(function() {
     ${selectLayers(asset, /* syntax:js */`function(layer) {
-        var parts = ${partsOfKeypath(property)};
+        var parts = ${JSON.stringify(partsOfKeypath(property))};
 
         var processAttribute = false;
         var iterator = layer;
         for (var i = 0; i < parts.length; i++) {
             var part = parts[i];
-            if (iterator.property(part)) {
+            if ("property" in iterator && iterator.property(part)) {
                 iterator = iterator.property(part);     
             } else if (part in iterator) {
                 if (i + 1 < parts.length) {
@@ -53,9 +53,6 @@ const wrapData = ({ property, value, expression, ...asset }) => (`(function() {
 
         if (processAttribute) {
             ${renderIf(value, `iterator[parts[parts.length - 1]] = $value;`)}
-
-            /* note that for attributes an expression must be an evaluable js block like "function(){ return 6 * 7 }()" */
-            ${renderIf(expression, `iterator[parts[parts.length - 1]] = $value;`)}
         } else {
             ${renderIf(value, `iterator.setValue($value);`)}
             ${renderIf(expression, `iterator.expression = $value;`)}
