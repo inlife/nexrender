@@ -18,6 +18,11 @@ const renderIf = (value, string) => {
     return value === undefined ? '' : string.replace('$value', encoded);
 }
 
+const partsOfKeypath = (keypath) => {
+    var parts = keypath.split('->');
+    return (parts.length === 1) ? keypath.split('.') : parts
+}
+
 /* scripting wrappers */
 const wrapFootage = ({ dest, ...asset }) => (`(function() {
     ${selectLayers(asset, `function(layer) {
@@ -27,22 +32,32 @@ const wrapFootage = ({ dest, ...asset }) => (`(function() {
 
 const wrapData = ({ property, value, expression, ...asset }) => (`(function() {
     ${selectLayers(asset, /* syntax:js */`function(layer) {
-        var parts = '${property}'.split('->');
-        if (parts.length === 1) {
-            parts = '${property}'.split('.');
-        }
+        var parts = ${JSON.stringify(partsOfKeypath(property))};
 
+        var processAttribute = false;
         var iterator = layer;
         for (var i = 0; i < parts.length; i++) {
-            iterator = iterator.property(parts[i]);
-
-            if (!iterator) {
-                throw new Error("nexrender: Can't find a property sequence (${property}) at part: " + parts[i]);
+            var part = parts[i];
+            if ("property" in iterator && iterator.property(part)) {
+                iterator = iterator.property(part);     
+            } else if (part in iterator) {
+                if (i + 1 < parts.length) {
+                    iterator = iterator[part]
+                } else {
+                    processAttribute = true;
+                }
+            } else {
+                throw new Error("nexrender: Can't find a property sequence (${property}) at part: " + part);                
             }
         }
 
-        ${renderIf(value, `iterator.setValue($value);`)}
-        ${renderIf(expression, `iterator.expression = $value;`)}
+        if (processAttribute) {
+            ${renderIf(value, `iterator[parts[parts.length - 1]] = $value;`)}
+            ${renderIf(expression, `iterator[parts[parts.length - 1]] = eval($value);`)}
+        } else {
+            ${renderIf(value, `iterator.setValue($value);`)}
+            ${renderIf(expression, `iterator.expression = $value;`)}
+        }
 
         return true;
     }`)}
