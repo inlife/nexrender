@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.5.0
+ * added selection of deep properties in the data asset types
+ * improvements to the url handling of for the assets for additional built-in providers (s3, ftp)
+
+## 1.4.0
+ * Aded FTP upload/download support for assets and action-upload
+
+## 1.2.0
+ * added @nexrender/action-upload
+ * added result S3 upload support
+
 ## 1.1.0
  * added --reuse flag
  * fixed issue with same projects being picked up by differnt workers
