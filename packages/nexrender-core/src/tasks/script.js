@@ -53,6 +53,7 @@ const wrapData = ({ property, value, expression, ...asset }) => (`(function() {
 
         if (processAttribute) {
             ${renderIf(value, `iterator[parts[parts.length - 1]] = $value;`)}
+            ${renderIf(expression, `iterator[parts[parts.length - 1]] = eval($value);`)}
         } else {
             ${renderIf(value, `iterator.setValue($value);`)}
             ${renderIf(expression, `iterator.expression = $value;`)}
