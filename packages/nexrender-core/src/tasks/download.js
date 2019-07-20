@@ -4,6 +4,7 @@ const path     = require('path')
 const fetch    = require('node-fetch')
 const uri2path = require('file-uri-to-path')
 const data2buf = require('data-uri-to-buffer')
+const {expandEnvironmentVariables} = require('../helpers/path')
 
 // TODO: redeuce dep size
 const requireg = require('requireg')
@@ -71,7 +72,7 @@ const download = (job, settings, asset) => {
 
         case 'file':
             /* plain asset stream copy */
-            const rd = fs.createReadStream(uri2path(asset.src))
+            const rd = fs.createReadStream(uri2path(expandEnvironmentVariables(asset.src)))
             const wr = fs.createWriteStream(asset.dest)
 
             return new Promise(function(resolve, reject) {
