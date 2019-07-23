@@ -452,6 +452,7 @@ In case you need to change some **deep properties**, like show on this image:
 You can do that by providing the property name using a dot `.` separator. (Example: "Effects.Skin_Color.Color")
 In case your property already has `.` in the name, and you are sure it will lead to a collision, while parsing, you can also use arrow symbol `->` instead.
 
+You can also change the deeper attributes of properties, for example the font of a text layer using "Source Text.font" or the font size by "Source Text.fontSize".
 </details>
 
 ### Example
@@ -473,6 +474,12 @@ In case your property already has `.` in the name, and you are sure it will lead
         },
         {
             "type": "data",
+            "layerName": "my text field",
+            "property": "Source Text.font",
+            "value": "Arial-BoldItalicMT"
+        },
+        {
+            "type": "data",
             "layerName": "background",
             "property": "Effects.Skin_Color.Color",
             "value": [1, 0, 0]
@@ -483,7 +490,7 @@ In case your property already has `.` in the name, and you are sure it will lead
             "property": "Scale",
             "value": [0,0],
             "expression": "[time * 0.1, time * 0.1]"
-        }
+        },
     ]
 }
 ```
