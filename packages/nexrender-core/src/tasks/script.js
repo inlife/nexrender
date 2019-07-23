@@ -32,32 +32,11 @@ const wrapFootage = ({ dest, ...asset }) => (`(function() {
 
 const wrapData = ({ property, value, expression, ...asset }) => (`(function() {
     ${selectLayers(asset, /* syntax:js */`function(layer) {
+
         var parts = ${JSON.stringify(partsOfKeypath(property))};
-
-        var processAttribute = false;
-        var iterator = layer;
-        for (var i = 0; i < parts.length; i++) {
-            var part = parts[i];
-            if ("property" in iterator && iterator.property(part)) {
-                iterator = iterator.property(part);     
-            } else if (part in iterator) {
-                if (i + 1 < parts.length) {
-                    iterator = iterator[part]
-                } else {
-                    processAttribute = true;
-                }
-            } else {
-                throw new Error("nexrender: Can't find a property sequence (${property}) at part: " + part);                
-            }
-        }
-
-        if (processAttribute) {
-            ${renderIf(value, `iterator[parts[parts.length - 1]] = $value;`)}
-            ${renderIf(expression, `iterator[parts[parts.length - 1]] = eval($value);`)}
-        } else {
-            ${renderIf(value, `iterator.setValue($value);`)}
-            ${renderIf(expression, `iterator.expression = $value;`)}
-        }
+        ${renderIf(value, `var value = { "value": $value }`)}
+        ${renderIf(expression, `var value = { "expression": $value }`)}
+        nexrender.changeValueForKeypath(layer, parts, value);
 
         return true;
     }`)}
