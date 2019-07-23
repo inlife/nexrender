@@ -99,6 +99,36 @@ nexrender.selectLayersByIndex = function(compositionName, index, callback, types
     }
 };
 
+nexrender.changeValueForKeypath = function (o, keys, val) {
+    if (keys.length == 0) {
+        return val;
+    } else {
+        var key = keys[0];
+        if ("property" in o && o.property(key)) {
+            var prop = o.property(key)
+            var pval = prop.value;
+            var v = changeValueForKeypath(pval, keys.slice(1), val)
+            if ("value" in v) {
+                prop.setValue(v.value)  
+            } else {
+                prop.expression = v.expression
+            }
+            return { "value": o };
+        } else if (key in o) {
+            var v = changeValueForKeypath(pval, keys.slice(1), val)
+            if ("value" in v) {
+                o[key] = v.value;                    
+            } else {
+                o[key] = eval(v.expression)
+            }
+            return { "value": o };
+        } else {
+            throw new Error("nexrender: Can't find a property sequence (${property}) for key: " + key);                
+        }
+    }
+};
+
+
 /* end of nexrender script */
 /* start of custom user script */
 

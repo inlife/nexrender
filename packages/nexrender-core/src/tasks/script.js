@@ -13,9 +13,9 @@ const selectLayers = ({ composition, layerName, layerIndex }, callbackString) =>
     return (`nexrender.${method}(${compo}, ${value}, ${callbackString});`);
 }
 
-const renderValue = (value, string) => {
+const renderIf = (value, string) => {
     const encoded = typeof value == 'string' ? escape(value) : JSON.stringify(value);
-    return value === undefined ? undefined : encoded;
+    return value === undefined ? '' : string.replace('$value', encoded);
 }
 
 const partsOfKeypath = (keypath) => {
@@ -33,32 +33,10 @@ const wrapFootage = ({ dest, ...asset }) => (`(function() {
 const wrapData = ({ property, value, expression, ...asset }) => (`(function() {
     ${selectLayers(asset, /* syntax:js */`function(layer) {
 
-        function changeValueForKeypath(o, keys, val, expr) {
-            if (keys.length == 0) {
-                return val ? val : expr;
-            } else {
-                var key = keys[0];
-                if ("property" in o && o.property(key)) {
-                    var prop = o.property(key)
-                    var pval = prop.value;
-                    var v = changeValueForKeypath(pval, keys.slice(1), val, expr)
-                    if (val) {
-                        prop.setValue(v)  
-                    } else {
-                        prop.expression = expr
-                    }
-                    return o;
-                } else if (key in o) {
-                    o[key] = changeValueForKeypath(o[key], keys.slice(1), val);
-                    return o;
-                } else {
-                    throw new Error("nexrender: Can't find a property sequence (${property}) for key: " + key);                
-                }
-            }
-        }
-
         var parts = ${JSON.stringify(partsOfKeypath(property))};
-        changeValueForKeypath(layer, parts, ${renderValue(value)}, ${renderValue(expression)});
+        ${renderIf(value, `var value = { "value": $value }`)}
+        ${renderIf(expression, `var value = { "expression": $value }`)}
+        nexrender.changeValueForKeypath(layer, parts, value);
 
         return true;
     }`)}
