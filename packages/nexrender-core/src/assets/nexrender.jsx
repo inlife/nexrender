@@ -107,7 +107,7 @@ nexrender.changeValueForKeypath = function (o, keys, val) {
         if ("property" in o && o.property(key)) {
             var prop = o.property(key)
             var pval = prop.value;
-            var v = changeValueForKeypath(pval, keys.slice(1), val)
+            var v = nexrender.changeValueForKeypath(pval, keys.slice(1), val)
             if ("value" in v) {
                 prop.setValue(v.value)  
             } else {
@@ -115,7 +115,7 @@ nexrender.changeValueForKeypath = function (o, keys, val) {
             }
             return { "value": o };
         } else if (key in o) {
-            var v = changeValueForKeypath(pval, keys.slice(1), val)
+            var v = nexrender.changeValueForKeypath(pval, keys.slice(1), val)
             if ("value" in v) {
                 o[key] = v.value;                    
             } else {
@@ -123,7 +123,7 @@ nexrender.changeValueForKeypath = function (o, keys, val) {
             }
             return { "value": o };
         } else {
-            throw new Error("nexrender: Can't find a property sequence (${property}) for key: " + key);                
+            throw new Error("nexrender: Can't find a property sequence " + JSON.stringify(keys) + " for key: " + key);                
         }
     }
 };
