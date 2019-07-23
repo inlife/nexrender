@@ -99,33 +99,48 @@ nexrender.selectLayersByIndex = function(compositionName, index, callback, types
     }
 };
 
-nexrender.changeValueForKeypath = function (o, keys, val) {
-    if (keys.length == 0) {
-        return val;
-    } else {
-        var key = keys[0];
-        if ("property" in o && o.property(key)) {
-            var prop = o.property(key)
-            var pval = prop.value;
-            var v = nexrender.changeValueForKeypath(pval, keys.slice(1), val)
-            if ("value" in v) {
-                prop.setValue(v.value)  
-            } else {
-                prop.expression = v.expression
-            }
-            return { "value": o };
-        } else if (key in o) {
-            var v = nexrender.changeValueForKeypath(pval, keys.slice(1), val)
-            if ("value" in v) {
-                o[key] = v.value;                    
-            } else {
-                o[key] = eval(v.expression)
-            }
-            return { "value": o };
+/* ensure that eval only gets a minimal variable scope */
+nexrender.evaluate = function (layer, expression) { 
+    return eval(expression); 
+}
+
+nexrender.changeValueForKeypath = function (layer, keys, val) {
+    function change(o, keys, val) {
+        if (keys.length == 0) {
+            val.changed = false;
+            return val;
         } else {
-            throw new Error("nexrender: Can't find a property sequence " + JSON.stringify(keys) + " for key: " + key);                
+            var key = keys[0];
+            if ("property" in o && o.property(key)) {
+                var prop = o.property(key)
+                if ("value" in prop) {
+                    var pval = prop.value;
+                    var v = change(pval, keys.slice(1), val)
+                    if ("value" in v) {
+                        prop.setValue(v.value)  
+                    } else {
+                        prop.expression = v.expression
+                    }                
+                } else {
+                    change(prop, keys.slice(1), val)
+                }
+                return { "value": o, "changed": true };
+            } else if (key in o) {
+                var v = change(o[key], keys.slice(1), val)
+                if (!v.changed) {
+                    if ("value" in v) {
+                        o[key] = v.value;                    
+                    } else {
+                        o[key] = nexrender.evaluate(layer, v.expression)
+                    }                
+                }
+                return { "value": o, "changed": true };
+            } else {
+                throw new Error("nexrender: Can't find a property sequence " + JSON.stringify(keys) + " for key: " + key);                
+            }
         }
     }
+    change(layer, keys, val);
 };
 
 
