@@ -13,9 +13,9 @@ const selectLayers = ({ composition, layerName, layerIndex }, callbackString) =>
     return (`nexrender.${method}(${compo}, ${value}, ${callbackString});`);
 }
 
-const renderIf = (value, string) => {
+const renderValue = (value, string) => {
     const encoded = typeof value == 'string' ? escape(value) : JSON.stringify(value);
-    return value === undefined ? '' : string.replace('$value', encoded);
+    return value === undefined ? undefined : encoded;
 }
 
 const partsOfKeypath = (keypath) => {
@@ -32,32 +32,33 @@ const wrapFootage = ({ dest, ...asset }) => (`(function() {
 
 const wrapData = ({ property, value, expression, ...asset }) => (`(function() {
     ${selectLayers(asset, /* syntax:js */`function(layer) {
-        var parts = ${JSON.stringify(partsOfKeypath(property))};
 
-        var processAttribute = false;
-        var iterator = layer;
-        for (var i = 0; i < parts.length; i++) {
-            var part = parts[i];
-            if ("property" in iterator && iterator.property(part)) {
-                iterator = iterator.property(part);     
-            } else if (part in iterator) {
-                if (i + 1 < parts.length) {
-                    iterator = iterator[part]
-                } else {
-                    processAttribute = true;
-                }
+        function changeValueForKeypath(o, keys, val, expr) {
+            if (keys.length == 0) {
+                return val ? val : expr;
             } else {
-                throw new Error("nexrender: Can't find a property sequence (${property}) at part: " + part);                
+                var key = keys[0];
+                if ("property" in o && o.property(key)) {
+                    var prop = o.property(key)
+                    var pval = prop.value;
+                    var v = changeValueForKeypath(pval, keys.slice(1), val, expr)
+                    if (val) {
+                        prop.setValue(v)  
+                    } else {
+                        prop.expression = expr
+                    }
+                    return o;
+                } else if (key in o) {
+                    o[key] = changeValueForKeypath(o[key], keys.slice(1), val);
+                    return o;
+                } else {
+                    throw new Error("nexrender: Can't find a property sequence (${property}) for key: " + key);                
+                }
             }
         }
 
-        if (processAttribute) {
-            ${renderIf(value, `iterator[parts[parts.length - 1]] = $value;`)}
-            ${renderIf(expression, `iterator[parts[parts.length - 1]] = eval($value);`)}
-        } else {
-            ${renderIf(value, `iterator.setValue($value);`)}
-            ${renderIf(expression, `iterator.expression = $value;`)}
-        }
+        var parts = ${JSON.stringify(partsOfKeypath(property))};
+        changeValueForKeypath(layer, parts, ${renderValue(value)}, ${renderValue(expression)});
 
         return true;
     }`)}
