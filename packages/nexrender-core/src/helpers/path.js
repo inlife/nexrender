@@ -1,7 +1,8 @@
 /**
  * Expand environment variables
  * Example:
- * Assuming $NEXRENDER_ASSETS is set to /Users/max/nexrender in the current process
+ * Assuming $NEXRENDER_ASSETS is set to /Users/max/nexrender
+ * in the environment of thecurrent process 
  * an input of file://$NEXRENDER_ASSETS/projects/project2.aep
  * would output: file:///Users/max/nexrender/projects/project2.aep
  */
@@ -17,4 +18,8 @@ function expandEnvironmentVariables (pathString) {
     	return accumulator;
     }
   }, pathString);
+}
+
+module.exports = {
+  expandEnvironmentVariables: expandEnvironmentVariables
 }
