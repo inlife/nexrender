@@ -488,7 +488,6 @@ You can also change the deeper attributes of properties, for example the font of
             "type": "data",
             "layerIndex": 15,
             "property": "Scale",
-            "value": [0,0],
             "expression": "[time * 0.1, time * 0.1]"
         },
     ]
