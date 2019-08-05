@@ -14,4 +14,6 @@ bin/
 
 # OS metadata
 .DS_Store
-Thumbs.db
+Thumbs.
+
+notmytest.js

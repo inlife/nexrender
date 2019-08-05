@@ -100,8 +100,8 @@ nexrender.selectLayersByIndex = function(compositionName, index, callback, types
 };
 
 /* ensure that eval only gets a minimal variable scope */
-nexrender.evaluate = function (layer, expression) { 
-    return eval(expression); 
+nexrender.evaluate = function (layer, expression) {
+    return eval(expression);
 }
 
 nexrender.changeValueForKeypath = function (layer, keys, val) {
@@ -117,10 +117,10 @@ nexrender.changeValueForKeypath = function (layer, keys, val) {
                     var pval = prop.value;
                     var v = change(pval, keys.slice(1), val)
                     if ("value" in v) {
-                        prop.setValue(v.value)  
+                        prop.setValue(v.value)
                     } else {
                         prop.expression = v.expression
-                    }                
+                    }
                 } else {
                     change(prop, keys.slice(1), val)
                 }
@@ -129,14 +129,14 @@ nexrender.changeValueForKeypath = function (layer, keys, val) {
                 var v = change(o[key], keys.slice(1), val)
                 if (!v.changed) {
                     if ("value" in v) {
-                        o[key] = v.value;                    
+                        o[key] = v.value;
                     } else {
                         o[key] = nexrender.evaluate(layer, v.expression)
-                    }                
+                    }
                 }
                 return { "value": o, "changed": true };
             } else {
-                throw new Error("nexrender: Can't find a property sequence " + JSON.stringify(keys) + " for key: " + key);                
+                throw new Error("nexrender: Can't find a property sequence " + keys.join('.') + " for key: " + key);
             }
         }
     }
