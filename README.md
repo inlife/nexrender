@@ -644,7 +644,7 @@ Current software was successfully tested on:
 `src` field is a URI string, that describes path pointing to the specific resource. It supports a few different protocols:
 
 * Built-in:
-    * `file://` - file on a local file system, (possibly a pipe? need testing)
+    * `file://` - file on a local file system, may include environment variables identified by a preceding $ sign (possibly a pipe? need testing)
     * `http://` - file on remote http server
     * `https://` - file on remote http server served via https
     * `data://` - URI encoded data, can be a [base64 or plain text](https://en.wikipedia.org/wiki/Data_URI_scheme)
@@ -661,6 +661,7 @@ Here are some examples of src paths:
 ```
 file:///home/assets/image.jpg
 file:///d:/projects/project.aep
+file://$ENVIRONMENT_VARIABLE/image.jpg
 
 http://somehost.com:8080/assets/image.jpg?key=foobar
 https://123.123.123.123/video.mp4
