@@ -6,7 +6,8 @@ try{Object.defineProperty({},'a',{value:0})}catch(err){(function(){var definePro
 /* start of nexrender script */
 
 var nexrender = {
-    defaultCompositionName: '/*COMPOSITION*/',
+    renderCompositionName: '/*COMPOSITION*/',
+    defaultCompositionName: '*',
     types: [CompItem, FolderItem, FootageItem, AVLayer, ShapeLayer, TextLayer, CameraLayer, LightLayer, Property, PropertyGroup],
 };
 
