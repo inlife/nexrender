@@ -158,7 +158,7 @@ opt('imageCachePercent',    '--image-cache-percent');
 opt('polling',              '--polling');
 
 /* convert string arugument into a boolean */
-settings['stopOnError'] == settings['stopOnError'] == 'true';
+settings['stopOnError'] = settings['stopOnError'] == 'true';
 
 if (settings['no-license']) {
     settings.addLicense = false;
