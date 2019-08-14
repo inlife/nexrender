@@ -16,9 +16,12 @@ const download = (job, settings, src, dest, params) => {
 
         connection.connect(params);
         connection.get(filepath, function(err, stream) {
-            if (err) throw err;
+            if (err) return reject(err)
+
             stream.once('close', function() { connection.end(); });
             stream.pipe(fs.createWriteStream(dest));
+
+            resolve()
         });
     })
 }
@@ -45,8 +48,10 @@ const upload = (job, settings, src, params) => {
 
         con.connect(params);
         con.put(file, src, function(err) {
-            if (err) throw err;
-            con.end();
+            if (err) return reject(err)
+
+            con.end()
+            resolve()
         });
     })
 }
