@@ -36,6 +36,8 @@ nexrender.replaceFootage = function (layer, filepath) {
 
 /* call callback for an every compostion matching specific name */
 nexrender.selectCompositionsByName = function(name, callback) {
+    var foundOnce = false;
+
     /* length might change when calling callbacks */
     var len = app.project.items.length;
     for (var i = 1; i <= len; i++) {
@@ -43,6 +45,7 @@ nexrender.selectCompositionsByName = function(name, callback) {
         if (!(item instanceof CompItem)) continue;
 
         if (name == "*") {
+            foundOnce = true;
             callback(item);
             continue;
         }
@@ -51,8 +54,12 @@ nexrender.selectCompositionsByName = function(name, callback) {
             continue;
         }
 
+        foundOnce = true;
         callback(item);
-        return;
+    }
+
+    if (!foundOnce) {
+        throw new Error("nexrender: Cound't find any compositions by provided name (" + name + ")");
     }
 };
 
