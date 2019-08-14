@@ -658,7 +658,7 @@ Current software was successfully tested on:
 * External:
     * `s3://` - [@nexrender/provider-s3](packages/nexrender-provider-s3) - Amazon S3 provider
     * `ftp://` - [@nexrender/provider-ftp](packages/nexrender-provider-ftp) - Node.js FTP provider
-    * (other procotocols will be added there)
+    * (other protocols will be added there)
 
 ### Examples
 
