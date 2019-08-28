@@ -47,7 +47,8 @@ const upload = (job, settings, src, params) => {
         file.on('error', (err) => reject(err))
 
         con.connect(params);
-        con.put(file, src, function(err) {
+        var filename = src.replace(/^.*[\\\/]/, '')
+        con.put(file, filename, function(err) {
             if (err) return reject(err)
 
             con.end()
