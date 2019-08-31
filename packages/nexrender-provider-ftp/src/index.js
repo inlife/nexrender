@@ -1,6 +1,8 @@
 const fs  = require('fs')
 const url = require('url')
 const FTP = require('ftp')
+var path = require("path");
+
 
 const download = (job, settings, src, dest, params) => {
     let parsed = global.URL ? new URL(asset.src) : url.parse(src)
@@ -47,7 +49,8 @@ const upload = (job, settings, src, params) => {
         file.on('error', (err) => reject(err))
 
         con.connect(params);
-        con.put(file, src, function(err) {
+        var filename = path.basename(src)
+        con.put(file, filename, function(err) {
             if (err) return reject(err)
 
             con.end()
