@@ -14,7 +14,7 @@ const download = (job, settings, src, dest, params) => {
 
     return new Promise((resolve, reject) => {
         const connection = new FTP();
-        const filepath   = uri.pathname;
+        const filepath   = parsed.pathname;
 
         connection.connect(params);
         connection.get(filepath, function(err, stream) {
