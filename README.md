@@ -740,7 +740,7 @@ To add a custom pre- or post-render action, all you need to do is to create a at
 // mymodule.js
 module.exports = (job, settings, action, type) => {
     console.log('hello from my module: ' + action.module);
-    return Promose.resolve();
+    return Promise.resolve();
 }
 ```
 
