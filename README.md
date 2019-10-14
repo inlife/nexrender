@@ -391,7 +391,7 @@ by specifying `src`, and one of the `layerName` or `layerIndex` options.
 Providing `"*"` will result in a wildcard compostion matching, and will apply this data to every matching layer in every matching composition.
 
 Specified asset from `src` field will be downloaded/copied to the working directory, and just before rendering will happen,
-a fotage item with specified `layerName` or `layerIndex` in the original project will be replaced with the freshly downloaded asset.
+a footage item with specified `layerName` or `layerIndex` in the original project will be replaced with the freshly downloaded asset.
 
 This way you (if you are using network rendering) you can not only deliver assets to the target platform but also dynamically replace them.
 
@@ -782,7 +782,7 @@ Hence they can be used to store state between actions.
 ## Migrating from v0.x
 
 First version of nexrender was published in 2016, and it has been used by many people for quite some time since then.
-Even though verion v1.x is based on the same concepts, it introduces major breaking changes that are incompatible with older version.
+Even though version v1.x is based on the same concepts, it introduces major breaking changes that are incompatible with older version.
 
 However, majority of those changes were made to allow new, previously unimaginable things.
 
@@ -841,7 +841,7 @@ All tools include better help screen, and a lot of customization from command li
 
 ## Customers
 
-Techinically, since the tool is free, custormers should be called users.
+Technically, since the tool is free, customers should be called users.
 In any case this section describes a list of users or companies that are proud users of nexrender.
 If you've used nexrender, and you like it, please feel free to add yourself into the list.
 
