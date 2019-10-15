@@ -7,7 +7,7 @@ const progressRegex = /([\d]{1,2}:[\d]{2}:[\d]{2}:[\d]{2})\s+(\(\d+\))/gi;
 const durationRegex = /Duration:\s+([\d]{1,2}:[\d]{2}:[\d]{2}:[\d]{2})/gi;
 const startRegex = /Start:\s+([\d]{1,2}:[\d]{2}:[\d]{2}:[\d]{2})/gi;
 
-const option  = (params, name, value) => value !== undefined ? params.push(name, value) : undefined
+const option = (params, name, ...values) => values.every(value => value !== undefined) ? params.push(name, ...values) : undefined
 const seconds = (string) => string.split(':')
     .map((e, i) => (i < 3) ? +e * Math.pow(60, 2 - i) : +e * 10e-6)
     .reduce((acc, val) => acc + val);
@@ -38,7 +38,7 @@ module.exports = (job, settings) => {
     if (job.template.continueOnMissing) params.push('-continueOnMissingFootage')
 
     if (settings.imageCachePercent || settings.maxMemoryPercent) {
-        option(params, '-mem_usage', `${settings.imageCachePercent || 50} ${settings.maxMemoryPercent || 50}`)
+        option(params, '-mem_usage', settings.imageCachePercent || 50, settings.maxMemoryPercent || 50);
     }
 
     // tracks progress
