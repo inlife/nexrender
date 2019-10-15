@@ -1,5 +1,5 @@
-const fs      = require('fs')
-const path    = require('path')
+const fs = require('fs')
+const path = require('path')
 const {spawn} = require('child_process')
 const {expandEnvironmentVariables} = require('../helpers/path')
 
@@ -7,7 +7,11 @@ const progressRegex = /([\d]{1,2}:[\d]{2}:[\d]{2}:[\d]{2})\s+(\(\d+\))/gi;
 const durationRegex = /Duration:\s+([\d]{1,2}:[\d]{2}:[\d]{2}:[\d]{2})/gi;
 const startRegex = /Start:\s+([\d]{1,2}:[\d]{2}:[\d]{2}:[\d]{2})/gi;
 
-const option  = (params, name, value) => value !== undefined ? params.push(name, value) : undefined
+const option = (params, name, ...values) => {
+    if (values !== undefined) {
+        values.every(value => value !== undefined) ? params.push(name, ...values) : undefined
+    }
+}
 const seconds = (string) => string.split(':')
     .map((e, i) => (i < 3) ? +e * Math.pow(60, 2 - i) : +e * 10e-6)
     .reduce((acc, val) => acc + val);
@@ -23,8 +27,8 @@ module.exports = (job, settings) => {
 
     // setup parameters
     params.push('-project', expandEnvironmentVariables(job.template.dest));
-    params.push('-comp',    job.template.composition);
-    params.push('-output',  expandEnvironmentVariables(job.output));
+    params.push('-comp', job.template.composition);
+    params.push('-output', expandEnvironmentVariables(job.output));
 
     option(params, '-OMtemplate', job.template.outputModule);
     option(params, '-RStemplate', job.template.settingsTemplate);
@@ -38,18 +42,18 @@ module.exports = (job, settings) => {
     if (job.template.continueOnMissing) params.push('-continueOnMissingFootage')
 
     if (settings.imageCachePercent || settings.maxMemoryPercent) {
-        option(params, '-mem_usage', `${settings.imageCachePercent || 50} ${settings.maxMemoryPercent || 50}`)
+        option(params, '-mem_usage', settings.imageCachePercent || 50, settings.maxMemoryPercent || 50);
     }
 
     // tracks progress
-    let projectDuration  = null;
-    let currentProgress  = null;
+    let projectDuration = null;
+    let currentProgress = null;
     let previousProgress = undefined;
-    let renderStopwatch  = null;
-    let projectStart     = null;
+    let renderStopwatch = null;
+    let projectStart = null;
 
     const parse = (data) => {
-        const string = (''+data).replace(/;/g, ':'); /* sanitize string */
+        const string = ('' + data).replace(/;/g, ':'); /* sanitize string */
 
         // Only execute startRegex if project start hasnt been found
         const matchStart = isNaN(parseInt(projectStart)) ? startRegex.exec(string) : false;
@@ -101,13 +105,13 @@ module.exports = (job, settings) => {
         /* on finish (code 0 - success, other - error) */
         instance.on('close', (code) => {
             const outputStr = output
-                .map(a => ''+a).join('');
+                .map(a => '' + a).join('');
 
             if (code !== 0 && settings.stopOnError) {
                 return reject(new Error(outputStr || 'aerender.exe failed to render the output into the file due to an unknown reason'));
             }
 
-            settings.logger.log(`[${job.uid}] rendering took ~${(Date.now() - renderStopwatch)/1000} sec.`);
+            settings.logger.log(`[${job.uid}] rendering took ~${(Date.now() - renderStopwatch) / 1000} sec.`);
 
             const logPath = path.resolve(job.workpath, `../aerender-${job.uid}.log`)
             settings.logger.log(`[${job.uid}] writing aerender job log to: ${logPath}`);
