@@ -46,7 +46,7 @@ const upload = (job, settings, src, params) => {
 
         // Read file
         try{
-            const file = fs.createReadStream(src);
+            var file = fs.createReadStream(src);
         }
         catch(e){
             throw new Error('Cloud not read file, Please check path and permissions.')
@@ -56,7 +56,7 @@ const upload = (job, settings, src, params) => {
         
         // Connect to FTP Server
         try{
-            const con = new FTP();
+            var con = new FTP();
             con.connect(params);
         }
         catch(e){
