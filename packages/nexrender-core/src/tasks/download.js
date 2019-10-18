@@ -20,7 +20,9 @@ const download = (job, settings, asset) => {
     if (protocol === 'data' && !asset.layerName) {
         destName = Math.random().toString(36).substring(2);
     } else {
-        destName = path.basename(asset.src);
+        destName = path.basename(asset.src)
+        destName = destName.indexOf('?') !== -1 ? destName.slice(0, destName.indexOf('?')) : destName;
+        /* ^ remove possible query search string params ^ */;
 
         /* prevent same name file collisions */
         if (fs.existsSync(path.join(job.workpath, destName))) {
