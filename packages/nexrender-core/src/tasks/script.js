@@ -3,7 +3,12 @@ const path   = require('path')
 const script = require('../assets/nexrender.jsx')
 
 /* helpers */
-const escape = string => `'${string.replace(/\'/g, '\\\'')}'`
+const escape = str => {
+    str = JSON.stringify(str)
+    str = str.substring(1, str.length-1)
+    str = `'${str.replace(/\'/g, '\\\'')}'`
+    return str
+}
 
 const selectLayers = ({ composition, layerName, layerIndex }, callbackString) => {
     const method = layerName ? 'selectLayersByName' : 'selectLayersByIndex';
