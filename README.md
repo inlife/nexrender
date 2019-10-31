@@ -684,7 +684,7 @@ If you wish to contribute by taking an active part in development, you might nee
 2. run `npm install`
 3. run `npm start`
 
-The last command will run [lerna](https://lernajs.io/) bootstrap action to setup dependencies for all packages listed in the `packages/` folder,
+The last command will run [lerna](https://lerna.js.org/) bootstrap action to setup dependencies for all packages listed in the `packages/` folder,
 and link them together accordingly to their dependency relations.
 
 After that, you can start the usual development flow of writing code and testing it with `npm start` in a specific package.
