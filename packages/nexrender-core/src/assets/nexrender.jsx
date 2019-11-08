@@ -34,31 +34,30 @@ nexrender.replaceFootage = function (layer, filepath) {
     return true;
 };
 
-/* call callback for an every compostion matching specific name */
+/* envoke callback for every compostion matching specific name */
 nexrender.selectCompositionsByName = function(name, callback) {
-    var foundOnce = false;
+    var items = [];
 
-    /* length might change when calling callbacks */
+    /* step 1: collect all matching compositions */
     var len = app.project.items.length;
     for (var i = 1; i <= len; i++) {
         var item = app.project.items[i];
         if (!(item instanceof CompItem)) continue;
 
-        if (name == "*") {
-            foundOnce = true;
-            callback(item);
+        if (name != "*" && item.name != name) {
             continue;
+        } else {
+            items.push(item);        
         }
-
-        if (item.name != name) {
-            continue;
-        }
-
-        foundOnce = true;
-        callback(item);
     }
 
-    if (!foundOnce) {
+    /* step 2: envoke callback for every match */
+    var len = items.length;
+    for (var i = 0; i < len; i++) {
+        callback(items[i]);        
+    }
+
+    if (len == 0) {
         throw new Error("nexrender: Cound't find any compositions by provided name (" + name + ")");
     }
 };
@@ -71,16 +70,25 @@ nexrender.selectLayersByName = function(compositionName, name, callback, types) 
     if (!types) types = nexrender.types;
 
     nexrender.selectCompositionsByName(compositionName, function(comp) {
+        var items = [];
+
+        /* step 1: collect all matching layers */
         for (var j = 1; j <= comp.numLayers; j++) {
             var layer = comp.layer(j);
             if (layer.name != name) continue;
 
             if (nexrender.typesMatch(types, layer)) {
-                callback(layer, name);
                 foundOnce = true;
+                items.push(layer);
             }
         }
-    })
+
+        /* step 2: envoke callback for every match */
+        var len = items.length;
+        for (var i = 0; i < len; i++) {
+            callback(items[i], name);
+        }
+    });
 
     if (!foundOnce) {
         throw new Error("nexrender: Cound't find any layers by provided name (" + name + ") inside a composition: " + compositionName);
