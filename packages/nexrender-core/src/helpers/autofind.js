@@ -10,7 +10,9 @@ const defaultPaths = {
         '/Applications/Adobe After Effects CC 2017',
         '/Applications/Adobe After Effects CC 2018',
         '/Applications/Adobe After Effects CC 2019',
-        '/Applications/Adobe After Effects CC 2020', // will this be even a thing? :D
+        '/Applications/Adobe After Effects 2020',
+        '/Applications/Adobe After Effects 2021', // will this be even a thing? :D
+        '/Applications/Adobe After Effects CC 2021', // will this be even a thing? :D
     ],
     win32: [
         'C:\\Program Files\\Adobe\\After Effects CC',
