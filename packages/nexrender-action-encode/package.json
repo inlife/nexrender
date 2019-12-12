@@ -7,6 +7,6 @@
     "access": "public"
   },
   "dependencies": {
-    "ffmpeg-static": "^2.4.0"
+    "ffmpeg-static": "^2.7.0"
   }
 }
