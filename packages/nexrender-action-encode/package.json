@@ -1,7 +1,7 @@
 {
   "name": "@nexrender/action-encode",
   "author": "inlife",
-  "version": "1.5.8",
+  "version": "1.8.14",
   "main": "index.js",
   "publishConfig": {
     "access": "public"
