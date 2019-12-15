@@ -22,14 +22,14 @@
     "pkg-cli": "cross-env NEXRENDER_REQUIRE_PLUGINS=1 pkg packages/nexrender-cli/package.json --out-path bin/",
     "pkg-worker": "cross-env NEXRENDER_REQUIRE_PLUGINS=1 pkg packages/nexrender-worker/package.json --out-path bin/",
     "pkg-server": "pkg packages/nexrender-server/package.json --out-path bin/",
-    "pkg-prelink": "lerna exec --scope @nexrender/core 'npm run pkg-prelink'",
+    "pkg-prelink": "lerna run --scope @nexrender/core pkg-prelink",
     "pkg-reduce": "node misc/reduce.js",
     "pkg": "npm run pkg-prelink && npm run pkg-reduce && npm run pkg-cli && npm run pkg-server && npm run pkg-worker && npm run pkg-rename",
     "test": "lerna bootstrap && node test.js"
   },
   "devDependencies": {
     "cross-env": "^5.2.0",
-    "lerna": "^3.13.4",
+    "lerna": "^3.19.0",
     "mocha": "^6.1.4",
     "pkg": "^4.4.1"
   }
