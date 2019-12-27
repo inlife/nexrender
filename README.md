@@ -388,7 +388,8 @@ by specifying `src`, and one of the `layerName` or `layerIndex` options.
 * `layerName`: string, target layer name in the After Effects project
 * `layerIndex`: integer, can be used instead of `layerName` to select a layer by providing an index, starting from 1 (default behavior of AE jsx scripting env)
 * `composition`: string, composition where the layer is, useful for searching layer in pre-compositions. If none is provided, it uses the default composition set in the template.
-Providing `"*"` will result in a wildcard compostion matching, and will apply this data to every matching layer in every matching composition.
+Providing `"*"` will result in a wildcard composition matching, and will apply this data to every matching layer in every matching composition.
+* `extension`: string, an optional extension to be added to the filename before it is sent for rendering. This is because After Effects expects the file extension to match the content type of the file. If none is provided, the filename will be unchanged.
 
 Specified asset from `src` field will be downloaded/copied to the working directory, and just before rendering will happen,
 a footage item with specified `layerName` or `layerIndex` in the original project will be replaced with the freshly downloaded asset.
@@ -406,6 +407,12 @@ This way you (if you are using network rendering) you can not only deliver asset
             "src": "https://example.com/assets/image.jpg",
             "type": "image",
             "layerName": "MyNicePicture.jpg"
+        },
+        {
+            "src": "https://example.com/assets/jpeg-without-extension",
+            "type": "image",
+            "layerName": "MyOtherNicePicture.jpg",
+            "extension": "jpg"
         },
         {
             "src": "file:///home/assets/audio.mp3",
