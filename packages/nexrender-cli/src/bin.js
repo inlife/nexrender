@@ -60,7 +60,7 @@ if (args['--help']) {
 
       -v, --version                         displays the current version of nexrender-cli
 
-      -b, --binary {underline path}            instead of using json from argument, provide a relative
+      -f, --file {underline path}            instead of using json from argument, provide a relative
                                             or absolute path to file with json containing job
 
       -b, --binary {underline absolute_path}            manually specify path to the {bold "aerender"} binary
