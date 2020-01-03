@@ -60,7 +60,7 @@ Refer to [AWS SDK Documentation](https://docs.aws.amazon.com/sdk-for-javascript/
 
 ### ftp
 
-Refer to [mscdex/node-ftp](https://github.com/mscdex/node-ftp) for information regarding porams and usage.
+Refer to [mscdex/node-ftp](https://github.com/mscdex/node-ftp) for information regarding params and usage.
 
 Basic params info:
 
@@ -79,3 +79,35 @@ Example:
     'password': 'mypassword123'
 }
 ```
+
+
+### gs
+
+You most likely need to authenticate to interact with a GCS bucket. This is done using _Application Default Credentials_. Refer to the [Google Cloud Documentation](https://cloud.google.com/docs/authentication/getting-started) for more information on authentication.
+
+The upload params are given as part of the action:
+
+* `bucket` (required)
+* `item` (required)
+* `contentType` (optional)
+
+Example:
+
+```json
+// job.json
+{
+    "actions": {
+        "postrender": [
+            {
+                "module": "@nexrender/action-upload",
+                "input": "output.mp4",
+                "provider": "gs",
+                "params": {
+                    "bucket": "name-of-your-bucket",
+                    "item": "folder/uploaded.mp4",
+                    "contentType": "video/mp4"
+                }
+            }
+        ]
+    }
+}
