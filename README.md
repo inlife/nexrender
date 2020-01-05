@@ -656,6 +656,7 @@ Current software was successfully tested on:
     * `data://` - URI encoded data, can be a [base64 or plain text](https://en.wikipedia.org/wiki/Data_URI_scheme)
 
 * External:
+    * `gs://` - [@nexrender/provider-gs](packages/nexrender-provider-gs) - Google Cloud Storage provider
     * `s3://` - [@nexrender/provider-s3](packages/nexrender-provider-s3) - Amazon S3 provider
     * `ftp://` - [@nexrender/provider-ftp](packages/nexrender-provider-ftp) - Node.js FTP provider
     * (other protocols will be added there)
