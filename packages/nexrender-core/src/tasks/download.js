@@ -30,6 +30,10 @@ const download = (job, settings, asset) => {
         }
     }
 
+    if (asset.extension) {
+        destName += '.' + asset.extension
+    }
+
     asset.dest = path.join(job.workpath, destName);
 
     switch (protocol) {
