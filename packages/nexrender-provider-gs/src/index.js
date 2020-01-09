@@ -57,9 +57,11 @@ const upload = (job, settings, src, params) => {
         const in_stream = fs.createReadStream(src)
             .on('error', reject)
         const out_stream = file.createWriteStream(options)
-            .on('close', resolve)
             .on('error', reject)
-            .on('finish', onUploadEnd)
+            .on('finish', ()=> {
+                onUploadEnd()
+                resolve()
+            })
             .on('pipe', onUploadStart)
         in_stream.pipe(out_stream)
     })
