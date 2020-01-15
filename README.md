@@ -4,7 +4,7 @@
 
 <div align="center">
     <a href="https://travis-ci.org/inlife/nexrender"><img src="https://travis-ci.org/inlife/nexrender.svg?branch=master" alt="Build status" /></a>
-    <a href="https://www.npmjs.com/package/@nexrender/core"><img src="https://img.shields.io/npm/v/@nexrender/core.svg?maxAge=3600" alt="NPM version" /></a>
+    <a href="https://www.npmjs.com/package/@nexrender/core"><a href="https://opencollective.com/nexrender" alt="Financial Contributors on Open Collective"><img src="https://opencollective.com/nexrender/all/badge.svg?label=financial+contributors" /></a> <img src="https://img.shields.io/npm/v/@nexrender/core.svg?maxAge=3600" alt="NPM version" /></a>
     <a href="https://david-dm.org/inlife/nexrender?path=packages/nexrender-core"><img src="https://david-dm.org/inlife/nexrender/status.svg?path=packages/nexrender-core" alt="Dependencies" /></a>
     <a href="https://discord.gg/S2JtRcB"><img src="https://discordapp.com/api/guilds/354670964400848898/embed.png" alt="Discord server" /></a>
     <a href="LICENSE"><img src="https://img.shields.io/github/license/inlife/nexrender.svg" alt="license" /></a>
@@ -862,3 +862,33 @@ If you've used nexrender, and you like it, please feel free to add yourself into
 1. Adding more upload/download providers
 2. Add an algo of splitting the main job onto sub jobs, rendering them on multiple machines
 and then combining back into a single job. `@nexrender/action-merge-parent, @nexrender/action-merge-child`
+
+## Contributors
+
+### Code Contributors
+
+This project exists thanks to all the people who contribute. [[Contribute](CONTRIBUTING.md)].
+<a href="https://github.com/inlife/nexrender/graphs/contributors"><img src="https://opencollective.com/nexrender/contributors.svg?width=890&button=false" /></a>
+
+### Financial Contributors
+
+Become a financial contributor and help us sustain our community. [[Contribute](https://opencollective.com/nexrender/contribute)]
+
+#### Individuals
+
+<a href="https://opencollective.com/nexrender"><img src="https://opencollective.com/nexrender/individuals.svg?width=890"></a>
+
+#### Organizations
+
+Support this project with your organization. Your logo will show up here with a link to your website. [[Contribute](https://opencollective.com/nexrender/contribute)]
+
+<a href="https://opencollective.com/nexrender/organization/0/website"><img src="https://opencollective.com/nexrender/organization/0/avatar.svg"></a>
+<a href="https://opencollective.com/nexrender/organization/1/website"><img src="https://opencollective.com/nexrender/organization/1/avatar.svg"></a>
+<a href="https://opencollective.com/nexrender/organization/2/website"><img src="https://opencollective.com/nexrender/organization/2/avatar.svg"></a>
+<a href="https://opencollective.com/nexrender/organization/3/website"><img src="https://opencollective.com/nexrender/organization/3/avatar.svg"></a>
+<a href="https://opencollective.com/nexrender/organization/4/website"><img src="https://opencollective.com/nexrender/organization/4/avatar.svg"></a>
+<a href="https://opencollective.com/nexrender/organization/5/website"><img src="https://opencollective.com/nexrender/organization/5/avatar.svg"></a>
+<a href="https://opencollective.com/nexrender/organization/6/website"><img src="https://opencollective.com/nexrender/organization/6/avatar.svg"></a>
+<a href="https://opencollective.com/nexrender/organization/7/website"><img src="https://opencollective.com/nexrender/organization/7/avatar.svg"></a>
+<a href="https://opencollective.com/nexrender/organization/8/website"><img src="https://opencollective.com/nexrender/organization/8/avatar.svg"></a>
+<a href="https://opencollective.com/nexrender/organization/9/website"><img src="https://opencollective.com/nexrender/organization/9/avatar.svg"></a>
