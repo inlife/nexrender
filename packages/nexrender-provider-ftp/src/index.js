@@ -48,6 +48,8 @@ const upload = (job, settings, src, params) => {
 
         file.on('error', (err) => reject(err))
         const filename = path.basename(src)
+        const output = params.output || filename
+        delete params.output
 
         // Connect to FTP Server
         try {
@@ -60,7 +62,7 @@ const upload = (job, settings, src, params) => {
 
         // Put file
         try {
-            con.put(file, filename, function(err) {
+            con.put(file, output, function(err) {
                 if (err) {
                     con.end()
                     reject(err)

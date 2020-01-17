@@ -43,6 +43,7 @@ Basic params info:
 * `port` - integer - The port of the FTP server. Default: 21
 * `user` - string - Username for authentication. Default: 'anonymous'
 * `password` - string - Password for authentication. Default: 'anonymous@'
+* `output` - string - Optional argument to notify how you want to save your file on a remote machine as
 
 Example:
 
@@ -58,7 +59,8 @@ Example:
                     "host": "ftp.example.com",
                     "port": 21,
                     "user": "root",
-                    "password": "pass123123"
+                    "password": "pass123123",
+                    "output": "/var/mystuff/output.mp4"
                 }
             }
         ]

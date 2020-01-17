@@ -76,7 +76,8 @@ Example:
     'host': 'ftp.example.com',
     'port': 21,
     'user': 'myuser',
-    'password': 'mypassword123'
+    'password': 'mypassword123',
+    'output': '/var/temp/myfile.mp4'
 }
 ```
 
