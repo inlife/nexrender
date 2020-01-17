@@ -58,6 +58,11 @@ const start = async (host, secret, settings) => {
         }
 
         try {
+            job.onRenderProgress = function (job, progress) {
+                /* send render prooress to our server */
+                client.updateJob(job.uid, job)
+            }
+
             job = await render(job, settings); {
                 job.state = 'finished';
             }
