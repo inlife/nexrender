@@ -10,7 +10,7 @@ const database = process.env.NEXRENDER_DATABASE
     ? process.env.NEXRENDER_DATABASE
     : path.join(defaultPath, defaultName);
 
-const data = fs.existsSync(database)
+let data = fs.existsSync(database)
     ? JSON.parse(fs.readFileSync(database, 'utf8'))
     : [];
 
@@ -81,9 +81,15 @@ const remove = uid => {
     return true;
 }
 
+const cleanup = () => {
+    data = []
+    save()
+}
+
 module.exports = {
     insert,
     fetch,
     update,
     remove,
+    cleanup,
 }

@@ -9,13 +9,16 @@ const args = arg({
     // Types
     '--help':    Boolean,
     '--version': Boolean,
+    '--cleanup': Boolean,
+
     '--port':    Number,
     '--secret':  String,
 
     // Aliases
     '-v':        '--version',
-    '-s':        '--secret',
+    '-c':        '--cleanup',
     '-h':        '--help',
+    '-s':        '--secret',
     '-p':        '--port',
 });
 
@@ -31,6 +34,7 @@ if (args['--help']) {
 
       {bold $} {cyan nexrender-server} --help
       {bold $} {cyan nexrender-server} --version
+      {bold $} {cyan nexrender-server} --cleanup
       {bold $} {cyan nexrender-server} -p 3000 --secret=mysecret
 
       By default {cyan nexrender-server} will listen on {bold 0.0.0.0:3000} and will
@@ -44,6 +48,8 @@ if (args['--help']) {
       -h, --help                          shows this help message
 
       -v, --version                       displays the current version of nexrender-server
+
+      -c, --cleanup                       runs cleanup, and removes all data stored on the server
 
       -p, --port {underline port_number}              specify which port will be used to serve the data (3000 by default)
 
@@ -78,6 +84,14 @@ if (args['--port'])  {
 
 if (args['--secret']) {
     serverSecret = args['--secret'] || serverSecret;
+}
+
+if (args['--cleanup']) {
+    console.log('> running database cleanup')
+    require('./helpers/database').cleanup()
+
+    console.log('> cleanup done')
+    process.exit(0)
 }
 
 console.log(chalk`> starting {bold.cyan nexrender-server} at {bold 0.0.0.0:${serverPort}}; using secret: {bold ${serverSecret ? 'yes' : 'no'}}`)
