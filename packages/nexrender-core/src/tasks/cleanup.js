@@ -30,3 +30,5 @@ module.exports = function(job, settings) {
 
     return Promise.resolve(job)
 };
+
+module.exports.rmdirr = rmdirRecursively

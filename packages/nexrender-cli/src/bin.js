@@ -10,6 +10,7 @@ const args = arg({
     // Types
     '--help':       Boolean,
     '--version':    Boolean,
+    '--cleanup':    Boolean,
 
     '--file':       String,
     '--binary':     String,
@@ -29,6 +30,7 @@ const args = arg({
 
     // Aliases
     '-v':           '--version',
+    '-c':           '--cleanup',
     '-h':           '--help',
     '-f':           '--file',
     '-b':           '--binary',
@@ -59,6 +61,8 @@ if (args['--help']) {
       -h, --help                            shows this help message
 
       -v, --version                         displays the current version of nexrender-cli
+
+      -c, --cleanup                         run cleanup, to remove all temporary data created by nexrender
 
       -f, --file {underline path}            instead of using json from argument, provide a relative
                                             or absolute path to file with json containing job
@@ -144,6 +148,22 @@ settings['stopOnError'] = settings['stopOnError'] == 'true';
 if (settings['no-license']) {
     settings.addLicense = false;
     delete settings['no-license'];
+}
+
+if (args['--cleanup']) {
+    settings = init(Object.assign(settings, {
+        logger: console
+    }))
+
+    console.log('> running cleanup for a folder:', settings.workpath)
+
+    const {rmdirr} = require('@nexrender/core/src/tasks/cleanup')
+
+    /* run recursive rmdir */
+    rmdirr(settings.workpath)
+
+    console.log('> cleanup done')
+    process.exit();
 }
 
 let json;
