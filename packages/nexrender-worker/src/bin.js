@@ -9,6 +9,8 @@ const args = arg({
     // Types
     '--help':       Boolean,
     '--version':    Boolean,
+    '--cleanup':    Boolean,
+
     '--host':       String,
     '--secret':     String,
 
@@ -30,8 +32,9 @@ const args = arg({
 
     // Aliases
     '-v':           '--version',
-    '-s':           '--secret',
+    '-c':           '--cleanup',
     '-h':           '--help',
+    '-s':           '--secret',
     '-b':           '--binary',
     '-w':           '--workpath',
 });
@@ -159,6 +162,22 @@ opt('polling',              '--polling');
 
 /* convert string arugument into a boolean */
 settings['stopOnError'] = settings['stopOnError'] == 'true';
+
+if (args['--cleanup']) {
+    settings = init(Object.assign(settings, {
+        logger: console
+    }))
+
+    console.log('> running cleanup for a folder:', settings.workpath)
+
+    const {rmdirr} = require('@nexrender/core/src/tasks/cleanup')
+
+    /* run recursive rmdir */
+    rmdirr(settings.workpath)
+
+    console.log('> cleanup done')
+    process.exit();
+}
 
 if (settings['no-license']) {
     settings.addLicense = false;
