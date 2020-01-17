@@ -24,6 +24,8 @@ module.exports = function(job, settings) {
     if (!settings.skipCleanup) {
         settings.logger.log(`[${job.uid}] cleaning up...`);
         rmdirRecursively(job.workpath)
+
+        settings.logger.log(`[${job.uid}] Temporary AfterEffects project deleted. If you want to inspect it for debugging, use "--skip-cleanup"`)
     } else {
         settings.logger.log(`[${job.uid}] skipping the clean up...`);
     }
