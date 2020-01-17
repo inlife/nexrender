@@ -35,7 +35,7 @@ if (process.env.NEXRENDER_REQUIRE_PLUGINS) {
 
 const init = (settings) => {
     settings = Object.assign({}, settings);
-    settings.logger = settings.logger || { log: function() {} };
+    settings.logger = settings.logger || console;
 
     const binaryAuto = autofind(settings);
     const binaryUser = settings.binary && fs.existsSync(settings.binary) ? settings.binary : null;
@@ -61,6 +61,8 @@ const init = (settings) => {
         multiFrames: false,
         maxMemoryPercent: undefined,
         imageCachePercent: undefined,
+
+        __initialized: true,
     }, settings, {
         binary: binaryUser || binaryAuto,
     })
@@ -83,7 +85,11 @@ const init = (settings) => {
 }
 
 
-const render = (job, settings) => {
+const render = (job, settings = {}) => {
+    if (!settings.__initialized) {
+        settings = init(settings)
+    }
+
     return Promise.resolve(job)
         .then(job => state(job, settings, setup, 'setup'))
         .then(job => state(job, settings, download, 'download'))

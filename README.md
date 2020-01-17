@@ -349,14 +349,10 @@ $ npm install @nexrender/core --save
 And then load it, and run it
 
 ```js
-const { init, render } = require('@nexrender/core')
-
-const settings = init({
-    logger: console,
-})
+const { render } = require('@nexrender/core')
 
 const main = async () => {
-    const result = await render(/*myJobJson*/, settings)
+    const result = await render(/*myJobJson*/)
 }
 
 main().catch(console.error);
