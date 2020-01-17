@@ -52,7 +52,7 @@ const init = (settings) => {
     settings = Object.assign({
         workpath: path.join(os.tmpdir(), 'nexrender'),
 
-        addLicense: true,
+        addLicense: false,
         forceCommandLinePatch: false,
         skipCleanup: false,
         stopOnError: true,

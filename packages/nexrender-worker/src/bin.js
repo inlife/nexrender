@@ -163,6 +163,8 @@ settings['stopOnError'] = settings['stopOnError'] == 'true';
 if (settings['no-license']) {
     settings.addLicense = false;
     delete settings['no-license'];
+} else {
+    settings.addLicense = true;
 }
 
 start(serverHost, serverSecret, settings);
