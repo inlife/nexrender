@@ -13,11 +13,10 @@ const delay = amount => (
 const nextJob = async (client, settings) => {
     do {
         try {
-            const listing = await client.listJobs();
-            const queued  = listing.filter(job => job.state == 'queued')
+            const job = await client.pickupJob();
 
-            if (queued.length > 0) {
-                return queued[Math.floor(Math.random() * queued.length)];
+            if (job && job.uid) {
+                return job
             }
         } catch (err) {
             if (settings.stopOnError) {

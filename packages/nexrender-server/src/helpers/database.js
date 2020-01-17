@@ -37,28 +37,32 @@ const fetch = uid => uid ? data[indexOf(uid)] : data
 
 const insert = entry => {
     const now = new Date()
+
     Object.assign({}, entry, {
         updatedAt: now,
         createdAt: now
     })
+
     data.push(entry);
     setImmediate(save);
 }
 
 const update = (uid, entry) => {
-    const value = indexOf(uid); if (value == -1) {
+    const value = indexOf(uid);
+
+    if (value == -1) {
         return null;
     }
 
     const now = new Date()
-    
-    if(data[value].updatedAt !== entry.updatedAt) {
+
+    if (data[value].updatedAt !== entry.updatedAt) {
         throw new Error(`Someone else updated that entry at ${data[value].updatedAt}. Your entry updatedAt is ${entry.updatedAt}`)
     }
 
-    data[value] = Object.assign({}, data[value], entry, {
-            updatedAt: now
-        }
+    data[value] = Object.assign(
+        {}, data[value], entry,
+        { updatedAt: now }
     );
 
     setImmediate(save);
@@ -66,7 +70,9 @@ const update = (uid, entry) => {
 }
 
 const remove = uid => {
-    const value = indexOf(uid); if (value === -1) {
+    const value = indexOf(uid);
+
+    if (value === -1) {
         return null;
     }
 

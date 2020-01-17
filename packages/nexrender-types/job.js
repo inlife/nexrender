@@ -45,8 +45,8 @@ const validate = job => {
     assert(job.state, 'job must have state');
 
     assert(job.template, 'job must have template object defined');
-    assert(job.template.src, 'job must have src defined');
-    assert(job.template.composition, 'job must have composition defined');
+    assert(job.template.src, 'job must have template.src defined');
+    assert(job.template.composition, 'job must have template.composition defined');
 
     job.assets.map(asset => {
         assert(asset, 'job asset should not be empty');

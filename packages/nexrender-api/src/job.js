@@ -31,6 +31,7 @@ const withEventEmitter = (fetch, job, polling = NEXRENDER_JOB_POLLING) => {
 
 module.exports = (fetch, polling) => ({
     listJobs: async () => await fetch(`/jobs`),
+    pickupJob: async () => await fetch(`/jobs/pickup`),
 
     addJob: async data =>
         withEventEmitter(fetch, await fetch(`/jobs`, {
@@ -46,8 +47,12 @@ module.exports = (fetch, polling) => ({
             'body': JSON.stringify(data),
         }),
 
-    removejob: async id =>
+    removeJob: async id =>
         await fetch(`/jobs/${id}`, {
             'method': 'delete'
         }),
 })
+
+/* deprecated method name */
+/* keeping for now for, backward compatibility */
+module.exports.removejob = module.exports.removeJob
