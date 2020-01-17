@@ -29,54 +29,53 @@ const download = (job, settings, src, dest, params) => {
 }
 
 const upload = (job, settings, src, params) => {
-    if (!params.host) {
-        throw new Error('FTP Host not provided.')
-    }
-    if (!params.port) {
-        throw new Error('FTP Port not provided.')
-    }
-    if (!params.user) {
-        throw new Error('FTP Username not provided.')
-    }
-    if (!params.password) {
-        throw new Error('FTP Password not provided.')
-    }
+    if (!params.host) throw new Error('FTP Host not provided.')
+    if (!params.port) throw new Error('FTP Port not provided.')
+    if (!params.user) throw new Error('FTP Username not provided.')
+    if (!params.password) throw new Error('FTP Password not provided.')
+
+    let file;
+    let con;
 
     return new Promise((resolve, reject) => {
-
         // Read file
-        try{
-            var file = fs.createReadStream(src);
+        try {
+            file = fs.createReadStream(src);
         }
-        catch(e){
+        catch(e) {
             throw new Error('Cloud not read file, Please check path and permissions.')
         }
+
         file.on('error', (err) => reject(err))
-        var filename = path.basename(src)
-        
+        const filename = path.basename(src)
+
         // Connect to FTP Server
-        try{
-            var con = new FTP();
+        try {
+            con = new FTP();
             con.connect(params);
         }
-        catch(e){
+        catch(e) {
             throw new Error('Cloud not connect to FTP Server, Please check Host and Port.')
         }
-        
-        // Put file 
-        try{
+
+        // Put file
+        try {
             con.put(file, filename, function(err) {
-                if (err) return reject(err)
-    
+                if (err) {
+                    con.end()
+                    reject(err)
+
+                    return;
+                }
+
                 con.end()
                 resolve()
             });
         }
         catch(e){
-            throw new Error('Cloud not upload file, Please make sure FTP user has write permissions.')
             con.end()
+            throw new Error('Cloud not upload file, Please make sure FTP user has write permissions.')
         }
-    
     })
 }
 
