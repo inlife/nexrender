@@ -79,6 +79,11 @@
     - [CLI](#cli)
   - [Customers](#customers)
   - [Plans](#plans)
+  - [Contributors](#contributors)
+    - [Code Contributors](#code-contributors)
+    - [Financial Contributors](#financial-contributors)
+      - [Individuals](#individuals)
+      - [Organizations](#organizations)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
