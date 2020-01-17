@@ -24,11 +24,12 @@ module.exports = (job, settings) => {
 
     // create container for our parameters
     let params = [];
+    let outputFile = expandEnvironmentVariables(job.output)
 
     // setup parameters
     params.push('-project', expandEnvironmentVariables(job.template.dest));
     params.push('-comp', job.template.composition);
-    params.push('-output', expandEnvironmentVariables(job.output));
+    params.push('-output', outputFile);
 
     option(params, '-OMtemplate', job.template.outputModule);
     option(params, '-RStemplate', job.template.settingsTemplate);
@@ -92,6 +93,7 @@ module.exports = (job, settings) => {
         }
 
         const output = [];
+        const logPath = path.resolve(job.workpath, `../aerender-${job.uid}.log`)
         const instance = spawn(settings.binary, params, {
             // NOTE: disabled PATH for now, there were a few
             // issues related to plugins not working properly
@@ -108,14 +110,30 @@ module.exports = (job, settings) => {
                 .map(a => '' + a).join('');
 
             if (code !== 0 && settings.stopOnError) {
+                settings.logger.log(`[${job.uid}] dumping aerender log:`)
+                settings.logger.log(fs.readFileSync(logPath, 'utf8'))
+
                 return reject(new Error(outputStr || 'aerender.exe failed to render the output into the file due to an unknown reason'));
             }
 
             settings.logger.log(`[${job.uid}] rendering took ~${(Date.now() - renderStopwatch) / 1000} sec.`);
-
-            const logPath = path.resolve(job.workpath, `../aerender-${job.uid}.log`)
             settings.logger.log(`[${job.uid}] writing aerender job log to: ${logPath}`);
+
             fs.writeFileSync(logPath, outputStr);
+
+            if (!fs.existsSync(outputFile)) {
+                settings.logger.log(`[${job.uid}] dumping aerender log:`)
+                settings.logger.log(fs.readFileSync(logPath, 'utf8'))
+
+                return reject(new Error(`Couldn't find a result file`))
+            }
+
+            const stats = fs.statSync(outputFile)
+
+            /* file smaller than 1000 bytes */
+            if (stats.size < 1000) {
+                settings.logger.log(`[${job.uid}] Warning: output file size is less than 1000 bytes (${stats.size} bytes), be advised that file is corrupted, or rendering is still being finished`)
+            }
 
             resolve(job)
         });
