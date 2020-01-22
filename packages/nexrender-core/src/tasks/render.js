@@ -110,8 +110,10 @@ module.exports = (job, settings) => {
                 .map(a => '' + a).join('');
 
             if (code !== 0 && settings.stopOnError) {
-                settings.logger.log(`[${job.uid}] dumping aerender log:`)
-                settings.logger.log(fs.readFileSync(logPath, 'utf8'))
+                if (fs.existsSync(logPath)) {
+                    settings.logger.log(`[${job.uid}] dumping aerender log:`)
+                    settings.logger.log(fs.readFileSync(logPath, 'utf8'))
+                }
 
                 return reject(new Error(outputStr || 'aerender.exe failed to render the output into the file due to an unknown reason'));
             }
@@ -122,8 +124,10 @@ module.exports = (job, settings) => {
             fs.writeFileSync(logPath, outputStr);
 
             if (!fs.existsSync(outputFile)) {
-                settings.logger.log(`[${job.uid}] dumping aerender log:`)
-                settings.logger.log(fs.readFileSync(logPath, 'utf8'))
+                if (fs.existsSync(logPath)) {
+                    settings.logger.log(`[${job.uid}] dumping aerender log:`)
+                    settings.logger.log(fs.readFileSync(logPath, 'utf8'))
+                }
 
                 return reject(new Error(`Couldn't find a result file`))
             }
