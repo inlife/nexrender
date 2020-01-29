@@ -54,6 +54,7 @@ const start = async (host, secret, settings) => {
             await client.updateJob(job.uid, job)
         } catch(err) {
             console.log(`[${job.uid}] error while updating job state to ${job.state}. Job abandoned.`)
+            console.log(`[${job.uid}] error stack: ${err.stack}`)
             continue;
         }
 
