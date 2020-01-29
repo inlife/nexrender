@@ -69,7 +69,8 @@
     - [Examples](#examples)
   - [Development](#development)
   - [Project Values](#project-values)
-  - [External Packages](#external-packages)
+  - [Awesome External Packages](#awesome-external-packages)
+  - [Awesome Related Projects](#awesome-related-projects)
     - [Custom Actions](#custom-actions)
   - [Migrating from v0.x](#migrating-from-v0x)
     - [Naming](#naming)
@@ -732,14 +733,20 @@ This project has a few principle-based goals that guide its development:
 
 * **Have fun contributing.** Coding is awesome!
 
-## External Packages
+## Awesome External Packages
 
 Here you can find a list of packages published by other contributors:
 
 * [HarryLafranc/nexrender-action-handbrake](https://github.com/HarryLafranc/nexrender-action-handbrake) - Encode a video with Handbrake on nexrender-postrender
+* [dberget/nexrender-action-cloudinary](https://github.com/dberget/nexrender-action-cloudinary) - Upload a video to Cloudinary platform
+* [dberget/nexrender-action-normalize-color](https://github.com/dberget/nexrender-action-normalize-color) - Normalize colors for each asset defined in options
 * [somename/package-name](#) - a nice description of a nice package doing nice things
 
 Since nexrender allows to use external packages installed globally from npm, its quite easy to add your own modules
+
+## Awesome Related Projects
+
+* [Jeewes/nerc](https://github.com/Jeewes/nerc) - NERC: Tool for filling nexrender config templates with CSV data.
 
 ### Custom Actions
 
