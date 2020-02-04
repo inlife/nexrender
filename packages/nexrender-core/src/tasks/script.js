@@ -149,10 +149,11 @@ const wrapScript = ({ dest }) => (`(function() {
     @param src                 The JSX script 
     @param parameters          (Array<Object>)  Argument array described in the Asset JSON object inside the Job description
     @param keyword             (String)         Name for the exported variable holding configuration parameters. Defaults to NX as in NeXrender.
+    @param globalDefaultValue  (Any)            The default value in case the user setted key name on any given `parameter` child object. Defaults to `null`
 
     @return string             (String)         The compiled script with parameter injection outside its original scope to avoid user-defined defaults collision. 
 */
-const wrapEnhancedScript = ({ dest, parameters = [], keyword = "NX",  ...asset }, jobID, settings) => {
+const wrapEnhancedScript = ({ dest, parameters = [], keyword = "NX", globalDefaultValue = null,  ...asset }, jobID, settings) => {
     // Initialization 
 
     // Byte stream from download.js helper. Not to be confused  with src which is the plaintext path to the file. 
@@ -161,6 +162,7 @@ const wrapEnhancedScript = ({ dest, parameters = [], keyword = "NX",  ...asset }
     // Parameter argument injection template literal. See at the end for the final definition. 
     var argumentInjection = "";
     
+
     // Regular Expression to match all {keyword} occurrences. For example, if keyword==NX then it matches variables such as NX.sample or functions such as NX.call()
 
     // The following regex is just for reference purposes, since the lookbehind part is not currently working.
@@ -203,7 +205,7 @@ const wrapEnhancedScript = ({ dest, parameters = [], keyword = "NX",  ...asset }
         // And we finally inject the parameters to the script outside the script scope to avoid conflicts with user-defined defaults.
         // If no parameter is set in the JSON declaration, and no default initialization is defined in the script then we inject an object with nulled missing parameters.
         if(Object.keys(parameters).length > 0) {
-            parameters.forEach(p => injectedParams[p.key] = p.value);
+            parameters.forEach(p => injectedParams[p.key] = p.value ? p.value : globalDefaultValue);
             str = `var ${keyword} = ${JSON.stringify(injectedParams)};`;
         } else if( script.match(regx) == null) {
             // Fill with null all the missing arguments currently being used in the JSX script but not defined on the JSON Asset.
@@ -278,13 +280,12 @@ const wrapEnhancedScript = ({ dest, parameters = [], keyword = "NX",  ...asset }
         ====================
         @description            Creates a placeholder array with all matches within the script 
         @param keys             (Array)     Names of the keys to fill the array. Default = [].
-        @param placeholder      (Object)    Placeholder array to fill values with default value. Default = {}
-        @param defaultValue     (Null)      Default value to fill objects with. Default = null        
+        @param placeholder      (Object)    Placeholder array to fill values with default value. Default = {}      
         
         @return                 (Object) placeholder object with names keys set to null.
     */
-   const fillObject = (keys = [], placeholder = {}, defaultValue = null) => {
-        keys.forEach( v => placeholder[v] = `${defaultValue}`);
+   const fillObject = (keys = [], placeholder = {}) => {
+        keys.forEach( v => placeholder[v] = `${globalDefaultValue}`);
         return placeholder;
    };
     
