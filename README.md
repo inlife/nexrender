@@ -606,7 +606,26 @@ The code above will output either:
 
 But don't you worry about missing any of the examples above; If you use a variable in your JSX with the default keyword and no initialization whatsoever, the console will output a handy initialization code snippet for both JSON and JSX for you to copy and modify with your own values! 
 
+### Example compiled script
+An example of a compiled script without JSON nor JSX initialization (auto generated null values) would look like the following ( minus the comments ) 
+                        
+```jsx
+(function() {
+    // Generated based on the parameters on the script, with no JSON parameters initialization and no local variable defined. 
+    var NX = {"name":"null"};
 
+    // Original script from jsx file.
+
+    // Note that this can, and most positively will, crash if executed directly in After Effects. With a local definition of the variable and default     
+    // parameters this would be fixed.
+    {
+        // Example of local definition:
+        // var NX = NX || { name : "John" };
+        alert("Hello " + NX.name);
+    }
+    // End of jsx script
+})();
+```
 
 
 That pretty much covers basics of templated rendering.
