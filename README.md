@@ -518,10 +518,11 @@ and from the nexrender side everything is quite simple. You only need to provide
 
 ### Fields
 
-* `src`: **string**, a URI pointer to the specific resource, check out [supported protocols](#protocols)
-* `type`: **string**, for script items, is always `script`
-* `keyword`: (optional) **string**, name for the configuration object holding all the dynamically injected parameters. Defaults to **NX**
-* `parameters`: (optional) **object**, object where all the dynamically injected parameters are defined. Variables not defined here but used in the script are null by default. 
+* `src`:                        **string**, a URI pointer to the specific resource, check out [supported protocols](#protocols)
+* `type`:                       **string**, for script items, is always `script`
+* `keyword`:                    (optional) **string**, name for the configuration object holding all the dynamically injected parameters. Defaults to **NX**
+* `parameters`:                 (optional) **object**, object where all the dynamically injected parameters are defined. Variables not defined here but used in the script are null by default. 
+* `globalDefaultValue`          (optional) **any**, The default value of any found unknown or undefined value for any given `keyword` child object `key`is `null`. However this can be changed by setting this parameter to something. You should be careful on which default to set, it is suggested to leave it as it is and check for `null` values in your JSX code. 
 
 ### Example with no dynamic parameters.
 
