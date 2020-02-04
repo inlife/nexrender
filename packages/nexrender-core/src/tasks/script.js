@@ -77,6 +77,12 @@ const wrapScript = ({ dest }) => (`(function() {
                             }
                         ]
 
+                         Each parameter object should have the following:
+                        * **key** (required)    :   The key of the variable. Example: Key = dog => NX.dog.
+                        * **value** (required)  :   The target value for the variable. Example: Key = dog, Value = "doggo" => NX.dog = "doggo"
+                        
+                        The `value` could be a variable or a function, but beware that there is no sanitization nor validation so **if the input is malformed it could crash the job**
+
                         By default ${keyword} = "NX", so you would use a dynamic variable like NX.name or a function like NX.something(). To change this keyword simply
                         set "keyword" as shown below: 
 
