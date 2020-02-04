@@ -1,0 +1,12 @@
+{
+    "template": {
+        "src": "file:///C:/templates/sample.aep",
+        "composition": "BLANK_COMP"
+    },
+    "assets": [
+        {
+            "src": "file:///C:/scripts/paramInject_noInit.jsx",
+            "type": "script"
+        }
+    ]
+}

@@ -1,0 +1,3 @@
+{
+    alert("Hello " + NX.name);
+}
