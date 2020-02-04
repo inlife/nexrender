@@ -120,11 +120,31 @@ const wrapScript = ({ dest }) => (`(function() {
                         a) "There are null beer bottles ready to drink!" if no parameter defined on the JSON Asset "parameters" array.
                         b) "There are X beer bottles ready to drink!" if parameter "beerBottlesAmount" has a "value" of X on the JSON Asset "parameters" array. 
 
-    @param src                 The JSX script 
-    @param parameters          (Array<Object>) Argument array described in the Asset JSON object inside the Job description
-    @param keyword             (String) Name for the exported variable holding configuration parameters. Defaults to NX as in NeXrender.
+                        An example of a compiled script without JSON nor JSX initialization (auto generated null values) would look like the following ( minus the comments ) 
+                        
+                        ```
+                        (function() {
+                            // Generated based on the parameters on the script, with no JSON parameters initialization and no local variable defined. 
+                            var NX = {"name":"null"};
 
-    @return string             (String) The compiled script with parameter injection outside its original scope to avoid user-defined defaults collision. 
+                            // Original script from jsx file. Pretty much the same as the behaviour before my PR.
+
+                            // Note that this can, and most positively will, crash if executed directly in After Effects. With a local definition of the variable and default     
+                            // parameters this would be fixed.
+                            {
+                                // Example of local definition:
+                                // var NX = NX || { name : "John" };
+                                alert("Hello " + NX.name);
+                            }
+                            // End of jsx script
+                        })();
+                        ```
+
+    @param src                 The JSX script 
+    @param parameters          (Array<Object>)  Argument array described in the Asset JSON object inside the Job description
+    @param keyword             (String)         Name for the exported variable holding configuration parameters. Defaults to NX as in NeXrender.
+
+    @return string             (String)         The compiled script with parameter injection outside its original scope to avoid user-defined defaults collision. 
 */
 const wrapEnhancedScript = ({ dest, parameters = [], keyword = "NX",  ...asset }, jobID, settings) => {
     // Initialization 
@@ -139,7 +159,9 @@ const wrapEnhancedScript = ({ dest, parameters = [], keyword = "NX",  ...asset }
 
     // The following regex is just for reference purposes, since the lookbehind part is not currently working.
     // (NX\.)([a-zA-Z0-9_-]{1,}[\(]?(?(?<=\()\)|[a-zA-Z0-9_\-\(\),.]{1,}\))?)?
-    var regex = new RegExp(`(${keyword}\\.)([a-zA-Z0-9_-]{1,}[\\(]?)?`, "gm");
+
+    // This regex matches any occurence of the `keyword` usage, except on comments to avoid misinterpretation of code.
+    var regex = new RegExp(`(?<!(?:[\\/ ]))(?<!(?:[\\* ]))(?:[ ]){0,}?(${keyword}\\.)([a-zA-Z0-9_-]{1,}[\\(]?)`, "gm");
 
     // Keys of the missing parameters. See below for further explanation.
     var missingMatches = {
@@ -155,45 +177,48 @@ const wrapEnhancedScript = ({ dest, parameters = [], keyword = "NX",  ...asset }
         ==========================
         @description            Creates the string initializing a scoped variable with parameters from either the Script Asset JSON configuration or a placeholder array with null values 
                                 by finding uses of the ${keyword} variable in the JSX script provided that the user didn't define its own default values. 
-        @param keyword          (String) Keyword to define as the final variable name. Defaults to NX as in NeXrender.
-        @param parameters       (Object) Object with the parameters to inject. Defaults to {}
-        @param script           (string) JSX Script to inject the variable to.
-        @param logger           (Object) Logger to output warning. Defaults to global logger (console)
-        @return string          (String) Final template literal to place at the compiled script. 
+        @param keyword          (String)    Keyword to define as the final variable name. Defaults to NX as in NeXrender.
+        @param parameters       (ArrayzObject>)    Array with the parameters to inject. Defaults to []
+        @param script           (string)    JSX Script to inject the variable to.
+        @param logger           (Object)    Logger to output warning. Defaults to global logger (console)
+        @return string          (String)    Final template literal to place at the compiled script. 
     */
 
    const setupInjection = (keyword, parameters, script, logger ) => {
-    var str = ``;
-    var injectedParams = {};
+        var str = ``;
+        var injectedParams = {};
 
-    // Regex to find a local scoped instance of ${keyword}, to avoid overriding local defaults with null values. 
-    var regx = new RegExp(`(var|const|let) ${keyword}`, "gm");
+        // [ EXPERIMENTAL!! ] See method documentation for more info.
+        script = stripCommentsFromScript(script);
+        
+        // Regex to find a local scoped instance of ${keyword}, to avoid overriding local defaults with null values. 
+        var regx = new RegExp(`(?<!(?:[\\/ ]))(?<!(?:[\\* ]))(?:[ ]){0,}?(var|const|let) ${keyword}`, "gm");
 
-    // And we finally inject the parameters to the script outside the script scope to avoid conflicts with user-defined defaults.
-    // If no parameter is set in the JSON declaration, and no default initialization is defined in the script then we inject an object with nulled missing parameters.
-    if(Object.keys(parameters).length > 0) {
-        parameters.forEach(p => injectedParams[p.key] = p.value);
-        str = `var ${keyword} = ${JSON.stringify(injectedParams)};`;
-    } else if( script.match(regx) == null) {
-        // Fill with null all the missing arguments currently being used in the JSX script but not defined on the JSON Asset.
-        str = `var ${keyword} = ${JSON.stringify(fillObject(missingMatches.needsDefault, injectedParams))}`;
-    } 
+        // And we finally inject the parameters to the script outside the script scope to avoid conflicts with user-defined defaults.
+        // If no parameter is set in the JSON declaration, and no default initialization is defined in the script then we inject an object with nulled missing parameters.
+        if(Object.keys(parameters).length > 0) {
+            parameters.forEach(p => injectedParams[p.key] = p.value);
+            str = `var ${keyword} = ${JSON.stringify(injectedParams)};`;
+        } else if( script.match(regx) == null) {
+            // Fill with null all the missing arguments currently being used in the JSX script but not defined on the JSON Asset.
+            str = `var ${keyword} = ${JSON.stringify(fillObject(missingMatches.needsDefault, injectedParams))}`;
+        } 
 
-    if(Object.keys(parameters).length == 0) {
-        logger.log(`[${jobID}] ${displayAlert(missingMatches, script.match(regx) == null, str)}`);
+        if(Object.keys(parameters).length == 0) {
+            logger.log(`[${jobID}] ${displayAlert(missingMatches, script.match(regx) == null, str)}`);
+        }
+        
+
+        return str;
     }
-    
-
-    return str;
-}
     
     /*
         Generated Placeholder Parameters
         ================================
-        @description            Generates placeholder a "parameters" JSON Object based on keys from an array.
-        @param keys             (Array) Array of strings.
+        @description            Generates placeholder for "parameters" JSON Object based on keys from an array.
+        @param keys             (Array)     Array of strings. These should be the occurences of `keyword` variable use on the JSX script.
 
-        @return string          (String) JSON "parameters" object.   
+        @return string          (String)    JSON "parameters" object.   
     */
     var generatedPlaceholderParameters = (keys = []) => {
         const template = (key) => `
@@ -212,13 +237,12 @@ const wrapEnhancedScript = ({ dest, parameters = [], keyword = "NX",  ...asset }
         Display Missing Alert
         =====================
         @description              Display a log message if theres any missing parameter set on the JSON configuration but is being referred in the script.
-        
-        Parameters:
-        @param m                 (Object) Missing Parameters object. See below for its construction. Must have child objects `fn` and `vars`
-        @param showJSXWarning    (Boolean) Flag for whether or not to display warning about not initializing variable in JSX script. Defaults to false.
-        @param injectionVar      (String) Variable initialized with placeholder values. Defaults to "".
 
-        @return string           (String) The template literal string displaying all the occurences if any. 
+        @param m                 (Object)   Missing Parameters object. See below for its construction. Must have child objects `fn` and `vars`
+        @param showJSXWarning    (Boolean)  Flag for whether or not to display warning about not initializing variable in JSX script. Defaults to false.
+        @param injectionVar      (String)   Variable initialized with placeholder values. Defaults to "".
+
+        @return string           (String)   The template literal string displaying all the occurences if any. 
     */
     var displayAlert = (m, showJSXWarning = false, injectionVar = "") => {
         const areFnMissing = (m.fn != undefined && Object.keys(m.fn).length > 0);
@@ -247,9 +271,9 @@ const wrapEnhancedScript = ({ dest, parameters = [], keyword = "NX",  ...asset }
         Fill Missing Matches
         ====================
         @description            Creates a placeholder array with all matches within the script 
-        @param keys             (Array) Names of the keys to fill the array. Default = [].
-        @param placeholder      (Object) Placeholder array to fill values with default value. Default = {}
-        @param defaultValue     (Null) Default value to fill objects with. Default = null        
+        @param keys             (Array)     Names of the keys to fill the array. Default = [].
+        @param placeholder      (Object)    Placeholder array to fill values with default value. Default = {}
+        @param defaultValue     (Null)      Default value to fill objects with. Default = null        
         
         @return                 (Object) placeholder object with names keys set to null.
     */
@@ -258,40 +282,82 @@ const wrapEnhancedScript = ({ dest, parameters = [], keyword = "NX",  ...asset }
         return placeholder;
    };
     
-    // Parse all occurrences of the usage of NX on the provided script.
-    // const nxMatches = Array.from(script.matchAll(regex)); // String.matchAll is available from Node version 12.0.0
-    const nxMatches = script.match(regex); // Backwards compatibility (see above)
 
-    if (nxMatches != null ) {
-        // Since the current regex catches ocurrences like NX.call() as `NX.call(` we split the matches as either functions or variables for further debugging.
-        for( var i = 0; i < Object.keys(nxMatches).length; i++ ) {
+   /*
+        Strip comment blocks from Script [EXPERIMENTAL]
+        ================================
+        @description                Removes /* * / comments  from script to avoid mismatching occurrences. 
+        @param script               (String)            The target script to strip.
+        @returns string             (String)            A one-line version of the original script without comment blocks.
+   */
 
-            // var nxMatch = nxMatches[Object.keys(nxMatches)[i]][2]; // String.matchAll is available from Node version 12.0.0
-            var nxMatch = nxMatches[i].substr(keyword.length + 1); // Backwards compatibility (see above)
+   const stripCommentsFromScript = (script) => {
+        // Experimental: Strip comment blocks from script to avoid mismatching of commented usage of the `keyword` variable
+       // https://levelup.gitconnected.com/advanced-regex-find-and-remove-multi-line-comments-in-your-code-c162ba6e5811
+       return script = script.replace(/\n/g, " ").replace(/\/\*.*\*\//g, " ")
+       .replace(/\s+/g, " ").trim();
+   }
 
-            if ( (nxMatch && parameters.length == 0) || parameters.length > 0 && parameters.filter(o => o.key == nxMatch ).length > 0) { // If there's no parameter object set but there are matches we proceed.
-                if(nxMatch.slice(-1) == "(") { // It's a function. 
-                    missingMatches.fn.push(nxMatch.replace("(", "")); // Sanitize match.
-                } else {
-                    missingMatches.vars.push(nxMatch); // It's a variable/object.
+
+   /*
+        Find Missing Matches
+        ====================
+        @description                RegEx Searches a given JSX script to find occurences 
+        @param script               (String)            JSX script to find occurences in.
+        @param regex                (Object)            RegEx object to match against JSX script.
+        @param parameters           (Array<Object>)     Array with the parameters to compare against the matches. 
+        @return bool                (Boolean)           Whether or not there are any variables to inject. Defaults to false.
+   */
+   
+   const findMatches = (script, regex, parameters, missingMatches = { fn: [], vars: [], needsDefault: [] }, logger) => {
+
+        // [ EXPERIMENTAL !! ] See method documentation for more info.
+        script = stripCommentsFromScript(script);
+       
+       
+        // Parse all occurrences of the usage of NX on the provided script.
+        // const nxMatches = Array.from(script.matchAll(regex)); // String.matchAll is available from Node version 12.0.0
+        const nxMatches = script.match(regex); // Backwards compatibility (see above)
+        
+        if (nxMatches != null ) {
+            // Since the current regex catches ocurrences like NX.call() as `NX.call(` we split the matches as either functions or variables for further debugging.
+            for( var i = 0; i < Object.keys(nxMatches).length; i++ ) {
+                
+                // var nxMatch = nxMatches[Object.keys(nxMatches)[i]][2]; // String.matchAll is available from Node version 12.0.0
+                var nxMatch = nxMatches[i].replace(" ", '').substr(keyword.length + 1); // Backwards compatibility (see above)
+                
+                logger.log(JSON.stringify(nxMatch));
+                if ( (nxMatch && parameters.length == 0) || parameters.length > 0 && parameters.filter(o => o.key == nxMatch ).length > 0) { // If there's no parameter object set but there are matches we proceed.
+                    if(nxMatch.slice(-1) == "(") { // It's a function. 
+                        missingMatches.fn.push(nxMatch.replace("(", "")); // Sanitize match.
+                    } else {
+                        missingMatches.vars.push(nxMatch); // It's a variable/object.
+                    }
+                } 
+                if( (parameters.filter(o => o.key != nxMatch).length == 0) ) { // If theres a variable on the script but not in the parameters...
+                    missingMatches.needsDefault.push(nxMatch);  // Set for null filling. 
                 }
-            } 
-            if( (parameters.filter(o => o.key != nxMatch).length == 0) ) { // If theres a variable on the script but not in the parameters...
-                missingMatches.needsDefault.push(nxMatch);  // Set for null filling. 
             }
         }
-    }
+        return [...missingMatches.fn, ...missingMatches.vars].length > 0;
+   }
+    
+    
 
     // If there's anything that's missing, we proceed with the injection.
-    if([...missingMatches.fn, ...missingMatches.vars].length > 0) {
+    if(findMatches(script, regex, parameters, missingMatches, settings.logger)) {
         argumentInjection = setupInjection(keyword, parameters, script, settings.logger);
     }
+
     
-    // Et voilà, winner winner chicken dinner! 
+    // Et voilà! 
     const compiledScript = `(function() {
         ${argumentInjection}
         ${script}
     })();\n`;
+
+    // Uncomment the following line to preview the compiled script on console. 
+    // settings.logger.log(compiledScript);
 
     return (compiledScript)
 
