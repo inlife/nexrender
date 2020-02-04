@@ -555,6 +555,12 @@ and from the nexrender side everything is quite simple. You only need to provide
 ]
 ```
 
+Each parameter object must have the following:
+* **key** (required)    :   The key of the variable. Example: Key = dog => NX.dog.
+* **value** (required)  :   The target value for the variable. Example: Key = dog, Value = "doggo" => NX.dog = "doggo"
+
+The `value` could be a variable or a function, but beware that there is no sanitization nor validation so **if the input is malformed it could crash the job**
+
 By default the **keyword** is set to **`NX`**, so you would call your variables or methods like `NX.foo` or `NX.bar()`. To change this keyword simply set `"keyword"` as shown below: 
 
 ```json
