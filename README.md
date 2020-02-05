@@ -521,8 +521,8 @@ and from the nexrender side everything is quite simple. You only need to provide
 * `src`:                        **string**, a URI pointer to the specific resource, check out [supported protocols](#protocols)
 * `type`:                       **string**, for script items, is always `script`
 * `keyword`:                    (optional) **string**, name for the configuration object holding all the dynamically injected parameters. Defaults to **NX**
-* `parameters`:                 (optional) **object**, object where all the dynamically injected parameters are defined. Variables not defined here but used in the script are null by default. 
-* `globalDefaultValue`          (optional) **any**, The default value of any found unknown or undefined value for any given `keyword` child object `key`is `null`. However this can be changed by setting this parameter to something. You should be careful on which default to set, it is suggested to leave it as it is and check for `null` values in your JSX code. 
+* `parameters`:                 (optional) **object**, object where all the dynamically injected parameters are defined. Variables not defined here but used in the script are null by default.
+* `globalDefaultValue`          (optional) **any**, The default value of any found unknown or undefined value for any given `keyword` child object `key`is `null`. However this can be changed by setting this parameter to something. You should be careful on which default to set, it is suggested to leave it as it is and check for `null` values in your JSX code.
 
 ### Example with no dynamic parameters.
 
@@ -562,7 +562,7 @@ Each parameter object must have the following:
 
 The `value` could be a variable or a function, but beware that there is no sanitization nor validation so **if the input is malformed it could crash the job**
 
-By default the **keyword** is set to **`NX`**, so you would call your variables or methods like `NX.foo` or `NX.bar()`. To change this keyword simply set `"keyword"` as shown below: 
+By default the **keyword** is set to **`NX`**, so you would call your variables or methods like `NX.foo` or `NX.bar()`. To change this keyword simply set `"keyword"` as shown below:
 
 ```json
 "assets": [
@@ -588,7 +588,7 @@ This way instead of `NX.foo` it would be `_settings.foo`
 
 ```jsx
 {
-    var NX = NX || { name : John }; // Setting default variable using the default keyword.
+    var NX = NX || { name : "John" }; // Setting default variable using the default keyword.
 
     return "Hello " + NX.name;
 }
@@ -596,7 +596,7 @@ This way instead of `NX.foo` it would be `_settings.foo`
 
 The code above will output either:
 1. `"Hello John"` if no parameter defined on the JSON `parameters` array or this parameter is missing.
-2. `"Hello NAME"` if parameter `name` has a `value` of `NAME` on the JSON `parameters` array. 
+2. `"Hello NAME"` if parameter `name` has a `value` of `NAME` on the JSON `parameters` array.
 
 ### Example JSX Script without defaults:
 
@@ -609,21 +609,22 @@ The code above will output either:
 
 The code above will output either:
 1. `"There are null beer bottles ready to drink!" `if no parameter defined on the JSON `parameters` array.
-2. `"There are 20 beer bottles ready to drink!"` if parameter `beerBottlesAmount` has a `value` of `20` on the JSON `parameters` array. 
+2. `"There are 20 beer bottles ready to drink!"` if parameter `beerBottlesAmount` has a `value` of `20` on the JSON `parameters` array.
 
-But don't you worry about missing any of the examples above; If you use a variable in your JSX with the default keyword and no initialization whatsoever, the console will output a handy initialization code snippet for both JSON and JSX for you to copy and modify with your own values! 
+But don't you worry about missing any of the examples above; If you use a variable in your JSX with the default keyword and no initialization whatsoever,
+the console will output a handy initialization code snippet for both JSON and JSX for you to copy and modify with your own values!
 
 ### Example compiled script
-An example of a compiled script without JSON nor JSX initialization (auto generated null values) would look like the following ( minus the comments ) 
-                        
+An example of a compiled script without JSON nor JSX initialization (auto generated null values) would look like the following ( minus the comments )
+
 ```jsx
 (function() {
-    // Generated based on the parameters on the script, with no JSON parameters initialization and no local variable defined. 
+    // Generated based on the parameters on the script, with no JSON parameters initialization and no local variable defined.
     var NX = {"name":"null"};
 
     // Original script from jsx file.
 
-    // Note that this can, and most positively will, crash if executed directly in After Effects. With a local definition of the variable and default     
+    // Note that this can, and most positively will, crash if executed directly in After Effects. With a local definition of the variable and default
     // parameters this would be fixed.
     {
         // Example of local definition:
