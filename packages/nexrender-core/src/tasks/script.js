@@ -20,7 +20,7 @@ const selectLayers = ({ composition, layerName, layerIndex }, callbackString) =>
 
 const renderIf = (value, string) => {
     const encoded = typeof value == 'string' ? escape(value) : JSON.stringify(value);
-    return value === undefined ? '' : string.replace('$value', encoded);
+    return value === undefined ? '' : string.replace('$value', () => encoded);
 }
 
 const partsOfKeypath = (keypath) => {
@@ -355,9 +355,12 @@ const wrapEnhancedScript = ({ dest, parameters = [], keyword = "NX", globalDefau
 
    const stripCommentsFromScript = (script) => {
         // Experimental: Strip comment blocks from script to avoid mismatching of commented usage of the `keyword` variable
-       // https://levelup.gitconnected.com/advanced-regex-find-and-remove-multi-line-comments-in-your-code-c162ba6e5811
-       return script = script.replace(/\n/g, " ").replace(/\/\*.*\*\//g, " ")
-       .replace(/\s+/g, " ").trim();
+        // https://levelup.gitconnected.com/advanced-regex-find-and-remove-multi-line-comments-in-your-code-c162ba6e5811
+        return script
+            .replace(/\n/g, " ")
+            .replace(/\/\*.*\*\//g, " ")
+            .replace(/\s+/g, " ")
+            .trim();
    }
 
 

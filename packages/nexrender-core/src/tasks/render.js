@@ -123,6 +123,11 @@ module.exports = (job, settings) => {
 
             fs.writeFileSync(logPath, outputStr);
 
+            /* resolve job without checking if file exists, or its size for image sequences */
+            if (job.template.imageSequence || ['jpeg', 'jpg', 'png'].indexOf(outputFile) !== -1) {
+                return resolve(job)
+            }
+
             if (!fs.existsSync(outputFile)) {
                 if (fs.existsSync(logPath)) {
                     settings.logger.log(`[${job.uid}] dumping aerender log:`)
