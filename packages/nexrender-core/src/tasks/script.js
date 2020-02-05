@@ -401,7 +401,7 @@ module.exports = (job, settings) => {
     job.scriptfile = path.join(base, `nexrender-${job.uid}-script.jsx`);
     fs.writeFileSync(job.scriptfile, script
         .replace('/*COMPOSITION*/', job.template.composition)
-        .replace('/*USERSCRIPT*/', data.join('\n'))
+        .replace('/*USERSCRIPT*/', () => data.join('\n'))
     );
 
     return Promise.resolve(job)
