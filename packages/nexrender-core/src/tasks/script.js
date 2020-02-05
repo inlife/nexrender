@@ -169,7 +169,19 @@ const wrapEnhancedScript = ({ dest, parameters = [], keyword = "NX", globalDefau
     // (NX\.)([a-zA-Z0-9_-]{1,}[\(]?(?(?<=\()\)|[a-zA-Z0-9_\-\(\),.]{1,}\))?)?
 
     // This regex matches any occurence of the `keyword` usage, except on comments to avoid misinterpretation of code.
-    var regex = new RegExp(`(?<!(?:[\\/ ]))(?<!(?:[\\* ]))(?:[ ]){0,}?(${keyword}\\.)([a-zA-Z0-9_-]{1,}[\\(]?)`, "gm");
+    var keywordRegex = new RegExp(`(?<!(?:[\\/ ]))(?<!(?:[\\* ]))(?:[ ]){0,}?(${keyword}\\.)([a-zA-Z0-9_-]{1,}[\\(]?)`, "gm");
+
+
+    // Find instances of a function inside a single-line string.
+    // Example matches:
+    /*
+        function myfunc() {}
+        function myfunc(){}
+        function myfunc( { what = "ever", you, want } ){ asdd=123; }
+        () => {}
+        ( dog, cat = 0 ) => { dog() }
+    */
+    var fnRegex = new RegExp(/(?:(?:(?:function *(?:[a-zA-Z0-9_]+)?) *(?:\((?:.*)\)) *(?:\{(?:.*)\}))|(?:(?:.*) *(?:=>) *(?:\{)(?:.*?)?\}))/, "gms");
 
     // Keys of the missing parameters. See below for further explanation.
     var missingMatches = {
@@ -177,6 +189,19 @@ const wrapEnhancedScript = ({ dest, parameters = [], keyword = "NX", globalDefau
         vars: [],
         needsDefault: [],
     };
+
+    /*
+        Parse method from parameter
+        @description                    Given a parameter detect whether it should be casted as a function in the final argument injection.
+        @param param                (string|number|boolean|null|object|array) The parameter to parse a method from. 
+        @return bool                (Boolean) If a method is detected then it's stripped from String quotes, else it's returned in it's original type.
+    */
+    const parseMethod = (param) => {
+        if(typeof param == "string") {
+            return (param.match(fnRegex) ? true : false);
+        } 
+        return false
+    }
 
     // Helper functions
 
@@ -192,27 +217,57 @@ const wrapEnhancedScript = ({ dest, parameters = [], keyword = "NX", globalDefau
         @return string          (String)    Final template literal to place at the compiled script. 
     */
 
-   const setupInjection = (keyword, parameters, script, logger ) => {
+   const setupInjection = (keyword, jsonParameters, missingJsonParameters = { fn: [], vars: [], needsDefault: [] }, script, logger ) => {
         var str = ``;
         var injectedParams = {};
 
+        logger.log(missingJsonParameters);
+        
         // [ EXPERIMENTAL!! ] See method documentation for more info.
         script = stripCommentsFromScript(script);
         
         // Regex to find a local scoped instance of ${keyword}, to avoid overriding local defaults with null values. 
         var regx = new RegExp(`(?<!(?:[\\/ ]))(?<!(?:[\\* ]))(?:[ ]){0,}?(var|const|let) ${keyword}`, "gm");
 
-        // And we finally inject the parameters to the script outside the script scope to avoid conflicts with user-defined defaults.
-        // If no parameter is set in the JSON declaration, and no default initialization is defined in the script then we inject an object with nulled missing parameters.
-        if(Object.keys(parameters).length > 0) {
-            parameters.forEach(p => injectedParams[p.key] = p.value ? p.value : globalDefaultValue);
-            str = `var ${keyword} = ${JSON.stringify(injectedParams)};`;
+        // And we finally inject the jsonParameters to the script outside the script scope to avoid conflicts with user-defined defaults.
+        // If no parameter is set in the JSON declaration, and no default initialization is defined in the script then we inject an object with nulled missing jsonParameters.
+        if(jsonParameters.length > 0) {
+            jsonParameters.forEach(p => injectedParams[p.key] = p.value ? p.value : globalDefaultValue);
+            // str = `var ${keyword} = ${JSON.stringify(injectedParams)};`;
+            str = `var ${keyword} = {
+                    ${Object.keys(injectedParams).map((k, i) => {
+                            let t = globalDefaultValue;
+                            if(!parseMethod(injectedParams[k])) {
+                                switch(typeof injectedParams[k]) {
+                                    case 'string': 
+                                            t = `"${injectedParams[k]}"`
+                                        break;
+                                    case 'number':
+                                    case 'boolean':
+                                    case 'object':
+                                            t = `${injectedParams[k]}`
+                                        break;
+                                    case 'undefined':
+                                            t = `undefined`
+                                        break;
+                                    default: 
+                                            t = `${globalDefaultValue}`
+                                        break;
+                                }
+                            } else {
+                                t = `${injectedParams[k]}`;
+                            }
+                            // newLine = Object.keys(injectedParams).length - 1 < i ? "ASDJALKDJ" : '\n';
+                            return `${k} : ${t}`
+                    }).join(", \n")}
+                }`
+            // str = `var ${keyword} = ${constructjsonParameters(injectedParams)}`
         } else if( script.match(regx) == null) {
             // Fill with null all the missing arguments currently being used in the JSX script but not defined on the JSON Asset.
             str = `var ${keyword} = ${JSON.stringify(fillObject(missingMatches.needsDefault, injectedParams))}`;
         } 
 
-        if(Object.keys(parameters).length == 0) {
+        if(jsonParameters.length  == 0) {
             logger.log(`[${jobID}] ${displayAlert(missingMatches, script.match(regx) == null, str)}`);
         }
         
@@ -231,7 +286,7 @@ const wrapEnhancedScript = ({ dest, parameters = [], keyword = "NX", globalDefau
     var generatedPlaceholderParameters = (keys = []) => {
         const template = (key) => `
                 {
-                    "${key}"  :   "${globalDefaultValue}"
+                    ${key}  :   "${globalDefaultValue}"
                 }\n
         `;
 
@@ -285,7 +340,7 @@ const wrapEnhancedScript = ({ dest, parameters = [], keyword = "NX", globalDefau
         @return                 (Object) placeholder object with names keys set to null.
     */
    const fillObject = (keys = [], placeholder = {}) => {
-        keys.forEach( v => placeholder[v] = `${globalDefaultValue}`);
+        keys.forEach( v => placeholder[v] = globalDefaultValue);
         return placeholder;
    };
     
@@ -307,53 +362,51 @@ const wrapEnhancedScript = ({ dest, parameters = [], keyword = "NX", globalDefau
 
 
    /*
-        Find Missing Matches
+        Find Missing Matches in JSX Script
         ====================
-        @description                RegEx Searches a given JSX script to find occurences 
+        @description                RegEx Searches a given JSX script to find occurences and saves an object with keys
         @param script               (String)            JSX script to find occurences in.
         @param regex                (Object)            RegEx object to match against JSX script.
         @param parameters           (Array<Object>)     Array with the parameters to compare against the matches. 
         @return bool                (Boolean)           Whether or not there are any variables to inject. Defaults to false.
    */
    
-   const findMatches = (script, regex, parameters, missingMatches = { fn: [], vars: [], needsDefault: [] }, logger) => {
+   const findMatchesInJSX = (script, regex, parameters, missingMatches = { fn: [], vars: [], needsDefault: [] }, logger) => {
 
         // [ EXPERIMENTAL ] See method documentation for more info.
         script = stripCommentsFromScript(script);
        
-       
         // Parse all occurrences of the usage of NX on the provided script.
         // const nxMatches = Array.from(script.matchAll(regex)); // String.matchAll is available from Node version 12.0.0
-        const nxMatches = script.match(regex); // Backwards compatibility (see above)
+        const nxMatches = script.match(regex); 
         
-        if (nxMatches != null ) {
+        if (nxMatches && nxMatches.length > 0 ) {
             // Since the current regex catches ocurrences like NX.call() as `NX.call(` we split the matches as either functions or variables for further debugging.
-            for( var i = 0; i < Object.keys(nxMatches).length; i++ ) {
-                
+            for( var i = 0; i < nxMatches.length; i++ ) {
                 // var nxMatch = nxMatches[Object.keys(nxMatches)[i]][2]; // String.matchAll is available from Node version 12.0.0
-                var nxMatch = nxMatches[i].replace(" ", '').substr(keyword.length + 1); // Backwards compatibility (see above)
-                
-                logger.log(JSON.stringify(nxMatch));
-                if ( (nxMatch && parameters.length == 0) || parameters.length > 0 && parameters.filter(o => o.key == nxMatch ).length > 0) { // If there's no parameter object set but there are matches we proceed.
-                    if(nxMatch.slice(-1) == "(") { // It's a function. 
+                var nxMatch = nxMatches[i].replace(" ", '').substr(keyword.length + 1);
+                if ( parameters.filter(o => o.key == nxMatch.replace("(", "") ).length == 1) { // If the parameter has a value defined in JSON
+                    logger.log(`Parameter ${nxMatch} found in JSON declaration. Classifying as either method call or variable|object...`)
+                    if(nxMatch.slice(-1) == "(") { // Push it as a method call
                         missingMatches.fn.push(nxMatch.replace("(", "")); // Sanitize match.
                     } else {
-                        missingMatches.vars.push(nxMatch); // It's a variable/object.
+                        missingMatches.vars.push(nxMatch); // Push it as a variable/object.
                     }
-                } 
-                if( (parameters.filter(o => o.key != nxMatch).length == 0) ) { // If theres a variable on the script but not in the parameters...
-                    missingMatches.needsDefault.push(nxMatch);  // Set for null filling. 
+                } else if( (parameters.filter(o => o.key != nxMatch).length == 0) ) { // If theres a variable on the JSX script but has no JSON definition
+                    logger.log(`Parameter ${nxMatch} found in JSON declaration. Classifying as either method call or variable|object...`)
+                    missingMatches.needsDefault.push(nxMatch);  // Set for auto-generated default value.
                 }
             }
         }
-        return [...missingMatches.fn, ...missingMatches.vars].length > 0;
+        // logger.log(JSON.stringify(missingMatches));
+        return [...missingMatches.fn, ...missingMatches.vars, ...missingMatches.needsDefault].length > 0;
    }
     
     
 
     // If there's anything that's missing, we proceed with the injection.
-    if(findMatches(script, regex, parameters, missingMatches, settings.logger)) {
-        argumentInjection = setupInjection(keyword, parameters, script, settings.logger);
+    if(findMatchesInJSX(script, keywordRegex, parameters, missingMatches, settings.logger)) {
+        argumentInjection = setupInjection(keyword, parameters, missingJsonParameters = missingMatches, script, settings.logger);
     }
 
     
@@ -364,7 +417,7 @@ const wrapEnhancedScript = ({ dest, parameters = [], keyword = "NX", globalDefau
     })();\n`;
 
     // Uncomment the following line to preview the compiled script on console. 
-    // settings.logger.log(compiledScript);
+    settings.logger.log(compiledScript);
 
     return (compiledScript)
 
