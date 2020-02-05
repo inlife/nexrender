@@ -231,7 +231,7 @@ const wrapEnhancedScript = ({ dest, parameters = [], keyword = "NX", globalDefau
     var generatedPlaceholderParameters = (keys = []) => {
         const template = (key) => `
                 {
-                    "${key}"  :   "null"
+                    "${key}"  :   "${globalDefaultValue}"
                 }\n
         `;
 
@@ -318,7 +318,7 @@ const wrapEnhancedScript = ({ dest, parameters = [], keyword = "NX", globalDefau
    
    const findMatches = (script, regex, parameters, missingMatches = { fn: [], vars: [], needsDefault: [] }, logger) => {
 
-        // [ EXPERIMENTAL !! ] See method documentation for more info.
+        // [ EXPERIMENTAL ] See method documentation for more info.
         script = stripCommentsFromScript(script);
        
        
