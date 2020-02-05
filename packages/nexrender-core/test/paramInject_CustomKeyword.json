@@ -1,0 +1,19 @@
+{
+    "template": {
+        "src": "file:///C:/templates/sample.aep",
+        "composition": "BLANK_COMP"
+    },
+    "assets": [
+        {
+            "src": "file:///C:/scripts/paramInject_JSONInit.jsx",
+            "type": "script",
+            "keyword": "_settings",
+            "parameters": [
+                {
+                    "key": "name",
+                    "value": "Dilip"
+                }
+            ]
+        }
+    ]
+}

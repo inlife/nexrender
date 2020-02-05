@@ -507,6 +507,8 @@ You can also change the deeper attributes of properties, for example the font of
 
 ## Script items
 
+🚀 **NEW**: Now you can pass arguments to JSX dynamically! Read below for more information🚀
+
 The last and the most complex and yet the most powerful is an ability to execute custom `jsx` scripts just before the rendering will start.
 This approach allows you to do pretty much anything that is allowed for scripting,
 like creating/removing layers, adding new elements, restructuring the whole composition, and probably much more.
@@ -516,10 +518,13 @@ and from the nexrender side everything is quite simple. You only need to provide
 
 ### Fields
 
-* `src`: string, a URI pointer to the specific resource, check out [supported protocols](#protocols)
-* `type`: string, for script items, is always `script`
+* `src`:                        **string**, a URI pointer to the specific resource, check out [supported protocols](#protocols)
+* `type`:                       **string**, for script items, is always `script`
+* `keyword`:                    (optional) **string**, name for the configuration object holding all the dynamically injected parameters. Defaults to **NX**
+* `parameters`:                 (optional) **object**, object where all the dynamically injected parameters are defined. Variables not defined here but used in the script are null by default. 
+* `globalDefaultValue`          (optional) **any**, The default value of any found unknown or undefined value for any given `keyword` child object `key`is `null`. However this can be changed by setting this parameter to something. You should be careful on which default to set, it is suggested to leave it as it is and check for `null` values in your JSX code. 
 
-### Example
+### Example with no dynamic parameters.
 
 ```json
 {
@@ -531,6 +536,104 @@ and from the nexrender side everything is quite simple. You only need to provide
     ]
 }
 ```
+
+## Dynamic variables
+
+### Example JSON asset declaration:
+
+```json
+"assets": [
+    {
+        "src": "file:///C:/sample/sampleParamInjection.jsx",
+        "type": "script",
+        "parameters": [
+            {
+                "key": "name",
+                "value": "Dilip"
+            }
+        ]
+    }
+]
+```
+
+Each parameter object must have the following:
+* **key** (required)    :   The key of the variable. Example: Key = dog => NX.dog.
+* **value** (required)  :   The target value for the variable. Example: Key = dog, Value = "doggo" => NX.dog = "doggo"
+
+The `value` could be a variable or a function, but beware that there is no sanitization nor validation so **if the input is malformed it could crash the job**
+
+By default the **keyword** is set to **`NX`**, so you would call your variables or methods like `NX.foo` or `NX.bar()`. To change this keyword simply set `"keyword"` as shown below: 
+
+```json
+"assets": [
+    {
+        "src": "file:///C:/sample/sampleParamInjection.jsx",
+        "type": "script",
+        "keyword": "_settings",
+        "parameters": [
+            {
+                "key": "name",
+                "value": "Dilip"
+            }
+        ]
+    }
+]
+```
+
+This way instead of `NX.foo` it would be `_settings.foo`
+
+**_All dynamic parameters used in the script should have a JSX default_** by stating a local `keyword` variable like on the example below:
+
+### Example JSX Script with defaults:
+
+```jsx
+{
+    var NX = NX || { name : John }; // Setting default variable using the default keyword.
+
+    return "Hello " + NX.name;
+}
+```
+
+The code above will output either:
+1. `"Hello John"` if no parameter defined on the JSON `parameters` array or this parameter is missing.
+2. `"Hello NAME"` if parameter `name` has a `value` of `NAME` on the JSON `parameters` array. 
+
+### Example JSX Script without defaults:
+
+```jsx
+{
+    // The code below will crash if it's executed directly in After Effects. See documentation on how to enable cross environment fault tolerance.
+    return "There are " + NX.beerBottlesAmount + " beer bottles ready to drink!"
+}
+```
+
+The code above will output either:
+1. `"There are null beer bottles ready to drink!" `if no parameter defined on the JSON `parameters` array.
+2. `"There are 20 beer bottles ready to drink!"` if parameter `beerBottlesAmount` has a `value` of `20` on the JSON `parameters` array. 
+
+But don't you worry about missing any of the examples above; If you use a variable in your JSX with the default keyword and no initialization whatsoever, the console will output a handy initialization code snippet for both JSON and JSX for you to copy and modify with your own values! 
+
+### Example compiled script
+An example of a compiled script without JSON nor JSX initialization (auto generated null values) would look like the following ( minus the comments ) 
+                        
+```jsx
+(function() {
+    // Generated based on the parameters on the script, with no JSON parameters initialization and no local variable defined. 
+    var NX = {"name":"null"};
+
+    // Original script from jsx file.
+
+    // Note that this can, and most positively will, crash if executed directly in After Effects. With a local definition of the variable and default     
+    // parameters this would be fixed.
+    {
+        // Example of local definition:
+        // var NX = NX || { name : "John" };
+        alert("Hello " + NX.name);
+    }
+    // End of jsx script
+})();
+```
+
 
 That pretty much covers basics of templated rendering.
 
