@@ -149,132 +149,131 @@ const wrapScript = ({ dest }) => (`(function() {
     @param src                 The JSX script
     @param parameters          (Array<Object>)  Argument array described in the Asset JSON object inside the Job description
     @param keyword             (String)         Name for the exported variable holding configuration parameters. Defaults to NX as in NeXrender.
-    @param globalDefaultValue  (Any)            The default value in case the user setted key name on any given `parameter` child object. Defaults to `null`
+    @param defaults.null  (Any)            The default value in case the user setted key name on any given `parameter` child object. Defaults to `null`
 
     @return string             (String)         The compiled script with parameter injection outside its original scope to avoid user-defined defaults collision.
 */
-const wrapEnhancedScript = ({ dest, parameters = [], keyword = "NX", globalDefaultValue = null,  ...asset }, jobID, settings) => {
-    // Initialization
+const wrapEnhancedScript = ({ dest, parameters = [], keyword, fnArgsKeyword, defaults,  ...asset }, jobID, settings) => {
 
-    // Byte stream from download.js helper. Not to be confused  with src which is the plaintext path to the file.
-    var script = fs.readFileSync(dest, 'utf8');
+    function EnhancedScript (
+            dest, 
+            parameters          = [],
+            keyword             = "NX", 
+            fnArgsKeyword       = "NX",
+            defaults            = { 
+                global : "null",
+                string : "",
+                number: 0,
+                array: [],
+                boolean: false,
+                object: {},
+                function : function (){},
+                null: null
+            },
+            jobID,
+            logger
+    ) {
+        this.script             = fs.readFileSync(dest, 'utf8');
+        this.keyword            = keyword;
+        this.fnArgsKeyword      = fnArgsKeyword +  "Args";
+        this.defaults           = defaults;
+        this.jobID              = jobID;
+        this.logger             = logger;
+        this.jsonParameters     = parameters;
 
-    // Parameter argument injection template literal. See at the end for the final definition.
-    var argumentInjection = "";
+        this.regexes            = {
+            keywordUsage: null,
+            keywordInit: null,
+            fnDetect: null
+        };
 
-
-    // Regular Expression to match all {keyword} occurrences. For example, if keyword==NX then it matches variables such as NX.sample or functions such as NX.call()
-
-    // The following regex is just for reference purposes, since the lookbehind part is not currently working.
-    // (NX\.)([a-zA-Z0-9_-]{1,}[\(]?(?(?<=\()\)|[a-zA-Z0-9_\-\(\),.]{1,}\))?)?
-
-    // This regex matches any occurence of the `keyword` usage, except on comments to avoid misinterpretation of code.
-    var keywordRegex = new RegExp(`(?<!(?:[\\/ ]))(?<!(?:[\\* ]))(?:[ ]){0,}?(${keyword}\\.)([a-zA-Z0-9_-]{1,}[\\(]?)`, "gm");
-
-
-    // Find instances of a function inside a single-line string.
-    // Example matches:
-    /*
-        function myfunc() {}
-        function myfunc(){}
-        function myfunc( { what = "ever", you, want } ){ asdd=123; }
-        () => {}
-        ( dog, cat = 0 ) => { dog() }
-    */
-    var fnRegex = new RegExp(/(?:(?:(?:function *(?:[a-zA-Z0-9_]+)?) *(?:\((?:.*)\)) *(?:\{(?:.*)\}))|(?:(?:.*) *(?:=>) *(?:\{)(?:.*?)?\}))/, "gms");
-
-    // Keys of the missing parameters. See below for further explanation.
-    var missingMatches = {
-        fn: [],
-        vars: [],
-        needsDefault: [],
-    };
-
-    /*
-        Parse method from parameter
-        @description                    Given a parameter detect whether it should be casted as a function in the final argument injection.
-        @param param                (string|number|boolean|null|object|array) The parameter to parse a method from. 
-        @return bool                (Boolean) If a method is detected then it's stripped from String quotes, else it's returned in it's original type.
-    */
-    const parseMethod = (param) => {
-        if(typeof param == "string") {
-            return (param.match(fnRegex) ? true : false);
-        } 
-        return false
-    }
-
-    // Helper functions
-
-    /*
-        Setup Parameter Injection
-        ==========================
-        @description            Creates the string initializing a scoped variable with parameters from either the Script Asset JSON configuration or a placeholder array with null values
-                                by finding uses of the ${keyword} variable in the JSX script provided that the user didn't define its own default values.
-        @param keyword          (String)    Keyword to define as the final variable name. Defaults to NX as in NeXrender.
-        @param parameters       (ArrayzObject>)    Array with the parameters to inject. Defaults to []
-        @param script           (string)    JSX Script to inject the variable to.
-        @param logger           (Object)    Logger to output warning. Defaults to global logger (console)
-        @return string          (String)    Final template literal to place at the compiled script.
-    */
-
-   const setupInjection = (keyword, jsonParameters, missingJsonParameters = { fn: [], vars: [], needsDefault: [] }, script, logger ) => {
-        var str = ``;
-        var injectedParams = {};
-
-        // logger.log(missingJsonParameters);
+        this.missingJSONParams  = [];
         
-        // [ EXPERIMENTAL!! ] See method documentation for more info.
-        script = stripCommentsFromScript(script);
-
-        // Regex to find a local scoped instance of ${keyword}, to avoid overriding local defaults with null values.
-        var regx = new RegExp(`(?<!(?:[\\/ ]))(?<!(?:[\\* ]))(?:[ ]){0,}?(var|const|let) ${keyword}`, "gm");
-
-        // And we finally inject the jsonParameters to the script outside the script scope to avoid conflicts with user-defined defaults.
-        // If no parameter is set in the JSON declaration, and no default initialization is defined in the script then we inject an object with nulled missing jsonParameters.
-        if(jsonParameters.length > 0) {
-            jsonParameters.forEach(p => injectedParams[p.key] = p.value ? p.value : globalDefaultValue);
-            // str = `var ${keyword} = ${JSON.stringify(injectedParams)};`;
-            str = `var ${keyword} = {
-                    ${Object.keys(injectedParams).map((k, i) => {
-                            let t = globalDefaultValue;
-                            if(!parseMethod(injectedParams[k])) {
-                                switch(typeof injectedParams[k]) {
-                                    case 'string': 
-                                            t = `"${injectedParams[k]}"`
-                                        break;
-                                    case 'number':
-                                    case 'boolean':
-                                    case 'object':
-                                            t = `${injectedParams[k]}`
-                                        break;
-                                    case 'undefined':
-                                            t = `undefined`
-                                        break;
-                                    default: 
-                                            t = `${globalDefaultValue}`
-                                        break;
-                                }
-                            } else {
-                                t = `${injectedParams[k]}`;
-                            }
-                            // newLine = Object.keys(injectedParams).length - 1 < i ? "ASDJALKDJ" : '\n';
-                            return `${k} : ${t}`
-                    }).join(", \n")}
-                }`
-            // str = `var ${keyword} = ${constructjsonParameters(injectedParams)}`
-        } else if( script.match(regx) == null) {
-            // Fill with null all the missing arguments currently being used in the JSX script but not defined on the JSON Asset.
-            str = `var ${keyword} = ${JSON.stringify(fillObject(missingMatches.needsDefault, injectedParams))}`;
-        }
-
-        if(jsonParameters.length  == 0) {
-            logger.log(`[${jobID}] ${displayAlert(missingMatches, script.match(regx) == null, str)}`);
-        }
+        console.log(arguments);
 
 
-        return str;
+        // Setup
+        this.setupRegexes();
+
     }
 
+    /*
+    * Utilities, one-liners
+    */
+
+    EnhancedScript.prototype.getGetterMethod = function ()       { return "get"; }
+
+    EnhancedScript.prototype.getSetterMethod = function ()       { return "set"; }
+
+    EnhancedScript.prototype.getLogger = function ()            { return this.logger; }
+
+    EnhancedScript.prototype.getJSXScript = function ()         { return this.script; }
+
+    EnhancedScript.prototype.getJSONParams = function ()        { return this.jsonParameters; }
+
+    EnhancedScript.prototype.jsonParametersCount = function ()  { return this.jsonParameters.length; }
+
+    EnhancedScript.prototype.getMissingJSONParams = function()  { return this.missingJSONParams; }
+
+    EnhancedScript.prototype.getKeyword = function ()           { return this.keyword; }
+
+    EnhancedScript.prototype.getFnArgsKeyword = function ()     { return this.fnArgsKeyword; }
+
+    EnhancedScript.prototype.getRegex = function (key)          { return this.regexes[key]; }
+
+    
+    /*
+            Get Default Value
+            @description                Retrieves a default value parameter based on a key. 
+            @param key                  (String)("string"|"number"|"array"|"object"|"null"|"function") The key to the required default parameter. Defaults to "null".
+            @returns default            The value from this.defaults array.
+        */
+    EnhancedScript.prototype.getDefaultValue = function (key)   { return this.defaults[key]; }
+
+    /*
+        Add Missing JSON Parameter
+        =====================
+        @description                Adds an object with the key of a parameter being used in JSX code but with no default in the JSON Asset.
+        @param nxMatch              (Object) The object to add to the missing array. 
+                                    Required format: 
+                                    {
+                                        key: string
+                                        isVar: boolean
+                                        isFn: boolean
+                                        needsDefault: boolean.
+                                    }
+        @returns object             The recently added object.
+    */
+    EnhancedScript.prototype.addMissingJsonParameter = function (nxMatch)   { return missingJSONParams.push(nxMatch); }
+
+    /*
+    * End one-liners
+    */
+
+    EnhancedScript.prototype.setupRegexes = function ()         {
+
+        const buildGetUsageFinder = (keyword, flags = "g") => {
+            return new RegExp(`/(?<!(?:[\\/ ]))(?<!(?:[\\* ]))(?: *${keyword}.) *([a-zA-Z0-9_]+) *(?:\\()(?:["']{1})([a-zA-Z0-9._-]+)(?:["']{1})(?:\\))/`, flags);
+        }
+
+        // This regex matches any occurence of the `this.keyword` usage, except on comments to avoid misinterpretation of code.
+        this.regexes.keywordUsage = buildGetUsageFinder(this.getKeyword(), "gm");
+
+        this.regexes.fnArgs = buildGetUsageFinder(this.getFnArgsKeyword(), "g");
+
+        // Regex to find a local scoped instance of `this.keyword` in the JSX script, to avoid overriding local defaults with null values.
+        // this.regexes.keywordInit = new RegExp(`(?<!(?:[\\/ ]))(?<!(?:[\\* ]))(?:[ ]){0,}?(var|const|let) ${this.getKeyword() }`, "gm");
+
+        // Find instances of a function inside a single-line string.
+        this.regexes.fnDetect = new RegExp(/(?:(?:(?:function *(?:[a-zA-Z0-9_]+)?) *(?:\((?:.*)\)) *(?:\{(?:.*)\}))|(?:(?:.*) *(?:=>) *(?:\{)(?:.*?)?\}))/);
+
+
+        // This regex will detect a self-invoking function like (function(){})() and will catch the invoking parameters in a single string for further inspection.
+        this.regexes.selfInvokingFn = new RegExp(/(?:(?:^\() *(?:.*?)(?:} *\)))(?: *(?:\() *(.*?) *(?:\) *$))/);
+
+
+    }
+    
     /*
         Generated Placeholder Parameters
         ================================
@@ -283,88 +282,111 @@ const wrapEnhancedScript = ({ dest, parameters = [], keyword = "NX", globalDefau
 
         @return string          (String)    JSON "parameters" object.
     */
-    var generatedPlaceholderParameters = (keys = []) => {
+    EnhancedScript.prototype.generatedPlaceholderParameters = function ( keys = [] ) {
         const template = (key) => `
                 {
-                    ${key}  :   "${globalDefaultValue}"
+                    ${key}  :   "${this.getDefaultValueAsString(this.defaults.global)}"
                 }\n
         `;
 
         return `
             "parameters" : [
-                ${keys.map((k, i) => `${template(k)}${Object.keys(keys).length - 1 != i ? "," : ""}`).join()}
+                ${keys.map((k, i) => `${template(k)}${keys.length - 1 != i ? "," : ""}`).join('')}
             ]
         `
     }
+
     /*
-        Display Missing Alert
-        =====================
-        @description              Display a log message if theres any missing parameter set on the JSON configuration but is being referred in the script.
-
-        @param m                 (Object)   Missing Parameters object. See below for its construction. Must have child objects `fn` and `vars`
-        @param showJSXWarning    (Boolean)  Flag for whether or not to display warning about not initializing variable in JSX script. Defaults to false.
-        @param injectionVar      (String)   Variable initialized with placeholder values. Defaults to "".
-
-        @return string           (String)   The template literal string displaying all the occurences if any.
+        Parse method from parameter
+        @description                    Given a parameter detect whether it should be casted as a function in the final argument injection.
+        @param param                (string|number|boolean|null|object|array) The parameter to parse a method from. 
+        @return bool                (Boolean) If a method is detected then it's stripped from String quotes, else it's returned in it's original type.
     */
-    var displayAlert = (m, showJSXWarning = false, injectionVar = "") => {
-        const areFnMissing = (m.fn != undefined && Object.keys(m.fn).length > 0);
-        const areVarsMissing = (m.vars != undefined && Object.keys(m.vars).length > 0);
 
-        return ` -- W A R N I N G --
-        The following ${areVarsMissing ? 'variables ' : "" }${areVarsMissing && areFnMissing ? 'and ' : "" }${areFnMissing ? 'functions ' : "" }on the script are not defined in the Asset JSON configuration:
-        ${areFnMissing ? `Functions: ${m.fn.join(",")}` : ""}
-        ${areVarsMissing ? `Variables: ${m.vars.join(",")}` : ""}
+    EnhancedScript.prototype.isMethod = function (param)                    {
+        if(typeof param == "string") {
+            return (param.match(this.getRegex("fnDetect")) ? true : false);
+        } 
+        return false
+    }
 
-        Please set defaults in your JSX script (see documentation) or copy the following placeholder JSON code snippet and replace the value with your own:
+    EnhancedScript.prototype.parseMethod = function (parameter)             {
+        const selfInvokingFn = parameter.value.matchAll(this.getRegex('selfInvokingFn'));
+        if ( selfInvokingFn ) {
+            return this.parseMethodWithArgs(parameter);
+        }
+        return parameter.value;
+    }
 
-        ${generatedPlaceholderParameters([...m.fn, ...m.vars])}
+    EnhancedScript.prototype.matchAsJSONParameterKey = function ( key )     {
+        const parameterMatch = this.getJSONParams().find(o => o.key == key);
+        
+        return parameterMatch ? parameterMatch.value : key;
+    }
 
-        ${showJSXWarning ?
-        `Additionally, your JSX script has no initialization of the variables/functions above, which can cause it to crash if executed directly in After Effects.
-        Copy and paste the following placeholder code snippet and replace the values with your own:`:'\033[A'}
+    EnhancedScript.prototype.parseMethodWithArgs = function (parameter)     {
+        const methodArgs = Array.from(parameter.value.matchAll(this.getRegex('fnArgs')));
 
-        ${showJSXWarning ?
-        injectionVar : '\033[A'
-            }
-        `
+        if( methodArgs ) {
+            methodArgs.forEach( argMatch => {
+                [fullMatch, method, arg] = argMatch;
+                
+                // Search if argument is present in JSON and has `arguments` array to match against the results.
+                // And do a replacement with either the found argument on the array or a global default value.
+
+                let argReplacement = this.getDefaultValueAsString(this.defaults.global);
+                if (parameter.arguments && parameter.arguments[arg]) {
+                    if(parameters.arguments[arg].value) {
+                        argReplacement = this.matchAsJSONParameterKey(parameters.arguments[arg].value);
+                    } else {
+                        argReplacement = parameters.arguments[arg].default;
+                    }
+                }
+                
+                parameter.value.replace(fullMatch, argReplacement);
+            });
+        }
+        
+        return parameter;
+    }
+
+    EnhancedScript.prototype.detectValueType = function (parameter)               {
+        return this.isMethod(parameter.value) ? this.parseMethod(parameter) : JSON.parse(parameter.value);
     }
 
     /*
-        Fill Missing Matches
-        ====================
-        @description            Creates a placeholder array with all matches within the script
-        @param keys             (Array)     Names of the keys to fill the array. Default = [].
-        @param placeholder      (Object)    Placeholder array to fill values with default value. Default = {}
+            Get Default Value as String
+            @description                Retrieves a default value parameter based on a key. 
+            @param key                  (String)("string"|"number"|"array"|"object"|"null"|"function") The key to the required default parameter. Defaults to "null".
+            @returns default            (String) A template literal string with the embedded default parameter. If it's a string then it's wrapped with quotes.
+        */
+       EnhancedScript.prototype.getDefaultValueAsString = function (key)            {
+        const value = this.getDefaultValue(key);
+        return key.toLowerCase() == "string" ? `"${value}"` : `${value}`;
+    }
 
-        @return                 (Object) placeholder object with names keys set to null.
-    */
-   const fillObject = (keys = [], placeholder = {}) => {
-        keys.forEach( v => placeholder[v] = globalDefaultValue);
-        return placeholder;
-   };
-
-
-   /*
+    /*
         Strip comment blocks from Script [EXPERIMENTAL]
         ================================
         @description                Removes /* * / comments  from script to avoid mismatching occurrences.
         @param script               (String)            The target script to strip.
         @returns string             (String)            A one-line version of the original script without comment blocks.
-   */
+    */
 
-   const stripCommentsFromScript = (script) => {
-        // Experimental: Strip comment blocks from script to avoid mismatching of commented usage of the `keyword` variable
+    EnhancedScript.prototype.stripCommentsFromScript = function (script)             {
         // https://levelup.gitconnected.com/advanced-regex-find-and-remove-multi-line-comments-in-your-code-c162ba6e5811
         return script
             .replace(/\n/g, " ")
             .replace(/\/\*.*\*\//g, " ")
             .replace(/\s+/g, " ")
             .trim();
-   }
+    }
 
+    /*
+    * End Utilities
+    */
 
-   /*
+    /*
         Find Missing Matches in JSX Script
         ====================
         @description                RegEx Searches a given JSX script to find occurences and saves an object with keys
@@ -372,56 +394,148 @@ const wrapEnhancedScript = ({ dest, parameters = [], keyword = "NX", globalDefau
         @param regex                (Object)            RegEx object to match against JSX script.
         @param parameters           (Array<Object>)     Array with the parameters to compare against the matches.
         @return bool                (Boolean)           Whether or not there are any variables to inject. Defaults to false.
-   */
-   
-   const findMatchesInJSX = (script, regex, parameters, missingMatches = { fn: [], vars: [], needsDefault: [] }, logger) => {
+    */
 
-        // [ EXPERIMENTAL ] See method documentation for more info.
-        script = stripCommentsFromScript(script);
-       
+    EnhancedScript.prototype.findMatchesInJSX = function ()                         {
+
+        const script = this.stripCommentsFromScript(this.getJSXScript());
+    
         // Parse all occurrences of the usage of NX on the provided script.
         // const nxMatches = Array.from(script.matchAll(regex)); // String.matchAll is available from Node version 12.0.0
-        const nxMatches = script.match(regex); 
+        const nxMatches = script.match(this.getRegex("keywordUsage")); 
+
+        const missing = [];
         
         if (nxMatches && nxMatches.length > 0 ) {
             // Since the current regex catches ocurrences like NX.call() as `NX.call(` we split the matches as either functions or variables for further debugging.
-            for( var i = 0; i < nxMatches.length; i++ ) {
+            nxMatches.forEach( match => {
                 // var nxMatch = nxMatches[Object.keys(nxMatches)[i]][2]; // String.matchAll is available from Node version 12.0.0
-                var nxMatch = nxMatches[i].replace(" ", '').substr(keyword.length + 1);
-                if ( parameters.filter(o => o.key == nxMatch.replace("(", "") ).length == 1) { // If the parameter has a value defined in JSON
-                    if(nxMatch.slice(-1) == "(") { // Push it as a method call
-                        missingMatches.fn.push(nxMatch.replace("(", "")); // Sanitize match.
-                    } else {
-                        missingMatches.vars.push(nxMatch); // Push it as a variable/object.
+                var nxMatch = {
+                    key: match.replace(" ", '').substr(keyword.length + 1),
+                    isVar: false,
+                    isFn: false
+                };
+                if ( this.getJSONParams().filter(o => o.key == nxMatch.key.replace("(", "") ).length == 1) { // If the parameter has a value defined in JSON
+                    if(nxMatch.slice(-1) == "(") { // Flag it as method call
+                        nxMatch.key = nxMatch.key.replace("(", "");
+                        nxMatch.isFn = true;
+                    } else { // Flag it as variable/object
+                        nxMatch.isVar = true;
                     }
-                } else if( (parameters.filter(o => o.key != nxMatch).length == 0) ) { // If theres a variable on the JSX script but has no JSON definition
-                    missingMatches.needsDefault.push(nxMatch);  // Set for auto-generated default value.
+                } else {
+                    this.addMissingJsonParameter(nxMatch);
                 }
+
+                missing.push(nxMatch);
+            });
+
+            if(missing.filter( o => o.needsDefault ).length > 0) {
+                logger.log(`[${jobID}] ${this.displayAlert()}`);
             }
         }
-        // logger.log(JSON.stringify(missingMatches));
-        return [...missingMatches.fn, ...missingMatches.vars, ...missingMatches.needsDefault].length > 0;
-   }
+        return missing > 0;
+    }
 
+    /*
+        Display Missing Alert
+        =====================
+        @description              Display a log message if theres any missing parameter set on the JSON configuration but is being referred in the script.
 
+        @param missingParam      (Object)   Missing Parameters object. See below for its construction. Must have child objects `fn` and `vars`
+        @param showJSXWarning    (Boolean)  Flag for whether or not to display warning about not initializing variable in JSX script. Defaults to false.
+        @param injectionVar      (String)   Variable initialized with placeholder values. Defaults to "".
 
-    // If there's anything that's missing, we proceed with the injection.
-    if(findMatchesInJSX(script, keywordRegex, parameters, missingMatches, settings.logger)) {
-        argumentInjection = setupInjection(keyword, parameters, missingJsonParameters = missingMatches, script, settings.logger);
+        @return string           (String)   The template literal string displaying all the occurences if any.
+    */
+    EnhancedScript.prototype.displayAlert = function ()                             {
+        const missingParams      = this.getMissingJSONParams();
+
+        const missingMethodCalls = missingParams.filter(o => o.isFn);
+        const missingVars        = missingParams.filter(o => o.isVar);
+
+        const keyword            = this.getKeyword();
+
+        return ` -- W A R N I N G --
+        The following ${missingVars.length > 0 ? 'variables ' : "" }${missingVars.length > 0 && missingMethodCalls.length > 0 ? 'and ' : "" }${missingMethodCalls.length > 0 ? 'method calls ' : "" }on the script are not defined in the Asset JSON configuration:
+        ${areFnMissing ? `Functions: ${missingMethodCalls.map(o => o.key ).join(",")}` : ""}
+        ${areVarsMissing ? `Variables: ${missingVars.map( o => o.key ).join(",")}` : ""}
+
+        Please set defaults in your JSX script (see documentation) or copy the following placeholder JSON code snippet and replace the value with your own:
+
+        ${this.generatedPlaceholderParameters(missingParams)}
+
+        Remember to always use a fallback default value for any use of the ${keyword} object to have the ability to run this script on After Effects directly. 
+        Example:
+            const dogName = ${keyword} && ${keyword}.get("Doggo") || "Doggo";
+        `
+    }
+
+    EnhancedScript.prototype.injectParameters = function ()                         {
+        return [...this.getJSONParams(), ...this.getMissingJSONParams()].map( param => {
+            const value = this.detectValueType(param);
+
+            return `${this.getKeyword()}.${this.getSetterMethod()}('${key}', ${value});`
+        }).join("\n");
+    }
+
+    EnhancedScript.prototype.buildParameterConfigurator = function ()               {
+        console.log(`KEYWORD: ${this.getKeyword()}`);
+        const defaultGlobalValue = this.getDefaultValueAsString( this.defaults.global );
+        const defaultFnValue = this.getDefaultValue( this.defaults.function );
+        const createParameterConfigurator = () => `
+    function ParameterConfigurator () {
+        this.params = [];
+    }
+    ParameterConfigurator.prototype.get = function ( key ) {
+        for (var i = 0; i < this.params.length; i++) {
+            if (this.params[i].key == key) return this.params[i];
+        }
+        return {
+            key: ${ defaultGlobalValue },
+            value: ${ defaultGlobalValue },
+            exec: ${ defaultFnValue }
+            
+        }
+    };
+    ParameterConfigurator.prototype.set = function (k, v) {
+        if( typeof v == "function" ) {
+            var exec = v;
+        } else {
+            var exec = null;
+        }
+        this.params.push({
+            key: k,
+            value: v,
+            exec: exec
+        });
+    };
+    var ${ this.getKeyword() } = new ParameterConfigurator();
+
+    // Parameter injection from job configuration
+    ${ this.injectParameters() }
+`;
+
+        return createParameterConfigurator();
+    }
+
+    EnhancedScript.prototype.build = function ()                                    {
+        this.findMatchesInJSX();
+        
+        // Et voilà!
+        const enhancedScript = `(function() {
+    ${this.buildParameterConfigurator()}
+    ${this.getJSXScript()}
+})();\n`;
+        // console.log(this.getLogger());
+        this.getLogger().log(enhancedScript);
+
+        return enhancedScript;
     }
 
 
-    // Et voilà!
-    const compiledScript = `(function() {
-        ${argumentInjection}
-        ${script}
-    })();\n`;
+    const enhancedScript = new EnhancedScript(dest, parameters, keyword, fnArgsKeyword, defaults, jobID, settings.logger);
 
-    // Uncomment the following line to preview the compiled script on console.
-    // settings.logger.log(compiledScript);
-
-    return (compiledScript)
-
+    return enhancedScript.build();
 }
 
 module.exports = (job, settings) => {
