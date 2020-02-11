@@ -95,8 +95,6 @@
 
 # Introduction
 
-> Note: this is a newly released major version of the software. For older, more "stable" version please refer to ["stable"](https://github.com/inlife/nexrender/tree/stable) branch.
-
 `nexrender` is a simple, small, carefully designed application with the main goal of rendering automation for Adobe After Effects based rendering workflows.
 
 At this point in time, the project is mainly targeted at people at least somewhat comfortable with scripting or development,
