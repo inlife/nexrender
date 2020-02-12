@@ -60,8 +60,16 @@ const start = async (host, secret, settings) => {
 
         try {
             job.onRenderProgress = function (job, progress) {
-                /* send render prooress to our server */
-                client.updateJob(job.uid, job)
+                try {
+                    /* send render prooress to our server */
+                    client.updateJob(job.uid, job)
+                } catch (err) {
+                    if (settings.stopOnError) {
+                        throw err;
+                    } else {
+                        console.log(`[${job.uid}] error occurred: ${err.stack}`)
+                    }
+                }
             }
 
             job = await render(job, settings); {

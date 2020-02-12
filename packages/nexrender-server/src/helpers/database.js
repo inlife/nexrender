@@ -14,7 +14,7 @@ let data = fs.existsSync(database)
     ? JSON.parse(fs.readFileSync(database, 'utf8'))
     : [];
 
-if (!fs.existsSync(defaultPath)) {
+if (!process.env.NEXRENDER_DATABASE && !fs.existsSync(defaultPath)) {
     fs.mkdirSync(defaultPath);
 }
 
