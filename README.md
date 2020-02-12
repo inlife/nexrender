@@ -596,24 +596,20 @@ We currently support all standard [JSON Parameters](https://restfulapi.net/json-
 
 #### Null
 
-This is the default value for parameters used on any given JSX script that are not initializated. You can override this behaviour by setting `globalDefaultValue`.
+This is the default value for parameters used on any given JSX script that are not initializated.
 
 ```json
     "parameters" : [
         {
-            "key" : "carDetails",
-            "value": {
-                "model" : "Tesla Model S",
-                "maxBatteryLife" : 500000,
-                "color" : "vermilion"
-            }
+            "key" : "carDetails"
         }
     ]
 ```
+`NX.get("carDetails")` will be equal to `null`. 
 
 #### Functions
 
-Functions are useful if you need some dynamic calculation of specific values. You can use them in conjuction with other dynamic parameters as well. Currently we support [Self-invoking Functions](#self-invoking-functions-example), [Named Functions](#named-functions-example) and [Anonymous Functions](#anonymous-functions-example). Theres future-proof support for **Arrow Functions** but After Effects ExtendedScript **does not support arrow functions** at the moment (cc 2020).
+Functions are useful if you need some dynamic calculation of specific values. You can use them in conjuction with other dynamic parameters as well. Currently we support [Self-invoking Functions](#self-invoking-functions-example), [Named Functions](#named-functions-example) and [Anonymous Functions](#anonymous-functions-example). After Effects ExtendedScript **does not support arrow functions** at the moment (cc 2020).
 
 ##### Warnings
 * You must **only use one function per parameter**; If there's more than one function defined in the parameter `value` the job will crash due to limitations in function detection and parsing. 
@@ -633,7 +629,7 @@ Self-invoking functions are useful to use in a string concatenation or places wh
 The above function could be use in a string concatenation such as 
 
 ```jsx
-    alert("Miss what's the mathematical operation required to compute the number" + NX.twoPlusTwo + " ?"); // A typical second grade question.
+    alert("Miss what's the mathematical operation required to compute the number" + NX.get("twoPlusTwo") + " ?"); // A typical second grade question.
 ```
 
 ```json
@@ -645,21 +641,33 @@ The above function could be use in a string concatenation such as
         {
             "key" : "eventInvitation",
             "value": "(function (venue) { alert( 'This years\' Avengers Gala is on the presitigious ' + venue.name + ' located at ' + venue.location + '. Our special guests ' + NX.get('invitees').value.map(function (a, i) { return (i == NX.get('invitees').value.length - 1) ? ' and ' + a + ' (whoever that is)' : a + ', '; }).join('') + '  going to be present for the ceremony!');
-    })({ name: NXArgs.get('venue'), location: NXArgs.get('location') })",
+    })({ name: NX.arg('venue'), location: NX.arg('location') })",
             "arguments": [
                 {
-                    "key" : "param1",
-                    "value" : "Smithsonian Museum of Natural History",
-                    "default": "string"
+                    "key" : "venue",
+                    "value" : "Smithsonian Museum of Natural History"
                 },
                 {
-                    "key" : "param2",
-                    "value": "10th St. & Constitution Ave.",
-                    "default": "string"
+                    "key" : "location",
+                    "value": "10th St. & Constitution Ave."
                 }
             ]
         }
     ]
+```
+
+
+This convoluted function would return a lovely invitation string to an event using a dynamic parameter set on the `json` Job, as well as having additional required parameters with their defaults and could be used as follows:
+
+```jsx
+
+    alert(NX.get("eventInvitation"));
+
+    // Output:
+
+    /*
+        This years' Avengers Gala is on the presitigious Smithsonian Museum of Natural History located at 10th St. & Constitution Ave. Our special guests Steve, Natasha,Tony, Wanda, Thor, Peter and Clint (whoever that is) are going to be present for the ceremony! 
+    */
 ```
 
 #### Named Functions
@@ -673,10 +681,10 @@ The above function could be use in a string concatenation such as
 ```
 
 ```jsx
-    var result = NX.sum(400, 20); // 420
+    var result = NX.call("sum", [400, 20]); // 420
 ```
 
-Note that the usage of the named method is `NX.sum` and not `NX.namedSumFunction` due to JS' __hoisting__, so named functions are implemented and used the same was as anonymous functions.
+Note that the usage of the named method is `sum` and not `namedSumFunction` due to JS' __hoisting__, so named functions are implemented and used the same was as anonymous functions.
 
 #### Anonymous Functions
 ```json
@@ -687,23 +695,56 @@ Note that the usage of the named method is `NX.sum` and not `NX.namedSumFunction
         }
     ]
 ```
-
 ```jsx
-    var result = NX.sum(400, 20); // 420
+    var result = NX.call("sumValues", [400, 20]); // 420
 ```
 
-
-This convoluted function would return a lovely invitation string to an event using a dynamic parameter set on the `json` Job, as well as having additional required parameters with their defaults and could be used as follows:
-
-```jsx
-
-    alert(NX.eventInvitation);
-
-    // Output:
-
-    /*
-        This years' Avengers Gala is on the presitigious Smithsonian Museum of Natural History located at 10th St. & Constitution Ave. Our special guests Steve, Natasha,Tony, Wanda, Thor, Peter and Clint (whoever that is) are going to be present for the ceremony! 
-    */
+#### Complete functions example
+```json
+{
+    "template": {
+        "src": "file:///template.aep",
+        "composition": "BLANK_COMP"
+    },
+    "assets": [
+        {
+            "src": "file:///sampleParamInjection.jsx",
+            "type": "script",
+            "parameters": [
+                {
+                    "type": "array",
+                    "key" : "dogs",
+                    "value": [ "Captain Sparkles", "Summer", "Neptune"]
+                },
+                {
+                    "type" : "number",
+                    "key" : "anAmount"
+                },
+                {
+                    "type": "function",
+                    "key": "getDogsCount",
+                    "value" : "function() { return NX.get('dogs').length; }"
+                },
+                {
+                    "type": "function",
+                    "key": "exampleFn",
+                    "value": "function ( parameter ) { return parameter; }"
+                },
+                {
+                    "type" : "function",
+                    "key" : "dogCount",
+                    "value" : "(function(length) { return length })(NX.arg('dogCount'))",
+                    "arguments": [
+                        {
+                            "key" : "dogCount",
+                            "value": ["NX.call('exampleFn', [NX.call('getDogsCount') + NX.get('anAmount')])"]
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}
 ```
 
 ## Examples 
@@ -742,7 +783,7 @@ This convoluted function would return a lovely invitation string to an event usi
 
 The `value` could be a variable or a function, but beware that there is no sanitization nor validation so **if the input is malformed it could crash the job**
 
-By default the **keyword** is set to **`NX`**, so you would call your variables or methods like `NX.foo` or `NX.bar()`. To change this keyword simply set `"keyword"` as shown below:
+By default the **keyword** is set to **`NX`**, so you would call your variables or methods like `NX.get("foo")` or `NX.call("bar", ["sampleStringParameter"])`. To change this keyword simply set `"keyword"` as shown below:
 
 ```json
 "assets": [
@@ -760,17 +801,16 @@ By default the **keyword** is set to **`NX`**, so you would call your variables 
 ]
 ```
 
-This way instead of `NX.foo` it would be `_settings.foo`
+This way instead of `NX.get("foo")` it would be `_settings.get("foo")`
 
-**_All dynamic parameters used in the script should have a JSX default_** by stating a local `keyword` variable like on the example below:
+**_All dynamic parameters used in the script should have a JSX default_**
 
 ### Example JSX Script with defaults:
 
 ```jsx
 {
-    var NX = NX || { name : "John" }; // Setting default variable using the default keyword.
 
-    return "Hello " + NX.name;
+    return "Hello " + NX.get("name") || "John";
 }
 ```
 
@@ -783,7 +823,7 @@ The code above will output either:
 ```jsx
 {
     // The code below will crash if it's executed directly in After Effects. See documentation on how to enable cross environment fault tolerance.
-    return "There are " + NX.beerBottlesAmount + " beer bottles ready to drink!"
+    return "There are " + NX.get("beerBottlesAmount") + " beer bottles ready to drink!"
 }
 ```
 
@@ -793,28 +833,6 @@ The code above will output either:
 
 But don't you worry about missing any of the examples above; If you use a variable in your JSX with the default keyword and no initialization whatsoever,
 the console will output a handy initialization code snippet for both JSON and JSX for you to copy and modify with your own values!
-
-### Example compiled script
-An example of a compiled script without JSON nor JSX initialization (auto generated null values) would look like the following ( minus the comments )
-
-```jsx
-(function() {
-    // Generated based on the parameters on the script, with no JSON parameters initialization and no local variable defined.
-    var NX = {"name":"null"};
-
-    // Original script from jsx file.
-
-    // Note that this can, and most positively will, crash if executed directly in After Effects. With a local definition of the variable and default
-    // parameters this would be fixed.
-    {
-        // Example of local definition:
-        // var NX = NX || { name : "John" };
-        alert("Hello " + NX.name);
-    }
-    // End of jsx script
-})();
-```
-
 
 That pretty much covers basics of templated rendering.
 
