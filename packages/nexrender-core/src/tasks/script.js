@@ -57,6 +57,7 @@ const wrapScript = ({ dest }) => (`(function() {
     Wrap Enhanced Script
     ====================
     @author Dilip Ramírez (https://github.com/dukuo | https://notimetoexplain.co)
+    @autor Based on the work of Potat (https://github.com/dukuo/potat)
     @description        Parse a script from a source, and injects a configuration object named ${keyword} based on the "parameters" array of the script asset if any.
 
                         If parameters or functions deriving from the configuration object are being used in the script, but no parameters are set, then it succeeds but
