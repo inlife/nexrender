@@ -106,7 +106,6 @@ const wrapEnhancedScript = ({ dest, src, parameters = [], keyword, defaults,  ..
 
         this.missingJSONParams  = [];
         
-        console.log(arguments);
 
 
         // Setup
@@ -453,12 +452,10 @@ const wrapEnhancedScript = ({ dest, src, parameters = [], keyword, defaults,  ..
     ${this.buildParameterConfigurator()}
     ${this.getJSXScript()}
     })();\n`;
-        // console.log(this.getLogger());
         this.getLogger().log(enhancedScript);
 
         return enhancedScript;
     }
-
 
     const enhancedScript = new EnhancedScript(dest, src, parameters, keyword, defaults, jobID, settings.logger);
 
