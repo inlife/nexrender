@@ -1,0 +1,44 @@
+{
+    "template": {
+        "src": "file:///template.aep",
+        "composition": "BLANK_COMP"
+    },
+    "assets": [
+        {
+            "src": "file:///sampleParamInjection.jsx",
+            "type": "script",
+            "parameters": [
+                {
+                    "type": "array",
+                    "key" : "dogs",
+                    "value": [ "Captain Sparkles", "Summer", "Neptune"]
+                },
+                {
+                    "type" : "number",
+                    "key" : "anAmount"
+                },
+                {
+                    "type": "function",
+                    "key": "getDogsCount",
+                    "value" : "function() { return NX.get('dogs').length; }"
+                },
+                {
+                    "type": "function",
+                    "key": "exampleFn",
+                    "value": "function ( parameter ) { return parameter; }"
+                },
+                {
+                    "type" : "function",
+                    "key" : "dogCount",
+                    "value" : "(function(length) { return length })(NX.arg('dogCount'))",
+                    "arguments": [
+                        {
+                            "key" : "dogCount",
+                            "value": ["NX.call('exampleFn', [NX.call('getDogsCount') + NX.get('anAmount')])"]
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

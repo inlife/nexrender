@@ -1,0 +1,22 @@
+{
+    "template": {
+        "src": "file:///C:/devWork/work/ctrlmotion/sampleTemplates/TCO_FEBRERO_2020_DREAMS.aep",
+        "composition": "BLANK_COMP"
+    },
+    "assets": [
+        {
+            "src": "file:///C:/devWork/work/ctrlmotion/scripts/sampleParamInjection.jsx",
+            "type": "script",
+            "parameters" : [
+                {
+                    "key" : "name",
+                    "value": "(function () { return 1+1; })()"
+                },
+                {
+                    "key" : "dog",
+                    "value": "function doggo() { return 'Doggo' }"
+                }
+            ]
+        }
+    ]
+}

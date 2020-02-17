@@ -51,6 +51,7 @@
     - [Fields](#fields-2)
     - [Example with no dynamic parameters.](#example-with-no-dynamic-parameters)
   - [Dynamic variables](#dynamic-variables)
+    - [Supported parameter types](#supported-parameter-types)
     - [Example JSON asset declaration:](#example-json-asset-declaration)
     - [Example JSX Script with defaults:](#example-jsx-script-with-defaults)
     - [Example JSX Script without defaults:](#example-jsx-script-without-defaults)
@@ -428,7 +429,7 @@ This way you (if you are using network rendering) you can not only deliver asset
 }
 ```
 
-## Data items
+## Data Assets
 
 The second important point for the dynamic data-driven video generation is the ability to replace/change/modify non-footage data in the project.
 To do that a special asset of type `data` can be used.
@@ -509,9 +510,9 @@ You can also change the deeper attributes of properties, for example the font of
 
 >Note: any error in expression will prevent the project from rendering. Make sure to read error messages reported by After Effects binary carefully.
 
-## Script items
+## Script Asset
 
-🚀 **NEW**: Now you can pass arguments to JSX dynamically! Read below for more information🚀
+🚀 **NEW**: Now you can pass arguments to JSX dynamically! Read below for more information 🚀
 
 The last and the most complex and yet the most powerful is an ability to execute custom `jsx` scripts just before the rendering will start.
 This approach allows you to do pretty much anything that is allowed for scripting,
@@ -528,7 +529,227 @@ and from the nexrender side everything is quite simple. You only need to provide
 * `parameters`:                 (optional) **object**, object where all the dynamically injected parameters are defined. Variables not defined here but used in the script are null by default.
 * `globalDefaultValue`          (optional) **any**, The default value of any found unknown or undefined value for any given `keyword` child object `key`is `null`. However this can be changed by setting this parameter to something. You should be careful on which default to set, it is suggested to leave it as it is and check for `null` values in your JSX code.
 
-### Example with no dynamic parameters.
+## Dynamic Parameters
+
+With dynamic parameters you can set a parameter in your Job declaration to be used on a JSX Script! 
+
+Each parameter object must have the following:
+* **key** (required)    :   The key of the variable. Example: Key = dog => NX.dog.
+* **value** (required)  :   The target value for the variable. Example: Key = dog, Value = "doggo" => NX.dog = "doggo". See [Supported Parameter Types](#supported-parameter-types). 
+
+### Supported Parameter Types
+
+We currently support all standard [JSON Parameters](https://restfulapi.net/json-data-types/) with the addition of javascript **[functions](#functions)**, which can be named, anonymous or self-invoking.
+
+* [`string`](#string)
+* [`number`](#number)
+* [`array`](#array)
+* [`object`](#object)
+* [`null`](#null) __(default)__
+* [`functions`](#functions)
+
+### Parameter Types examples
+
+#### String
+```json
+    "parameters" : [
+        {
+            "key" : "fullName",
+            "value": "John Doe"
+        }
+    ]
+```
+
+#### Number
+```json
+    "parameters" : [
+        {
+            "key" : "orangeAmount",
+            "value": 37
+        }
+    ]
+```
+
+#### Array
+```json
+    "parameters" : [
+        {
+            "key" : "officesList",
+            "value": ["Santiago", "London", "Paris", "Kyoto", "Hong-Kong"]
+        }
+    ]
+```
+
+#### Object
+```json
+    "parameters" : [
+        {
+            "key" : "carDetails",
+            "value": {
+                "model" : "Tesla Model S",
+                "maxBatteryLife" : 500000,
+                "color" : "vermilion"
+            }
+        }
+    ]
+```
+
+#### Null
+
+This is the default value for parameters used on any given JSX script that are not initializated.
+
+```json
+    "parameters" : [
+        {
+            "key" : "carDetails"
+        }
+    ]
+```
+`NX.get("carDetails")` will be equal to `null`. 
+
+#### Functions
+
+Functions are useful if you need some dynamic calculation of specific values. You can use them in conjuction with other dynamic parameters as well. Currently we support [Self-invoking Functions](#self-invoking-functions-example), [Named Functions](#named-functions-example) and [Anonymous Functions](#anonymous-functions-example). After Effects ExtendedScript **does not support arrow functions** at the moment (cc 2020).
+
+##### Warnings
+* You must **only use one function per parameter**; If there's more than one function defined in the parameter `value` the job will crash due to limitations in function detection and parsing. 
+* Use well-formed functions and be aware of the computational weight of your functions. Malformed functions will cause the script to fail and subsequently the job to crash.
+
+##### Self-Invoking Functions Example
+Self-invoking functions are useful to use in a string concatenation or places where you need a value result from the function and not to redeclare it. 
+
+```json
+    "parameters" : [
+        {
+            "key" : "twoPlusTwo",
+            "value": "(function() { return 1+1; })()"
+        }
+    ]
+```
+The above function could be use in a string concatenation such as 
+
+```jsx
+    alert("Miss what's the mathematical operation required to compute the number" + NX.get("twoPlusTwo") + " ?"); // A typical second grade question.
+```
+
+```json
+    "parameters" : [
+        {
+            "key" : "invitees",
+            "value": ["Steve", "Natasha", "Tony", "Bruce", "Wanda", "Thor", "Peter", "Clint" ]
+        },
+        {
+            "key" : "eventInvitation",
+            "value": "(function (venue) { alert( 'This years\' Avengers Gala is on the presitigious ' + venue.name + ' located at ' + venue.location + '. Our special guests ' + NX.get('invitees').value.map(function (a, i) { return (i == NX.get('invitees').value.length - 1) ? ' and ' + a + ' (whoever that is)' : a + ', '; }).join('') + '  going to be present for the ceremony!');
+    })({ name: NX.arg('venue'), location: NX.arg('location') })",
+            "arguments": [
+                {
+                    "key" : "venue",
+                    "value" : "Smithsonian Museum of Natural History"
+                },
+                {
+                    "key" : "location",
+                    "value": "10th St. & Constitution Ave."
+                }
+            ]
+        }
+    ]
+```
+
+
+This convoluted function would return a lovely invitation string to an event using a dynamic parameter set on the `json` Job, as well as having additional required parameters with their defaults and could be used as follows:
+
+```jsx
+
+    alert(NX.get("eventInvitation"));
+
+    // Output:
+
+    /*
+        This years' Avengers Gala is on the presitigious Smithsonian Museum of Natural History located at 10th St. & Constitution Ave. Our special guests Steve, Natasha,Tony, Wanda, Thor, Peter and Clint (whoever that is) are going to be present for the ceremony! 
+    */
+```
+
+#### Named Functions
+```json
+    "parameters" : [
+        {
+            "key" : "sum",
+            "value": "function namedSumFunction(a, b) { return a + b; }"
+        }
+    ]
+```
+
+```jsx
+    var result = NX.call("sum", [400, 20]); // 420
+```
+
+Note that the usage of the named method is `sum` and not `namedSumFunction` due to JS' __hoisting__, so named functions are implemented and used the same was as anonymous functions.
+
+#### Anonymous Functions
+```json
+    "parameters" : [
+        {
+            "key" : "sumValues",
+            "value": "function (a, b) { return a + b; }"
+        }
+    ]
+```
+```jsx
+    var result = NX.call("sumValues", [400, 20]); // 420
+```
+
+#### Complete functions example
+```json
+{
+    "template": {
+        "src": "file:///template.aep",
+        "composition": "BLANK_COMP"
+    },
+    "assets": [
+        {
+            "src": "file:///sampleParamInjection.jsx",
+            "type": "script",
+            "parameters": [
+                {
+                    "type": "array",
+                    "key" : "dogs",
+                    "value": [ "Captain Sparkles", "Summer", "Neptune"]
+                },
+                {
+                    "type" : "number",
+                    "key" : "anAmount"
+                },
+                {
+                    "type": "function",
+                    "key": "getDogsCount",
+                    "value" : "function() { return NX.get('dogs').length; }"
+                },
+                {
+                    "type": "function",
+                    "key": "exampleFn",
+                    "value": "function ( parameter ) { return parameter; }"
+                },
+                {
+                    "type" : "function",
+                    "key" : "dogCount",
+                    "value" : "(function(length) { return length })(NX.arg('dogCount'))",
+                    "arguments": [
+                        {
+                            "key" : "dogCount",
+                            "value": ["NX.call('exampleFn', [NX.call('getDogsCount') + NX.get('anAmount')])"]
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}
+```
+
+## Examples 
+
+### No dynamic parameters.
 
 ```json
 {
@@ -541,9 +762,7 @@ and from the nexrender side everything is quite simple. You only need to provide
 }
 ```
 
-## Dynamic variables
-
-### Example JSON asset declaration:
+### Dynamic variable - Array type parameter
 
 ```json
 "assets": [
@@ -560,13 +779,11 @@ and from the nexrender side everything is quite simple. You only need to provide
 ]
 ```
 
-Each parameter object must have the following:
-* **key** (required)    :   The key of the variable. Example: Key = dog => NX.dog.
-* **value** (required)  :   The target value for the variable. Example: Key = dog, Value = "doggo" => NX.dog = "doggo"
+#### Default Dynamic Variable Keyword Parameter
 
 The `value` could be a variable or a function, but beware that there is no sanitization nor validation so **if the input is malformed it could crash the job**
 
-By default the **keyword** is set to **`NX`**, so you would call your variables or methods like `NX.foo` or `NX.bar()`. To change this keyword simply set `"keyword"` as shown below:
+By default the **keyword** is set to **`NX`**, so you would call your variables or methods like `NX.get("foo")` or `NX.call("bar", ["sampleStringParameter"])`. To change this keyword simply set `"keyword"` as shown below:
 
 ```json
 "assets": [
@@ -584,17 +801,16 @@ By default the **keyword** is set to **`NX`**, so you would call your variables 
 ]
 ```
 
-This way instead of `NX.foo` it would be `_settings.foo`
+This way instead of `NX.get("foo")` it would be `_settings.get("foo")`
 
-**_All dynamic parameters used in the script should have a JSX default_** by stating a local `keyword` variable like on the example below:
+**_All dynamic parameters used in the script should have a JSX default_**
 
 ### Example JSX Script with defaults:
 
 ```jsx
 {
-    var NX = NX || { name : "John" }; // Setting default variable using the default keyword.
 
-    return "Hello " + NX.name;
+    return "Hello " + NX.get("name") || "John";
 }
 ```
 
@@ -607,7 +823,7 @@ The code above will output either:
 ```jsx
 {
     // The code below will crash if it's executed directly in After Effects. See documentation on how to enable cross environment fault tolerance.
-    return "There are " + NX.beerBottlesAmount + " beer bottles ready to drink!"
+    return "There are " + NX.get("beerBottlesAmount") + " beer bottles ready to drink!"
 }
 ```
 
@@ -617,28 +833,6 @@ The code above will output either:
 
 But don't you worry about missing any of the examples above; If you use a variable in your JSX with the default keyword and no initialization whatsoever,
 the console will output a handy initialization code snippet for both JSON and JSX for you to copy and modify with your own values!
-
-### Example compiled script
-An example of a compiled script without JSON nor JSX initialization (auto generated null values) would look like the following ( minus the comments )
-
-```jsx
-(function() {
-    // Generated based on the parameters on the script, with no JSON parameters initialization and no local variable defined.
-    var NX = {"name":"null"};
-
-    // Original script from jsx file.
-
-    // Note that this can, and most positively will, crash if executed directly in After Effects. With a local definition of the variable and default
-    // parameters this would be fixed.
-    {
-        // Example of local definition:
-        // var NX = NX || { name : "John" };
-        alert("Hello " + NX.name);
-    }
-    // End of jsx script
-})();
-```
-
 
 That pretty much covers basics of templated rendering.
 
