@@ -6,8 +6,14 @@ const {spawn} = require('child_process')
 // TODO: make it work
 /* make sure pkg will pick up only needed binaries */
 const binaries = {
-    'darwin': path.join(__dirname, 'node_modules/ffmpeg-static/bin/darwin/x64/ffmpeg'),
-    'win32':  path.join(__dirname, 'node_modules/ffmpeg-static/bin/win32/x64/ffmpeg.exe'),
+    'darwin': [
+        path.join(__dirname, 'ffmpeg-static/bin/darwin/x64/ffmpeg'),
+        path.join(__dirname, '../../ffmpeg-static/bin/darwin/x64/ffmpeg'),
+    ], 
+    'win32': [
+        path.join(__dirname, 'ffmpeg-static/bin/win32/x64/ffmpeg.exe'),
+        path.join(__dirname, '../../ffmpeg-static/bin/win32/x64/ffmpeg.exe'),
+    ] 
 }
 
 // /snapshot/nexrender/packages/nexrender-cli/node_modules/@nexrender/core/node_modules/@nexrender/action-encode/node_modules/ffmpeg-static/bin/darwin/x64/ffmpeg
@@ -21,7 +27,8 @@ const getBinary = (job, settings) => {
                 return resolve(output);
             }
 
-            const rd = fs.createReadStream(binaries[process.platform])
+            const binpath = binaries[process.platform].filter(file => fs.existsSync(file))[0]
+            const rd = fs.createReadStream(binpath)              
             const wr = fs.createWriteStream(output)
 
             const handleError = err => {
