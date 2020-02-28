@@ -103,11 +103,11 @@ module.exports = (job, settings) => {
         instance.on('error', err => reject(new Error(`Error starting aerender process: ${err}`)));
         instance.stdout.on('data', (data) => {
             output.push(parse(data.toString('utf8')));
-            (settings.verbose && settings.logger.log(data));
+            (settings.verbose && settings.logger.log(data.toString('utf8')));
         });
         instance.stderr.on('data', (data) => {
             output.push(data.toString('utf8'));
-            (settings.verbose && settings.logger.log(data));
+            (settings.verbose && settings.logger.log(data.toString('utf8')));
         });
 
         /* on finish (code 0 - success, other - error) */
