@@ -368,6 +368,46 @@ const main = async () => {
 main().catch(console.error);
 ```
 
+Or you can go more advanced, and provide some settings as your 2nd argument to the `render` function:
+
+```js
+const { render } = require('@nexrender/core')
+
+const main = async () => {
+    const result = await render(/*myJobJson*/, {
+        workpath: '/Users/myname/.nexrender/',
+        binary: '/Users/mynames/Apllications/aerender',
+        skipCleanup: true,
+        addLicense: false,
+        debug: true,
+    })
+}
+
+main().catch(console.error);
+````
+
+### Information
+
+The module returns 2 methods, `init` and `render`. `render` calls `init` internally, if it sees that there were some options provided to `render` as 2nd argument.
+
+First one is responsible for setting up the env, checking if all needed patches for AE are in place,
+automatically adding render-only license file for a free usage of Adobe's product (unless disabled), and a few other minor things.
+
+Second one is responsible for mainly job-related operations of the full cycle: downloading, rendering, processing, and uploading.
+
+`init` accepts an object, containing additional options:
+
+* `workpath` - string, manually set path to working directory where project folder will be created, overrides default one in system temp folder
+* `binary` - string, manually set path pointing to the aerender(.exe) binary, overrides auto found one
+* `debug` - boolean, enables or disables debug mode, false by default
+* `skipCleanup` - boolean, providing true will prevent nexrender from removing the temp folder with project (false by default)
+* `multiFrames` - boolean, providing true will attmpt to use aerender's built-in feature of multi frame rendering (false by default)
+* `reuse` - boolean, false by default, (from Adobe site): Reuse the currently running instance of After Effects (if found) to perform the render. When an already running instance is used, aerender saves preferences to disk when rendering has completed, but does not quit After Effects. If this argument is not used, aerender starts a new instance of After Effects, even if one is already running. It quits that instance when rendering has completed, and does not save preferences.
+* `maxMemoryPercent` - integer, undefined by default, check [original documentation](https://helpx.adobe.com/after-effects/using/automated-rendering-network-rendering.html) for more info
+* `imageCachePercent` - integer, undefined by default, check [original documentation](https://helpx.adobe.com/after-effects/using/automated-rendering-network-rendering.html) for more info
+* `addLicense` - boolean, providing false will disable ae_render_only_node.txt license file auto-creation (true by default)
+* `forceCommandLinePatch` - boolean, providing true will force patch re-installation
+
 More info: [@nexrender/core](packages/nexrender-core)
 
 # Template rendering
