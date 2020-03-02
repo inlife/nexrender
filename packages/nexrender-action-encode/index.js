@@ -168,6 +168,8 @@ module.exports = (job, settings, options, type) => {
 
                 resolve(job)
             });
+        }).catch(e => {
+            return reject(new Error('Error in action-encode module (ffmpeg)'))
         });
     });
 }
