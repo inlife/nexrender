@@ -40,7 +40,7 @@ const getBinary = (job, settings) => {
             rd.on('error', handleError)
             wr.on('error', handleError)
 
-            wr.on('finish', () => {
+            wr.on('close', () => {
                 fs.chmodSync(output, 0o765)
                 resolve(output)
             })
@@ -168,6 +168,8 @@ module.exports = (job, settings, options, type) => {
 
                 resolve(job)
             });
+        }).catch(e => {
+            return reject(new Error('Error in action-encode module (ffmpeg)'))
         });
     });
 }
