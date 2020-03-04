@@ -345,6 +345,26 @@ values can be checked [here](https://helpx.adobe.com/after-effects/using/automat
 
 Note: Callback functions are only available via programmatic use. For more information, please refer to the source code.
 
+### Job States
+
+> **Note:** Job states are mainly used for network rendering. If you are using `nexrender-cli` you can skip this section.
+
+Job can have state feild (`job.state`) be set to one of those values:
+
+ * `created` (default)
+ * `queued` (when pushed to the nexrender-server)
+ * `picked` (when somebody picked up job on nexrender-server)
+ * `started` (when worker started preparing and running the job)
+ * `render:setup` (bunch of states that are specific to each render step)
+ * `render:download`
+ * `render:prerender`
+ * `render:script`
+ * `render:dorender`
+ * `render:postrender`
+ * `render:cleanup`
+ * `finished` (when worker successfully finished rendering the job)
+ * `error` (when worker got an error at any step starting from `started` state)
+
 ## Programmatic
 
 In case you are building your own application and just need to use a rendering part, or you wanna manually trigger jobs from your code,
