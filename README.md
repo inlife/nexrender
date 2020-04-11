@@ -345,6 +345,26 @@ values can be checked [here](https://helpx.adobe.com/after-effects/using/automat
 
 Note: Callback functions are only available via programmatic use. For more information, please refer to the source code.
 
+### Job States
+
+> **Note:** Job states are mainly used for network rendering. If you are using `nexrender-cli` you can skip this section.
+
+Job can have state feild (`job.state`) be set to one of those values:
+
+ * `created` (default)
+ * `queued` (when pushed to the nexrender-server)
+ * `picked` (when somebody picked up job on nexrender-server)
+ * `started` (when worker started preparing and running the job)
+ * `render:setup` (bunch of states that are specific to each render step)
+ * `render:download`
+ * `render:prerender`
+ * `render:script`
+ * `render:dorender`
+ * `render:postrender`
+ * `render:cleanup`
+ * `finished` (when worker successfully finished rendering the job)
+ * `error` (when worker got an error at any step starting from `started` state)
+
 ## Programmatic
 
 In case you are building your own application and just need to use a rendering part, or you wanna manually trigger jobs from your code,
@@ -881,6 +901,8 @@ That pretty much covers basics of templated rendering.
 We've covered basics on how to set up a minimal rendering flow using local cli machine rendering.
 Now, what if you want to start rendering on a remote machine, to reduce load while you are working on your local machine.
 Or maybe you need to render so many videos at once, that you will require a whole fleet of nodes running on some cloud cluster.
+
+![](https://user-images.githubusercontent.com/2182108/77616726-02443700-6f3b-11ea-8e27-b59656d9efe1.png)
 
 With nexrender, you can quite quickly and easily spin up your own rendering cluster.
 
