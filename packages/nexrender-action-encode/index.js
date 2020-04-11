@@ -145,10 +145,6 @@ const constructParams = (job, settings, { preset, input, output, params }) => {
 }
 
 module.exports = (job, settings, options, type) => {
-    if (type != 'postrender') {
-        throw new Error(`Action ${name} can be only run in postrender mode, you provided: ${type}.`)
-    }
-
     settings.logger.log(`[${job.uid}] starting action-encode action (ffmpeg)`)
 
     return new Promise((resolve, reject) => {
