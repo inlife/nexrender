@@ -73,11 +73,11 @@ const wrapScript = ({ dest }) => (`(function() {
 const wrapEnhancedScript = ({ dest, src, parameters = [], keyword, defaults,  ...asset }, jobID, settings) => {
 
     function EnhancedScript (
-            dest, 
+            dest,
             src,
             parameters          = [],
-            keyword             = "NX", 
-            defaults            = { 
+            keyword             = "NX",
+            defaults            = {
                 global : "null",
                 string : "",
                 number: 0,
@@ -105,7 +105,7 @@ const wrapEnhancedScript = ({ dest, src, parameters = [], keyword, defaults,  ..
         };
 
         this.missingJSONParams  = [];
-        
+
 
 
         // Setup
@@ -141,10 +141,10 @@ const wrapEnhancedScript = ({ dest, src, parameters = [], keyword, defaults,  ..
 
     EnhancedScript.prototype.getRegex = function (key)              { return this.regexes[key]; }
 
-    
+
     /*
             Get Default Value
-            @description                Retrieves a default value parameter based on a key. 
+            @description                Retrieves a default value parameter based on a key.
             @param key                  (String)("string"|"number"|"array"|"object"|"null"|"function") The key to the required default parameter. Defaults to "null".
             @returns default            The value from this.defaults array.
         */
@@ -154,8 +154,8 @@ const wrapEnhancedScript = ({ dest, src, parameters = [], keyword, defaults,  ..
         Add Missing JSON Parameter
         =====================
         @description                Adds an object with the key of a parameter being used in JSX code but with no default in the JSON Asset.
-        @param nxMatch              (Object) The object to add to the missing array. 
-                                    Required format: 
+        @param nxMatch              (Object) The object to add to the missing array.
+                                    Required format:
                                     {
                                         key: string
                                         isVar: boolean
@@ -174,7 +174,7 @@ const wrapEnhancedScript = ({ dest, src, parameters = [], keyword, defaults,  ..
 
         this.regexes.searchUsageByMethod = (method = "set", flags = "g") => {
             const str = `(?<!(?:[\\/\\s]))(?<!(?:[\\*\\s]))(?:\\s*${this.getKeyword()}\\s*\\.)\\s*(${method})\\s*(?:\\()(?:["']{1})([a-zA-Z0-9._-]+)(?:["']{1})(?:\\))`;
-            return this.buildRegex(str);
+            return this.buildRegex(str, flags);
         }
 
         // Find instances of a function inside a single-line string.
@@ -200,14 +200,14 @@ const wrapEnhancedScript = ({ dest, src, parameters = [], keyword, defaults,  ..
     /*
         Parse method from parameter
         @description                    Given a parameter detect whether it should be casted as a function in the final argument injection.
-        @param param                (string|number|boolean|null|object|array) The parameter to parse a method from. 
+        @param param                (string|number|boolean|null|object|array) The parameter to parse a method from.
         @return bool                (Boolean) If a method is detected then it's stripped from String quotes, else it's returned in it's original type.
     */
 
     EnhancedScript.prototype.isMethod = function (param)                    {
         if(typeof param == "string") {
             return (param.match(this.getRegex("fnDetect")) ? true : false);
-        } 
+        }
         return false
     }
 
@@ -222,22 +222,22 @@ const wrapEnhancedScript = ({ dest, src, parameters = [], keyword, defaults,  ..
 
     EnhancedScript.prototype.matchAsJSONParameterKey = function ( key )     {
         const parameterMatch = this.getJSONParams().find(o => o.key == key);
-        
+
         return parameterMatch ? parameterMatch.value : key;
     }
 
     EnhancedScript.prototype.parseMethodWithArgs = function (parameter)     {
         let value = parameter.value;
-        
+
         const methodArgs = Array.from(parameter.value.matchAll(this.getRegex('searchUsageByMethod')('arg', "gm")));
 
         if( methodArgs.length > 0 ) {
-            
+
             this.getLogger().log("We found a self-invoking method with arguments!");
             this.getLogger().log(JSON.stringify(methodArgs));
             const foundArgument = methodArgs.filter( argMatch => {
                 [fullMatch, method, arg] = argMatch;
-                
+
                 return parameter.arguments && parameter.arguments.find(o => o.key == arg);
             });
 
@@ -253,7 +253,7 @@ const wrapEnhancedScript = ({ dest, src, parameters = [], keyword, defaults,  ..
                 value = parameter.value.replace(fullMatchRegex, argReplacement);
             }
         }
-        
+
         return value;
     }
 
@@ -263,7 +263,7 @@ const wrapEnhancedScript = ({ dest, src, parameters = [], keyword, defaults,  ..
 
     /*
         Get Default Value as String
-        @description                Retrieves a default value parameter based on a key. 
+        @description                Retrieves a default value parameter based on a key.
         @param key                  (String)("string"|"number"|"array"|"object"|"null"|"function") The key to the required default parameter. Defaults to "null".
         @returns default            (String) A template literal string with the embedded default parameter. If it's a string then it's wrapped with quotes.
     */
@@ -305,16 +305,16 @@ const wrapEnhancedScript = ({ dest, src, parameters = [], keyword, defaults,  ..
     EnhancedScript.prototype.findMissingMatchesInJSX = function ()                         {
 
         const script = this.stripCommentsFromScript(this.getJSXScript());
-    
+
         // Parse all occurrences of the usage of NX on the provided script.
 
-        const nxMatches = Array.from(script.matchAll(this.getRegex("searchUsageByMethod")("get", "gm"))); 
+        const nxMatches = Array.from(script.matchAll(this.getRegex("searchUsageByMethod")("get", "gm")));
 
         if (nxMatches && nxMatches.length > 0 ) {
 
             nxMatches.forEach( match => {
                 const [fullMatch, method, keyword] = match;
-                
+
                 var nxMatch = {
                     key: keyword.replace(/\s/g, ''),
                     isVar: false,
@@ -334,7 +334,7 @@ const wrapEnhancedScript = ({ dest, src, parameters = [], keyword, defaults,  ..
         return missingJSONParameters > 0;
     }
 
-    
+
     /*
         Generated Placeholder Parameters
         ================================
@@ -376,14 +376,14 @@ const wrapEnhancedScript = ({ dest, src, parameters = [], keyword, defaults,  ..
 
         return ` -- W A R N I N G --
         The following parameters used in the script were NOT found on the JSON "parameters" object of your script asset ${this.getScriptPath() }
-        
+
             ${this.getMissingJSONParams().map(o => o.key).join(", ")}
 
         Please set defaults in your JSX script (see documentation) or copy the following placeholder JSON code snippet and replace the values with your own:
 
         ${this.generatePlaceholderParameters()}
 
-        Remember to always use a fallback default value for any use of the ${keyword} object to have the ability to run this script on After Effects directly. 
+        Remember to always use a fallback default value for any use of the ${keyword} object to have the ability to run this script on After Effects directly.
         Example:
             const dogName = ${keyword} && ${keyword}.${this.getGetterMethod()}("doggo") || "Doggo";
         `
@@ -392,7 +392,7 @@ const wrapEnhancedScript = ({ dest, src, parameters = [], keyword, defaults,  ..
     EnhancedScript.prototype.injectParameters = function ()                         {
         return [...this.getJSONParams(), ...this.getMissingJSONParams()].map( param => {
             let value = param.type ? this.getStringifiedDefaultValue(param.type) : this.getDefaultValue(this.defaults.global);
-            
+
             if( param.value ) {
                 value = this.detectValueType(param);
             }
@@ -416,13 +416,13 @@ const wrapEnhancedScript = ({ dest, src, parameters = [], keyword, defaults,  ..
             value: v
         });
     };
-    
+
     ParameterConfigurator.prototype.call = function ( key, args ) {
-        for (var i = 0; i < this.params.length; i++) {                                                                                                                                             
+        for (var i = 0; i < this.params.length; i++) {
             if (this.params[i].key == key) {
                 if (typeof this.params[i].value == "function") return this.params[i].value.apply(this, args && args.length > 0 ? args : []);
-            }                                                                                                                        
-        }   
+            }
+        }
         return null;
     }
 
@@ -446,7 +446,7 @@ const wrapEnhancedScript = ({ dest, src, parameters = [], keyword, defaults,  ..
 
     EnhancedScript.prototype.build = function ()                                    {
         this.findMissingMatchesInJSX();
-        
+
         // Et voilà!
         const enhancedScript = `(function() {
     ${this.buildParameterConfigurator()}
