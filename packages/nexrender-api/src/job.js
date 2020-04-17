@@ -38,7 +38,7 @@ module.exports = (fetch, polling) => ({
             method: 'post',
             headers: {
                 'Content-Type': 'application/json',
-            }
+            },
             body: JSON.stringify(data),
         }), polling),
 
@@ -47,7 +47,7 @@ module.exports = (fetch, polling) => ({
             method: 'put',
             header: {
                 'Content-Type': 'application/json',
-            }
+            },
             body: JSON.stringify(data),
         }),
 
