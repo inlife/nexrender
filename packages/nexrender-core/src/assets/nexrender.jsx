@@ -95,6 +95,50 @@ nexrender.selectLayersByName = function(compositionName, name, callback, types) 
     }
 };
 
+/* call callback for every layer matching specific type and composition */
+nexrender.selectLayersByType = function(
+  compositionName,
+  type,
+  callback,
+  types
+) {
+  var foundOnce = false;
+
+  if (!compositionName) compositionName = nexrender.defaultCompositionName;
+  if (!types) types = nexrender.types;
+
+  nexrender.selectCompositionsByName(compositionName, function(comp) {
+    var items = [];
+
+    /* step 1: collect all matching layers */
+    for (var j = 1; j <= comp.numLayers; j++) {
+      var layer = comp.layer(j);
+
+      if (!(layer instanceof type)) continue;
+
+      if (nexrender.typesMatch(types, layer)) {
+        foundOnce = true;
+        items.push(layer);
+      }
+    }
+
+    /* step 2: envoke callback for every match */
+    var len = items.length;
+    for (var i = 0; i < len; i++) {
+      callback(items[i]);
+    }
+  });
+
+  if (!foundOnce) {
+    throw new Error( 
+      "nexrender: Cound't find any layers by provided type (" 
+      + type +
+      ") inside a composition: " 
+      + compositionName
+    ); 
+  }
+};
+
 /* call callback for an every layer matching specific index and composition */
 nexrender.selectLayersByIndex = function(compositionName, index, callback, types) {
     var foundOnce = false;
