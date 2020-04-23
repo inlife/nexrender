@@ -49,7 +49,7 @@ const getBinary = (job, settings) => {
 
         } else {
             const mymodule = 'ffmpeg'; /* prevent pkg from including everything */
-            resolve(require(mymodule + '-static').path)
+            resolve(require(mymodule + '-static'))
         }
     })
 }
