@@ -159,13 +159,13 @@ module.exports = (job, settings, options, type) => {
             /* on finish (code 0 - success, other - error) */
             instance.on('close', (code) => {
                 if (code !== 0) {
-                    return reject(new Error('Error in action-encode module (ffmpeg)'))
+                    return reject(new Error('Error in action-encode module (ffmpeg) code : ' + code))
                 }
 
                 resolve(job)
             });
         }).catch(e => {
-            return reject(new Error('Error in action-encode module (ffmpeg)'))
+            return reject(new Error('Error in action-encode module (ffmpeg) ' + e))
         });
     });
 }
