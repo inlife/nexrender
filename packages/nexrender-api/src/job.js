@@ -45,7 +45,7 @@ module.exports = (fetch, polling) => ({
     updateJob: async (id, data) =>
         await fetch(`/jobs/${id}`, {
             method: 'put',
-            header: {
+            headers: {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify(data),
