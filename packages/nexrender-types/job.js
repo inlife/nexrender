@@ -67,6 +67,7 @@ const validate = job => {
                 break;
 
             case 'script':
+            case 'static':
                 assert(asset.src, `job asset[${asset.type}] must have src defined`);
                 break;
 
