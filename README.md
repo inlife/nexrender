@@ -472,6 +472,7 @@ by specifying `src`, and one of the `layerName` or `layerIndex` options.
 * `layerIndex`: integer, can be used instead of `layerName` to select a layer by providing an index, starting from 1 (default behavior of AE jsx scripting env)
 * `composition`: string, composition where the layer is, useful for searching layer in specific compositions. If none is provided, it uses the wildcard composition "\*",
 that will result in a wildcard composition matching, and will apply this data to every matching layer in every matching composition.
+* `name`: string, and optional filename that the asset will be saved as, if not provided the `layerName` or the basename of the file will be used
 * `extension`: string, an optional extension to be added to the filename before it is sent for rendering. This is because After Effects expects the file extension to match the content type of the file. If none is provided, the filename will be unchanged.
 
 Specified asset from `src` field will be downloaded/copied to the working directory, and just before rendering will happen,
@@ -500,6 +501,7 @@ This way you (if you are using network rendering) you can not only deliver asset
         {
             "src": "file:///home/assets/audio.mp3",
             "type": "audio",
+            "name": "music.mp3",
             "layerIndex": 15
         }
     ]
@@ -523,6 +525,7 @@ Might be useful for some static data-based injections, or some other use cases.
         },
         {
             "src": "http://example.com/assets/something_else.csv",
+            "name": "mydata.csv",
             "type": "static"
         }
     ]

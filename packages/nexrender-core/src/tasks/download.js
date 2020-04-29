@@ -30,6 +30,11 @@ const download = (job, settings, asset) => {
         }
     }
 
+    /* force asset name if it is provided */
+    if (asset.name) {
+        destName = asset.name
+    }
+
     if (asset.extension) {
         destName += '.' + asset.extension
     }
