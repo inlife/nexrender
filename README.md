@@ -39,23 +39,39 @@
     - [Assets](#assets)
     - [Actions](#actions)
     - [Details](#details)
+    - [Job States](#job-states)
   - [Programmatic](#programmatic)
+    - [Information](#information)
 - [Template rendering](#template-rendering)
   - [Footage items](#footage-items)
     - [Fields](#fields)
     - [Example](#example)
-  - [Data items](#data-items)
+  - [Static assets](#static-assets)
+  - [Data Assets](#data-assets)
     - [Fields](#fields-1)
     - [Example](#example-1)
-  - [Script items](#script-items)
+  - [Script Asset](#script-asset)
     - [Fields](#fields-2)
-    - [Example with no dynamic parameters.](#example-with-no-dynamic-parameters)
-  - [Dynamic variables](#dynamic-variables)
-    - [Supported parameter types](#supported-parameter-types)
-    - [Example JSON asset declaration:](#example-json-asset-declaration)
+    - [Dynamic Parameters](#dynamic-parameters)
+    - [Supported Parameter Types](#supported-parameter-types)
+    - [Parameter Types examples](#parameter-types-examples)
+      - [String](#string)
+      - [Number](#number)
+      - [Array](#array)
+      - [Object](#object)
+      - [Null](#null)
+      - [Functions](#functions)
+        - [Warnings](#warnings)
+        - [Self-Invoking Functions Example](#self-invoking-functions-example)
+      - [Named Functions](#named-functions)
+      - [Anonymous Functions](#anonymous-functions)
+      - [Complete functions example](#complete-functions-example)
+  - [Examples](#examples)
+    - [No dynamic parameters.](#no-dynamic-parameters)
+    - [Dynamic variable - Array type parameter](#dynamic-variable---array-type-parameter)
+      - [Default Dynamic Variable Keyword Parameter](#default-dynamic-variable-keyword-parameter)
     - [Example JSX Script with defaults:](#example-jsx-script-with-defaults)
     - [Example JSX Script without defaults:](#example-jsx-script-without-defaults)
-    - [Example compiled script](#example-compiled-script)
 - [Network rendering](#network-rendering)
   - [Using binaries](#using-binaries)
     - [`nexrender-server`](#nexrender-server)
@@ -72,7 +88,7 @@
 - [Tested with](#tested-with)
 - [Additional Information](#additional-information)
   - [Protocols](#protocols)
-    - [Examples](#examples)
+    - [Examples](#examples-1)
   - [Development](#development)
   - [Project Values](#project-values)
   - [Awesome External Packages](#awesome-external-packages)
@@ -489,6 +505,12 @@ This way you (if you are using network rendering) you can not only deliver asset
 }
 ```
 
+## Static assets
+
+There is also a plain asset type that allows you to simply provide an `src`, and that file will be downloaded in the folder with the project.
+No additional automated actions will happen with that asset, unless you manually use scripting to do something with those.
+Might be useful for some static data-based injections, or some other use cases.
+
 ## Data Assets
 
 The second important point for the dynamic data-driven video generation is the ability to replace/change/modify non-footage data in the project.
@@ -589,7 +611,7 @@ and from the nexrender side everything is quite simple. You only need to provide
 * `parameters`:                 (optional) **object**, object where all the dynamically injected parameters are defined. Variables not defined here but used in the script are null by default.
 * `globalDefaultValue`          (optional) **any**, The default value of any found unknown or undefined value for any given `keyword` child object `key`is `null`. However this can be changed by setting this parameter to something. You should be careful on which default to set, it is suggested to leave it as it is and check for `null` values in your JSX code.
 
-## Dynamic Parameters
+### Dynamic Parameters
 
 With dynamic parameters you can set a parameter in your Job declaration to be used on a JSX Script! 
 
@@ -668,11 +690,6 @@ This is the default value for parameters used on any given JSX script that are n
 `NX.get("carDetails")` will be equal to `null`. 
 
 
-## Static assets
-
-There is also a plain asset type that allows you to simply provide an `src`, and that file will be downloaded in the folder with the project.
-No additional automated actions will happen with that asset, unless you manually use scripting to do something with those.
-Might be useful for some static data-based injections, or some other use cases.
 
 #### Functions
 
