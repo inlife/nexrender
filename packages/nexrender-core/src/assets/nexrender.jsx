@@ -44,17 +44,17 @@ nexrender.selectCompositionsByName = function(name, callback) {
         var item = app.project.items[i];
         if (!(item instanceof CompItem)) continue;
 
-        if (name != "*" && item.name != name) {
+        if (name !== "*" && item.name !== name) {
             continue;
         } else {
-            items.push(item);        
+            items.push(item);
         }
     }
 
     /* step 2: envoke callback for every match */
     var len = items.length;
     for (var i = 0; i < len; i++) {
-        callback(items[i]);        
+        callback(items[i]);
     }
 
     if (len == 0) {
@@ -75,7 +75,7 @@ nexrender.selectLayersByName = function(compositionName, name, callback, types) 
         /* step 1: collect all matching layers */
         for (var j = 1; j <= comp.numLayers; j++) {
             var layer = comp.layer(j);
-            if (layer.name != name) continue;
+            if (layer.name !== name) continue;
 
             if (nexrender.typesMatch(types, layer)) {
                 foundOnce = true;
