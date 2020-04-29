@@ -36,18 +36,14 @@ module.exports = (fetch, polling) => ({
     addJob: async data =>
         withEventEmitter(fetch, await fetch(`/jobs`, {
             method: 'post',
-            headers: {
-                'Content-Type': 'application/json',
-            },
+            headers: { 'content-type': 'application/json' },
             body: JSON.stringify(data),
         }), polling),
 
     updateJob: async (id, data) =>
         await fetch(`/jobs/${id}`, {
             method: 'put',
-            headers: {
-                'Content-Type': 'application/json',
-            },
+            headers: { 'content-type': 'application/json' },
             body: JSON.stringify(data),
         }),
 

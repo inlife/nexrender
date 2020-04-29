@@ -1,8 +1,8 @@
 const { createClient } = require('../src')
 
 const client = createClient({
-    host: 'http://localhost:3000',
-    secret: 'foobar123123',
+    host: 'http://localhost:3050',
+    secret: 'myapisecret',
 })
 
 const job = {
