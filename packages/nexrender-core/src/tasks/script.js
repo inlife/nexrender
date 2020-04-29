@@ -452,7 +452,8 @@ const wrapEnhancedScript = ({ dest, src, parameters = [], keyword, defaults,  ..
     ${this.buildParameterConfigurator()}
     ${this.getJSXScript()}
     })();\n`;
-        this.getLogger().log(enhancedScript);
+        // do not log the script (can be uncommented for debugging)
+        // this.getLogger().log(enhancedScript);
 
         return enhancedScript;
     }
