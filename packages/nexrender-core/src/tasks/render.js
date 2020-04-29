@@ -29,16 +29,24 @@ module.exports = (job, settings) => {
     // setup parameters
     params.push('-project', expandEnvironmentVariables(job.template.dest));
     params.push('-comp', job.template.composition);
-    params.push('-output', outputFile);
 
-    option(params, '-OMtemplate', job.template.outputModule);
-    option(params, '-RStemplate', job.template.settingsTemplate);
-    option(params, '-s', job.template.frameStart);
-    option(params, '-e', job.template.frameEnd);
-    option(params, '-i', job.template.incrementFrame);
+    if (!settings.skipRender){
+        params.push('-output', outputFile);
+
+        option(params, '-OMtemplate', job.template.outputModule);
+        option(params, '-RStemplate', job.template.settingsTemplate);
+
+        option(params, '-s', job.template.frameStart);
+        option(params, '-e', job.template.frameEnd);
+        option(params, '-i', job.template.incrementFrame);
+    } else {
+        option(params, '-s', 1);
+        option(params, '-e', 1);
+    }
+
     option(params, '-r', job.scriptfile);
 
-    if (settings.multiFrames) params.push('-mp');
+    if (!settings.skipRender && settings.multiFrames) params.push('-mp');
     if (settings.reuse) params.push('-reuse');
     if (job.template.continueOnMissing) params.push('-continueOnMissingFootage')
 
@@ -112,6 +120,7 @@ module.exports = (job, settings) => {
 
         /* on finish (code 0 - success, other - error) */
         instance.on('close', (code) => {
+
             const outputStr = output
                 .map(a => '' + a).join('');
 
@@ -130,7 +139,7 @@ module.exports = (job, settings) => {
             fs.writeFileSync(logPath, outputStr);
 
             /* resolve job without checking if file exists, or its size for image sequences */
-            if (job.template.imageSequence || ['jpeg', 'jpg', 'png'].indexOf(outputFile) !== -1) {
+            if (settings.skipRender || job.template.imageSequence || ['jpeg', 'jpg', 'png'].indexOf(outputFile) !== -1) {
                 return resolve(job)
             }
 
