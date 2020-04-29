@@ -47,6 +47,7 @@
     - [Fields](#fields)
     - [Example](#example)
   - [Static assets](#static-assets)
+    - [Example:](#example)
   - [Data Assets](#data-assets)
     - [Fields](#fields-1)
     - [Example](#example-1)
@@ -510,6 +511,23 @@ This way you (if you are using network rendering) you can not only deliver asset
 There is also a plain asset type that allows you to simply provide an `src`, and that file will be downloaded in the folder with the project.
 No additional automated actions will happen with that asset, unless you manually use scripting to do something with those.
 Might be useful for some static data-based injections, or some other use cases.
+
+### Example:
+
+```json
+{
+    "assets": [
+        {
+            "src": "http://example.com/assets/something.json",
+            "type": "static"
+        },
+        {
+            "src": "http://example.com/assets/something_else.csv",
+            "type": "static"
+        }
+    ]
+}
+```
 
 ## Data Assets
 
