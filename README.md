@@ -67,10 +67,10 @@
       - [Named Functions](#named-functions)
       - [Anonymous Functions](#anonymous-functions)
       - [Complete functions example](#complete-functions-example)
-  - [Examples](#examples)
-    - [No dynamic parameters.](#no-dynamic-parameters)
-    - [Dynamic variable - Array type parameter](#dynamic-variable---array-type-parameter)
-      - [Default Dynamic Variable Keyword Parameter](#default-dynamic-variable-keyword-parameter)
+    - [Examples](#examples)
+      - [No dynamic parameters.](#no-dynamic-parameters)
+      - [Dynamic variable - Array type parameter](#dynamic-variable---array-type-parameter)
+        - [Default Dynamic Variable Keyword Parameter](#default-dynamic-variable-keyword-parameter)
     - [Example JSX Script with defaults:](#example-jsx-script-with-defaults)
     - [Example JSX Script without defaults:](#example-jsx-script-without-defaults)
 - [Network rendering](#network-rendering)
@@ -849,9 +849,9 @@ Note that the usage of the named method is `sum` and not `namedSumFunction` due 
 }
 ```
 
-## Examples 
+### Examples
 
-### No dynamic parameters.
+#### No dynamic parameters.
 
 ```json
 {
@@ -864,7 +864,7 @@ Note that the usage of the named method is `sum` and not `namedSumFunction` due 
 }
 ```
 
-### Dynamic variable - Array type parameter
+#### Dynamic variable - Array type parameter
 
 ```json
 "assets": [
@@ -881,7 +881,7 @@ Note that the usage of the named method is `sum` and not `namedSumFunction` due 
 ]
 ```
 
-#### Default Dynamic Variable Keyword Parameter
+##### Default Dynamic Variable Keyword Parameter
 
 The `value` could be a variable or a function, but beware that there is no sanitization nor validation so **if the input is malformed it could crash the job**
 
