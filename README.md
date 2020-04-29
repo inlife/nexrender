@@ -667,6 +667,13 @@ This is the default value for parameters used on any given JSX script that are n
 ```
 `NX.get("carDetails")` will be equal to `null`. 
 
+
+## Static assets
+
+There is also a plain asset type that allows you to simply provide an `src`, and that file will be downloaded in the folder with the project.
+No additional automated actions will happen with that asset, unless you manually use scripting to do something with those.
+Might be useful for some static data-based injections, or some other use cases.
+
 #### Functions
 
 Functions are useful if you need some dynamic calculation of specific values. You can use them in conjuction with other dynamic parameters as well. Currently we support [Self-invoking Functions](#self-invoking-functions-example), [Named Functions](#named-functions-example) and [Anonymous Functions](#anonymous-functions-example). After Effects ExtendedScript **does not support arrow functions** at the moment (cc 2020).
