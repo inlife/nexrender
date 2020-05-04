@@ -8,7 +8,8 @@ const withEventEmitter = (fetch, job, polling = NEXRENDER_JOB_POLLING) => {
         try {
             const updatedJob = await fetch(`/jobs/${job.uid}`)
 
-            if (job.state != updatedJob.state) {
+            // Support updating render progress throughout rendering process
+            if (job.state != updatedJob.state || job.state == 'render:dorender') {
                 job.state = updatedJob.state;
                 emitter.emit(job.state, updatedJob, fetch);
             }
