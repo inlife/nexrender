@@ -9,7 +9,16 @@ const withEventEmitter = (fetch, job, polling = NEXRENDER_JOB_POLLING) => {
             const updatedJob = await fetch(`/jobs/${job.uid}`)
 
             // Support updating render progress throughout rendering process
-            if (job.state != updatedJob.state || job.state == 'render:dorender') {
+            if (updatedJob.state == 'render:dorender' && updatedJob.renderProgress) {
+                emitter.emit('progress', updatedJob, updatedJob.renderProgress);
+            }
+
+            if (updatedJob.state == 'finished') {
+                emitter.emit('progress', updatedJob, 100);
+            }
+
+            // push only strict state changes
+            if (job.state != updatedJob.state) {
                 job.state = updatedJob.state;
                 emitter.emit(job.state, updatedJob, fetch);
             }
