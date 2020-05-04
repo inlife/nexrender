@@ -16,6 +16,7 @@ const { createClient } = require('@nexrender/api')
 const client = createClient({
     host: 'http://my.server.com:3050',
     secret: 'myapisecret',
+    polling: 3000, // fetch udpates every 3000ms
 })
 
 const main = async () => {
