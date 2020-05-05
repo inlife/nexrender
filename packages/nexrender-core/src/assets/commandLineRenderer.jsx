@@ -1,4 +1,4 @@
-module.exports = /*syntax:js*/`// Command line renderer for After Effects. (nexrender-patch-v1.0.0)
+module.exports = /*syntax:js*/ `// Command line renderer for After Effects. (nexrender-patch-v1.0.1)
 
 // This function constructs an AECommandLineRenderer object.
 // One and only one of these will be created to perform rendering tasks
@@ -616,15 +616,14 @@ function AECommandLineRenderer() {
                 }
 
                 try {
-                    // To force eval to use the global scope
-                    // we cant use eval.call or eval.apply directly
-                    // we have to use a closure to force it to do this
+                    // Use evalFile instead of eval to make the script path context
+                    // the same as the scriptFile
                     // 
-                    // This is temporary till libraries are auto-included in Startup folder
-                    // (function(scriptString) {
-                    //     eval(scriptString);
-                    // }).apply($.global, [scriptFile.read()]);
-                    eval(scriptFile.read());
+                    // For example using eval(), the $.fileName would be the commandLineRenderer's
+                    // path and we want the executing scriptFile's path for our fallback
+                    // Using evalFile evaluates the file in another context
+                    
+                    $.evalFile(scriptFile)
                 } catch (e) {
                     if (this.log_file) {
                         this.log_file.writeln(this.MSG_SCRIPT_CAN_NOT_EXEC + this.in_script_path);
@@ -999,4 +998,4 @@ function AECommandLineRenderer() {
 }
 
 var gAECommandLineRenderer = new AECommandLineRenderer();
-`
+`;
