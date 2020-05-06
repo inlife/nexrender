@@ -59,7 +59,7 @@ const download = (job, settings, asset) => {
         case 'http':
         case 'https':
             /* TODO: maybe move to external package ?? */
-            return fetch(asset.src, asset.params || {})
+            return fetch(encodeURI(asset.src), asset.params || {})
                 .then(res => res.ok ? res : Promise.reject({reason: 'Initial error downloading file', meta: {url, error: res.error}}))
                 .then(res => {
                     const stream = fs.createWriteStream(asset.dest)
