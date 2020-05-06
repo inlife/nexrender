@@ -7,16 +7,16 @@ const {spawn} = require('child_process')
 /* make sure pkg will pick up only needed binaries */
 const binaries = {
     'darwin': [
-        path.join(__dirname, 'node_modules/ffmpeg-static/bin/darwin/x64/ffmpeg'),
-        path.join(__dirname, '../../ffmpeg-static/bin/darwin/x64/ffmpeg'),
-    ], 
+        path.join(__dirname, 'node_modules/ffmpeg-static/ffmpeg'),
+        path.join(__dirname, '../../ffmpeg-static/ffmpeg'),
+    ],
     'win32': [
-        path.join(__dirname, 'node_modules/ffmpeg-static/bin/win32/x64/ffmpeg.exe'),
-        path.join(__dirname, '../../ffmpeg-static/bin/win32/x64/ffmpeg.exe'),
-    ] 
+        path.join(__dirname, 'node_modules/ffmpeg-static/ffmpeg.exe'),
+        path.join(__dirname, '../../ffmpeg-static/ffmpeg.exe'),
+    ],
 }
 
-// /snapshot/nexrender/packages/nexrender-cli/node_modules/@nexrender/core/node_modules/@nexrender/action-encode/node_modules/ffmpeg-static/bin/darwin/x64/ffmpeg
+// /snapshot/nexrender/packages/nexrender-cli/node_modules/@nexrender/core/node_modules/@nexrender/action-encode/node_modules/ffmpeg-static/ffmpeg
 
 const getBinary = (job, settings) => {
     return new Promise((resolve, reject) => {
@@ -28,7 +28,12 @@ const getBinary = (job, settings) => {
             }
 
             const binpath = binaries[process.platform].filter(file => fs.existsSync(file))[0]
-            const rd = fs.createReadStream(binpath)              
+
+            if (!binpath) {
+                throw new Error(`Could not find ffmpeg binary, expected path: ${binpath}`)
+            }
+
+            const rd = fs.createReadStream(binpath)
             const wr = fs.createWriteStream(output)
 
             const handleError = err => {
