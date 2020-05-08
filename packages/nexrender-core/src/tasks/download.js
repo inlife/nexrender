@@ -82,8 +82,16 @@ const download = (job, settings, asset) => {
             break;
 
         case 'file':
+            const filepath = uri2path(expandEnvironmentVariables(asset.src))
+
+            /* add override to use original asset from fs */
+            if (asset.useOriginal) {
+                asset.dest = filepath
+                return Promise.resolve()
+            }
+
             /* plain asset stream copy */
-            const rd = fs.createReadStream(uri2path(expandEnvironmentVariables(asset.src)))
+            const rd = fs.createReadStream(filepath)
             const wr = fs.createWriteStream(asset.dest)
 
             return new Promise(function(resolve, reject) {

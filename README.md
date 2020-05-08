@@ -46,11 +46,13 @@
   - [Footage items](#footage-items)
     - [Fields](#fields)
     - [Example](#example)
+    - [Original source](#original-source)
+      - [Example](#example-1)
   - [Static assets](#static-assets)
     - [Example:](#example)
   - [Data Assets](#data-assets)
     - [Fields](#fields-1)
-    - [Example](#example-1)
+    - [Example](#example-2)
   - [Script Asset](#script-asset)
     - [Fields](#fields-2)
     - [Dynamic Parameters](#dynamic-parameters)
@@ -79,12 +81,12 @@
       - [Description:](#description)
       - [Supported platforms:](#supported-platforms)
       - [Requirements:](#requirements)
-      - [Example](#example-2)
+      - [Example](#example-3)
     - [`nexrender-worker`](#nexrender-worker)
       - [Description:](#description-1)
       - [Supported platforms:](#supported-platforms-1)
       - [Requirements:](#requirements-1)
-      - [Example](#example-3)
+      - [Example](#example-4)
   - [Using API](#using-api)
 - [Tested with](#tested-with)
 - [Additional Information](#additional-information)
@@ -475,6 +477,7 @@ by specifying `src`, and one of the `layerName` or `layerIndex` options.
 that will result in a wildcard composition matching, and will apply this data to every matching layer in every matching composition.
 * `name`: string, and optional filename that the asset will be saved as, if not provided the `layerName` or the basename of the file will be used
 * `extension`: string, an optional extension to be added to the filename before it is sent for rendering. This is because After Effects expects the file extension to match the content type of the file. If none is provided, the filename will be unchanged.
+* `useOriginal`: boolean, an optional feature specific to the `file://` protocol, that prevents nexrender from copying an asset to local temp folder, and use original instead
 
 Specified asset from `src` field will be downloaded/copied to the working directory, and just before rendering will happen,
 a footage item with specified `layerName` or `layerIndex` in the original project will be replaced with the freshly downloaded asset.
@@ -503,6 +506,26 @@ This way you (if you are using network rendering) you can not only deliver asset
             "src": "file:///home/assets/audio.mp3",
             "type": "audio",
             "name": "music.mp3",
+            "layerIndex": 15
+        }
+    ]
+}
+```
+
+### Original source
+
+For `file` protocol based assets (assets coming from local filesystem/shared network), you can provide additional option `useOriginal`, that would force nexrender to use an original file
+rather than creating a local copy inside of the temp rendering folder. That could be useful for large asset files, that would otherwise take a long time to copy.
+
+#### Example
+
+```json
+{
+    "assets": [
+        {
+            "src": "file:///D:/assets/MyBigAsset.wav",
+            "type": "audio",
+            "useOriginal": true,
             "layerIndex": 15
         }
     ]

@@ -22,6 +22,7 @@ const job = {
         {
             src: 'file:///D:/Downloads/nexrender-boilerplate-master/assets/deep_60s.mp3',
             type: 'audio',
+            useOriginal: true,
             layerName: 'audio.mp3',
         },
         // {
