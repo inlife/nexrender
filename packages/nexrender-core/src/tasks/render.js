@@ -29,9 +29,9 @@ module.exports = (job, settings) => {
     // setup parameters
     params.push('-project', expandEnvironmentVariables(job.template.dest));
     params.push('-comp', job.template.composition);
+    params.push('-output', outputFile);
 
     if (!settings.skipRender){
-        params.push('-output', outputFile);
 
         option(params, '-OMtemplate', job.template.outputModule);
         option(params, '-RStemplate', job.template.settingsTemplate);
