@@ -1184,7 +1184,7 @@ Since nexrender allows to use external packages installed globally from npm, its
 
 ### Custom Actions
 
-To add a custom pre- or post-render action, all you need to do is to create a at least single file, that is going to return a function with promise.
+To add a custom pre- or post-render action, all you need to do is to create at least a single file, that is going to return a function with promise.
 
 ```js
 // mymodule.js
