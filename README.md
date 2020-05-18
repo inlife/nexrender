@@ -323,7 +323,7 @@ And then using it:
 }
 ```
 
-Also, you can [checkout packages](#external-packages) made by other contributors across the network:
+Also, you can [checkout packages](#awesome-external-packages) made by other contributors across the network:
 
 ### Details
 
