@@ -8,9 +8,9 @@
   },
   "dependencies": {
     "@nexrender/types": "^1.14.0",
-    "data-uri-to-buffer": "^2.0.0",
-    "file-uri-to-path": "^1.0.0",
-    "mkdirp": "^0.5.1",
+    "data-uri-to-buffer": "^3.0.0",
+    "file-uri-to-path": "^2.0.0",
+    "mkdirp": "^1.0.4",
     "node-fetch": "^2.3.0",
     "requireg": "^0.2.1"
   },
