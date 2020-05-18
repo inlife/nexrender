@@ -1,61 +1,53 @@
 const fs      = require('fs')
 const path    = require('path')
-const {name}  = require('./package.json')
+const pkg     = require('./package.json')
+const fetch   = require('node-fetch')
 const {spawn} = require('child_process')
-
-// TODO: make it work
-/* make sure pkg will pick up only needed binaries */
-const binaries = {
-    'darwin': [
-        path.join(__dirname, 'node_modules/ffmpeg-static/ffmpeg'),
-        path.join(__dirname, '../../ffmpeg-static/ffmpeg'),
-    ],
-    'win32': [
-        path.join(__dirname, 'node_modules/ffmpeg-static/ffmpeg.exe'),
-        path.join(__dirname, '../../ffmpeg-static/ffmpeg.exe'),
-    ],
-}
-
-// /snapshot/nexrender/packages/nexrender-cli/node_modules/@nexrender/core/node_modules/@nexrender/action-encode/node_modules/ffmpeg-static/ffmpeg
+const nfp     = require('node-fetch-progress')
 
 const getBinary = (job, settings) => {
     return new Promise((resolve, reject) => {
-        if (process.pkg) {
-            const output = path.join(job.workpath, process.platform == 'win32' ? 'ffmpeg.exe' : 'ffmpeg')
+        const {version} = pkg['ffmpeg-static']
+        const filename = `ffmpeg-${version}${process.platform == 'win32' ? '.exe' : ''}`
+        const fileurl = `https://github.com/eugeneware/ffmpeg-static/releases/download/${version}/${process.platform}-x64`
+        const output = path.join(settings.workpath, filename)
 
-            if (fs.existsSync(output)) {
-                return resolve(output);
-            }
-
-            const binpath = binaries[process.platform].filter(file => fs.existsSync(file))[0]
-
-            if (!binpath) {
-                throw new Error(`Could not find ffmpeg binary, expected path: ${binpath}`)
-            }
-
-            const rd = fs.createReadStream(binpath)
-            const wr = fs.createWriteStream(output)
-
-            const handleError = err => {
-                rd.destroy()
-                wr.end()
-                reject(err)
-            }
-
-            rd.on('error', handleError)
-            wr.on('error', handleError)
-
-            wr.on('close', () => {
-                fs.chmodSync(output, 0o765)
-                resolve(output)
-            })
-
-            rd.pipe(wr);
-
-        } else {
-            const mymodule = 'ffmpeg'; /* prevent pkg from including everything */
-            resolve(require(mymodule + '-static'))
+        if (fs.existsSync(output)) {
+            settings.logger.log(`> using an existing ffmpeg binary ${version} at: ${output}`)
+            return resolve(output)
         }
+
+        settings.logger.log(`> ffmpeg binary ${version} is not found`)
+        settings.logger.log(`> downloading a new ffmpeg binary ${version} to: ${output}`)
+
+        const errorHandler = (error) => reject(new Error({
+            reason: 'Unable to download file',
+            meta: {fileurl, error}
+        }))
+
+
+        fetch(fileurl)
+            .then(res => res.ok ? res : Promise.reject({reason: 'Initial error downloading file', meta: {fileurl, error: res.error}}))
+            .then(res => {
+                const progress = new nfp(res)
+
+                progress.on('progress', (p) => {
+                    process.stdout.write(`${Math.floor(p.progress * 100)}% - ${p.doneh}/${p.totalh} - ${p.rateh} - ${p.etah}                       \r`)
+                })
+
+                const stream = fs.createWriteStream(output)
+
+                res.body
+                    .on('error', errorHandler)
+                    .pipe(stream)
+
+                stream
+                    .on('error', errorHandler)
+                    .on('finish', () => {
+                        settings.logger.log(`> ffmpeg binary ${version} was successfully downloaded`)
+                        resolve(output)
+                    })
+            });
     })
 }
 
