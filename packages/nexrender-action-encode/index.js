@@ -45,6 +45,7 @@ const getBinary = (job, settings) => {
                     .on('error', errorHandler)
                     .on('finish', () => {
                         settings.logger.log(`> ffmpeg binary ${version} was successfully downloaded`)
+                        fs.chmodSync(output, 0o755)
                         resolve(output)
                     })
             });
