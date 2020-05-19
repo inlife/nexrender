@@ -21,6 +21,17 @@ module.exports = (job, settings) => {
         return Promise.reject('Error veryifing job: ' + err)
     }
 
+    if (job.template.outputModule && !job.template.outputExt) {
+        settings.logger.log(`[${job.uid}] -- W A R N I N G: --
+
+You haven't provided a value for "job.template.outputExt"!
+Since you've choosen a custom outputModule (${job.template.outputModule}),
+nexrender, however, does not know what file extension is expected to be rendered.
+
+To prevent this from happening, please add a string value to "job.template.outputExt".
+An example of how that might look like: { "ouutputModule": "h264", "outputExt": "mp4" }.\n`);
+    }
+
     // set default job result file name
     if (job.template.outputExt) {
         job.resultname = 'result.' + job.template.outputExt;
