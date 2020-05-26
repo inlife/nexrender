@@ -1297,6 +1297,7 @@ If you've used nexrender, and you like it, please feel free to add yourself into
 
 * [Noxcaos Music](https://www.youtube.com/channel/UC2D9WSUKnyTX8wWqNVITTAw)
 * [Two Bit Circus](https://twobitcircus.com)
+* [Flügerl](https://www.youtube.com/c/fl%C3%BCgerl)
 * you name goes here
 
 ## Plans
