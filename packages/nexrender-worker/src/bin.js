@@ -20,6 +20,7 @@ const args = arg({
     '--stop-on-error':  String,
 
     '--skip-cleanup':   Boolean,
+    '--skip-render':    Boolean,
     '--no-license':     Boolean,
     '--force-patch':    Boolean,
     '--debug':          Boolean,
@@ -93,6 +94,8 @@ if (args['--help']) {
 
     --skip-cleanup                          forces worker to keep temporary data after rendering is finished
 
+    --skip-render                           Skips rendering an output. Useful if you only want to call scripts
+
     --polling                               amount of miliseconds to wait before checking queued projects from the api,
                                             if specified will be used instead of NEXRENDER_API_POLLING env variable
 
@@ -151,6 +154,7 @@ opt('binary',               '--binary');
 opt('workpath',             '--workpath');
 opt('no-license',           '--no-license');
 opt('skipCleanup',          '--skip-cleanup');
+opt('skipRender',           '--skip-render');
 opt('forceCommandLinePatch','--force-patch');
 opt('debug',                '--debug');
 opt('multiFrames',          '--multi-frames');
