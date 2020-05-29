@@ -1302,9 +1302,15 @@ If you've used nexrender, and you like it, please feel free to add yourself into
 
 ## Plans
 
-1. Adding more upload/download providers
-2. Add an algo of splitting the main job onto sub jobs, rendering them on multiple machines
-and then combining back into a single job. `@nexrender/action-merge-parent, @nexrender/action-merge-child`
+Features for next major release (`v2.0.0`):
+1. Ability to switch renderers for a job (`none`, `aerender`, `media-encoder`)
+2. Ability to push a job onto a server with ability to auto-split and render parts independently on the network
+  1. API for tracking/managing active workers in the network
+  2. Algo of splitting based on time & amount of workers
+  3. New job type (`partitioned`), which would be excluded from some general API responses
+  4. Mechanism of selecting a single node to be the "finisher", that would await and merge results of other jobs
+  5. Possible names: `@nexrender/action-merge-parent, @nexrender/action-merge-child`
+3. Extend current scripting capabilities with an advanced real-time communication with the internal environment via TCP connection
 
 ## Contributors
 
