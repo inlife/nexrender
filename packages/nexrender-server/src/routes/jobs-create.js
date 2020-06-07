@@ -4,7 +4,7 @@ const { create, validate } = require('@nexrender/types/job')
 const { insert }           = require('../helpers/database')
 
 module.exports = async (req, res) => {
-    const data = await json(req)
+    const data = await json(req, {limit: "100mb"})
     const job  = create(data); {
         job.state = 'queued';
     }
