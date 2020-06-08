@@ -6,7 +6,6 @@ const uri2path = require('file-uri-to-path')
 const data2buf = require('data-uri-to-buffer')
 const {expandEnvironmentVariables} = require('../helpers/path')
 
-// TODO: redeuce dep size
 const requireg = require('requireg')
 
 const download = (job, settings, asset) => {

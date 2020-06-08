@@ -59,6 +59,33 @@ const getBinary = (job, settings, {params}) => {
     })
 }
 
+module.exports = (job, settings, options, type) => {
+    settings.logger.log(`[${job.uid}] starting action-encode action (ffmpeg)`)
+
+    return new Promise((resolve, reject) => {
+        const params = constructParams(job, settings, options);
+        const binary = getBinary(job, settings, options).then(binary => {
+            const instance = spawn(binary, params);
+
+            instance.on('error', err => reject(new Error(`Error starting ffmpeg process: ${err}`)));
+            instance.stderr.on('data', (data) => settings.logger.log(`[${job.uid}] ${data.toString()}`));
+            instance.stdout.on('data', (data) => settings.debug && settings.logger.log(`[${job.uid}] ${data.toString()}`));
+
+            /* on finish (code 0 - success, other - error) */
+            instance.on('close', (code) => {
+                if (code !== 0) {
+                    return reject(new Error('Error in action-encode module (ffmpeg) code : ' + code))
+                }
+
+                resolve(job)
+            });
+        }).catch(e => {
+            return reject(new Error('Error in action-encode module (ffmpeg) ' + e))
+        });
+    });
+}
+
+
 /* pars of snippet taken from https://github.com/xonecas/ffmpeg-node/blob/master/ffmpeg-node.js#L136 */
 const constructParams = (job, settings, { preset, input, output, params }) => {
     input = input || job.output;
@@ -154,34 +181,9 @@ const constructParams = (job, settings, { preset, input, output, params }) => {
         break;
     }
 
+
     /* convert to plain array */
     return Object.keys(params).reduce(
         (cur, key) => cur.concat(key, params[key]), []
     );
-}
-
-module.exports = (job, settings, options, type) => {
-    settings.logger.log(`[${job.uid}] starting action-encode action (ffmpeg)`)
-
-    return new Promise((resolve, reject) => {
-        const params = constructParams(job, settings, options);
-        const binary = getBinary(job, settings, options).then(binary => {
-            const instance = spawn(binary, params);
-
-            instance.on('error', err => reject(new Error(`Error starting ffmpeg process: ${err}`)));
-            instance.stderr.on('data', (data) => settings.logger.log(`[${job.uid}] ${data.toString()}`));
-            instance.stdout.on('data', (data) => settings.debug && settings.logger.log(`[${job.uid}] ${data.toString()}`));
-
-            /* on finish (code 0 - success, other - error) */
-            instance.on('close', (code) => {
-                if (code !== 0) {
-                    return reject(new Error('Error in action-encode module (ffmpeg) code : ' + code))
-                }
-
-                resolve(job)
-            });
-        }).catch(e => {
-            return reject(new Error('Error in action-encode module (ffmpeg) ' + e))
-        });
-    });
 }
