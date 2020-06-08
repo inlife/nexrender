@@ -134,6 +134,17 @@ const constructParams = (job, settings, { preset, input, output, params }) => {
             });
         break;
 
+        case 'gif':
+          params = Object.assign({}, {
+            '-i': input,
+            "-ss": '61.0',
+            "-t": '2.5',
+            "-filter_complex": `[0:v] fps=12,scale=480:-1,split [a][b];[a] palettegen [p];[b][p] paletteuse`,
+          }, params, {
+            '-y': output
+          });
+          break;
+
         default:
             params = Object.assign({}, {
                 '-i': input
