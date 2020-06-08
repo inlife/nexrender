@@ -5,12 +5,19 @@ const fetch   = require('node-fetch')
 const {spawn} = require('child_process')
 const nfp     = require('node-fetch-progress')
 
-const getBinary = (job, settings) => {
+const getBinary = (job, settings, {params}) => {
     return new Promise((resolve, reject) => {
         const {version} = pkg['ffmpeg-static']
-        const filename = `ffmpeg-${version}${process.platform == 'win32' ? '.exe' : ''}`
         const fileurl = `https://github.com/eugeneware/ffmpeg-static/releases/download/${version}/${process.platform}-x64`
-        const output = path.join(settings.workpath, filename)
+        let output;
+
+        if (params.ffmpeg.path){
+          output = params.ffmpeg.path;
+        } else {
+          const filename = `ffmpeg-${version}${process.platform == 'win32' ? '.exe' : ''}`
+          const fileroot = params.ffmpeg.root || settings.workpath
+          output = path.join(fileroot, filename)
+        }
 
         if (fs.existsSync(output)) {
             settings.logger.log(`> using an existing ffmpeg binary ${version} at: ${output}`)
@@ -147,7 +154,7 @@ module.exports = (job, settings, options, type) => {
 
     return new Promise((resolve, reject) => {
         const params = constructParams(job, settings, options);
-        const binary = getBinary(job, settings).then(binary => {
+        const binary = getBinary(job, settings, options).then(binary => {
             const instance = spawn(binary, params);
 
             instance.on('error', err => reject(new Error(`Error starting ffmpeg process: ${err}`)));
