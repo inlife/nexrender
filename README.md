@@ -1311,6 +1311,7 @@ Features for next major release (`v2.0.0`):
   4. Mechanism of selecting a single node to be the "finisher", that would await and merge results of other jobs
   5. Possible names: `@nexrender/action-merge-parent, @nexrender/action-merge-child`
 3. Extend current scripting capabilities with an advanced real-time communication with the internal environment via TCP connection
+4. Define a general abstract inteface for the actions, and a general package that would contain basic funcitonality like input/output arguments, etc.
 
 ## Contributors
 
