@@ -52,9 +52,16 @@ const port = 3000
 const secret = 'myapisecret'
 
 server.listen(post, secret)
-
 ```
 
+Or, alternatively you can use `createHandler` method, to integrate it with your custom http server:
+
+```js
+const {createHandler} = require('@nexrender/server')
+const handler = createHandler('myapisecret')
+
+module.exports = (req, res) => handler(req, res)
+````
 ## API Routes
 
 Here is a short description of all api routes:
