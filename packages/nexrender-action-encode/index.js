@@ -12,6 +12,11 @@ const getBinary = (job, settings) => {
         const fileurl = `https://github.com/eugeneware/ffmpeg-static/releases/download/${version}/${process.platform}-x64`
         const output = path.join(settings.workpath, filename)
 
+        if (fs.existsSync(process.env.NEXRENDER_FFMPEG)) {
+            settings.logger.log(`> using external ffmpeg binary at: ${process.env.NEXRENDER_FFMPEG}`)
+            return resolve(process.env.NEXRENDER_FFMPEG)
+        }
+
         if (fs.existsSync(output)) {
             settings.logger.log(`> using an existing ffmpeg binary ${version} at: ${output}`)
             return resolve(output)
