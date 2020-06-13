@@ -13,6 +13,12 @@ Server uses process memory to store current list of jobs, and persists them onto
 By default job list is persisted to this location: `$HOME/nexrender/database.js`.
 Can be overriden by providing `NEXRENDER_DATABASE` env variable before launching the server.
 
+You are able to change ordering of the jobs. By default nexrender is using `oldest-first` (FIFO) type queue.
+Can be changed by providing `NEXRENDER_ORDERING` env vartiable before launching the server with such values:
+* `oldest-first` - FIFO queue, oldest jobs will be rendered first
+* `newest-first` - LIFO queue, newest jobs will be rendered first, oldest will be rendered last
+* `random` - Random access queue, jobs will be selected based on random counter
+
 ## Installation
 
 * For binary usage:
