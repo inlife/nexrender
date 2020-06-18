@@ -1312,6 +1312,7 @@ Features for next major release (`v2.0.0`):
   5. Possible names: `@nexrender/action-merge-parent, @nexrender/action-merge-child`
 3. Extend current scripting capabilities with an advanced real-time communication with the internal environment via TCP connection
 4. Define a general abstract inteface for the actions, and a general package that would contain basic funcitonality like input/output arguments, etc.
+5. Re-design networking layer, as well as server database layer, to count in cases where the jobs can be huge json objects.
 
 ## Contributors
 
