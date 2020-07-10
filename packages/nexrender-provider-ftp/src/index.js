@@ -5,7 +5,7 @@ var path = require("path");
 
 
 const download = (job, settings, src, dest, params) => {
-    let parsed = global.URL ? new URL(asset.src) : url.parse(src)
+    let parsed = global.URL ? new URL(src) : url.parse(src)
 
     params.host = parsed.hostname || parsed.host || 'localhost';
     params.port = parseInt(parsed.port, 10) || 21;
