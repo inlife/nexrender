@@ -149,7 +149,7 @@ module.exports = (job, settings) => {
                     settings.logger.log(fs.readFileSync(logPath, 'utf8'))
                 }
 
-                return reject(new Error(`Couldn't find a result file`))
+                return reject(new Error(`Couldn't find a result file: ${outputFile}`))
             }
 
             const stats = fs.statSync(outputFile)
