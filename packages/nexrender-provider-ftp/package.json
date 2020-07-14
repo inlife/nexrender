@@ -1,6 +1,6 @@
 {
   "name": "@nexrender/provider-ftp",
-  "version": "1.10.0",
+  "version": "1.17.2",
   "author": "zuntah",
   "main": "src/index.js",
   "dependencies": {
