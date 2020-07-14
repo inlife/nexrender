@@ -15,6 +15,7 @@ const args = arg({
     '--file':       String,
     '--binary':     String,
     '--workpath':   String,
+    '--wsl-map':    String,
 
     '--stop-on-error':  String,
 
@@ -36,6 +37,7 @@ const args = arg({
     '-f':           '--file',
     '-b':           '--binary',
     '-w':           '--workpath',
+    '-m':           '--wsl-map',
 });
 
 let serverHost = 'http://localhost:3000';
@@ -73,6 +75,11 @@ if (args['--help']) {
 
       -w, --workpath {underline absolute_path}          manually override path to the working directory
                                             by default nexrender is using os tmpdir/nexrender folder
+
+      -wsl, --wsl-map                       drive letter of your WSL mapping in Windows
+
+
+
 
   {bold ADVANCED OPTIONS}
 
@@ -145,6 +152,7 @@ opt('reuse',                '--reuse');
 opt('stopOnError',          '--stop-on-error');
 opt('maxMemoryPercent',     '--max-memory-percent');
 opt('imageCachePercent',    '--image-cache-percent');
+opt('wslMap',               '--wsl-map');
 
 /* convert string arugument into a boolean */
 settings['stopOnError'] = settings['stopOnError'] == 'true';

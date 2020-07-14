@@ -94,9 +94,7 @@ const init = (settings) => {
 
     // if WSL, ask user to define Mapping
     if (settings.wsl && !settings.wslMap)
-        throw new Error(
-            'Provide mapped drive letter for WSL in Windows; ie. "wslMap: Z"'
-        );
+        throw new Error('WSL detected: provide your WSL drive map; ie. "Z"');
 
     // add license helper
     if (settings.addLicense) {
