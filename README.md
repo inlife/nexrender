@@ -1233,7 +1233,7 @@ We suggest changing this to a secondary drive as rendering can eat up disk space
 Example under [Windows Pathing Guide](#windows-pathing).
 
 > Github Issue: [WSL 2 should automatically release disk space back to the host OS
-](#https://github.com/microsoft/WSL/issues/4699#issuecomment-656352632)
+](https://github.com/microsoft/WSL/issues/4699#issuecomment-656352632)
 
 ### WSL Memory
 
@@ -1247,7 +1247,7 @@ swap=0
 localhostForwarding=true
 ```
 
-> Github Issue: [WSL 2 consumes massive amounts of RAM and doesn't return it](#https://github.com/microsoft/WSL/issues/4166)
+> Github Issue: [WSL 2 consumes massive amounts of RAM and doesn't return it](https://github.com/microsoft/WSL/issues/4166)
 
 ## Development
 
