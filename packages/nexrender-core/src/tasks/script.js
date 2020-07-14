@@ -1,6 +1,7 @@
 const fs     = require('fs')
 const path   = require('path')
 const script = require('../assets/nexrender.jsx')
+const matchAll = require('match-all')
 
 /* helpers */
 const escape = str => {
@@ -212,7 +213,7 @@ const wrapEnhancedScript = ({ dest, src, parameters = [], keyword, defaults,  ..
     }
 
     EnhancedScript.prototype.parseMethod = function (parameter)             {
-        const selfInvokingFn = parameter.value.matchAll(this.getRegex('selfInvokingFn'));
+        const selfInvokingFn = matchAll(parameter.value, this.getRegex('selfInvokingFn'));
         if ( selfInvokingFn ) {
             this.getLogger().log(Array.from(selfInvokingFn));
             return this.parseMethodWithArgs(parameter);
@@ -229,7 +230,7 @@ const wrapEnhancedScript = ({ dest, src, parameters = [], keyword, defaults,  ..
     EnhancedScript.prototype.parseMethodWithArgs = function (parameter)     {
         let value = parameter.value;
 
-        const methodArgs = Array.from(parameter.value.matchAll(this.getRegex('searchUsageByMethod')('arg', "gm")));
+        const methodArgs = matchAll(parameter.value, this.getRegex('searchUsageByMethod')('arg', "gm")).toArray();
 
         if( methodArgs.length > 0 ) {
 
@@ -308,7 +309,7 @@ const wrapEnhancedScript = ({ dest, src, parameters = [], keyword, defaults,  ..
 
         // Parse all occurrences of the usage of NX on the provided script.
 
-        const nxMatches = Array.from(script.matchAll(this.getRegex("searchUsageByMethod")("get", "gm")));
+        const nxMatches = matchAll(script, this.getRegex("searchUsageByMethod")("get", "gm")).toArray();
 
         if (nxMatches && nxMatches.length > 0 ) {
 
