@@ -1,7 +1,7 @@
-const fs = require("fs");
-const path = require("path");
-const { spawn } = require("child_process");
-const { expandEnvironmentVariables } = require("../helpers/path");
+const fs = require('fs');
+const path = require('path');
+const { spawn } = require('child_process');
+const { expandEnvironmentVariables, checkForWSL } = require('../helpers/path');
 
 const progressRegex = /([\d]{1,2}:[\d]{2}:[\d]{2}:[\d]{2})\s+(\(\d+\))/gi;
 const durationRegex = /Duration:\s+([\d]{1,2}:[\d]{2}:[\d]{2}:[\d]{2})/gi;
@@ -16,7 +16,7 @@ const option = (params, name, ...values) => {
 };
 const seconds = (string) =>
     string
-        .split(":")
+        .split(':')
         .map((e, i) => (i < 3 ? +e * Math.pow(60, 2 - i) : +e * 10e-6))
         .reduce((acc, val) => acc + val);
 
@@ -29,71 +29,40 @@ module.exports = (job, settings) => {
     // create container for our parameters
     let params = [];
     let outputFile = expandEnvironmentVariables(job.output);
+    let projectFile = expandEnvironmentVariables(job.template.dest);
 
-    console.log("replace");
+    outputFileAE = checkForWSL(outputFile, settings);
+    projectFile = checkForWSL(projectFile, settings);
+    let jobScriptFile = checkForWSL(job.scriptfile, settings);
 
     // setup parameters
-    !settings.wsl
-        ? params.push("-project", expandEnvironmentVariables(job.template.dest))
-        : params.push(
-              "-project",
-              expandEnvironmentVariables(
-                  job.template.dest.match(/\/mnt\/[a-zA-Z]\//)
-                      ? job.template.dest.replace(
-                            /\/mnt\/[a-zA-Z]\//,
-                            `${job.template.dest.split("/")[2].toUpperCase()}:/`
-                        )
-                      : `${settings.wslMap}:${job.template.dest}`
-              )
-          );
-
-    params.push("-comp", job.template.composition);
-    !settings.wsl
-        ? params.push("-output", outputFile)
-        : params.push(
-              "-output",
-              outputFile.match(/\/mnt\/[a-zA-Z]\//)
-                  ? outputFile.replace(
-                        /\/mnt\/[a-zA-Z]\//,
-                        `${outputFile.split("/")[2].toUpperCase()}:/`
-                    )
-                  : `${settings.wslMap}:${outputFile}`
-          );
+    params.push('-project', projectFile);
+    params.push('-comp', job.template.composition);
+    params.push('-output', outputFileAE);
 
     if (!settings.skipRender) {
-        option(params, "-OMtemplate", job.template.outputModule);
-        option(params, "-RStemplate", job.template.settingsTemplate);
+        option(params, '-OMtemplate', job.template.outputModule);
+        option(params, '-RStemplate', job.template.settingsTemplate);
 
-        option(params, "-s", job.template.frameStart);
-        option(params, "-e", job.template.frameEnd);
-        option(params, "-i", job.template.incrementFrame);
+        option(params, '-s', job.template.frameStart);
+        option(params, '-e', job.template.frameEnd);
+        option(params, '-i', job.template.incrementFrame);
     } else {
-        option(params, "-s", 1);
-        option(params, "-e", 1);
+        option(params, '-s', 1);
+        option(params, '-e', 1);
     }
 
-    !settings.wsl
-        ? option(params, "-r", job.scriptfile)
-        : option(
-              params,
-              "-r",
-              job.scriptfile.match(/\/mnt\/[a-zA-Z]\//)
-                  ? job.scriptfile.replace(
-                        /\/mnt\/[a-zA-Z]\//,
-                        `${job.scriptfile.split("/")[2].toUpperCase()}:/`
-                    )
-                  : `${settings.wslMap}:${job.scriptfile}`
-          );
+    option(params, '-r', jobScriptFile);
 
-    if (!settings.skipRender && settings.multiFrames) params.push("-mp");
-    if (settings.reuse) params.push("-reuse");
+    if (!settings.skipRender && settings.multiFrames) params.push('-mp');
+    if (settings.reuse) params.push('-reuse');
     if (job.template.continueOnMissing)
-        params.push("-continueOnMissingFootage");
+        params.push('-continueOnMissingFootage');
 
     if (settings.imageCachePercent || settings.maxMemoryPercent) {
         option(
             params,
-            "-mem_usage",
+            '-mem_usage',
             settings.imageCachePercent || 50,
             settings.maxMemoryPercent || 50
         );
@@ -107,7 +76,7 @@ module.exports = (job, settings) => {
     let projectStart = null;
 
     const parse = (data) => {
-        const string = ("" + data).replace(/;/g, ":"); /* sanitize string */
+        const string = ('' + data).replace(/;/g, ':'); /* sanitize string */
 
         // Only execute startRegex if project start hasnt been found
         const matchStart = isNaN(parseInt(projectStart))
@@ -142,8 +111,8 @@ module.exports = (job, settings) => {
                 job.renderProgress = currentProgress;
 
                 if (
-                    job.hasOwnProperty("onRenderProgress") &&
-                    typeof job["onRenderProgress"] == "function"
+                    job.hasOwnProperty('onRenderProgress') &&
+                    typeof job['onRenderProgress'] == 'function'
                 ) {
                     job.onRenderProgress(job, job.renderProgress);
                 }
@@ -161,7 +130,7 @@ module.exports = (job, settings) => {
             settings.logger.log(
                 `[${job.uid}] spawning aerender process: ${
                     settings.binary
-                } ${params.join(" ")}`
+                } ${params.join(' ')}`
             );
         }
 
@@ -176,32 +145,32 @@ module.exports = (job, settings) => {
             // env: { PATH: path.dirname(settings.binary) },
         });
 
-        instance.on("error", (err) =>
+        instance.on('error', (err) =>
             reject(new Error(`Error starting aerender process: ${err}`))
         );
-        instance.stdout.on("data", (data) => {
-            output.push(parse(data.toString("utf8")));
-            settings.verbose && settings.logger.log(data.toString("utf8"));
+        instance.stdout.on('data', (data) => {
+            output.push(parse(data.toString('utf8')));
+            settings.verbose && settings.logger.log(data.toString('utf8'));
         });
-        instance.stderr.on("data", (data) => {
-            output.push(data.toString("utf8"));
-            settings.verbose && settings.logger.log(data.toString("utf8"));
+        instance.stderr.on('data', (data) => {
+            output.push(data.toString('utf8'));
+            settings.verbose && settings.logger.log(data.toString('utf8'));
         });
 
         /* on finish (code 0 - success, other - error) */
-        instance.on("close", (code) => {
-            const outputStr = output.map((a) => "" + a).join("");
+        instance.on('close', (code) => {
+            const outputStr = output.map((a) => '' + a).join('');
 
             if (code !== 0 && settings.stopOnError) {
                 if (fs.existsSync(logPath)) {
                     settings.logger.log(`[${job.uid}] dumping aerender log:`);
-                    settings.logger.log(fs.readFileSync(logPath, "utf8"));
+                    settings.logger.log(fs.readFileSync(logPath, 'utf8'));
                 }
 
                 return reject(
                     new Error(
                         outputStr ||
-                            "aerender.exe failed to render the output into the file due to an unknown reason"
+                            'aerender.exe failed to render the output into the file due to an unknown reason'
                     )
                 );
             }
@@ -221,7 +190,7 @@ module.exports = (job, settings) => {
             if (
                 settings.skipRender ||
                 job.template.imageSequence ||
-                ["jpeg", "jpg", "png"].indexOf(outputFile) !== -1
+                ['jpeg', 'jpg', 'png'].indexOf(outputFile) !== -1
             ) {
                 return resolve(job);
             }
@@ -229,7 +198,7 @@ module.exports = (job, settings) => {
             if (!fs.existsSync(outputFile)) {
                 if (fs.existsSync(logPath)) {
                     settings.logger.log(`[${job.uid}] dumping aerender log:`);
-                    settings.logger.log(fs.readFileSync(logPath, "utf8"));
+                    settings.logger.log(fs.readFileSync(logPath, 'utf8'));
                 }
 
                 return reject(new Error(`Couldn't find a result file`));
