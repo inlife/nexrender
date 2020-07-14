@@ -39,7 +39,7 @@ const wrapFootage = ({ dest, ...asset }, settings) => `(function() {
     ${selectLayers(
         asset,
         `function(layer) {
-        nexrender.replaceFootage(layer, '${dest}')
+        nexrender.replaceFootage(layer, '${checkForWSL(dest.replace(/\\/g, "\\\\"), settings)}')
     }`
     )}
 })();\n`;
