@@ -1,6 +1,6 @@
-const fs = require('fs');
-const os = require('os');
-const path = require('path');
+const fs = require('fs')
+const os = require('os')
+const path = require('path')
 
 const defaultPaths = {
     darwin: [
@@ -60,7 +60,7 @@ const defaultPaths = {
         '/mnt/c/Program Files/Adobe/Adobe After Effects 2020/Support Files',
         '/mnt/c/Program Files/Adobe/Adobe After Effects 2021/Support Files',
     ],
-};
+}
 
 /**
  * Attemnt to find a aebinary path automatically
@@ -68,21 +68,21 @@ const defaultPaths = {
  * @param  {Object} settings
  * @return {String|null}
  */
-module.exports = (settings) => {
-    let platform = os.platform();
+module.exports = settings => {
+    let platform = os.platform()
 
-    if (settings.wsl) platform = 'wsl';
+    if (settings.wsl) platform = 'wsl'
 
     if (!defaultPaths.hasOwnProperty(platform)) {
-        return null;
+        return null
     }
 
     const binary =
-        'aerender' + (platform === 'win32' || platform === 'wsl' ? '.exe' : '');
+        'aerender' + (platform === 'win32' || platform === 'wsl' ? '.exe' : '')
     const results = defaultPaths[platform]
-        .map((folderPath) => path.join(folderPath, binary))
-        .filter((binaryPath) => fs.existsSync(binaryPath));
+        .map(folderPath => path.join(folderPath, binary))
+        .filter(binaryPath => fs.existsSync(binaryPath))
 
     // return first matched result
-    return results.length ? results[0] : null;
-};
+    return results.length ? results[0] : null
+}

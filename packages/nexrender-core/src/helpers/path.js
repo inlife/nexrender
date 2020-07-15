@@ -7,34 +7,34 @@
  * would output: file:///Users/max/nexrender/projects/project2.aep
  */
 function expandEnvironmentVariables(pathString) {
-    const sigiledStrings = pathString.match(/\$.\w*/g) || [];
+    const sigiledStrings = pathString.match(/\$.\w*/g) || []
 
     return sigiledStrings.reduce((accumulator, sigiledString) => {
-        const potentialEnvVarKey = sigiledString.replace('$', '');
+        const potentialEnvVarKey = sigiledString.replace('$', '')
 
         if (process.env.hasOwnProperty(potentialEnvVarKey)) {
             return accumulator.replace(
                 sigiledString,
                 process.env[potentialEnvVarKey]
-            );
+            )
         } else {
-            return accumulator;
+            return accumulator
         }
-    }, pathString);
+    }, pathString)
 }
 
 let checkForWSL = (pathString, settings) => {
-    if (!settings.wsl) return pathString;
+    if (!settings.wsl) return pathString
 
     return pathString.match(/\/mnt\/[a-zA-Z]\//)
         ? pathString.replace(
               /\/mnt\/[a-zA-Z]\//,
               `${pathString.split('/')[2].toUpperCase()}:/`
           )
-        : `${settings.wslMap}:${pathString}`;
-};
+        : `${settings.wslMap}:${pathString}`
+}
 
 module.exports = {
     expandEnvironmentVariables: expandEnvironmentVariables,
-    checkForWSL
-};
+    checkForWSL,
+}
