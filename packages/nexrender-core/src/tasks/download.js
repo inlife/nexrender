@@ -61,14 +61,14 @@ const download = (job, settings, asset) => {
             /* TODO: maybe move to external package ?? */
             const src = decodeURI(asset.src) === asset.src ? encodeURI(asset.src): asset.src
             return fetch(src, asset.params || {})
-                .then(res => res.ok ? res : Promise.reject({reason: 'Initial error downloading file', meta: {url, error: res.error}}))
+                .then(res => res.ok ? res : Promise.reject({reason: 'Initial error downloading file', meta: {src, error: res.error}}))
                 .then(res => {
                     const stream = fs.createWriteStream(asset.dest)
                     let timer
 
                     return new Promise((resolve, reject) => {
                         const errorHandler = (error) => {
-                            reject(new Error({reason: 'Unable to download file', meta: {url, error}}))
+                            reject(new Error({reason: 'Unable to download file', meta: {src, error}}))
                         };
 
                         res.body
