@@ -1,7 +1,7 @@
 const fs = require('fs')
 const path = require('path')
 const {spawn} = require('child_process')
-const {expandEnvironmentVariables} = require('../helpers/path')
+const {expandEnvironmentVariables, checkForWSL} = require('../helpers/path')
 
 const progressRegex = /([\d]{1,2}:[\d]{2}:[\d]{2}:[\d]{2})\s+(\(\d+\))/gi;
 const durationRegex = /Duration:\s+([\d]{1,2}:[\d]{2}:[\d]{2}:[\d]{2})/gi;
@@ -25,11 +25,17 @@ module.exports = (job, settings) => {
     // create container for our parameters
     let params = [];
     let outputFile = expandEnvironmentVariables(job.output)
+    let projectFile = expandEnvironmentVariables(job.template.dest)
+
+    outputFileAE = checkForWSL(outputFile, settings)
+    projectFile = checkForWSL(projectFile, settings)
+    let jobScriptFile = checkForWSL(job.scriptfile, settings)
+
 
     // setup parameters
-    params.push('-project', expandEnvironmentVariables(job.template.dest));
+    params.push('-project', projectFile);
     params.push('-comp', job.template.composition);
-    params.push('-output', outputFile);
+    params.push('-output', outputFileAE);
 
     if (!settings.skipRender){
 
@@ -44,7 +50,7 @@ module.exports = (job, settings) => {
         option(params, '-e', 1);
     }
 
-    option(params, '-r', job.scriptfile);
+    option(params, '-r', jobScriptFile);
 
     if (!settings.skipRender && settings.multiFrames) params.push('-mp');
     if (settings.reuse) params.push('-reuse');

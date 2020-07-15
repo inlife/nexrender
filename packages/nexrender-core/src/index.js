@@ -37,6 +37,12 @@ const init = (settings) => {
     settings = Object.assign({}, settings);
     settings.logger = settings.logger || console;
 
+    // check for WSL
+    settings.wsl =
+        os.platform() === 'linux' && os.release().match('microsoft')
+            ? true
+            : false
+
     const binaryAuto = autofind(settings);
     const binaryUser = settings.binary && fs.existsSync(settings.binary) ? settings.binary : null;
 
@@ -62,6 +68,7 @@ const init = (settings) => {
         multiFrames: false,
         maxMemoryPercent: undefined,
         imageCachePercent: undefined,
+        wslMap: undefined,
 
         __initialized: true,
     }, settings, {
@@ -72,6 +79,11 @@ const init = (settings) => {
     if (!path.isAbsolute(settings.workpath)) {
         settings.workpath = path.join(process.cwd(), settings.workpath);
     }
+
+    // if WSL, ask user to define Mapping
+    if (settings.wsl && !settings.wslMap)
+        throw new Error('WSL detected: provide your WSL drive map; ie. "Z"')
+
 
     // add license helper
     if (settings.addLicense) {

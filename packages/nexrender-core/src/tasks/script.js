@@ -2,6 +2,7 @@ const fs     = require('fs')
 const path   = require('path')
 const script = require('../assets/nexrender.jsx')
 const matchAll = require('match-all')
+const { checkForWSL } = require('../helpers/path')
 
 /* helpers */
 const escape = str => {
@@ -30,9 +31,9 @@ const partsOfKeypath = (keypath) => {
 }
 
 /* scripting wrappers */
-const wrapFootage = ({ dest, ...asset }) => (`(function() {
+const wrapFootage = ({ dest, ...asset }, settings) => (`(function() {
     ${selectLayers(asset, `function(layer) {
-        nexrender.replaceFootage(layer, '${dest.replace(/\\/g, "\\\\")}')
+        nexrender.replaceFootage(layer, '${checkForWSL(dest.replace(/\\/g, "\\\\"), settings)}')
     }`)}
 })();\n`)
 
@@ -475,7 +476,7 @@ module.exports = (job, settings) => {
             case 'video':
             case 'audio':
             case 'image':
-                data.push(wrapFootage(asset));
+                data.push(wrapFootage(asset, settings));
                 break;
 
             case 'data':
