@@ -6,7 +6,6 @@
     <a href="https://travis-ci.org/inlife/nexrender"><img src="https://travis-ci.org/inlife/nexrender.svg?branch=master" alt="Build status" /></a>
     <a href="https://github.com/inlife/nexrender/releases"><img src="https://img.shields.io/github/downloads/inlife/nexrender/total?label=release%20downloads"/></a>
     <a href="https://www.npmjs.com/package/@nexrender/core"><img src="https://img.shields.io/npm/dt/@nexrender/core?label=npm%20downloads"/></a>
-    <a href="https://david-dm.org/inlife/nexrender?path=packages/nexrender-core"><img src="https://david-dm.org/inlife/nexrender/status.svg?path=packages/nexrender-core&label=deps" alt="Dependencies" /></a>
     <a href="https://discord.gg/S2JtRcB"><img src="https://discordapp.com/api/guilds/354670964400848898/embed.png" alt="Discord server" /></a>
 </div>
 
