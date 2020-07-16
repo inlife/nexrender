@@ -92,6 +92,12 @@
 - [Additional Information](#additional-information)
   - [Protocols](#protocols)
     - [Examples](#examples-1)
+  - [WSL (Windows Subsystem for Linux)](#wsl)
+    - [Linux Mapping](#linux-mapping)
+    - [Windows Pathing](#windows-pathing)
+    - [Binary](#wsl-binary)
+    - [Workpath](#wsl-worthpath)
+    - [Memory](#wsl-memory)
   - [Development](#development)
   - [Project Values](#project-values)
   - [Awesome External Packages](#awesome-external-packages)
@@ -162,6 +168,8 @@ We will be using `nexrender-cli` binary for this example. It's recommended to do
 
 Also, check out these example/tutorial videos made by our community:
 * ["Creating automated music video with nexrender"](https://www.youtube.com/watch?v=E64dXZ_AReQ) by **[douglas prod.](https://www.youtube.com/channel/UCDFTT_oX6VwmANKMng0-NUA)**
+
+>⚠ If using WSL check out [wsl support](#wsl)
 
 ## Job
 
@@ -447,6 +455,7 @@ Second one is responsible for mainly job-related operations of the full cycle: d
 * `imageCachePercent` - integer, undefined by default, check [original documentation](https://helpx.adobe.com/after-effects/using/automated-rendering-network-rendering.html) for more info
 * `addLicense` - boolean, providing false will disable ae_render_only_node.txt license file auto-creation (true by default)
 * `forceCommandLinePatch` - boolean, providing true will force patch re-installation
+* `wslMap` - String, set WSL drive map, check [wsl](#wsl) for more info
 
 More info: [@nexrender/core](packages/nexrender-core)
 
@@ -1119,6 +1128,121 @@ https://123.123.123.123/video.mp4
 data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg==
 data:text/plain;charset=UTF-8,some%20data:1234,5678
 ```
+
+## WSL
+
+If running WSL (`Windows Subsystem for Linux`) you will need to configure your project a bit differently in order for it to render correctly.
+
+### Linux Mapping
+
+You will need to pass in which drive letter `Linux` is mapped to in `Windows`. This is the `Drive Letter` in which you can access your Linux file system from Windows.  
+
+> ⚠ Note: Drive mapping is setup when configuring WSL
+You can do this through the CLI like so assuming Linux is mapped to `Z`.
+
+
+```sh
+$ nexrender-cli -f mywsljob.json -m "Z"
+```
+
+or
+
+```sh
+$ nexrender-cli -f mywsljob.json -wsl-map "Z"
+```
+
+And you can do this Programmatically like
+
+```js
+const { render } = require('@nexrender/core')
+const main = async () => {
+    const result = await render(/*myWSLJobJson*/, {
+        skipCleanup: true,
+        addLicense: false,
+        debug: true,
+        wslMap: "Z"
+    })
+}
+main().catch(console.error);
+````
+
+### Windows Pathing
+
+When referencing windows file system you will need to use `/mnt/[DRIVE YOU WANT TO ACCESS]/[PATH TO YOUR FILE]`.
+
+like so
+```
+/mnt/d/Downloads/nexrender-boilerplate-master/assets/nm.png
+```
+
+CLI Example
+
+```sh
+nexrender-cli -f mywsljob.json -m "Z" -w /mnt/d/Downloads/tmp/nexrender
+```
+
+Job Example
+
+```json
+{
+    "template": {
+        "src": "file:///mnt/d/Downloads/nexrender-boilerplate-master/assets/nm05ae12.aepx",
+        "composition": "main",
+    },
+    "assets": [
+        {
+            "src": "file:///mnt/d/Downloads/nexrender-boilerplate-master/assets/2016-aug-deep.jpg",
+            "type": "image",
+            "layerName": "background.jpg"
+        }
+    ],
+    "actions": {
+        "postrender": [
+            {
+                "module": "@nexrender/action-encode",
+                "output": "output.mp4",
+                "preset": "mp4"
+            }
+        ]
+    }
+}
+```
+
+> ⚠ Note: nexrender does not currently support custom root pathing
+### WSL Binary
+
+If `After Effects` is installed into the default location `nexrender` should auto detected it. Otherwise you will need to provide its location following the [Windows Pathing Guide](#windows-pathing).
+
+Example for if you installed `After Effect` onto your `D drive`.
+
+```sh
+nexrender-cli -f mywsljob.json -b "/mnt/d/Program Files/Adobe/Adobe After Effects 2020/Support Files/aerender.exe"
+```
+
+### WSL Workpath
+
+By default nexrender will use your Linux /tmp folder to render out the jobs. 
+
+We suggest changing this to a secondary drive as rendering can eat up disk space causing an issue where `WSL` does no release disk space back to `Windows`.
+
+Example under [Windows Pathing Guide](#windows-pathing).
+
+> Github Issue: [WSL 2 should automatically release disk space back to the host OS
+](https://github.com/microsoft/WSL/issues/4699#issuecomment-656352632)
+### WSL Memory
+
+It's also suggested that you create a `.wslconfig` file in your `Windows user folder` and limit the memory that can be used by `WSL`. Otherwise your rendering will crash on large projects.
+
+.wslconfig Example
+```
+[wsl2]
+memory=4GB
+swap=0
+localhostForwarding=true
+```
+
+> Github Issue: [WSL 2 consumes massive amounts of RAM and doesn't return it](https://github.com/microsoft/WSL/issues/4166)
+
 
 ## Development
 
