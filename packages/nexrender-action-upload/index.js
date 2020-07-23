@@ -20,11 +20,26 @@ module.exports = (job, settings, { input, provider, params }, type) => {
 
     settings.logger.log(`[${job.uid}] starting action-upload action`)
 
+    let requirePackage = ''
     try {
+        /* try requiring official providers */
+        requirePackage = `@nexrender/provider-${provider}`
         return requireg('@nexrender/provider-' + provider).upload(job, settings, input, params || {});
+
     } catch (e) {
         if (e.message.indexOf('Could not require module') !== -1) {
-            return Promise.reject(new Error(`Couldn\'t find module @nexrender/provider-${provider}, Unknown provider given.`))
+            try{
+                /* try requiring custom providers */
+                requirePackage = provider
+                return requireg(provider).upload(job, settings, input, params || {});
+
+            } catch(e) {
+                if (e.message.indexOf('Could not require module') !== -1) {
+                    return Promise.reject(new Error(`Couldn\'t find module ${requirePackage}, Unknown provider given.`))
+                }
+
+                throw e;
+            }
         }
 
         throw e;
