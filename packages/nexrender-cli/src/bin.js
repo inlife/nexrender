@@ -30,6 +30,8 @@ const args = arg({
     '--max-memory-percent':  Number,
     '--image-cache-percent': Number,
 
+    '--aerender-parameters': [String],
+
     // Aliases
     '-v':           '--version',
     '-c':           '--cleanup',
@@ -38,6 +40,7 @@ const args = arg({
     '-b':           '--binary',
     '-w':           '--workpath',
     '-m':           '--wsl-map',
+    '--ae':         '--aerender-parameters'
 });
 
 let serverHost = 'http://localhost:3000';
@@ -149,6 +152,7 @@ opt('stopOnError',          '--stop-on-error');
 opt('maxMemoryPercent',     '--max-memory-percent');
 opt('imageCachePercent',    '--image-cache-percent');
 opt('wslMap',               '--wsl-map');
+opt('ae-params',            '--aerender-parameters');
 
 /* convert string arugument into a boolean */
 settings['stopOnError'] = settings['stopOnError'] == 'true';

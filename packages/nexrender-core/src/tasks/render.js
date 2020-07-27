@@ -60,6 +60,10 @@ module.exports = (job, settings) => {
         option(params, '-mem_usage', settings.imageCachePercent || 50, settings.maxMemoryPercent || 50);
     }
 
+    for (param of settings['ae-params']) {
+        params.push('-' + param)
+    }
+
     // tracks progress
     let projectDuration = null;
     let currentProgress = null;
