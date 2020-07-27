@@ -61,7 +61,13 @@ module.exports = (job, settings) => {
     }
 
     for (param of settings['ae-params']) {
-        params.push('-' + param)
+        var ps = param.split(" ");
+        if (ps.length > 0) {
+          params.push('-' + ps[0])
+        }
+        if (ps.length > 1) {
+          params.push(ps[1])
+        }    
     }
 
     // tracks progress
