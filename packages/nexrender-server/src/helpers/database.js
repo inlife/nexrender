@@ -10,7 +10,7 @@ const database = process.env.NEXRENDER_DATABASE
     ? process.env.NEXRENDER_DATABASE
     : path.join(defaultPath, defaultName);
 
-let data = fs.existsSync(database)
+let data = (fs.existsSync(database) && fs.readFileSync(database, 'utf8'))
     ? JSON.parse(fs.readFileSync(database, 'utf8'))
     : [];
 
