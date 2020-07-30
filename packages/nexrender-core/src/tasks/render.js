@@ -60,15 +60,18 @@ module.exports = (job, settings) => {
         option(params, '-mem_usage', settings.imageCachePercent || 50, settings.maxMemoryPercent || 50);
     }
 
-    for (param of settings['ae-params']) {
-        var ps = param.split(" ");
-        if (ps.length > 0) {
-          params.push('-' + ps[0])
-        }
-        if (ps.length > 1) {
-          params.push(ps[1])
-        }    
+    if (settings['ae-params']) {
+        for (param of settings['ae-params']) {
+            var ps = param.split(" ");
+            if (ps.length > 0) {
+              params.push('-' + ps[0])
+            }
+            if (ps.length > 1) {
+              params.push(ps[1])
+            }    
+        }        
     }
+
 
     // tracks progress
     let projectDuration = null;
