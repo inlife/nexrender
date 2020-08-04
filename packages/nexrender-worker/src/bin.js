@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 
-const arg       = require('arg')
-const chalk     = require('chalk')
+const arg              = require('arg')
+const chalk            = require('chalk')
 const {start}   = require('./index')
-const {version} = require('../package.json')
+const {version}        = require('../package.json')
 
 const args = arg({
     // Types
@@ -31,6 +31,8 @@ const args = arg({
     '--image-cache-percent': Number,
     '--polling':             Number,
 
+    '--aerender-parameter': [String],
+
     // Aliases
     '-v':           '--version',
     '-c':           '--cleanup',
@@ -38,6 +40,7 @@ const args = arg({
     '-s':           '--secret',
     '-b':           '--binary',
     '-w':           '--workpath',
+    '--ae':         '--aerender-parameter'
 });
 
 let serverHost = 'http://localhost:3000';
@@ -118,6 +121,10 @@ if (args['--help']) {
                                             running. It quits that instance when rendering has completed, and does not save 
                                             preferences.
 
+    --aerender-parameter, --ae              forward parameter to aerender (see Adobe site). Parameters with arguments have to be 
+                                            enclosed in single quotes. For example:
+                                            nexrender --aerender-parameter 'close SAVE_CHANGES' --ae 'i 10' job.json
+ 
 
   {bold ENV VARS}
 
@@ -163,6 +170,7 @@ opt('stopOnError',          '--stop-on-error');
 opt('maxMemoryPercent',     '--max-memory-percent');
 opt('imageCachePercent',    '--image-cache-percent');
 opt('polling',              '--polling');
+opt('ae-params',            '--aerender-parameter');
 
 /* convert string arugument into a boolean */
 settings['stopOnError'] = settings['stopOnError'] == 'true';
