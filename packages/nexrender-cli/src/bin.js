@@ -30,6 +30,8 @@ const args = arg({
     '--max-memory-percent':  Number,
     '--image-cache-percent': Number,
 
+    '--aerender-parameter': [String],
+
     // Aliases
     '-v':           '--version',
     '-c':           '--cleanup',
@@ -38,6 +40,7 @@ const args = arg({
     '-b':           '--binary',
     '-w':           '--workpath',
     '-m':           '--wsl-map',
+    '--ae':         '--aerender-parameter'
 });
 
 let serverHost = 'http://localhost:3000';
@@ -113,6 +116,11 @@ if (args['--help']) {
                                             running. It quits that instance when rendering has completed, and does not save 
                                             preferences.
 
+    --aerender-parameter, --ae              forward parameter to aerender (see Adobe site). Parameters with arguments have to be 
+                                            enclosed in single quotes. For example:
+                                            nexrender --aerender-parameter 'close SAVE_CHANGES' --ae 'i 10' job.json
+ 
+
   {bold ENV VARS}
 
       NEXRENDER_API_POLLING                 amount of miliseconds to wait before checking queued projects from the api
@@ -149,6 +157,7 @@ opt('stopOnError',          '--stop-on-error');
 opt('maxMemoryPercent',     '--max-memory-percent');
 opt('imageCachePercent',    '--image-cache-percent');
 opt('wslMap',               '--wsl-map');
+opt('ae-params',            '--aerender-parameter');
 
 /* convert string arugument into a boolean */
 settings['stopOnError'] = settings['stopOnError'] == 'true';
