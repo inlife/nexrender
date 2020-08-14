@@ -39,7 +39,7 @@ const init = (settings) => {
 
     // check for WSL
     settings.wsl =
-    os.platform() === 'linux' && os.release().match(/microsoft/i)
+        os.platform() === 'linux' && os.release().match(/microsoft/i)
             ? true
             : false
 
