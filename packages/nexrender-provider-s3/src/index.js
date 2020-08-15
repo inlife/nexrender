@@ -9,11 +9,13 @@ const s3instanceWithRegion = region => {
     const key = region || 0
 
     if (!regions.hasOwnProperty(key)) {
-        regions[key] = new aws({
-            accessKeyId: process.env.AWS_ACCESS_KEY,
-            secretAccessKey: process.env.AWS_SECRET_KEY,
-            region: region,
-        })
+        const options = { region: region }
+
+        /* use manual settings, overriding ./aws/credentials */
+        if (process.env.AWS_ACCESS_KEY) options.accessKeyId = process.env.AWS_ACCESS_KEY
+        if (process.env.AWS_SECRET_KEY) options.secretAccessKey = process.env.AWS_SECRET_KEY
+
+        regions[key] = new aws(options)
     }
 
     return regions[key]
