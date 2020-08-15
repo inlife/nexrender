@@ -92,9 +92,9 @@ const validate = job => {
 /**
  * Returns a lightweight representation of the job. Containing only rendering infos.
  * @param  {Object} job
- * @return {Object} {uid: string, state: string, type: string, renderProgress: number}
+ * @return {Object} {uid: string, state: string, type: string, renderProgress: number, error: string}
  */
-const getRenderingStatus = job => ({uid: job.uid, state: job.state, type: job.type, renderProgress: job.renderProgress || 0})
+const getRenderingStatus = job => ({uid: job.uid, state: job.state, type: job.type, renderProgress: job.renderProgress || 0, error: job.error || null})
 
 module.exports = {
     create,
