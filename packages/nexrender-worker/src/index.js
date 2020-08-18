@@ -1,5 +1,6 @@
 const { createClient } = require('@nexrender/api')
 const { init, render } = require('@nexrender/core')
+const { getRenderingStatus } = require('@nexrender/types/job')
 
 const NEXRENDER_API_POLLING = process.env.NEXRENDER_API_POLLING || 30 * 1000;
 
@@ -61,8 +62,8 @@ const start = async (host, secret, settings) => {
         try {
             job.onRenderProgress = function (job, progress) {
                 try {
-                    /* send render prooress to our server */
-                    client.updateJob(job.uid, job)
+                    /* send render progress to our server */
+                    client.updateJob(job.uid, getRenderingStatus(job))
                 } catch (err) {
                     if (settings.stopOnError) {
                         throw err;
@@ -76,12 +77,12 @@ const start = async (host, secret, settings) => {
                 job.state = 'finished';
             }
 
-            await client.updateJob(job.uid, job)
+            await client.updateJob(job.uid, getRenderingStatus(job))
         } catch (err) {
             job.state = 'error';
             job.error = err;
 
-            await client.updateJob(job.uid, job);
+            await client.updateJob(job.uid, getRenderingStatus(job));
 
             if (settings.stopOnError) {
                 throw err;
