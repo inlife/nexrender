@@ -8,19 +8,28 @@ const {expandEnvironmentVariables} = require('../helpers/path')
 
 // TODO: redeuce dep size
 const requireg = require('requireg')
+function makeid(length) {
+  var result = '';
+  var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  var charactersLength = characters.length;
+  for (var i = 0; i < length; i++) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength));
+  }
+  return result;
+}
 
 const download = (job, settings, asset) => {
     if (asset.type == 'data') return Promise.resolve();
 
-    const uri = global.URL ? new URL(asset.src) : url.parse(asset.src)
+    const uri = global.URL ? new URL(asset.src) : url.parse(asset.src);
     const protocol = uri.protocol.replace(/\:$/, '');
-    let destName = '';
+    let destName = makeid(8) + '_';
 
     /* if asset doesnt have a file name, make up a random one */
     if (protocol === 'data' && !asset.layerName) {
         destName = Math.random().toString(36).substring(2);
     } else {
-        destName = path.basename(asset.src)
+        destName = makeid(8) + '_' + path.basename(asset.src);
         destName = destName.indexOf('?') !== -1 ? destName.slice(0, destName.indexOf('?')) : destName;
         /* ^ remove possible query search string params ^ */;
 
