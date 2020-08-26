@@ -26,7 +26,7 @@ module.exports = (job, settings, { input, provider, params, ...options }, type) 
     }
 
     if (options.hasOwnProperty('onComplete') && typeof options['onComplete'] == 'function') {
-        onComplete = (job) => options.onComplete(job);
+        onComplete = (job, file) => options.onComplete(job, file);
     }
 
     settings.logger.log(`[${job.uid}] starting action-upload action`)

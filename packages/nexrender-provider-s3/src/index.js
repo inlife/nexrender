@@ -83,11 +83,11 @@ const upload = (job, settings, src, params, onProgress, onComplete) => {
         settings.logger.log(`[${job.uid}] action-upload: upload progress ${progress}%...`)
     }
 
-    const onUploadComplete = () => {
+    const onUploadComplete = (file) => {
         if (typeof onComplete == 'function') {
-            onComplete(job);
+            onComplete(job, file);
         }
-        settings.logger.log(`[${job.uid}] action-upload: upload complete`)
+        settings.logger.log(`[${job.uid}] action-upload: upload complete: ${file}`)
     }
 
     const output = `https://s3-${params.region}.amazonaws.com/${params.bucket}/${params.key}`
@@ -111,7 +111,7 @@ const upload = (job, settings, src, params, onProgress, onComplete) => {
                 }
                 else
                 {
-                    onUploadComplete()
+                    onUploadComplete(data.Location)
                     resolve()
                 }
             })
