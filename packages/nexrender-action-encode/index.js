@@ -158,6 +158,18 @@ const constructParams = (job, settings, { preset, input, output, params }) => {
     );
 }
 
+const convertToMilliseconds = (h, m, s) => ((h*60*60+m*60+s)*1000);
+
+const getDuration = (regex, data) => {
+    const matches = data.match(regex);
+
+    if (matches) {
+        return convertToMilliseconds(parseInt(matches[1]), parseInt(matches[2]), parseInt(matches[3]));
+    }
+
+    return 0;
+}
+
 module.exports = (job, settings, options, type) => {
     settings.logger.log(`[${job.uid}] starting action-encode action (ffmpeg)`)
 
@@ -165,15 +177,41 @@ module.exports = (job, settings, options, type) => {
         const params = constructParams(job, settings, options);
         const binary = getBinary(job, settings).then(binary => {
             const instance = spawn(binary, params);
+            let totalDuration = 0
 
             instance.on('error', err => reject(new Error(`Error starting ffmpeg process: ${err}`)));
-            instance.stderr.on('data', (data) => settings.logger.log(`[${job.uid}] ${data.toString()}`));
-            instance.stdout.on('data', (data) => settings.debug && settings.logger.log(`[${job.uid}] ${data.toString()}`));
+            instance.stderr.on('data', (data) => {
+                const dataString = data.toString();
+
+                settings.logger.log(`[${job.uid}] ${dataString}`);
+
+                if (totalDuration === 0) {
+                    totalDuration = getDuration(/Duration: (\d+):(\d+):(\d+).(\d+),/, dataString);
+                }
+
+                currentProgress = getDuration(/time=(\d+):(\d+):(\d+).(\d+) bitrate=/, dataString);
+
+                if (totalDuration > 0 && currentProgress > 0) {
+                    const currentPercentage = Math.ceil(currentProgress / totalDuration * 100);
+                    
+                    if (options.hasOwnProperty('onProgress') && typeof options['onProgress'] == 'function') {
+                        options.onProgress(job, currentProgress);
+                    }
+
+                    settings.logger.log(`[${job.uid}] encoding progress ${currentPercentage}%...`);
+                }
+            });
+
+            instance.stdout.on('data', (data) => settings.debug && settings.logger.log(`[${job.uid}] ${dataString}`));
 
             /* on finish (code 0 - success, other - error) */
             instance.on('close', (code) => {
                 if (code !== 0) {
                     return reject(new Error('Error in action-encode module (ffmpeg) code : ' + code))
+                }
+
+                if (options.hasOwnProperty('onComplete') && typeof options['onComplete'] == 'function') {
+                    options.onComplete(job);
                 }
 
                 resolve(job)

@@ -59,7 +59,7 @@ const download = (job, settings, src, dest, params, type) => {
     })
 }
 
-const upload = (job, settings, src, params) => {
+const upload = (job, settings, src, params, onProgress, onComplete) => {
     const file = fs.createReadStream(src);
 
     if (!params.region) {
@@ -75,13 +75,19 @@ const upload = (job, settings, src, params) => {
         return Promise.reject(new Error('S3 ACL not provided.'))
     }
 
-    const onProgress = (e) => {
+    const onUploadProgress = (e) => {
         const progress = Math.ceil(e.loaded / e.total * 100)
+        if (typeof onProgress == 'function') {
+            onProgress(job, progress);
+        }
         settings.logger.log(`[${job.uid}] action-upload: upload progress ${progress}%...`)
     }
 
-    const onComplete = () => {
-        settings.logger.log(`[${job.uid}] action-upload: upload complete`)
+    const onUploadComplete = (file) => {
+        if (typeof onComplete == 'function') {
+            onComplete(job, file);
+        }
+        settings.logger.log(`[${job.uid}] action-upload: upload complete: ${file}`)
     }
 
     const output = `https://s3-${params.region}.amazonaws.com/${params.bucket}/${params.key}`
@@ -105,11 +111,11 @@ const upload = (job, settings, src, params) => {
                 }
                 else
                 {
-                    onComplete()
+                    onUploadComplete(data.Location)
                     resolve()
                 }
             })
-            .on('httpUploadProgress', onProgress)
+            .on('httpUploadProgress', onUploadProgress)
     })
 }
 
