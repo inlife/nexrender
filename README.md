@@ -207,6 +207,9 @@ Submitting this data to the binary will result in start of the rendering process
 $ nexrender-cli '{"template":{"src":"file:///home/documents/myproject.aep","composition":"main"}}'
 ```
 
+> Note: on MacOS you might need to change the permissions for downloaded file, so it would be considered as an executable.  
+> You can do it by running: `$ chmod 755 nexrender-cli-macos`
+
 or more conveniently using the `--file` option
 
 ```sh
