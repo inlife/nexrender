@@ -186,7 +186,7 @@ module.exports = (job, settings, options, type) => {
                 settings.logger.log(`[${job.uid}] ${dataString}`);
 
                 if (totalDuration === 0) {
-                    totalDuration = getDuration(/Duration: (\d+):(\d+):(\d+).(\d+),/, dataString);
+                    totalDuration = getDuration(/(\d+):(\d+):(\d+).(\d+), start:/, dataString);
                 }
 
                 currentProgress = getDuration(/time=(\d+):(\d+):(\d+).(\d+) bitrate=/, dataString);
@@ -195,7 +195,7 @@ module.exports = (job, settings, options, type) => {
                     const currentPercentage = Math.ceil(currentProgress / totalDuration * 100);
                     
                     if (options.hasOwnProperty('onProgress') && typeof options['onProgress'] == 'function') {
-                        options.onProgress(job, currentProgress);
+                        options.onProgress(job, currentPercentage);
                     }
 
                     settings.logger.log(`[${job.uid}] encoding progress ${currentPercentage}%...`);
