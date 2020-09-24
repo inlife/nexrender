@@ -103,6 +103,7 @@ const upload = (job, settings, src, params, onProgress, onComplete) => {
             ACL: params.acl,
             Body: file,
         }
+        if (params.metadata) awsParams.Metadata = params.metadata;
 
         s3instanceWithRegion(params.region)
             .upload(awsParams, (err, data) => {
