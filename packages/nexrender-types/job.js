@@ -9,7 +9,7 @@ const nanoid = require('nanoid')
  * @return {Object}
  */
 const create = job => Object.assign({
-    uid: nanoid(),
+    uid: job.uid ? job.uid : nanoid(),
     type: 'default',
     state: 'created',
     output: '',
