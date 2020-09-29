@@ -1,13 +1,13 @@
 {
   "name": "@nexrender/core",
-  "version": "1.20.2",
+  "version": "1.20.3",
   "main": "src/index.js",
   "author": "Inlife",
   "scripts": {
     "pkg-prelink": "node ../../misc/prelink.js"
   },
   "dependencies": {
-    "@nexrender/types": "^1.19.2",
+    "@nexrender/types": "^1.20.3",
     "data-uri-to-buffer": "^3.0.0",
     "file-uri-to-path": "^2.0.0",
     "match-all": "^1.2.5",
