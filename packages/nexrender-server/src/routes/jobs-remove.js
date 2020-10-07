@@ -10,5 +10,5 @@ module.exports = async (req, res) => {
         return send(res, 400, err)
     }
 
-    send(res, 200)
+    send(res, 200, { id: req.params.uid, removed: true })
 }
