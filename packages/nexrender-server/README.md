@@ -100,3 +100,8 @@ Removes provided job from the server.
 An internall method, used by worker to fetch a random job from the list, and start rendering.
 Probably should not be used by users, unless they know what are they doing.
 
+### GET `/api/v1/health`
+
+Can serve as the health check for the service, does not require the secret header to be passed.
+Returns 200 always.
+

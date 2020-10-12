@@ -27,6 +27,10 @@ const handler = secret => {
             return send(res, 200, 'ok');
         }
 
+        if (req.method == 'GET' && req.url == '/api/v1/health') {
+            return send(res, 200, 'ok');
+        }
+
         return withSecret(secret, subhandler)(req, res)
     })
 }
