@@ -18,10 +18,10 @@ module.exports = async (req, res) => {
         job = queued[Math.floor(Math.random() * queued.length)];
     }
     else if (process.env.NEXRENDER_ORDERING == 'newest-first') {
-        job = queued[0];
+        job = queued[queued.length-1];
     }
     else { /* fifo (oldest-first) */
-        job = queued[queued.length-1];
+        job = queued[0];
     }
 
     /* update the job locally, and send it to the worker */
