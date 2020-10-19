@@ -32,7 +32,7 @@ const { render } = require('@nexrender/core')
 const main = async () => {
     const result = await render(/*myJobJson*/, {
         workpath: '/Users/myname/.nexrender/',
-        binary: '/Users/mynames/Apllications/aerender',
+        binary: '/Users/mynames/Applications/aerender',
         skipCleanup: true,
         addLicense: false,
         debug: true,
