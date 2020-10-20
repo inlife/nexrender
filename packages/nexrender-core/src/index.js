@@ -4,6 +4,8 @@ const fs         = require('fs')
 const os         = require('os')
 const path       = require('path')
 
+const isWsl      = require('is-wsl')
+
 const license    = require('./helpers/license')
 const autofind   = require('./helpers/autofind')
 const patch      = require('./helpers/patch')
@@ -38,10 +40,7 @@ const init = (settings) => {
     settings.logger = settings.logger || console;
 
     // check for WSL
-    settings.wsl =
-        os.platform() === 'linux' && os.release().match(/microsoft/i)
-            ? true
-            : false
+    settings.wsl = isWsl
 
     const binaryAuto = autofind(settings);
     const binaryUser = settings.binary && fs.existsSync(settings.binary) ? settings.binary : null;
