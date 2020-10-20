@@ -78,6 +78,7 @@ if (args['--help']) {
 
       -w, --workpath {underline absolute_path}          manually override path to the working directory
                                             by default nexrender is using os tmpdir/nexrender folder
+
       -m, --wsl-map                       drive letter of your WSL mapping in Windows
 
   {bold ADVANCED OPTIONS}

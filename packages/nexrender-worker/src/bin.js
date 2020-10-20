@@ -16,6 +16,7 @@ const args = arg({
 
     '--binary':     String,
     '--workpath':   String,
+    '--wsl-map':    String,
 
     '--stop-on-error':  String,
 
@@ -40,6 +41,7 @@ const args = arg({
     '-s':           '--secret',
     '-b':           '--binary',
     '-w':           '--workpath',
+    '-m':           '--wsl-map',
     '--ae':         '--aerender-parameter'
 });
 
@@ -81,6 +83,8 @@ if (args['--help']) {
 
       -w, --workpath {underline absolute_path}          manually override path to the working directory
                                             by default nexrender is using os tmpdir/nexrender folder
+
+      -m, --wsl-map                       drive letter of your WSL mapping in Windows
 
   {bold ADVANCED OPTIONS}
 
@@ -170,6 +174,7 @@ opt('stopOnError',          '--stop-on-error');
 opt('maxMemoryPercent',     '--max-memory-percent');
 opt('imageCachePercent',    '--image-cache-percent');
 opt('polling',              '--polling');
+opt('wslMap',               '--wsl-map');
 opt('ae-params',            '--aerender-parameter');
 
 /* convert string arugument into a boolean */
