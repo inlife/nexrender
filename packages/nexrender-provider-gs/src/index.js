@@ -48,10 +48,19 @@ const upload = (job, settings, src, params) => {
     return new Promise((resolve, reject) => {
         const bucket = storage.bucket(params.bucket)
         const file = bucket.file(params.item)
-        const options = {}
+        const options = {
+            metadata: {}
+        }
         if (params.contentType) {
             options.metadata = {
+                ...options.metadata,
                 contentType: params.contentType
+            }
+        }
+        if (params.cacheControl) {
+            options.metadata = {
+                ...options.metadata,
+                cacheControl: params.cacheControl
             }
         }
         const in_stream = fs.createReadStream(src)

@@ -91,6 +91,7 @@ The upload params are given as part of the action:
 * `bucket` (required)
 * `item` (required)
 * `contentType` (optional)
+* `cacheControl` (optional)
 
 Example:
 
@@ -106,7 +107,8 @@ Example:
                 "params": {
                     "bucket": "name-of-your-bucket",
                     "item": "folder/uploaded.mp4",
-                    "contentType": "video/mp4"
+                    "contentType": "video/mp4",
+                    "cacheControl": "public, max-age=3600"
                 }
             }
         ]
