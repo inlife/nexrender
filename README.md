@@ -780,7 +780,7 @@ The above function could be use in a string concatenation such as
         },
         {
             "key" : "eventInvitation",
-            "value": "(function (venue) { alert( 'This years\' Avengers Gala is on the presitigious ' + venue.name + ' located at ' + venue.location + '. Our special guests ' + NX.get('invitees').value.map(function (a, i) { return (i == NX.get('invitees').value.length - 1) ? ' and ' + a + ' (whoever that is)' : a + ', '; }).join('') + '  going to be present for the ceremony!');
+            "value": "(function (venue) { alert( 'This years\' Avengers Gala is on the prestigious ' + venue.name + ' located at ' + venue.location + '. Our special guests ' + NX.get('invitees').value.map(function (a, i) { return (i == NX.get('invitees').value.length - 1) ? ' and ' + a + ' (whoever that is)' : a + ', '; }).join('') + '  going to be present for the ceremony!');
     })({ name: NX.arg('venue'), location: NX.arg('location') })",
             "arguments": [
                 {
@@ -806,7 +806,7 @@ This convoluted function would return a lovely invitation string to an event usi
     // Output:
 
     /*
-        This years' Avengers Gala is on the presitigious Smithsonian Museum of Natural History located at 10th St. & Constitution Ave. Our special guests Steve, Natasha,Tony, Wanda, Thor, Peter and Clint (whoever that is) are going to be present for the ceremony! 
+        This years' Avengers Gala is on the prestigious Smithsonian Museum of Natural History located at 10th St. & Constitution Ave. Our special guests Steve, Natasha,Tony, Wanda, Thor, Peter and Clint (whoever that is) are going to be present for the ceremony! 
     */
 ```
 
