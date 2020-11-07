@@ -61,33 +61,47 @@ const getBinary = (job, settings) => {
 const constructParams = (job, settings, { preset, input, output, params }) => {
     input = input || job.output;
 
-    if (!path.isAbsolute(input)) input = path.join(job.workpath, input);
     if (!path.isAbsolute(output)) output = path.join(job.workpath, output);
 
-    settings.logger.log(`[${job.uid}] action-encode: input file ${input}`)
+    let inputs = [input];
+    if ('-i' in params) {
+        var p = params['-i'];
+        if (Array.isArray(p)) {
+            inputs.push(...p);
+        } else {
+            inputs.push(p);
+        }
+        delete params['-i'];
+    }
+    inputs = inputs.map(i => {
+        if (path.isAbsolute(i)) return i;
+        return path.join(job.workpath, i);
+    });
+
+    settings.logger.log(`[${job.uid}] action-encode: input file ${inputs[0]}`)
     settings.logger.log(`[${job.uid}] action-encode: output file ${output}`)
+
+    const baseParams = {
+        '-i': inputs,
+        '-ab': '128k',
+        '-ar': '44100',
+    };
 
     switch(preset) {
         case 'mp4':
-            params = Object.assign({}, {
-                '-i': input,
+            params = Object.assign(baseParams, {
                 '-acodec': 'aac',
-                '-ab': '128k',
-                '-ar': '44100',
                 '-vcodec': 'libx264',
-                '-r': '25',
                 '-pix_fmt' : 'yuv420p',
+                '-r': '25',
             }, params, {
               '-y': output
             });
         break;
 
         case 'ogg':
-            params = Object.assign({}, {
-                '-i': input,
+            params = Object.assign(baseParams, {
                 '-acodec': 'libvorbis',
-                '-ab': '128k',
-                '-ar': '44100',
                 '-vcodec': 'libtheora',
                 '-r': '25',
             }, params, {
@@ -96,11 +110,8 @@ const constructParams = (job, settings, { preset, input, output, params }) => {
         break;
 
         case 'webm':
-            params = Object.assign({}, {
-                '-i': input,
+            params = Object.assign(baseParams, {
                 '-acodec': 'libvorbis',
-                '-ab': '128k',
-                '-ar': '44100',
                 '-vcodec': 'libvpx',
                 '-b': '614400',
                 '-aspect': '16:9',
@@ -110,22 +121,17 @@ const constructParams = (job, settings, { preset, input, output, params }) => {
         break;
 
         case 'mp3':
-            params = Object.assign({}, {
-                '-i': input,
+            params = Object.assign(baseParams, {
                 '-acodec': 'libmp3lame',
-                '-ab': '128k',
-                '-ar': '44100',
             }, params, {
                 '-y': output
             });
         break;
 
         case 'm4a':
-            params = Object.assign({}, {
-                '-i': input,
+            params = Object.assign(baseParams, {
                 '-acodec': 'aac',
                 '-ab': '64k',
-                '-ar': '44100',
                 '-strict': '-2',
             }, params, {
                 '-y': output
@@ -134,7 +140,7 @@ const constructParams = (job, settings, { preset, input, output, params }) => {
 
         case 'gif':
             params = Object.assign({}, {
-                '-i': input,
+                '-i': inputs,
                 '-ss': '61.0',
                 '-t': '2.5',
                 '-filter_complex': `[0:v] fps=12,scale=480:-1,split [a][b];[a] palettegen [p];[b][p] paletteuse`,
@@ -145,7 +151,7 @@ const constructParams = (job, settings, { preset, input, output, params }) => {
 
         default:
             params = Object.assign({}, {
-                '-i': input
+                '-i': inputs
             }, params, {
                 '-y': output
             });
@@ -154,7 +160,15 @@ const constructParams = (job, settings, { preset, input, output, params }) => {
 
     /* convert to plain array */
     return Object.keys(params).reduce(
-        (cur, key) => cur.concat(key, params[key]), []
+        (cur, key) => {
+            const value = params[key];
+            if (Array.isArray(value)) {
+                value.forEach(item => cur.push(key, item));
+            } else {
+                cur.push(key, value)
+            }
+            return cur;
+        }, []
     );
 }
 
@@ -193,7 +207,7 @@ module.exports = (job, settings, options, type) => {
 
                 if (totalDuration > 0 && currentProgress > 0) {
                     const currentPercentage = Math.ceil(currentProgress / totalDuration * 100);
-                    
+
                     if (options.hasOwnProperty('onProgress') && typeof options['onProgress'] == 'function') {
                         options.onProgress(job, currentPercentage);
                     }
