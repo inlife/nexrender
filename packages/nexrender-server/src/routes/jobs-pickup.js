@@ -25,5 +25,5 @@ module.exports = async (req, res) => {
     }
 
     /* update the job locally, and send it to the worker */
-    send(res, 200, update(job.uid, { state: 'picked' }))
+    send(res, 200, update(job.uid, { state: 'picked', executor: req.socket.remoteAddress }))
 }

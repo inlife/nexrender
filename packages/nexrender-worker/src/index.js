@@ -49,6 +49,7 @@ const start = async (host, secret, settings) => {
     do {
         let job = await nextJob(client, settings); {
             job.state = 'started';
+            job.startedAt = new Date()
         }
 
         try {
@@ -75,12 +76,14 @@ const start = async (host, secret, settings) => {
 
             job = await render(job, settings); {
                 job.state = 'finished';
+                job.finishedAt = new Date()
             }
 
             await client.updateJob(job.uid, getRenderingStatus(job))
         } catch (err) {
             job.state = 'error';
             job.error = err;
+            job.errorAt = new Date()
 
             await client.updateJob(job.uid, getRenderingStatus(job));
 
