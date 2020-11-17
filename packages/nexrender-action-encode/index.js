@@ -190,6 +190,9 @@ module.exports = (job, settings, options, type) => {
     return new Promise((resolve, reject) => {
         const params = constructParams(job, settings, options);
         const binary = getBinary(job, settings).then(binary => {
+            if (settings.debug) {
+                settings.logger.log(`[${job.uid}] spawning ffmpeg process: ${binary} ${params.join(' ')}`);
+            }
             const instance = spawn(binary, params);
             let totalDuration = 0
 
