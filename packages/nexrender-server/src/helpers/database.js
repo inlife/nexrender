@@ -38,10 +38,8 @@ const fetch = uid => uid ? data[indexOf(uid)] : data
 const insert = entry => {
     const now = new Date()
 
-    Object.assign({}, entry, {
-        updatedAt: now,
-        createdAt: now
-    })
+    entry.updatedAt = now
+    entry.createdAt = now
 
     data.push(entry);
     setImmediate(save);

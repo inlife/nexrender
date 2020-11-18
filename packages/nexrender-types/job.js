@@ -94,7 +94,20 @@ const validate = job => {
  * @param  {Object} job
  * @return {Object} {uid: string, state: string, type: string, renderProgress: number, error: string}
  */
-const getRenderingStatus = job => ({uid: job.uid, state: job.state, type: job.type, renderProgress: job.renderProgress || 0, error: job.error || null})
+const getRenderingStatus = job => ({
+    uid: job.uid,
+    state: job.state,
+    type: job.type,
+    renderProgress: job.renderProgress || 0,
+    error: job.error || null,
+    createdAt: job.createdAt || null,
+    updatedAt: job.updatedAt || null,
+    startedAt: job.startedAt || null,
+    finishedAt: job.finishedAt || null,
+    errorAt: job.errorAt || null,
+    jobCreator: job.creator,
+    jobExecutor: job.executor || null
+})
 
 module.exports = {
     create,

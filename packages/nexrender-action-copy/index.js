@@ -15,7 +15,7 @@ module.exports = (job, settings, { input, output }, type) => {
     if (!path.isAbsolute(output)) output = path.join(job.workpath, output);
 
     /* output is a directory, save to input filename */
-    if (path.dirname(output) === output) {
+    if (fs.existsSync(output) && fs.lstatSync(output).isDirectory()) {
         output = path.join(output, path.basename(input));
     }
 
