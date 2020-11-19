@@ -1,6 +1,6 @@
 {
   "name": "@nexrender/cli",
-  "version": "1.23.0",
+  "version": "1.23.1",
   "author": "inlife",
   "main": "src/index.js",
   "scripts": {
