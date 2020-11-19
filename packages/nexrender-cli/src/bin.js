@@ -163,6 +163,9 @@ opt('ae-params',            '--aerender-parameter');
 /* convert string arugument into a boolean */
 settings['stopOnError'] = settings['stopOnError'] == 'true';
 
+/* debug implies verbose */
+settings.verbose = settings.debug;
+
 if (settings['no-license']) {
     settings.addLicense = false;
     delete settings['no-license'];
