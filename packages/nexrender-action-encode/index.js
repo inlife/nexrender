@@ -64,15 +64,19 @@ const constructParams = (job, settings, { preset, input, output, params }) => {
     if (!path.isAbsolute(output)) output = path.join(job.workpath, output);
 
     let inputs = [input];
-    if ('-i' in params) {
-        var p = params['-i'];
+
+    if (params && params.hasOwnProperty('-i')) {
+        const p = params['-i'];
+
         if (Array.isArray(p)) {
             inputs.push(...p);
         } else {
             inputs.push(p);
         }
+
         delete params['-i'];
     }
+
     inputs = inputs.map(i => {
         if (path.isAbsolute(i)) return i;
         return path.join(job.workpath, i);
