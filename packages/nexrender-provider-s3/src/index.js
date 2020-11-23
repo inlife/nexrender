@@ -3,6 +3,7 @@ const uri = require('amazon-s3-uri')
 const aws = require('aws-sdk/clients/s3')
 
 let regions = {}
+let endpoints = {}
 
 /* create or get api instance with region */
 const s3instanceWithRegion = region => {
@@ -21,6 +22,21 @@ const s3instanceWithRegion = region => {
     return regions[key]
 }
 
+const s3instanceWithEndpoint = endpoint => {
+    const key = endpoint || 0
+
+    if (!endpoints.hasOwnProperty(key)) {
+        const options = { endpoint: endpoint }
+
+        if (process.env.AWS_ACCESS_KEY) options.accessKeyId = process.env.AWS_ACCESS_KEY
+        if (process.env.AWS_SECRET_KEY) options.secretAccessKey = process.env.AWS_SECRET_KEY
+
+        endpoints[key] = new aws(options)
+    }
+
+    return endpoints[key]
+}
+
 /* define public methods */
 const download = (job, settings, src, dest, params, type) => {
     src = src.replace('s3://', 'http://')
@@ -30,14 +46,11 @@ const download = (job, settings, src, dest, params, type) => {
     }
 
     const parsed = uri(src)
-    const file = fs.createWriteStream(dest);
-
-    console.log(parsed)
+    const file = fs.createWriteStream(dest)
 
     if (!parsed.bucket) {
         return Promise.reject(new Error('S3 bucket not provided.'))
     }
-
     if (!parsed.key) {
         return Promise.reject(new Error('S3 key not provided.'))
     }
@@ -50,20 +63,23 @@ const download = (job, settings, src, dest, params, type) => {
             Key: parsed.key,
         }
 
-        s3instanceWithRegion(parsed.region)
+        const s3instance = params.endpoint ?
+            s3instanceWithEndpoint(params.endpoint) :
+            s3instanceWithRegion(params.region)
+
+        s3instance
             .getObject(awsParams)
             .createReadStream()
             .on('error', reject)
             .pipe(file)
-        ;
     })
 }
 
 const upload = (job, settings, src, params, onProgress, onComplete) => {
     const file = fs.createReadStream(src);
 
-    if (!params.region) {
-        return Promise.reject(new Error('S3 region not provided.'))
+    if (!params.endpoint && !params.region) {
+        return Promise.reject(new Error('S3 region or endpoint not provided.'))
     }
     if (!params.bucket) {
         return Promise.reject(new Error('S3 bucket not provided.'))
@@ -90,7 +106,9 @@ const upload = (job, settings, src, params, onProgress, onComplete) => {
         settings.logger.log(`[${job.uid}] action-upload: upload complete: ${file}`)
     }
 
-    const output = `https://s3-${params.region}.amazonaws.com/${params.bucket}/${params.key}`
+    const output = params.endpoint ?
+        `${endpoint}/${params.bucket}/${params.key}` :
+        `https://s3-${params.region}.amazonaws.com/${params.bucket}/${params.key}`;
     settings.logger.log(`[${job.uid}] action-upload: input file ${src}`)
     settings.logger.log(`[${job.uid}] action-upload: output file ${output}`)
 
@@ -105,7 +123,11 @@ const upload = (job, settings, src, params, onProgress, onComplete) => {
         }
         if (params.metadata) awsParams.Metadata = params.metadata;
 
-        s3instanceWithRegion(params.region)
+        const s3instance = params.endpoint ?
+            s3instanceWithEndpoint(params.endpoint) :
+            s3instanceWithRegion(params.region)
+
+        s3instance
             .upload(awsParams, (err, data) => {
                 if (err) {
                     reject(err)
