@@ -107,7 +107,7 @@ const upload = (job, settings, src, params, onProgress, onComplete) => {
     }
 
     const output = params.endpoint ?
-        `${endpoint}/${params.bucket}/${params.key}` :
+        `${params.endpoint}/${params.bucket}/${params.key}` :
         `https://s3-${params.region}.amazonaws.com/${params.bucket}/${params.key}`;
     settings.logger.log(`[${job.uid}] action-upload: input file ${src}`)
     settings.logger.log(`[${job.uid}] action-upload: output file ${output}`)
