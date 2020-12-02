@@ -1,0 +1,12 @@
+{
+  "name": "@nexrender/provider-plainly",
+  "version": "1.0.0",
+  "author": "Plainly",
+  "main": "src/index.js",
+  "dependencies": {
+    "@nexrender/provider-gs": "^1.21.3"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

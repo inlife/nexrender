@@ -1,0 +1,19 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+      {
+        "type": "node",
+        "request": "launch",
+        "name": "Debug Worker",
+        "cwd": "${workspaceFolder}",
+        "protocol": "inspector",
+        "env": {
+            "NEXRENDER_FFMPEG": "/usr/local/bin/ffmpeg",
+            "NEXRENDER_API_POLLING": "1000",
+            "PLAINLY_CACHE_DIR": "/Users/daniel/plainly"
+        },
+        "program": "${workspaceFolder}/packages/nexrender-worker/src/bin.js",
+        "args": ["--host", "http://localhost:3050", "--secret", "nexrender"]
+      }
+    ]
+}
