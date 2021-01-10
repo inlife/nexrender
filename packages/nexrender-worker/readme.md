@@ -40,18 +40,6 @@ $ npm install @nexrender/worker --save
 And then load it, and run it
 
 ```js
-const { render } = require('@nexrender/core')
-
-const main = async () => {
-    const result = await render(/*myJobJson*/)
-}
-
-main().catch(console.error);
-```
-
-Or you can go more advanced, and provide some settings as your 2nd argument to the `render` function:
-
-```js
 const { start } = require('@nexrender/worker')
 
 const main = async () => {
