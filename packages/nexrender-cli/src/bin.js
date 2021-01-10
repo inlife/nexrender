@@ -145,6 +145,11 @@ const opt = (key, arg) => {if (args[arg]) {
     settings[key] = args[arg];
 }}
 
+/* backward compatibility */
+if (settings.hasOwnProperty('ae-params')) {
+    settings['aeParams'] = settings['ae-params']
+}
+
 opt('binary',               '--binary');
 opt('workpath',             '--workpath');
 opt('no-license',           '--no-license');
@@ -158,7 +163,7 @@ opt('stopOnError',          '--stop-on-error');
 opt('maxMemoryPercent',     '--max-memory-percent');
 opt('imageCachePercent',    '--image-cache-percent');
 opt('wslMap',               '--wsl-map');
-opt('ae-params',            '--aerender-parameter');
+opt('aeParams',             '--aerender-parameter');
 
 /* convert string arugument into a boolean */
 settings['stopOnError'] = settings['stopOnError'] == 'true';

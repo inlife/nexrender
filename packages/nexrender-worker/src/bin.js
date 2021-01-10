@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 
-const arg              = require('arg')
-const chalk            = require('chalk')
+const arg       = require('arg')
+const chalk     = require('chalk')
 const {start}   = require('./index')
-const {version}        = require('../package.json')
+const {version} = require('../package.json')
 
 const args = arg({
     // Types
@@ -118,17 +118,17 @@ if (args['--help']) {
     --image-cache-percent                   (from Adobe site): specifies the maximum percentage of memory used
                                             to cache already rendered images and footage.
 
-    --reuse                                 (from Adobe site): Reuse the currently running instance of After Effects (if found) to 
-                                            perform the render. When an already running instance is used, aerender saves preferences 
-                                            to disk when rendering has completed, but does not quit After Effects. If this argument 
-                                            is not used, aerender starts a new instance of After Effects, even if one is already 
-                                            running. It quits that instance when rendering has completed, and does not save 
+    --reuse                                 (from Adobe site): Reuse the currently running instance of After Effects (if found) to
+                                            perform the render. When an already running instance is used, aerender saves preferences
+                                            to disk when rendering has completed, but does not quit After Effects. If this argument
+                                            is not used, aerender starts a new instance of After Effects, even if one is already
+                                            running. It quits that instance when rendering has completed, and does not save
                                             preferences.
 
-    --aerender-parameter, --ae              forward parameter to aerender (see Adobe site). Parameters with arguments have to be 
+    --aerender-parameter, --ae              forward parameter to aerender (see Adobe site). Parameters with arguments have to be
                                             enclosed in single quotes. For example:
                                             nexrender --aerender-parameter 'close SAVE_CHANGES' --ae 'i 10' job.json
- 
+
 
   {bold ENV VARS}
 
@@ -161,6 +161,11 @@ const opt = (key, arg) => {if (args[arg]) {
     settings[key] = args[arg];
 }}
 
+/* backward compatibility */
+if (settings.hasOwnProperty('ae-params')) {
+    settings['aeParams'] = settings['ae-params']
+}
+
 opt('binary',               '--binary');
 opt('workpath',             '--workpath');
 opt('no-license',           '--no-license');
@@ -175,7 +180,7 @@ opt('maxMemoryPercent',     '--max-memory-percent');
 opt('imageCachePercent',    '--image-cache-percent');
 opt('polling',              '--polling');
 opt('wslMap',               '--wsl-map');
-opt('ae-params',            '--aerender-parameter');
+opt('aeParams',             '--aerender-parameter');
 
 /* convert string arugument into a boolean */
 settings['stopOnError'] = settings['stopOnError'] == 'true';
