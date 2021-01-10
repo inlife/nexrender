@@ -26,4 +26,3 @@ module.exports = function(job, settings) {
     })
 };
 
-module.exports.rmdirr = rmdirRecursively
