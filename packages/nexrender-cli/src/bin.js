@@ -4,7 +4,8 @@ const fs               = require('fs')
 const arg              = require('arg')
 const chalk            = require('chalk')
 const {version}        = require('../package.json')
-const { init, render } = require('@nexrender/core')
+const {init, render}   = require('@nexrender/core')
+const rimraf           = require('rimraf')
 
 const args = arg({
     // Types
@@ -79,7 +80,7 @@ if (args['--help']) {
       -w, --workpath {underline absolute_path}          manually override path to the working directory
                                             by default nexrender is using os tmpdir/nexrender folder
 
-      -m, --wsl-map                       drive letter of your WSL mapping in Windows
+      -m, --wsl-map                         drive letter of your WSL mapping in Windows
 
   {bold ADVANCED OPTIONS}
 
@@ -110,17 +111,17 @@ if (args['--help']) {
     --image-cache-percent                   (from Adobe site): specifies the maximum percentage of memory used
                                             to cache already rendered images and footage.
 
-    --reuse                                 (from Adobe site): Reuse the currently running instance of After Effects (if found) to 
-                                            perform the render. When an already running instance is used, aerender saves preferences 
-                                            to disk when rendering has completed, but does not quit After Effects. If this argument 
-                                            is not used, aerender starts a new instance of After Effects, even if one is already 
-                                            running. It quits that instance when rendering has completed, and does not save 
+    --reuse                                 (from Adobe site): Reuse the currently running instance of After Effects (if found) to
+                                            perform the render. When an already running instance is used, aerender saves preferences
+                                            to disk when rendering has completed, but does not quit After Effects. If this argument
+                                            is not used, aerender starts a new instance of After Effects, even if one is already
+                                            running. It quits that instance when rendering has completed, and does not save
                                             preferences.
 
-    --aerender-parameter, --ae              forward parameter to aerender (see Adobe site). Parameters with arguments have to be 
+    --aerender-parameter, --ae              forward parameter to aerender (see Adobe site). Parameters with arguments have to be
                                             enclosed in single quotes. For example:
                                             nexrender --aerender-parameter 'close SAVE_CHANGES' --ae 'i 10' job.json
- 
+
 
   {bold ENV VARS}
 
@@ -183,10 +184,8 @@ if (args['--cleanup']) {
 
     console.log('> running cleanup for a folder:', settings.workpath)
 
-    const {rmdirr} = require('@nexrender/core/src/tasks/cleanup')
-
     /* run recursive rmdir */
-    rmdirr(settings.workpath)
+    rimraf.sync(settings.workpath)
 
     console.log('> cleanup done')
     process.exit();

@@ -4,6 +4,7 @@ const arg       = require('arg')
 const chalk     = require('chalk')
 const {start}   = require('./index')
 const {version} = require('../package.json')
+const rimraf    = require('rimraf')
 
 const args = arg({
     // Types
@@ -192,10 +193,8 @@ if (args['--cleanup']) {
 
     console.log('> running cleanup for a folder:', settings.workpath)
 
-    const {rmdirr} = require('@nexrender/core/src/tasks/cleanup')
-
     /* run recursive rmdir */
-    rmdirr(settings.workpath)
+    rimraf.sync(settings.workpath)
 
     console.log('> cleanup done')
     process.exit();
