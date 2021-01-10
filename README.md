@@ -463,7 +463,7 @@ More info: [@nexrender/core](packages/nexrender-core)
 
 ## Using the ${workPath} mask in @nexrender/action-encode
 
-The output of `@nexrender/action-encode` is always prepended by the working path of the job, so you don't have to guess paths. However if you want to using the working path of the job for something else such as encoding in multiple bitrates it is necessary to use the `${workPath}` mask.
+The output of `@nexrender/action-encode` is always prepended by the working path of the job, so you don't have to guess paths. However if you want to use the working path of the job for something else such as encoding in multiple bitrates it is necessary to use the `${workPath}` mask.
 This is especially useful for HLS encoding
 
 ```json
