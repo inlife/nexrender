@@ -14,7 +14,8 @@
     "match-all": "^1.2.5",
     "mkdirp": "^1.0.4",
     "node-fetch": "^2.6.1",
-    "requireg": "^0.2.1"
+    "requireg": "^0.2.1",
+    "rimraf": "^3.0.2"
   },
   "peerDependencies": {
     "@nexrender/action-copy": "^1.0.0",
