@@ -97,6 +97,7 @@
     - [Binary](#wsl-binary)
     - [Workpath](#wsl-worthpath)
     - [Memory](#wsl-memory)
+  - [Problems](#problems)
   - [Development](#development)
   - [Project Values](#project-values)
   - [Awesome External Packages](#awesome-external-packages)
@@ -1245,6 +1246,11 @@ localhostForwarding=true
 
 > Github Issue: [WSL 2 consumes massive amounts of RAM and doesn't return it](https://github.com/microsoft/WSL/issues/4166)
 
+## Problems
+
+There might be a lot of problems creeping around, since this tool works as an intermediary and coordinator for a bunch of existing complex technologies, problems is something inescapable. However, we will try our best to expand and keep this section up to date with all possible caveats and solutions for those problems.
+
+1. macOS access: there might be issues with nexrender accessing the aerender binary within the Adobe library folder, or accessing /tmp folders. For more details refer to https://github.com/inlife/nexrender/issues/534
 
 ## Development
 
