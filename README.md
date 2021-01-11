@@ -462,6 +462,41 @@ Second one is responsible for mainly job-related operations of the full cycle: d
 
 More info: [@nexrender/core](packages/nexrender-core)
 
+## Using the ${workPath} mask in @nexrender/action-encode
+
+The output of `@nexrender/action-encode` is always prepended by the working path of the job, so you don't have to guess paths. However if you want to use the working path of the job for something else such as encoding in multiple bitrates it is necessary to use the `${workPath}` mask.
+This is especially useful for HLS encoding
+
+```json
+//HLS encoding
+{
+    "module": "@nexrender/action-encode",
+    "output": "encoded_playlist_%v.m3u8",
+    "params": {
+        "-acodec": "aac",
+        "-vcodec": "libx264",
+        "-pix_fmt": "yuv420p",
+        "-map": [
+            "0:0",
+            "0:0",
+            "0:0"
+        ],
+        "-b:v:0": "2000k",
+        "-b:v:1": "1000k",
+        "-b:v:2": "500k",
+        "-f": "hls",
+        "-hls_time": "10",
+        "-hls_list_size": "0",
+        "-var_stream_map": "v:0,name:high v:1,name:medium v:2,name:low",
+        "-master_pl_name": "master.m3u8",
+        "-hls_segment_filename": "${workPath}\\encoded%d_%v.ts"
+    }
+}
+```
+
+The `-hls_segment_filename` flag requires the absolute paths or else it would save on the working path of the nexrender application hence the use of `${workPath}`
+
+
 # Template rendering
 
 One of the main benefits of using nexrender is an ability to render projects using data other than what has been used while the project has been created.
