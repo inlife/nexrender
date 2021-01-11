@@ -21,9 +21,9 @@
     "@nexrender/action-copy": "^1.0.0",
     "@nexrender/action-encode": "^1.1.4",
     "@nexrender/action-upload": "^1.0.0",
-    "@nexrender/provider-ftp": "^1.0.0",
-    "@nexrender/provider-gs": "^1.0.0",
-    "@nexrender/provider-s3": "^1.0.0"
+    "@nexrender/provider-ftp": "^1.17.2",
+    "@nexrender/provider-gs": "^1.21.3",
+    "@nexrender/provider-s3": "^1.21.4"
   },
   "publishConfig": {
     "access": "public"
