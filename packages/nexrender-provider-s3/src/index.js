@@ -28,7 +28,7 @@ const s3instanceWithRegion = (region, credentials) => {
     if (!regions.hasOwnProperty(key)) {
         const options = { region: region }
 
-	if (credentials) options.credentials = credentials
+        if (credentials) options.credentials = credentials
 
         regions[key] = new S3(options)
     }
@@ -42,7 +42,7 @@ const s3instanceWithEndpoint = (endpoint, credentials) => {
     if (!endpoints.hasOwnProperty(key)) {
         const options = { endpoint: endpoint }
 
-	if (credentials) options.credentials = credentials
+        if (credentials) options.credentials = credentials
 
         endpoints[key] = new S3(options)
     }
@@ -76,7 +76,7 @@ const download = (job, settings, src, dest, params, type) => {
             Key: parsed.key,
         }
 
-	const credentials = getCredentials(params)
+        const credentials = getCredentials(params)
 
         const s3instance = params.endpoint ?
             s3instanceWithEndpoint(params.endpoint, credentials) :
@@ -138,7 +138,7 @@ const upload = (job, settings, src, params, onProgress, onComplete) => {
         }
         if (params.metadata) awsParams.Metadata = params.metadata;
 
-	const credentials = getCredentials(params)
+        const credentials = getCredentials(params)
 
         const s3instance = params.endpoint ?
             s3instanceWithEndpoint(params.endpoint, credentials) :
