@@ -14,6 +14,14 @@ npm i @nexrender/provider-s3 -g
 
 Providing credentials can be done in the following ways
 
+### Credentials parameter
+
+For both downloads and uploads you can provide a credentials object to the params with either an access key ID and a secret key, or an AWS profile name that's configured in ~/.aws/credentials
+
+* `credentials.profile` optional argument, a specific AWS credentials profile to use for authentication.
+* `credentials.accessKeyId` optional argument, a specific accessKeyId to use for authentication. Requires `secretAccessKey` to also be specified.
+* `credentials.secretAccessKey` optional argument, a specific secretAccessKey to use for authentication. Requires `accessKeyId` to also be specified.
+
 ### Environment variables
 
 You can provide either an access key ID and a secret key, or an AWS profile name that's configured in ~/.aws/credentials
@@ -37,18 +45,9 @@ export AWS_SECRET_KEY="YOUR_SECRET_KEY"
 export AWS_PROFILE="YOUR_PROFILE_NAME"
 ```
 
-### Credentials parameter
-
-For both downloads and uploads you can provide a credentials object with either an access key ID and a secret key, or an AWS profile name that's configured in ~/.aws/credentials.
-For downloads, add the credentials object to the asset objects. For uploads, add it to the action params.
-
-* `credentials.profile` optional argument, a specific AWS credentials profile to use for authentication.
-* `credentials.accessKeyId` optional argument, a specific accessKeyId to use for authentication. Requires `secretAccessKey` to also be specified.
-* `credentials.secretAccessKey` optional argument, a specific secretAccessKey to use for authentication. Requires `accessKeyId` to also be specified.
-
 ## Usage (download)
 
-To download assets from an S3 you would need to specify relevant information for every asset:
+To download assets from an S3 bucket you would need to specify relevant information for every asset:
 
 Refer to [AWS SDK Documentation](https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/setting-credentials-node.html) for information on setting credentials.
 
@@ -64,10 +63,12 @@ Refer to [AWS SDK Documentation](https://docs.aws.amazon.com/sdk-for-javascript/
             "src": "s3://myotherbucket.s3.amazonaws.com/audio.mp3",
             "type": "audio",
             "layerName": "theme.mp3",
-            "credentials": {
-                "accessKeyId": "YOUR_ACCESS_KEY",
-                "secretAccessKey": "YOUR_SECRET_KEY"
-	    }
+            "params": {
+                "credentials": {
+                    "accessKeyId": "YOUR_ACCESS_KEY",
+                    "secretAccessKey": "YOUR_SECRET_KEY"
+                }
+            }
         }
     ]
 }
@@ -80,9 +81,6 @@ s3://[BUCKET].s3.[REGION].amazonaws.com/[KEY]
 ```
 
 If region is not provided, the default region of `us-east-1` will be used.
-
-When you want to overwrite the default AWS authentication used for specific assets, you can specify the credentials parameter:
-
 
 ## Usage (upload)
 
