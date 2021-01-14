@@ -8,10 +8,10 @@ let endpoints = {}
 
 /* return a credentials object if possible, otherwise return false */
 const getCredentials = params => {
-    if (params.profile) {
+    if (params && params.profile) {
         // will throw if the profile is not configured
         return new AWS.SharedIniFileCredentials({ profile: params.profile })
-    } else if (params.accessKeyId && params.secretAccessKey) {
+    } else if (params && params.accessKeyId && params.secretAccessKey) {
         return { accessKeyId: params.accessKeyId, secretAccessKey: params.secretAccessKey }
     } else if (process.env.AWS_PROFILE) { // prioritize any explicitly set params before env variables
         // will throw if the profile is not configured
@@ -76,7 +76,7 @@ const download = (job, settings, src, dest, params, type) => {
             Key: parsed.key,
         }
 
-        const credentials = getCredentials(params)
+        const credentials = getCredentials(params.credentials)
 
         const s3instance = params.endpoint ?
             s3instanceWithEndpoint(params.endpoint, credentials) :
@@ -138,7 +138,7 @@ const upload = (job, settings, src, params, onProgress, onComplete) => {
         }
         if (params.metadata) awsParams.Metadata = params.metadata;
 
-        const credentials = getCredentials(params)
+        const credentials = getCredentials(params.credentials)
 
         const s3instance = params.endpoint ?
             s3instanceWithEndpoint(params.endpoint, credentials) :
