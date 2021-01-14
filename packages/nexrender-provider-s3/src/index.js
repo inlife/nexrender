@@ -1,37 +1,50 @@
 const fs  = require('fs')
 const uri = require('amazon-s3-uri')
-const aws = require('aws-sdk/clients/s3')
+const AWS = require('aws-sdk/global')
+const S3 = require('aws-sdk/clients/s3')
 
 let regions = {}
 let endpoints = {}
 
+/* return a credentials object if possible, otherwise return false */
+const getCredentials = params => {
+    if (params.profile) {
+        // will throw if the profile is not configured
+        return new AWS.SharedIniFileCredentials({ profile: params.profile })
+    } else if (params.accessKeyId && params.secretAccessKey) {
+        return { accessKeyId: params.accessKeyId, secretAccessKey: params.secretAccessKey }
+    } else if (process.env.AWS_PROFILE) { // prioritize any explicitly set params before env variables
+        // will throw if the profile is not configured
+        return new AWS.SharedIniFileCredentials({ profile: process.env.AWS_PROFILE })
+    } else if (process.env.AWS_ACCESS_KEY && process.env.AWS_SECRET_KEY) {
+        return { accessKeyId: process.env.AWS_ACCESS_KEY, secretAccessKey: process.env.AWS_SECRET_KEY }
+    }
+}
+
 /* create or get api instance with region */
-const s3instanceWithRegion = region => {
+const s3instanceWithRegion = (region, credentials) => {
     const key = region || 0
 
     if (!regions.hasOwnProperty(key)) {
         const options = { region: region }
 
-        /* use manual settings, overriding ./aws/credentials */
-        if (process.env.AWS_ACCESS_KEY) options.accessKeyId = process.env.AWS_ACCESS_KEY
-        if (process.env.AWS_SECRET_KEY) options.secretAccessKey = process.env.AWS_SECRET_KEY
+	if (credentials) options.credentials = credentials
 
-        regions[key] = new aws(options)
+        regions[key] = new S3(options)
     }
 
     return regions[key]
 }
 
-const s3instanceWithEndpoint = endpoint => {
+const s3instanceWithEndpoint = (endpoint, credentials) => {
     const key = endpoint || 0
 
     if (!endpoints.hasOwnProperty(key)) {
         const options = { endpoint: endpoint }
 
-        if (process.env.AWS_ACCESS_KEY) options.accessKeyId = process.env.AWS_ACCESS_KEY
-        if (process.env.AWS_SECRET_KEY) options.secretAccessKey = process.env.AWS_SECRET_KEY
+	if (credentials) options.credentials = credentials
 
-        endpoints[key] = new aws(options)
+        endpoints[key] = new S3(options)
     }
 
     return endpoints[key]
@@ -63,9 +76,11 @@ const download = (job, settings, src, dest, params, type) => {
             Key: parsed.key,
         }
 
+	const credentials = getCredentials(params)
+
         const s3instance = params.endpoint ?
-            s3instanceWithEndpoint(params.endpoint) :
-            s3instanceWithRegion(params.region)
+            s3instanceWithEndpoint(params.endpoint, credentials) :
+            s3instanceWithRegion(params.region, credentials)
 
         s3instance
             .getObject(awsParams)
@@ -123,9 +138,11 @@ const upload = (job, settings, src, params, onProgress, onComplete) => {
         }
         if (params.metadata) awsParams.Metadata = params.metadata;
 
+	const credentials = getCredentials(params)
+
         const s3instance = params.endpoint ?
-            s3instanceWithEndpoint(params.endpoint) :
-            s3instanceWithRegion(params.region)
+            s3instanceWithEndpoint(params.endpoint, credentials) :
+            s3instanceWithRegion(params.region, credentials)
 
         s3instance
             .upload(awsParams, (err, data) => {

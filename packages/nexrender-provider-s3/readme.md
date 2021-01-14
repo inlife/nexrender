@@ -10,7 +10,13 @@ Refer to [aws/aws-sdk-js](https://github.com/aws/aws-sdk-js) for information reg
 npm i @nexrender/provider-s3 -g
 ```
 
-Make sure to define 2 envirnonment variables for this module to work:
+## Authentication
+
+Providing credentials can be done in the following ways
+
+### Environment variables
+
+You can provide either an access key ID and a secret key, or an AWS profile name that's configured in ~/.aws/credentials
 
 You can do it in your current console session
 
@@ -18,15 +24,27 @@ You can do it in your current console session
 ; windows
 set AWS_ACCESS_KEY="YOUR_ACCESS_KEY"
 set AWS_SECRET_KEY="YOUR_SECRET_KEY"
+; or
+
+set AWS_PROFILE="YOUR_PROFILE_NAME"
 ```
 
 ```sh
 # unix
 export AWS_ACCESS_KEY="YOUR_ACCESS_KEY"
 export AWS_SECRET_KEY="YOUR_SECRET_KEY"
+# or
+export AWS_PROFILE="YOUR_PROFILE_NAME"
 ```
 
-Or using any other way that suitable for you, that you can find.
+### Credentials parameter
+
+For both downloads and uploads you can provide a credentials object with either an access key ID and a secret key, or an AWS profile name that's configured in ~/.aws/credentials.
+For downloads, add the credentials object to the asset objects. For uploads, add it to the action params.
+
+* `credentials.profile` optional argument, a specific AWS credentials profile to use for authentication.
+* `credentials.accessKeyId` optional argument, a specific accessKeyId to use for authentication. Requires `secretAccessKey` to also be specified.
+* `credentials.secretAccessKey` optional argument, a specific secretAccessKey to use for authentication. Requires `accessKeyId` to also be specified.
 
 ## Usage (download)
 
@@ -45,7 +63,11 @@ Refer to [AWS SDK Documentation](https://docs.aws.amazon.com/sdk-for-javascript/
         {
             "src": "s3://myotherbucket.s3.amazonaws.com/audio.mp3",
             "type": "audio",
-            "layerName": "theme.mp3"
+            "layerName": "theme.mp3",
+            "credentials": {
+                "accessKeyId": "YOUR_ACCESS_KEY",
+                "secretAccessKey": "YOUR_SECRET_KEY"
+	    }
         }
     ]
 }
@@ -59,6 +81,9 @@ s3://[BUCKET].s3.[REGION].amazonaws.com/[KEY]
 
 If region is not provided, the default region of `us-east-1` will be used.
 
+When you want to overwrite the default AWS authentication used for specific assets, you can specify the credentials parameter:
+
+
 ## Usage (upload)
 
 Upload via FTP can be done using [@nexrender/action-upload](../nexrender-action-upload)
@@ -69,6 +94,7 @@ Basic params info:
 * `bucket` required argument, the S3 bucket
 * `key` required argument, the object key
 * `acl` required argument, the ACL
+* `credentials`  optional argument, see: [credentials parameter](#credentials-parameter)
 
 Example:
 
@@ -84,7 +110,10 @@ Example:
                     "region": "us-east-1",
                     "bucket": "name-of-your-bucket",
                     "key": "folder/output.mp4",
-                    "acl": "public-read"
+                    "acl": "public-read",
+                    "credentials": {
+                        "profile": "YOUR_PROFILE_NAME"
+                    }
                 }
             }
         ]
