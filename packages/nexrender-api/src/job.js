@@ -50,6 +50,9 @@ module.exports = (fetch, polling) => ({
             body: JSON.stringify(data),
         }), polling),
 
+    resumeJob: async id =>
+        withEventEmitter(fetch, await fetch(`/jobs/${id}`), polling),
+
     updateJob: async (id, data) =>
         await fetch(`/jobs/${id}`, {
             method: 'put',
