@@ -17,14 +17,16 @@ const download = (job, settings, src, dest, params) => {
         const filepath   = parsed.pathname;
 
         connection.connect(params);
-        connection.get(filepath, function(err, stream) {
-            if (err) return reject(err)
+        connection.on("ready", () => { 
+            connection.get(filepath, function(err, stream) {
+                if (err) return reject(err)
 
-            stream.once('close', function() { connection.end(); });
-            stream.pipe(fs.createWriteStream(dest));
+                stream.once('close', function() { connection.end(); });
+                stream.pipe(fs.createWriteStream(dest));
 
-            resolve()
-        });
+                resolve()
+            });
+        })
     })
 }
 
