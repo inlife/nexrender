@@ -60,24 +60,26 @@ const upload = (job, settings, src, params) => {
             throw new Error('Cloud not connect to FTP Server, Please check Host and Port.')
         }
 
-        // Put file
-        try {
-            con.put(file, output, function(err) {
-                if (err) {
+        con.on("ready", () => {
+            // Put file
+            try {
+                con.put(file, output, function(err) {
+                    if (err) {
+                        con.end()
+                        reject(err)
+
+                        return;
+                    }
+
                     con.end()
-                    reject(err)
-
-                    return;
-                }
-
+                    resolve()
+                });
+            }
+            catch(e){
                 con.end()
-                resolve()
-            });
-        }
-        catch(e){
-            con.end()
-            throw new Error('Cloud not upload file, Please make sure FTP user has write permissions.')
-        }
+                throw new Error('Cloud not upload file, Please make sure FTP user has write permissions.')
+            }
+        })
     })
 }
 
