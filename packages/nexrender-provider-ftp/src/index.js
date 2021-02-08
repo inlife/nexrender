@@ -16,15 +16,18 @@ const download = (job, settings, src, dest, params) => {
         const connection = new FTP();
         const filepath   = parsed.pathname;
 
+        connection.on('ready', () => {
+            connection.get(filepath, function(err, stream) {
+                if (err) return reject(err)
+
+                stream.once('close', function() { connection.end(); });
+                stream.pipe(fs.createWriteStream(dest));
+
+                resolve()
+            });
+        })
+
         connection.connect(params);
-        connection.get(filepath, function(err, stream) {
-            if (err) return reject(err)
-
-            stream.once('close', function() { connection.end(); });
-            stream.pipe(fs.createWriteStream(dest));
-
-            resolve()
-        });
     })
 }
 
@@ -51,32 +54,35 @@ const upload = (job, settings, src, params) => {
         const output = params.output || filename
         delete params.output
 
+        con = new FTP();
+
+        // Put file
+        con.on('ready', () => {
+            try {
+                con.put(file, output, function(err) {
+                    if (err) {
+                        con.end()
+                        reject(err)
+
+                        return;
+                    }
+
+                    con.end()
+                    resolve()
+                });
+            }
+            catch(e){
+                con.end()
+                throw new Error('Cloud not upload file, Please make sure FTP user has write permissions.')
+            }
+        })
+
         // Connect to FTP Server
         try {
-            con = new FTP();
             con.connect(params);
         }
         catch(e) {
             throw new Error('Cloud not connect to FTP Server, Please check Host and Port.')
-        }
-
-        // Put file
-        try {
-            con.put(file, output, function(err) {
-                if (err) {
-                    con.end()
-                    reject(err)
-
-                    return;
-                }
-
-                con.end()
-                resolve()
-            });
-        }
-        catch(e){
-            con.end()
-            throw new Error('Cloud not upload file, Please make sure FTP user has write permissions.')
         }
     })
 }
