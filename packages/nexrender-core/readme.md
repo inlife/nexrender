@@ -64,3 +64,4 @@ Second one is responsible for mainly job-related operations of the full cycle: d
 * `imageCachePercent` - integer, undefined by default, check [original documentation](https://helpx.adobe.com/after-effects/using/automated-rendering-network-rendering.html) for more info
 * `addLicense` - boolean, providing false will disable ae_render_only_node.txt license file auto-creation (true by default)
 * `forceCommandLinePatch` - boolean, providing true will force patch re-installation
+* `onInstanceSpawn` - a callback, if provided, gets called when **aerender** instance is getting spawned, with instance pointer. Can be later used to kill a hung aerender process. Callback signature: `function (instance, job, settings) {}`
