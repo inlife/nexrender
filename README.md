@@ -1341,7 +1341,6 @@ Here you can find a list of packages published by other contributors:
 * [HarryLafranc/nexrender-action-handbrake](https://github.com/HarryLafranc/nexrender-action-handbrake) - Encode a video with Handbrake on nexrender-postrender
 * [dberget/nexrender-action-cloudinary](https://github.com/dberget/nexrender-action-cloudinary) - Upload a video to Cloudinary platform
 * [dberget/nexrender-action-normalize-color](https://github.com/dberget/nexrender-action-normalize-color) - Normalize colors for each asset defined in options
-* [newflight-co/createvid](https://github.com/newflight-co/createvid) - A fully functional, full-stack web app built in Vue. Actively looking for community support.
 * [somename/package-name](#) - a nice description of a nice package doing nice things
 
 Since nexrender allows to use external packages installed globally from npm, its quite easy to add your own modules
@@ -1349,6 +1348,7 @@ Since nexrender allows to use external packages installed globally from npm, its
 ## Awesome Related Projects
 
 * [Jeewes/nerc](https://github.com/Jeewes/nerc) - NERC: Tool for filling nexrender config templates with CSV data.
+* [newflight-co/createvid](https://github.com/newflight-co/createvid) - A fully functional, full-stack web app built in Vue. Actively looking for community support.
 
 ### Custom Actions
 
