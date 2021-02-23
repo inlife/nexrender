@@ -175,6 +175,8 @@ settings.verbose = settings.debug;
 if (settings['no-license']) {
     settings.addLicense = false;
     delete settings['no-license'];
+} else {
+    settings.addLicense = true;
 }
 
 if (args['--cleanup']) {
