@@ -169,7 +169,7 @@ const constructParams = (job, settings, { preset, input, output, params }) => {
             if (Array.isArray(value)) {
                 value.forEach(item => cur.push(key, item.replace('${workPath}', job.workpath)));
             } else {
-                cur.push(key, value.replace('${workPath}', job.workpath))
+                cur.push(key, String(value).replace('${workPath}', job.workpath))
             }
             return cur;
         }, []
