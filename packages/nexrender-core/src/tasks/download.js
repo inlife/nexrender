@@ -4,6 +4,7 @@ const path     = require('path')
 const fetch    = require('node-fetch').default
 const uri2path = require('file-uri-to-path')
 const data2buf = require('data-uri-to-buffer')
+const mime = require('mime-types')
 const {expandEnvironmentVariables} = require('../helpers/path')
 
 // TODO: redeuce dep size
@@ -37,15 +38,8 @@ const download = (job, settings, asset) => {
 
     /* try to guess the extension from data part */
     if (protocol == 'data' && !asset.extension) {
-        let databuf = data2buf(asset.src)
-
-        switch (databuf.type) {
-            case 'image/png': asset.extension = 'png'; break;
-            case 'image/gif': asset.extension = 'gif'; break;
-            case 'image/bmp': asset.extension = 'bmp'; break;
-            case 'image/jpeg': asset.extension = 'jpg'; break;
-            case 'application/json': asset.extension = 'json'; break;
-        }
+        const databuf = data2buf(asset.src)
+        asset.extension = mime.extension(databuf.type) || undefined
     }
 
     if (asset.extension) {
@@ -76,6 +70,17 @@ const download = (job, settings, asset) => {
             return fetch(src, asset.params || {})
                 .then(res => res.ok ? res : Promise.reject({reason: 'Initial error downloading file', meta: {src, error: res.error}}))
                 .then(res => {
+                    // Set a file extension based on content-type header if not already set
+                    if (!asset.extension) {
+                      const contentType = res.headers.get('content-type')
+                      const fileExt = mime.extension(contentType) || undefined
+
+                      asset.extension = fileExt
+                      if (asset.extension) {
+                        asset.dest += `.${fileExt}`
+                      }
+                    }
+
                     const stream = fs.createWriteStream(asset.dest)
                     let timer
 

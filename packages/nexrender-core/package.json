@@ -12,6 +12,7 @@
     "file-uri-to-path": "^2.0.0",
     "is-wsl": "^2.2.0",
     "match-all": "^1.2.5",
+    "mime-types": "^2.1.29",
     "mkdirp": "^1.0.4",
     "node-fetch": "^2.6.1",
     "requireg": "^0.2.1",
