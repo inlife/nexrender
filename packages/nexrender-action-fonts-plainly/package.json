@@ -1,0 +1,12 @@
+{
+  "name": "@nexrender/action-fonts-plainly",
+  "author": "Plainly",
+  "version": "1.0.0",
+  "main": "src/index.js",
+  "dependencies": {
+    "child_process": "^1.0.2"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

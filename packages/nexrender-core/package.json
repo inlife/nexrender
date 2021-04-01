@@ -26,7 +26,8 @@
     "@nexrender/provider-gs": "^1.21.3",
     "@nexrender/provider-s3": "^1.21.4",
     "@nexrender/provider-sftp": "^1.37.9",
-    "@nexrender/provider-plainly": "file:./../nexrender-provider-plainly"
+    "@nexrender/provider-plainly": "file:./../nexrender-provider-plainly",
+    "@nexrender/action-fonts-plainly": "file:./../nexrender-action-fonts-plainly"
   },
   "publishConfig": {
     "access": "public"
