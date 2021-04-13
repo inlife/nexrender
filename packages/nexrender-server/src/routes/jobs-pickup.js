@@ -19,6 +19,17 @@ module.exports = async (req, res) => {
     }
     else if (process.env.NEXRENDER_ORDERING == 'newest-first') {
         job = queued[queued.length-1];
+    } else if (process.env.NEXRENDER_ORDERING = 'priority') {
+        // Get the job with the largest priority number
+        // This will also sort them by the date, so if 2 jobs have the same
+        // priority, it will choose the oldest one because that's the original state
+        // of the array in question
+        job = queued.sort((a, b) => {
+            // Quick sanitisation to make sure they're numbers
+            if (isNaN(a.priority)) a.priority = 0
+            if (isNaN(b.priority)) b.priority = 0
+            return b.priority - a.priority
+        })[0]
     }
     else { /* fifo (oldest-first) */
         job = queued[0];

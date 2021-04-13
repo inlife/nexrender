@@ -13,6 +13,7 @@ const create = job => Object.assign({
     type: 'default',
     state: 'created',
     output: '',
+    priority: job.priority ? job.priority : 0,
 
     template: {
         src: '',
