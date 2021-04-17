@@ -75,10 +75,12 @@ const download = (job, settings, asset) => {
                       const contentType = res.headers.get('content-type')
                       const fileExt = mime.extension(contentType) || undefined
 
-                      asset.extension = fileExt
-                      if (asset.extension) {
-                        asset.dest += `.${fileExt}`
-                      }
+                       asset.extension = fileExt
+                        const destHasExtension = path.extname(asset.dest) ? true : false
+                        //don't do this if asset.dest already has extension else it gives you example.jpg.jpg  like file in case of  assets and aep/aepx file 
+                        if (asset.extension && !destHasExtension) {
+                            asset.dest += `.${fileExt}`
+                        }
                     }
 
                     const stream = fs.createWriteStream(asset.dest)
