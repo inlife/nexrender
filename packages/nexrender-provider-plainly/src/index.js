@@ -57,6 +57,8 @@ const download = async (job, settings, src, dest, params, type) => {
     const localFootagePath = path.join(localTemplateDir, '(Footage)');
     const destFootagePath = path.join(path.dirname(dest), '(Footage)');
     await fs.promises.symlink(localFootagePath, destFootagePath, 'junction');
+    // Replace job template src
+    job.template.src = localAepFilePath;
 }
 
 
