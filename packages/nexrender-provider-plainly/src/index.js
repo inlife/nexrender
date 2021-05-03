@@ -33,32 +33,37 @@ const getTemplateDir = async (templateBucket) => {
 
 const download = async (job, settings, src, dest, params, type) => {
     const log = fromLogger(settings.logger.log);
-    const download = (s, d) => gsProvider.download(job, settings, s, d, params, type);
 
-    src = src.replace(`${PLAINLY_PROTOCOL}//`, '');
-    const templateRootDir = path.dirname(src);
-    const localTemplateDir = await getTemplateDir(templateRootDir);
+    try {
+      const download = (s, d) => gsProvider.download(job, settings, s, d, params, type);
 
-    log(`Template directory is ${localTemplateDir}`);
+      src = src.replace(`${PLAINLY_PROTOCOL}//`, '');
+      const templateRootDir = path.dirname(src);
+      const localTemplateDir = await getTemplateDir(templateRootDir);
 
-    const templateBucket = `gs://${templateRootDir}`;
+      log(`Template directory is ${localTemplateDir}`);
 
-    const remoteHashesJsonPath = await getRemoteHashesJson(templateBucket, localTemplateDir, job.uid, download);
-    const localHashesJsonPath = path.join(localTemplateDir, 'hashes.json');
+      const templateBucket = `gs://${templateRootDir}`;
 
-    const diff = await makeDiff(localHashesJsonPath, remoteHashesJsonPath);
+      const remoteHashesJsonPath = await getRemoteHashesJson(templateBucket, localTemplateDir, job.uid, download);
+      const localHashesJsonPath = path.join(localTemplateDir, 'hashes.json');
 
-    await sync(diff, localTemplateDir, templateBucket, download, log);
+      const diff = await makeDiff(localHashesJsonPath, remoteHashesJsonPath);
 
-    // Copy aep file to destination
-    const localAepFilePath = path.join(localTemplateDir, path.basename(src));
-    await fs.promises.copyFile(localAepFilePath, dest);
-    // Create footage shortcut (instead of fixing project paths...)
-    const localFootagePath = path.join(localTemplateDir, '(Footage)');
-    const destFootagePath = path.join(path.dirname(dest), '(Footage)');
-    await fs.promises.symlink(localFootagePath, destFootagePath, 'junction');
-    // Replace job template src
-    job.template.src = localAepFilePath;
+      await sync(diff, localTemplateDir, templateBucket, download, log);
+
+      // Copy aep file to destination
+      const localAepFilePath = path.join(localTemplateDir, path.basename(src));
+      await fs.promises.copyFile(localAepFilePath, dest);
+      // Create footage shortcut (instead of fixing project paths...)
+      const localFootagePath = path.join(localTemplateDir, '(Footage)');
+      const destFootagePath = path.join(path.dirname(dest), '(Footage)');
+      await fs.promises.symlink(localFootagePath, destFootagePath, 'junction');
+      // Replace job template src
+      job.template.src = localAepFilePath;
+    } catch (e) {
+      log(e.message);
+    }
 }
 
 

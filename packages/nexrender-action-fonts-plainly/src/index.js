@@ -23,15 +23,15 @@ module.exports = (job, settings, { fonts, action }) => {
 
       switch (action) {
         case ACTIONS.INSTALL:
-          settings.logger.log(`[${job.uid}] action-fonts-plainly: Installing fonts: ${fonts}`);
-          await fontService.install(projectDir, fonts);
+          settings.logger.log(`[${job.uid}] action-fonts-plainly: Installing fonts...\n`);
+          await fontService.install(projectDir, fonts, settings);
           break;
         case ACTIONS.UNINSTALL:
-          settings.logger.log(`[${job.uid}] action-fonts-plainly: Uninstalling fonts: ${fonts}`);
+          settings.logger.log(`[${job.uid}] action-fonts-plainly: Uninstalling fonts...\n`);
           // TODO: Address possible issues:
           //  - parallel renders could use a same font, thus uninstall could break another render
           //  - preinstalled fonts should not be removed!
-          await fontService.uninstall(fonts);
+          await fontService.uninstall(fonts, settings);
           break;
         default:
           return reject(new Error("Please specify a valid action (install / uninstall)"));

@@ -1,45 +1,38 @@
-const { exec } = require("child_process");
+const { execSync } = require("child_process");
 
-const registryExists = (regKey, name) => {
-  return new Promise((resolve) => {
-    const fileName = name.substr(0, name.lastIndexOf("."));
+const registryExists = async (regKey, name) => {
+  const fileName = name.substr(0, name.lastIndexOf("."));
 
-    exec(`REG QUERY "${regKey}" /v "${fileName}"`, (error, stdout) => {
-      if (error) return resolve(false);
-
-      if (stdout === "1") return resolve(false);
-
-      return resolve(true);
-    });
-  });
+  try {
+    execSync(`REG QUERY "${regKey}" /v "${fileName} (TrueType)"`);
+    return true;
+  } catch (e) {
+    return false;
+  }
 };
 
-const registryAdd = async (regKey, name) => {
-  return new Promise((resolve, reject) => {
-    const fileName = name.substr(0, name.lastIndexOf("."));
+const registryAdd = async (regKey, name, settings) => {
+  const fileName = name.substr(0, name.lastIndexOf("."));
+  const cmd = `REG ADD "${regKey}" /v "${fileName} (TrueType)" /t REG_SZ /d "${name}" /f`;
 
-    exec(`REG ADD "${regKey}" /v "${fileName}" /t REG_SZ /d ${name} /f`, (error, stdout) => {
-      if (error) return reject(error.message);
-
-      if (stdout === "1") return reject(`Unable to add registry: ${name}!`);
-
-      return resolve(`Registry ${name} is successfully added!`);
-    });
-  });
+  try {
+    execSync(cmd);
+    settings.logger.log(`Registry successfully added (${cmd}).`);
+  } catch (e) {
+    throw new Error(`Registry command failed (${cmd}): ${e.message}`);
+  }
 };
 
-const registryRemove = async (regKey, name) => {
-  return new Promise((resolve, reject) => {
-    const fileName = name.substr(0, name.lastIndexOf("."));
+const registryRemove = async (regKey, name, settings) => {
+  const fileName = name.substr(0, name.lastIndexOf("."));
+  const cmd = `REG DELETE "${regKey}" /v "${fileName} (TrueType)" /f`;
 
-    exec(`REG DELETE "${regKey}" /v "${name}" /f`, (error, stdout) => {
-      if (error) return reject(error.message);
-
-      if (stdout === "1") return reject(`Unable to remove registry: ${name}!`);
-
-      return resolve(`Registry ${name} is successfully removed!`);
-    });
-  });
+  try {
+    execSync(cmd);
+    settings.logger.log(`Registry successfully removed (${cmd}).`);
+  } catch (e) {
+    throw new Error(`Registry command failed (${cmd}): ${e.message}`);
+  }
 };
 
 module.exports = {
