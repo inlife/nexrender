@@ -1,7 +1,35 @@
 const redis = require('redis');
 
-const client = redis.createClient(/* TODO */);
+const client = redis.createClient({
+  url: process.env.REDIS_URL
+});
 
+/* internal methods */
+const scan = parser => {
+  let cursor = '0';
+  let results = [];
+
+  const _scan = () => {
+    return client.scan(cursor, 'MATCH', 'nexjob:*', 'COUNT', '10', (err, reply) => {
+      if (err) { throw err; }
+      const [ next, keys ] = reply;
+  
+      cursor = next;
+  
+      if (cursor === '0') {
+        results = results.map(parser);
+        return results;
+      } else {
+        results = results.concat(keys);
+        return _scan(parser);
+      }
+    });
+  }
+
+  return _scan(parser);
+};
+
+/* public api */
 const insert = entry => {
     client.set(`nexjob:${entry.uid}`, JSON.stringify(entry));
 };
@@ -11,27 +39,9 @@ const fetch = uid => {
     const entry = client.get(`nexjob:${entry.uid}`);
     return JSON.parse(entry);
   } else {
-    let cursor = '0';
-    let results = [];
-
-    const scan = () => {
-      return client.scan(cursor, 'MATCH', 'nexjob:*', 'COUNT', '10', (err, reply) => {
-        if (err) { throw err; }
-        const [ next, keys ] = reply;
-    
-        cursor = next;
-    
-        if (cursor === '0') {
-          // TODO: Get values
-          return results;
-        } else {
-          results = results.concat(keys);
-          return scan();
-        }
-      });
-    }
-
-    return scan();
+    return scan((result) => {
+      return client.get(result);
+    });
   }
 };
 
@@ -53,7 +63,9 @@ const remove = uid => {
 };
 
 const cleanup = () => {
-  // TODO: Delete many
+  return scan((result) => {
+    return client.del(result);
+  });
 };
 
 module.exports = {
