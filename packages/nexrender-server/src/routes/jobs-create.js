@@ -5,7 +5,7 @@ const { insert }           = require('../helpers/database')
 
 module.exports = async (req, res) => {
     const data = await json(req, {limit: "100mb"})
-    const job  = create(data); {
+    const job  = await create(data); {
         job.state = 'queued';
         job.creator = req.socket.remoteAddress
     }
@@ -14,7 +14,7 @@ module.exports = async (req, res) => {
 
     try {
         assert(validate(job) == true);
-        insert(job);
+        await insert(job);
     } catch (err) {
         return send(res, 400, err.stack)
     }
