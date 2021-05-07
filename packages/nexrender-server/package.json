@@ -4,7 +4,8 @@
   "author": "inlife",
   "main": "src/index.js",
   "scripts": {
-    "start": "node src/bin.js"
+    "start": "node src/bin.js",
+    "pkg-prelink": "node ../../misc/prelink.js"
   },
   "bin": {
     "nexrender-server": "src/bin.js"
