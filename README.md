@@ -1035,6 +1035,8 @@ communications with the `nexrender-worker` instances, and serves mainly as a pro
 
 Technically speaking its a very tiny HTTP server running with a minimal version of REST API.
 
+Optional support for external databases can be added (like Redis, MongoDB, MySQL, etc.), with some of them already in place. Please check modules for more info.
+
 #### Supported platforms:
 Windows, macOS, Linux
 
