@@ -45,7 +45,6 @@ const fetch = async uid => {
     return JSON.parse(entry);
   } else {
     return await scan(async (result) => {
-      console.log(result);
       const value = await client.getAsync(result);
       return JSON.parse(value);
     });
