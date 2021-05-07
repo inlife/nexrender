@@ -87,11 +87,13 @@ if (args['--secret']) {
 }
 
 if (args['--cleanup']) {
-    console.log('> running database cleanup')
-    require('./helpers/database').cleanup()
+    (async () => {
+        console.log('> running database cleanup', process.env.NEXRENDER_DATABASE_PROVIDER)
+        await require('./helpers/database').cleanup()
 
-    console.log('> cleanup done')
-    process.exit(0)
+        console.log('> cleanup done')
+        process.exit(0)
+    })();
 }
 
 console.log(chalk`> starting {bold.cyan nexrender-server} at {bold 0.0.0.0:${serverPort}}; using secret: {bold ${serverSecret ? 'yes' : 'no'}}`)
