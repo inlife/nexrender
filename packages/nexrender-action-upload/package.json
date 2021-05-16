@@ -10,6 +10,7 @@
     "access": "public"
   },
   "dependencies": {
+    "glob": "^7.1.6",
     "requireg": "^0.2.1"
   },
   "peerDependencies": {

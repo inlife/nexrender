@@ -63,6 +63,11 @@ const constructParams = (job, settings, { preset, input, output, params }) => {
 
     if (!path.isAbsolute(output)) output = path.join(job.workpath, output);
 
+    const outputDir = path.dirname(output);
+    if (!fs.existsSync(outputDir)) {
+      fs.mkdirSync(outputDir, { recursive: true });
+    }
+
     let inputs = [input];
 
     if (params && params.hasOwnProperty('-i')) {

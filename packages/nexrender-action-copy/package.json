@@ -6,5 +6,8 @@
   "publishConfig": {
     "access": "public"
   },
+  "dependencies": {
+    "glob": "^7.1.6"
+  },
   "gitHead": "84cef65e008026f6fcf4f040943144401f101fce"
 }

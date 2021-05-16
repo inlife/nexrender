@@ -1,8 +1,9 @@
 const fs = require('fs')
 const {name} = require('./package.json')
 const path = require('path')
+const globFn = require('glob')
 
-module.exports = (job, settings, { input, output }, type) => {
+module.exports = (job, settings, { input, output, glob }, type) => {
     if (type != 'postrender') {
         throw new Error(`Action ${name} can be only run in postrender mode, you provided: ${type}.`)
     }
@@ -14,23 +15,47 @@ module.exports = (job, settings, { input, output }, type) => {
     if (!path.isAbsolute(input)) input = path.join(job.workpath, input);
     if (!path.isAbsolute(output)) output = path.join(job.workpath, output);
 
-    /* output is a directory, save to input filename */
-    if (fs.existsSync(output) && fs.lstatSync(output).isDirectory()) {
-        output = path.join(output, path.basename(input));
-    }
+    return new Promise((resolve) => {
 
-    /* plain asset stream copy */
-    const rd = fs.createReadStream(input)
-    const wr = fs.createWriteStream(output)
+        if (glob) { // Search files that match glob
 
-    return new Promise(function(resolve, reject) {
-        rd.on('error', reject)
-        wr.on('error', reject)
-        wr.on('finish', () => resolve(job))
-        rd.pipe(wr);
-    }).catch((error) => {
-        rd.destroy()
-        wr.end()
-        throw error
+            if (!fs.lstatSync(output).isDirectory()) {
+                throw new Error(`If input is glob, output has to be a directory!`);
+            }
+
+            settings.logger.log(`[${job.uid}] action-copy: Matching paths for: ${input}`);
+
+            globFn(input, (err, matches) => {
+                if (err) throw err;
+
+                if (matches.length === 0) return resolve(job);
+
+                matches.forEach((absFilePath, index) => {
+                    const filePath = path.relative(job.workpath, absFilePath);
+                    const dest = path.join(output, filePath);
+
+                    /* Make directories recursively if not exist */
+                    if (!fs.existsSync(path.dirname(dest))) {
+                        fs.mkdirSync(path.dirname(dest), { recursive: true });
+                    }
+
+                    settings.logger.log(`[${job.uid}] action-copy: Copy ${absFilePath} to ${dest}`);
+                    fs.copyFile(absFilePath, dest, (err) => {
+                        if (err) throw err;
+
+                        if (index === matches.length - 1) resolve(job);
+                    });
+                })
+            });
+
+        } else {  // Copy single file
+            settings.logger.log(`[${job.uid}] action-copy: Copy ${input} to ${output}`);
+            fs.copyFile(input, output, (err) => {
+                if (err) throw err;
+                resolve(job);
+            });
+        }
+
     })
+
 }

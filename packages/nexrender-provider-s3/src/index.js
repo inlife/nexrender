@@ -105,6 +105,14 @@ const upload = (job, settings, src, params, onProgress, onComplete) => {
         return Promise.reject(new Error('S3 ACL not provided.'))
     }
 
+    // Override file path if input is glob
+    let key = params.key;
+
+    if (params.glob) {
+        key = `${params.key}/${params.filePath}`;
+        settings.logger.log(`[${job.uid}] action-upload: Bucket key set to ${key}`);
+    }
+
     const onUploadProgress = (e) => {
         const progress = Math.ceil(e.loaded / e.total * 100)
         if (typeof onProgress == 'function') {
@@ -121,8 +129,8 @@ const upload = (job, settings, src, params, onProgress, onComplete) => {
     }
 
     const output = params.endpoint ?
-        `${params.endpoint}/${params.bucket}/${params.key}` :
-        `https://s3-${params.region}.amazonaws.com/${params.bucket}/${params.key}`;
+        `${params.endpoint}/${params.bucket}/${key}` :
+        `https://s3-${params.region}.amazonaws.com/${params.bucket}/${key}`;
     settings.logger.log(`[${job.uid}] action-upload: input file ${src}`)
     settings.logger.log(`[${job.uid}] action-upload: output file ${output}`)
 
@@ -131,7 +139,7 @@ const upload = (job, settings, src, params, onProgress, onComplete) => {
 
         const awsParams = {
             Bucket: params.bucket,
-            Key: params.key,
+            Key: key,
             ACL: params.acl,
             Body: file,
             ContentType: params.contentType || "application/octet-stream"
