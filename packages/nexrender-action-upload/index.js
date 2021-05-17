@@ -47,7 +47,7 @@ module.exports = (job, settings, { input, provider, params, glob, ...options }, 
 
                     if (params) {
                         params['glob'] = true;
-                        params['filePath'] = filePath;
+                        params['filePath'] = filePath.split(path.sep).join(path.posix.sep);
                     }
 
                     doUpload(job, provider, settings, absFilePath, params, onProgress, onComplete).then(() => {
