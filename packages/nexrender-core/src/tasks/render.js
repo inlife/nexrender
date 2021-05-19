@@ -123,6 +123,7 @@ module.exports = (job, settings) => {
         const output = [];
         const logPath = path.resolve(job.workpath, `../aerender-${job.uid}.log`)
         const instance = spawn(settings.binary, params, {
+            windowsHide: true
             // NOTE: disabled PATH for now, there were a few
             // issues related to plugins not working properly
             // env: { PATH: path.dirname(settings.binary) },
