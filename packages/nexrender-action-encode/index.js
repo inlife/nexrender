@@ -197,7 +197,7 @@ module.exports = (job, settings, options, type) => {
             if (settings.debug) {
                 settings.logger.log(`[${job.uid}] spawning ffmpeg process: ${binary} ${params.join(' ')}`);
             }
-            const instance = spawn(binary, params);
+            const instance = spawn(binary, params, {windowsHide: true});
             let totalDuration = 0
 
             instance.on('error', err => reject(new Error(`Error starting ffmpeg process: ${err}`)));
