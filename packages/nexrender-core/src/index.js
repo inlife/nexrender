@@ -12,7 +12,7 @@ const patch       = require('./helpers/patch')
 const state       = require('./helpers/state')
 
 const setup       = require('./tasks/setup')
-const predownload = require('./tasks/actions')('predownload');
+const predownload = require('./tasks/actions')('predownload')
 const download    = require('./tasks/download')
 const prerender   = require('./tasks/actions')('prerender')
 const script      = require('./tasks/script')
