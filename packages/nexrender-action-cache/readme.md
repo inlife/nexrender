@@ -16,12 +16,18 @@ When creating your render job provide this module in **both** of the `predownloa
 // job.json
 {
     "actions": {
-        "postrender": [
+        "predownload": [
             {
                 "module": "@nexrender/action-cache",
                 "cacheDirectory": "~/cache"
             }
-        ]
+        ],
+        "postdownload": [
+            {
+                "module": "@nexrender/action-cache",
+                "cacheDirectory": "~/cache"
+            }
+        ],
     }
 }
 ```
