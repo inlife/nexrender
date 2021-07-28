@@ -1,24 +1,25 @@
 'use strict';
 
-const fs          = require('fs')
-const os          = require('os')
-const path        = require('path')
+const fs           = require('fs')
+const os           = require('os')
+const path         = require('path')
 
-const isWsl       = require('is-wsl')
+const isWsl        = require('is-wsl')
 
-const license     = require('./helpers/license')
-const autofind    = require('./helpers/autofind')
-const patch       = require('./helpers/patch')
-const state       = require('./helpers/state')
+const license      = require('./helpers/license')
+const autofind     = require('./helpers/autofind')
+const patch        = require('./helpers/patch')
+const state        = require('./helpers/state')
 
-const setup       = require('./tasks/setup')
-const predownload = require('./tasks/actions')('predownload')
-const download    = require('./tasks/download')
-const prerender   = require('./tasks/actions')('prerender')
-const script      = require('./tasks/script')
-const dorender    = require('./tasks/render')
-const postrender  = require('./tasks/actions')('postrender')
-const cleanup     = require('./tasks/cleanup')
+const setup        = require('./tasks/setup')
+const predownload  = require('./tasks/actions')('predownload')
+const download     = require('./tasks/download')
+const postdownload = require('./tasks/actions')('postdownload')
+const prerender    = require('./tasks/actions')('prerender')
+const script       = require('./tasks/script')
+const dorender     = require('./tasks/render')
+const postrender   = require('./tasks/actions')('postrender')
+const cleanup      = require('./tasks/cleanup')
 
 /* place to register all plugins */
 /* so they will be picked up and resolved by pkg */
@@ -109,6 +110,7 @@ const render = (job, settings = {}) => {
         .then(job => state(job, settings, setup, 'setup'))
         .then(job => state(job, settings, predownload, 'predownload'))
         .then(job => state(job, settings, download, 'download'))
+        .then(job => state(job, settings, postdownload, 'postdownload'))
         .then(job => state(job, settings, prerender, 'prerender'))
         .then(job => state(job, settings, script, 'script'))
         .then(job => state(job, settings, dorender, 'dorender'))

@@ -303,6 +303,7 @@ Every module might have his own set of fields, however, `module` field is always
 Also, you might've noticed that `actions` is an object, however, we described only one (`postrender`) field in it.
 And there are more:
  - `predownload` - can be used to modify the job before the assets are downloaded
+ - `postdownload` - can be used to modify the job after the assets are downloaded
  - `prerender` - can be used to process data/assets just before the actual render will start.
 
 Also, if you are planning on having more than one action, please note: **actions are order-sensitive**,
@@ -360,6 +361,7 @@ Job structure has more fields, that we haven't checked out yet. The detailed ver
     "assets": [],
     "actions": {
         "predownload": [],
+        "postdownload": [],
         "prerender": [],
         "postrender": [],
     },
@@ -391,6 +393,7 @@ Job can have state feild (`job.state`) be set to one of those values:
  * `render:setup` (bunch of states that are specific to each render step)
  * `render:predownload`
  * `render:download`
+ * `render:postdownload`
  * `render:prerender`
  * `render:script`
  * `render:dorender`
