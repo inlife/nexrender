@@ -58,7 +58,7 @@ nexrender.selectCompositionsByName = function(name, callback) {
     }
 
     if (len == 0) {
-        throw new Error("nexrender: Cound't find any compositions by provided name (" + name + ")");
+        throw new Error("nexrender: Couldn't find any compositions by provided name (" + name + ")");
     }
 };
 
@@ -91,7 +91,7 @@ nexrender.selectLayersByName = function(compositionName, name, callback, types) 
     });
 
     if (!foundOnce) {
-        throw new Error("nexrender: Cound't find any layers by provided name (" + name + ") inside a composition: " + compositionName);
+        throw new Error("nexrender: Couldn't find any layers by provided name (" + name + ") inside a composition: " + compositionName);
     }
 };
 
@@ -131,7 +131,7 @@ nexrender.selectLayersByType = function(
 
   if (!foundOnce) {
     throw new Error( 
-      "nexrender: Cound't find any layers by provided type (" 
+      "nexrender: Couldn't find any layers by provided type (" 
       + type +
       ") inside a composition: " 
       + compositionName
@@ -155,7 +155,7 @@ nexrender.selectLayersByIndex = function(compositionName, index, callback, types
     })
 
     if (!foundOnce) {
-        throw new Error("nexrender: Cound't find any layers by provided index (" + index + ") inside a composition: " + compositionName);
+        throw new Error("nexrender: Couldn't find any layers by provided index (" + index + ") inside a composition: " + compositionName);
     }
 };
 
