@@ -367,7 +367,8 @@ Job structure has more fields, that we haven't checked out yet. The detailed ver
         "postrender": [],
     },
     "onChange": Function,
-    "onRenderProgress": Function
+    "onRenderProgress": Function,
+    "onRenderError": Function
 }
 ```
 
@@ -377,6 +378,11 @@ values can be checked [here](https://helpx.adobe.com/after-effects/using/automat
 - `onChange` is a [callback](https://github.com/inlife/nexrender/blob/master/packages/nexrender-core/src/helpers/state.js) which will be triggered every time the job state is changed (happens on every task change).
 
 - `onRenderProgress` is a [callback](https://github.com/inlife/nexrender/blob/master/packages/nexrender-core/src/tasks/render.js) which will be triggered every time the rendering progress has changed.
+
+- `onRenderError` is a [callback](https://github.com/inlife/nexrender/blob/master/packages/nexrender-core/src/tasks/render.js) which will be triggered when `arender` encounters an error during its runtime. So far known errors are (please contribute):
+  - Errors from [nexrender.jsx](https://github.com/inlife/nexrender/blob/master/packages/nexrender-core/src/assets/nexrender.jsx) - most likely issue in the `assets` section within the job.
+  - `No comp was found with the given name.` - Composition from `template.composition` not present in the AE file.
+  - `After Effects error: file is damaged.` - AE file is broken and could not be opened (caused by incomplete transfer/download)
 
 
 Note: Callback functions are only available via programmatic use. For more information, please refer to the source code.
