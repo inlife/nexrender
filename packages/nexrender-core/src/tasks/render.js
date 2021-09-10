@@ -6,6 +6,8 @@ const {expandEnvironmentVariables, checkForWSL} = require('../helpers/path')
 const progressRegex = /([\d]{1,2}:[\d]{2}:[\d]{2}:[\d]{2})\s+(\(\d+\))/gi;
 const durationRegex = /Duration:\s+([\d]{1,2}:[\d]{2}:[\d]{2}:[\d]{2})/gi;
 const startRegex = /Start:\s+([\d]{1,2}:[\d]{2}:[\d]{2}:[\d]{2})/gi;
+const nexrenderErrorRegex = /Error:\s+(nexrender:.*)$/gim;
+const errorRegex =          /aerender Error:\s*(.*)$/gis;
 
 const option = (params, name, ...values) => {
     if (values !== undefined) {
@@ -81,6 +83,9 @@ module.exports = (job, settings) => {
     let renderStopwatch = null;
     let projectStart = null;
 
+    // tracks error
+    let errorSent = false;
+
     const parse = (data) => {
         const string = ('' + data).replace(/;/g, ':'); /* sanitize string */
 
@@ -107,6 +112,21 @@ module.exports = (job, settings) => {
                     job.onRenderProgress(job, job.renderProgress);
                 }
             }
+        }
+
+        // look for error from nexrender.jsx
+        // or maybe it has more global aerender error
+        const matchNexrenderError = nexrenderErrorRegex.exec(string);
+        const matchError = matchNexrenderError ? matchNexrenderError : errorRegex.exec(string);
+
+        // There will be multiple error messages parsed when nexrender throws an error,
+        // but we want only the first
+        if(matchError !== null && !errorSent){
+            settings.logger.log(`[${job.uid}] rendering reached an error: ${matchError[1]}`);
+            if (job.hasOwnProperty('onRenderError') && typeof job['onRenderError'] == 'function') {
+                job.onRenderError(job, matchError[1]);
+            }
+            errorSent = true
         }
 
         return data;
