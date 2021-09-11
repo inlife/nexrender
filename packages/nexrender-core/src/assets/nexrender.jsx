@@ -48,7 +48,7 @@ nexrender.selectCompositionsByName = function(name, callback) {
           parentChain.length > 0 &&
           comp.usedIn.length > 0
         ) {
-          parentComp = null;
+          var parentComp = null;
           for (var i = 0; i < comp.usedIn.length; i++) {
             if (
               comp.usedIn[i] instanceof CompItem &&
