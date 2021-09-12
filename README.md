@@ -535,7 +535,8 @@ by specifying `src`, and one of the `layerName` or `layerIndex` options.
 * `layerName`: string, target layer name in the After Effects project
 * `layerIndex`: integer, can be used instead of `layerName` to select a layer by providing an index, starting from 1 (default behavior of AE jsx scripting env)
 * `composition`: string, composition where the layer is, useful for searching layer in specific compositions. If none is provided, it uses the wildcard composition "\*",
-that will result in a wildcard composition matching, and will apply this data to every matching layer in every matching composition.
+that will result in a wildcard composition matching, and will apply this data to every matching layer in every matching composition. If you want to search in a nested composition you can provide a path to that composition using  `"->"` delimiter.  
+For example, `"FULL_HD->intro->logo comp"` matches a composition named `logo comp` that is used in composition `intro` which in turn is used in composition `FULL_HD`. Note, that `FULL_HD` doesn't have to be the root composition. Make sure to specify a **composition** name, not a layer name.
 * `name`: string, and optional filename that the asset will be saved as, if not provided the `layerName` or the basename of the file will be used
 * `extension`: string, an optional extension to be added to the filename before it is sent for rendering. This is because After Effects expects the file extension to match the content type of the file. If none is provided, the filename will be unchanged.
 * `useOriginal`: boolean, an optional feature specific to the `file://` protocol, that prevents nexrender from copying an asset to local temp folder, and use original instead
@@ -631,7 +632,8 @@ To do that a special asset of type `data` can be used.
 * `value`: mixed, optional, indicates which value you want to be set to a specified property
 * `expression`: string, optional, allows you to specify an expression that can be executed every frame to calculate the value
 * `composition`: string, composition where the layer is, useful for searching layer in specific compositions. If none is provided, it uses the wildcard composition "\*",
-that will result in a wildcard composition matching, and will apply this data to every matching layer in every matching composition.
+that will result in a wildcard composition matching, and will apply this data to every matching layer in every matching composition. If you want to search in a nested composition you can provide a path to that composition using  `"->"` delimiter.  
+For example, `"FULL_HD->intro->logo comp"` matches a composition named `logo comp` that is used in composition `intro` which in turn is used in composition `FULL_HD`. Note, that `FULL_HD` doesn't have to be the root composition. Make sure to specify a **composition** name, not a layer name.
 
 Since both `value` and `expression` are optional you can provide them in any combination, depending on the effect you want to achieve.
 Providing value will set the exact value for the property right after execution, and providing an expression will make sure it will be evaluated every frame.
