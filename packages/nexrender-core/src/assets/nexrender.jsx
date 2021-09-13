@@ -34,9 +34,45 @@ nexrender.replaceFootage = function (layer, filepath) {
     return true;
 };
 
-/* envoke callback for every compostion matching specific name */
+/* invoke callback for every composition matching specific name */
 nexrender.selectCompositionsByName = function(name, callback) {
     var items = [];
+    var nameChain = name.split("->");
+    var name = nameChain.pop();
+
+    function isNestedComp(comp, name, parentChain) {
+        if (
+          name &&
+          comp.name === name &&
+          parentChain &&
+          parentChain.length > 0 &&
+          comp.usedIn.length > 0
+        ) {
+          var parentComp = null;
+          for (var i = 0; i < comp.usedIn.length; i++) {
+            if (
+              comp.usedIn[i] instanceof CompItem &&
+              comp.usedIn[i].name === parentChain[parentChain.length - 1]
+            ) {
+              parentComp = comp.usedIn[i];
+              break;
+            }
+          }
+
+          if (parentComp) {
+            if (parentChain.length === 1) {
+              return true;
+            } else {
+              return isNestedComp(
+                parentComp,
+                parentChain.pop(),
+                parentChain
+              );
+            }
+          }
+        }
+        return false;
+    }
 
     /* step 1: collect all matching compositions */
     var len = app.project.items.length;
@@ -46,12 +82,16 @@ nexrender.selectCompositionsByName = function(name, callback) {
 
         if (name !== "*" && item.name !== name) {
             continue;
-        } else {
+        } else if (nameChain.length === 0) { // if the comp name wasn't hierarchical
             items.push(item);
+        } else if (isNestedComp(item, name, nameChain)) { // otherwise only add the comp if it matches the hierarchical position defined in the comp name
+            items.push(item);
+        } else {
+            continue;
         }
     }
 
-    /* step 2: envoke callback for every match */
+    /* step 2: invoke callback for every match */
     var len = items.length;
     for (var i = 0; i < len; i++) {
         callback(items[i]);
@@ -83,7 +123,7 @@ nexrender.selectLayersByName = function(compositionName, name, callback, types) 
             }
         }
 
-        /* step 2: envoke callback for every match */
+        /* step 2: invoke callback for every match */
         var len = items.length;
         for (var i = 0; i < len; i++) {
             callback(items[i], name);
@@ -122,7 +162,7 @@ nexrender.selectLayersByType = function(
       }
     }
 
-    /* step 2: envoke callback for every match */
+    /* step 2: invoke callback for every match */
     var len = items.length;
     for (var i = 0; i < len; i++) {
       callback(items[i]);
