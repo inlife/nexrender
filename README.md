@@ -1360,6 +1360,7 @@ Here you can find a list of packages published by other contributors:
 * [dberget/nexrender-action-cloudinary](https://github.com/dberget/nexrender-action-cloudinary) - Upload a video to Cloudinary platform
 * [dberget/nexrender-action-normalize-color](https://github.com/dberget/nexrender-action-normalize-color) - Normalize colors for each asset defined in options
 * [dylangarcia/nexrender-action-unzip](https://github.com/dylangarcia/nexrender-action-unzip) - Unzip composition source before starting to render
+* [pilskalns/nexrender-action-template-unzip](https://github.com/Pilskalns/nexrender-action-template-unzip) - Unzip template and find (first) `.aep` file within it. Minimal config.
 * [somename/package-name](#) - a nice description of a nice package doing nice things
 
 Since nexrender allows to use external packages installed globally from npm, its quite easy to add your own modules
