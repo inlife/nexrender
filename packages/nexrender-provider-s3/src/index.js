@@ -13,6 +13,9 @@ const getCredentials = params => {
         return new AWS.SharedIniFileCredentials({ profile: params.profile })
     } else if (params && params.accessKeyId && params.secretAccessKey) {
         return { accessKeyId: params.accessKeyId, secretAccessKey: params.secretAccessKey }
+    // Cross-account role access pattern
+    } else if (params && params.RoleArn && params.RoleSessionName) {
+        return new AWS.ChainableTemporaryCredentials({ params: { ...params }})
     } else if (process.env.AWS_PROFILE) { // prioritize any explicitly set params before env variables
         // will throw if the profile is not configured
         return new AWS.SharedIniFileCredentials({ profile: process.env.AWS_PROFILE })
