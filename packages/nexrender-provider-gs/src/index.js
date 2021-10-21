@@ -57,7 +57,7 @@ const upload = (job, settings, src, params) => {
                 contentType: params.contentType
             }
         }
-        if (params.cacheControl) { 
+        if (params.cacheControl) {
             options.metadata = {
                 ...options.metadata,
                 cacheControl: params.cacheControl
