@@ -63,6 +63,12 @@ const upload = (job, settings, src, params) => {
                 cacheControl: params.cacheControl
             }
         }
+        if (params.resumable) {
+            options = {
+                ...options,
+                resumable: params.resumable
+            }
+        }
         const in_stream = fs.createReadStream(src)
             .on('error', reject)
         const out_stream = file.createWriteStream(options)

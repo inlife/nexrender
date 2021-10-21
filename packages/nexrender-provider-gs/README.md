@@ -50,6 +50,7 @@ Basic params info:
 * `contentType` optional argument, the content-type of the upload, which will be set as metadata on
 * `cacheControl` optional argument, the cache-control of the upload, which will be set as metadata on
   the bucket item
+* `resumable` boolean, optional argument, disables resumable (true by default) [google storage documentation](https://googleapis.dev/nodejs/storage/latest/File.html#createWriteStream)
 
 Example:
 
@@ -65,7 +66,8 @@ Example:
                     "bucket": "name-of-your-bucket",
                     "item": "folder/output.mp4",
                     "contentType": "video/mp4",
-                    "cacheControl": "public, max-age=3600"
+                    "cacheControl": "public, max-age=3600",
+                    "resumable": false
                 }
             }
         ]
