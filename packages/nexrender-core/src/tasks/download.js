@@ -6,6 +6,7 @@ const uri2path = require('file-uri-to-path')
 const data2buf = require('data-uri-to-buffer')
 const mime = require('mime-types')
 const {expandEnvironmentVariables} = require('../helpers/path')
+const aeFormats = require('../helpers/aeFormats')
 
 // TODO: redeuce dep size
 const requireg = require('requireg')
@@ -74,14 +75,29 @@ const download = (job, settings, asset) => {
                     // Set a file extension based on content-type header if not already set
                     if (!asset.extension) {
                       const contentType = res.headers.get('content-type')
-                      const fileExt = mime.extension(contentType) || undefined
+                      const destExtension = path.extname(asset.dest)
 
-                       asset.extension = fileExt
-                        const destHasExtension = path.extname(asset.dest) ? true : false
-                        //don't do this if asset.dest already has extension else it gives you example.jpg.jpg  like file in case of  assets and aep/aepx file
-                        if (asset.extension && !destHasExtension) {
-                            asset.dest += `.${fileExt}`
+                      // Get all file extensions by content type
+                      // e.g.
+                      // > mime.extensions['audio/mpeg']
+                      //  [ 'mpga', 'mp2', 'mp2a', 'mp3', 'm2a', 'm3a' ]
+                      const fileExtensions = mime.extensions[contentType] || []
+
+                      // Check if extension from path is valid
+                      if (destExtension && fileExtensions.indexOf(destExtension) >= 0) {
+                        asset.extension = destExtension
+                      } else {
+                        if (fileExtensions.length > 0) {
+                          for (const ext of fileExtensions) {
+                            if (aeFormats.indexOf(ext) >= 0) {
+                              asset.extension = ext;
+                              break;
+                            }
+                          }
                         }
+                      }
+
+                      asset.dest += `.${asset.extension}`
                     }
 
                     const stream = fs.createWriteStream(asset.dest)
