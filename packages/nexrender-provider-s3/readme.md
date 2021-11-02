@@ -106,7 +106,7 @@ Basic params info:
 * `bucket` required argument, the S3 bucket
 * `key` required argument, the object key
 * `acl` required argument, the ACL
-* `contentType` optional argument [default: `application/octet-stream`] the object ContentType, see: [API PutObject](https://docs.aws.amazon.com/AmazonS3/latest/API/API_PutObject.html#API_PutObject_RequestSyntax)
+* `contentType` optional argument [default: `application/octet-stream`] the object ContentType, see: [API PutObject AWS S3](https://docs.aws.amazon.com/AmazonS3/latest/API/API_PutObject.html#API_PutObject_RequestSyntax)
 * `credentials`  optional argument, see: [credentials parameter](#credentials-parameter)
 
 Example:
