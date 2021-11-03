@@ -13,6 +13,7 @@ const defaultPaths = {
         '/Applications/Adobe After Effects 2020',
         '/Applications/Adobe After Effects 2021',
         '/Applications/Adobe After Effects CC 2021',
+        '/Applications/Adobe After Effects CC 2022',
     ],
     win32: [
         'C:\\Program Files\\Adobe\\After Effects CC',
@@ -25,6 +26,7 @@ const defaultPaths = {
         'C:\\Program Files\\Adobe\\After Effects CC 2020\\Support Files',
         'C:\\Program Files\\Adobe\\After Effects 2020\\Support Files',
         'C:\\Program Files\\Adobe\\After Effects 2021\\Support Files',
+        'C:\\Program Files\\Adobe\\After Effects 2022\\Support Files',
 
         'C:\\Program Files\\Adobe\\Adobe After Effects CC',
         'C:\\Program Files\\Adobe\\Adobe After Effects CC\\Support Files',
@@ -36,6 +38,7 @@ const defaultPaths = {
         'C:\\Program Files\\Adobe\\Adobe After Effects CC 2020\\Support Files',
         'C:\\Program Files\\Adobe\\Adobe After Effects 2020\\Support Files',
         'C:\\Program Files\\Adobe\\Adobe After Effects 2021\\Support Files',
+        'C:\\Program Files\\Adobe\\Adobe After Effects 2022\\Support Files',
     ],
     wsl: [
         '/mnt/c/Program Files/Adobe/After Effects CC',
@@ -48,6 +51,7 @@ const defaultPaths = {
         '/mnt/c/Program Files/Adobe/After Effects CC 2020/Support Files',
         '/mnt/c/Program Files/Adobe/After Effects 2020/Support Files',
         '/mnt/c/Program Files/Adobe/After Effects 2021/Support Files',
+        '/mnt/c/Program Files/Adobe/After Effects 2022/Support Files',
 
         '/mnt/c/Program Files/Adobe/Adobe After Effects CC',
         '/mnt/c/Program Files/Adobe/Adobe After Effects CC/Support Files',
@@ -59,6 +63,7 @@ const defaultPaths = {
         '/mnt/c/Program Files/Adobe/Adobe After Effects CC 2020/Support Files',
         '/mnt/c/Program Files/Adobe/Adobe After Effects 2020/Support Files',
         '/mnt/c/Program Files/Adobe/Adobe After Effects 2021/Support Files',
+        '/mnt/c/Program Files/Adobe/Adobe After Effects 2022/Support Files',
     ],
 }
 
