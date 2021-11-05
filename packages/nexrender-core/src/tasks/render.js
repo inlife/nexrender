@@ -186,7 +186,17 @@ module.exports = (job, settings) => {
                 return resolve(job)
             }
 
-            if (!fs.existsSync(outputFile)) {
+            // When a render has finished, look for a .mov file too, on AE 2022
+            // the outputfile appears to be forced as .mov.
+            // We need to maintain this here while we have 2022 and 2020
+            // workers simultaneously
+            const movOutputFile = outputFile.replace(/\.avi$/g, '.mov')
+            const existsMovOutputFile = fs.existsSync(movOutputFile)
+            if (existsMovOutputFile) {
+              job.output = movOutputFile
+            }
+
+            if (!fs.existsSync(job.output)) {
                 if (fs.existsSync(logPath)) {
                     settings.logger.log(`[${job.uid}] dumping aerender log:`)
                     settings.logger.log(fs.readFileSync(logPath, 'utf8'))
@@ -195,7 +205,7 @@ module.exports = (job, settings) => {
                 return reject(new Error(`Couldn't find a result file: ${outputFile}`))
             }
 
-            const stats = fs.statSync(outputFile)
+            const stats = fs.statSync(job.output)
 
             /* file smaller than 1000 bytes */
             if (stats.size < 1000) {
