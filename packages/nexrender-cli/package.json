@@ -1,6 +1,6 @@
 {
   "name": "@nexrender/cli",
-  "version": "1.31.0",
+  "version": "1.32.3",
   "author": "inlife",
   "main": "src/index.js",
   "scripts": {
@@ -16,7 +16,7 @@
     ]
   },
   "dependencies": {
-    "@nexrender/core": "^1.31.0",
+    "@nexrender/core": "^1.32.3",
     "arg": "^4.1.0",
     "chalk": "^2.4.2"
   },
