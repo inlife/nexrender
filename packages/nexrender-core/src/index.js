@@ -67,6 +67,7 @@ const init = (settings) => {
 
         debug: false,
         multiFrames: false,
+        multiFramesCPU: 90,
         maxMemoryPercent: undefined,
         imageCachePercent: undefined,
         wslMap: undefined,
