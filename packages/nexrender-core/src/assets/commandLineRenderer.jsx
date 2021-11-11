@@ -1,4 +1,4 @@
-module.exports = /*syntax:js*/ `// Command line renderer for After Effects. (nexrender-patch-v1.0.2)
+module.exports = /*syntax:js*/ `// Command line renderer for After Effects. (nexrender-patch-v1.0.3)
 
 // This function constructs an AECommandLineRenderer object.
 // One and only one of these will be created to perform rendering tasks
@@ -19,10 +19,13 @@ function AECommandLineRenderer() {
     // Input after parsing
     //
     this.in_project_path = null;
+    this.in_teamproject_name = null;
     this.in_comp_name = null;
     this.in_rq_index = null;
     this.in_RStemplate = null;
+    this.in_RSsettings = null;
     this.in_OMtemplate = null;
+    this.in_OMsettings = null;
     this.in_output_path = null;
     this.in_logfile_path = null;
     this.in_start_frame = null;
@@ -35,6 +38,8 @@ function AECommandLineRenderer() {
     this.in_sound_flag = null;
     this.in_port_address = null;
     this.in_stop_on_missing_frame = true;
+    this.in_mfr_enable = null;
+    this.in_mfr_max_cpu_percent = null;
     this.in_script_path = null;
     //
     // Exit codes:
@@ -83,6 +88,7 @@ function AECommandLineRenderer() {
     this.MSG_BAD_VERBOSE_FLAG = "Bad value for -verbose.";
     this.MSG_BAD_CLOSE_FLAG = "Bad value for -close.";
     this.MSG_BAD_SOUND_FLAG = "Bad value for -sound.";
+    this.MSG_BAD_MFR_FLAG = "Bad value for -mfr.";
     this.MSG_BAD_INCREMENT = "Bad value for -increment. Must be between 1 and 100, inclusive.";
     this.MSG_COMP_NOT_FOUND = "No comp was found with the given name.";
     this.MSG_RQINDEX_NOT_FOUND = "No render queue item was found with the given index.";
@@ -91,6 +97,8 @@ function AECommandLineRenderer() {
     this.MSG_NEEDS_OUTPUT = "Specified render queue item needs output file but none provided.";
     this.MSG_RS_TEMPLATE_NOT_FOUND = "No render settings template was found with the given name.";
     this.MSG_OM_TEMPLATE_NOT_FOUND = "No output module template was found with the given name.";
+    this.MSG_RS_SETTINGS_NO_RQI = "Can't use -renderSettings because no render queue item was specified.";
+    this.MSG_OM_SETTINGS_NO_RQI = "Can't use -outputSettings because no render queue item was specified.";
     this.MSG_CAN_NOT_OPEN_SOCKET = "Can not open socket.";
     this.MSG_NO_COMP_YES_TEMPLATE = "WARNING: -RStemplate argument ignored since no -comp or -rqindex provided.";
     this.MSG_NO_COMP_YES_OMTEMPLATE = "WARNING: -OMtemplate argument ignored since no -comp  or -rqindex provided.";
@@ -102,7 +110,7 @@ function AECommandLineRenderer() {
     this.MSG_SCRIPT_CAN_NOT_EXEC = "aerender ERROR: Error executing script: ";
     this.MSG_SCRIPT_CAN_NOT_OPEN = "aerender ERROR: Can not open script file. Make sure path is correct: ";
 
-    // These don't get the prefix printed since they are not exit messages
+    // These three don't get the prefix printed since they are not exit messages
     this.MSG_LOG_DIR_NO_EXISTS = "aerender ERROR: Directory specified for log file does not exist: ";
     this.MSG_LOG_DIR_NOT_A_DIR = "aerender ERROR: Directory specified for log file is a file, not a directory: ";
     this.MSG_LOG_CAN_NOT_OPEN = "aerender ERROR: Can not open log file. Try checking write protection of directory: ";
@@ -141,6 +149,7 @@ function AECommandLineRenderer() {
         // Two of these, PROBLEM and FATAL, are errors that should cause us to change
         // the exit code:
         checkParentDied();
+
         if (severity_string == "PROBLEM" || severity_string == "FATAL") {
             // These two errors cause us to change the exit code.
             // We don't write an error or throw here, because we got here as part of a thrown 
@@ -224,6 +233,39 @@ function AECommandLineRenderer() {
         return this.StripAnyEnclosingQuotes(this.inArgs[arg_num]);
     }
 
+    // this function takes a string like "key:value; key2:value2" and
+    // constructs an object {key:"value", key2: "value2"} which is
+    // the format expected by RQ scripting APIs
+    //
+    // you might reasonably wonder why this isn't JSON.parse?
+    //
+    // * ExtendScript's ES version doesn't include JSON
+    // * didn't want to pollute global space/aerender at startup with a
+    //   possibly different copy of JSON
+    // * settings dictionary for RenderSettings and OutputModule use
+    //   string values exclusively. escaping a real world RQ/OM settings
+    //   JSON obj on the command line is alarmingly complicated and dangerous
+    //   (2*N backslashes for every " where) N = total number of quotes to escape
+    //   in the _entire_ command line
+
+    function my_settingsStringToObject(sTokens) {
+        var obj = {};
+        var keyValuePairs = sTokens.split(";");
+
+        // ExtendScript too old to have str.trim(), replace when it does
+        function trim(s) {
+            return s.replace(/^\s+|\s+$/g, '');
+        }
+
+        for (var i in keyValuePairs) {
+            var kv_array = keyValuePairs[i].split(":");
+            var k = trim(kv_array[0]);
+            var v = trim(kv_array[1]);
+            obj[k] = v;
+        }
+        return obj;
+    }
+
     // Parse the parameter.
     // Return the number of arguments used in parsing the parameter.
     function my_ParseParamStartingAt(arg_num) {
@@ -247,6 +289,10 @@ function AECommandLineRenderer() {
             this.in_project_path = this.GetValueForFlag(arg_num + 1, my_flag);
             num_args_parsed = 2;
         }
+        if (my_flag == "-teamproject") {
+            this.in_teamproject_name = this.GetValueForFlag(arg_num + 1, my_flag);
+            num_args_parsed = 2;
+        }
         if (my_flag == "-comp") {
             this.in_comp_name = this.GetValueForFlag(arg_num + 1, my_flag);
             num_args_parsed = 2;
@@ -261,6 +307,14 @@ function AECommandLineRenderer() {
         }
         if (my_flag == "-OMtemplate") {
             this.in_OMtemplate = this.GetValueForFlag(arg_num + 1, my_flag);
+            num_args_parsed = 2;
+        }
+        if (my_flag == "-renderSettings") {
+            this.in_RSsettings = my_settingsStringToObject(this.GetValueForFlag(arg_num + 1, my_flag));
+            num_args_parsed = 2;
+        }
+        if (my_flag == "-outputSettings") {
+            this.in_OMsettings = my_settingsStringToObject(this.GetValueForFlag(arg_num + 1, my_flag));
             num_args_parsed = 2;
         }
         if (my_flag == "-output") {
@@ -288,16 +342,19 @@ function AECommandLineRenderer() {
             this.in_max_mem_percent = this.GetValueForFlag(arg_num + 2, my_flag);
             num_args_parsed = 3;
         }
+        if (my_flag == "-mfr") {
+            this.in_mfr_enable = this.GetValueForFlag(arg_num + 1, my_flag);
+            this.in_mfr_max_cpu_percent = this.GetValueForFlag(arg_num + 2, my_flag);
+            num_args_parsed = 3;
+        }
         if (my_flag == "-v") {
             this.in_verbose_flag = this.GetValueForFlag(arg_num + 1, my_flag);
             num_args_parsed = 2;
         }
-
         if (my_flag == "-r") {
             this.in_script_path = this.GetValueForFlag(arg_num + 1, my_flag);
             num_args_parsed = 2;
         }
-
         if (my_flag == "-close") {
             this.in_close_flag = this.GetValueForFlag(arg_num + 1, my_flag);
             num_args_parsed = 2;
@@ -329,9 +386,11 @@ function AECommandLineRenderer() {
     function my_ParseInArgs() {
         // First, undefine all the inputs we're potentially looking for
         this.in_project_path = null;
+        this.in_teamproject_name = null;
         this.in_comp_name = null;
         this.in_rq_index = null;
         this.in_RStemplate = null;
+        this.in_RSsettings = null;
         this.in_OMtemplate = null;
         this.in_output_path = null;
         this.in_logfile_path = null;
@@ -343,6 +402,8 @@ function AECommandLineRenderer() {
         this.in_verbose_flag = null;
         this.in_close_flag = null;
         this.in_sound_flag = null;
+        this.in_mfr_enable = null;
+        this.in_mfr_max_cpu_percent = null;
         this.in_script_path = null;
 
         // Special case: check if any argument is "-help"
@@ -416,20 +477,21 @@ function AECommandLineRenderer() {
                     // Search for chcp at microsoft for info on changing
                     // the console.
                     // on the mac, leave as binary
-                    var encoding_string = "binary";
 
-                    if (system.osName.search("Windows") != -1) {
-                        encoding_string = "WINDOWS-850";
-                        //encoding_string = "CP_OEMCP";
-                    }
+                    /*
+                        davec [DVAAE-4195268]
+                        update: we now make everything utf8
+                        and in aerender.cpp we cope with converting
+                        that to whatever the console is expecting.
 
-                    if (app.language == Language.JAPANESE) {
-                        encoding_string = "Shift-JIS";
-                    }
-                    if (app.isoLanguage == "ko_KR") {
-                        encoding_string = "EUC-KR";
-                    }
-                    if (!this.log_file.open(this.in_port_address, encoding_string)) {
+                        on mac, it's just utf8 (yay)
+                        on windows, it's "oem codepage" which == 1
+
+                        learn about JS Blob encodings here:
+                        https://estk.aenhancers.com/3%20-%20File%20System%20Access/file-and-folder-supported-encoding-names.html#file-and-folder-supported-encoding-names
+                    */
+
+                    if (!this.log_file.open(this.in_port_address, "UTF-8")) {
                         this.log_file = null;
                         this.SetExitCodeAndThrowException(this.EXIT_CANNOT_OPEN_SOCKET,
                             this.MSG_CAN_NOT_OPEN_SOCKET);
@@ -587,6 +649,27 @@ function AECommandLineRenderer() {
                 app.setMemoryUsageLimits(this.in_image_cache_percent, this.in_max_mem_percent);
             }
 
+            // set the Multi-Frame Rendering and CPU Max Percent
+            // this.in_mfr_enable can be null, ON or OFF so as long as we arne't null...
+            if (this.in_mfr_enable != null && this.in_mfr_max_cpu_percent) {
+                if (this.in_mfr_enable != "ON" &&
+                    this.in_mfr_enable != "OFF" &&
+                    this.in_mfr_enable != "on" &&
+                    this.in_mfr_enable != "off") {
+                    this.SetExitCodeAndThrowException(this.EXIT_SYNTAX_ERROR, this.MSG_BAD_MFR_FLAG);
+                } else {
+                    if (this.in_mfr_enable == "ON" ||
+                        this.in_mfr_enable == "on") {
+                        this.in_mfr_enable = true;
+                    } else {
+                        this.in_mfr_enable = false;
+                    }
+
+                    // finally call the API
+                    app.setMultiFrameRenderingConfig(this.in_mfr_enable, this.in_mfr_max_cpu_percent);
+                }
+            }
+
             // If the user provided a project, close the current project and open the project specified.
             // Else, leave the current project open.
             if (this.in_project_path) {
@@ -598,6 +681,21 @@ function AECommandLineRenderer() {
                 // Open the specified project:
                 var proj_file = new File(this.in_project_path);
                 app.openFast(proj_file);
+            }
+            if (!app.project) {
+                this.SetExitCodeAndThrowException(this.EXIT_AERENDER_RUNTIME, this.MSG_NO_PROJECT);
+            }
+
+            // If the user provided a teamproject, close the current project and open the teamproject specified.
+            // Else, leave the current project open.
+            if (this.in_teamproject_name) {
+                // Close the current project
+                if (app.project != null) {
+                    app.project.close(CloseOptions.DO_NOT_SAVE_CHANGES);
+                }
+
+                // Open the specified team project:
+                app.openTeamProject(this.in_teamproject_name);
             }
             if (!app.project) {
                 this.SetExitCodeAndThrowException(this.EXIT_AERENDER_RUNTIME, this.MSG_NO_PROJECT);
@@ -675,6 +773,24 @@ function AECommandLineRenderer() {
                     rqi.applyTemplate(this.in_RStemplate);
                 }
             }
+
+            function _setPropertiesFromObj(aeDOMObject, settingsDictionary) {
+                for (key in settingsDictionary) {
+                    aeDOMObject.setSetting(key, settingsDictionary[key]);
+                }
+            }
+
+            // mutate new/existing RS with settings dictionary
+            if (this.in_RSsettings) {
+                if (!rqi) {
+                    if (this.log_file != null) {
+                        this.SetExitCodeAndThrowException(this.EXIT_AERENDER_RUNTIME, this.MSG_RS_SETTINGS_NO_RQI);
+                    }
+                } else {
+                    _setPropertiesFromObj(rqi, this.in_RSsettings);
+                }
+            }
+
             if (this.in_OMtemplate) {
                 if (!rqi) {
                     if (this.log_file != null) {
@@ -686,7 +802,18 @@ function AECommandLineRenderer() {
                     }
                     rqi.outputModule(1).applyTemplate(this.in_OMtemplate);
                 }
+
             }
+            if (this.in_OMsettings) {
+                if (!rqi) {
+                    if (this.log_file != null) {
+                        this.SetExitCodeAndThrowException(this.EXIT_AERENDER_RUNTIME, this.MSG_OM_SETTINGS_NO_RQI);
+                    }
+                } else {
+                    _setPropertiesFromObj(rqi.outputModule(1), this.in_OMsettings);
+                }
+            }
+
 
             // If a comp was specified, make it the only one to render.
             // If none was provided, leave everything alone so render queue renders as is.
@@ -781,7 +908,6 @@ function AECommandLineRenderer() {
                 return;
             }
             app.project.renderQueue.render(true);
-
         } catch (error) {
             // Add any errors to the log file.
             if (this.log_file != null) {
