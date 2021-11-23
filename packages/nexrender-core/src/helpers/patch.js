@@ -1,7 +1,8 @@
 const fs      = require('fs')
 const path    = require('path')
 const mkdirp  = require('mkdirp')
-const patched = require('../assets/commandLineRenderer.jsx')
+const patchedDefault = require('../assets/commandLineRenderer-default.jsx')
+const patched2022 = require('../assets/commandLineRenderer-2022.jsx')
 
 const writeTo = (data, dst) => fs.writeFileSync(dst, data)
 const copyTo = (src, dst) => fs.writeFileSync(dst, fs.readFileSync(src))
@@ -14,6 +15,13 @@ module.exports = (settings) => {
     const targetScript  = 'commandLineRenderer.jsx';
 
     const afterEffects = path.dirname(settings.binary)
+    const afterEffectsYearMatch = afterEffects.match(/(20[0-9]{2})/);
+
+    let patched = patchedDefault;
+    if (afterEffectsYearMatch && afterEffectsYearMatch[0] >= "2022") {
+        patched = patched2022;
+    }
+
     const originalFile = path.join(afterEffects, 'Scripts', 'Startup', targetScript)
     const backupFile   = path.join(afterEffects, 'Backup.Scripts', 'Startup', targetScript)
 
