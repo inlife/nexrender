@@ -27,6 +27,7 @@ const args = arg({
     '--force-patch':    Boolean,
     '--debug':          Boolean,
     '--multi-frames':   Boolean,
+    '--multi-frames-cpu': Number,
     '--reuse':          Boolean,
 
     '--max-memory-percent':  Number,

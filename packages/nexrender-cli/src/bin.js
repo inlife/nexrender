@@ -26,6 +26,7 @@ const args = arg({
     '--force-patch':    Boolean,
     '--debug':          Boolean,
     '--multi-frames':   Boolean,
+    '--multi-frames-cpu': Number,
     '--reuse':          Boolean,
 
     '--max-memory-percent':  Number,
@@ -159,6 +160,7 @@ opt('skipRender',           '--skip-render');
 opt('forceCommandLinePatch','--force-patch');
 opt('debug',                '--debug');
 opt('multiFrames',          '--multi-frames');
+opt('multiFramesCPU',       '--multi-frames-cpu');
 opt('reuse',                '--reuse');
 opt('stopOnError',          '--stop-on-error');
 opt('maxMemoryPercent',     '--max-memory-percent');
