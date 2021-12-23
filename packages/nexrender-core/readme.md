@@ -66,3 +66,4 @@ Second one is responsible for mainly job-related operations of the full cycle: d
 * `addLicense` - boolean, providing false will disable ae_render_only_node.txt license file auto-creation (true by default)
 * `forceCommandLinePatch` - boolean, providing true will force patch re-installation
 * `onInstanceSpawn` - a callback, if provided, gets called when **aerender** instance is getting spawned, with instance pointer. Can be later used to kill a hung aerender process. Callback signature: `function (instance, job, settings) {}`
+* `actions` - an object with keys corresponding to the `module` field when defining an action, value should be a function matching expected signature of an action. Used for defining actions programmatically without needing to package the action as a separate package

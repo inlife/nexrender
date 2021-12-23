@@ -77,5 +77,6 @@ Available settings (almost same as for `nexrender-core`):
 * `stopOnError` - boolean, stop the pick-up-and-render process if an error occurs (false by default)
 * `polling` - number, amount of miliseconds to wait before checking queued projects from the api, if specified will be used instead of NEXRENDER_API_POLLING env variable
 * `wslMap` - string, drive letter of your WSL mapping in Windows
-* `aeParams` - array of strings, any additional params that will be passed to the aerender binary, a name-value parameter pair separated by a space
+* `aeParams` - array of strings, any additional params that will be passed to the aerender binary, a name-value parameter pair separated by a space,
+* `actions` - an object with keys corresponding to the `module` field when defining an action, value should be a function matching expected signature of an action. Used for defining actions programmatically without needing to package the action as a separate package
 
