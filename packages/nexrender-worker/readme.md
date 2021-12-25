@@ -52,6 +52,11 @@ const main = async () => {
         skipCleanup: true,
         addLicense: false,
         debug: true,
+        actions: {
+            "custom-action": (job, settings, {input, params}, type) => {
+                // Custom action code
+            }
+        },
     })
 }
 
