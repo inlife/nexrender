@@ -21,10 +21,14 @@ module.exports = actionType => (job, settings) => {
     settings.logger.log(`[${job.uid}] applying ${actionType} actions...`);
 
     return PromiseSerial((job.actions[actionType] || []).map(action => () => {
-        return requireg(action.module)(job, settings, action, actionType).catch(err => {
-            return Promise.reject(new Error(`Error loading ${actionType} module ${action.module}: ${err}`))
-        });
+        if(settings.actions[action.module]){
+            return settings.actions[action.module](job, settings, action, actionType);
+        }else{
+            return requireg(action.module)(job, settings, action, actionType);
+        }
     })).then(() => {
         return Promise.resolve(job)
+    }).catch(err => {
+        return Promise.reject(new Error(`Error loading ${actionType} module ${action.module}: ${err}`));
     });
 }
