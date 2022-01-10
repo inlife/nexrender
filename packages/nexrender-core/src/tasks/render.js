@@ -29,7 +29,7 @@ module.exports = (job, settings) => {
     let outputFile = expandEnvironmentVariables(job.output)
     let projectFile = expandEnvironmentVariables(job.template.dest)
 
-    outputFileAE = checkForWSL(outputFile, settings)
+    const outputFileAE = checkForWSL(outputFile, settings)
     projectFile = checkForWSL(projectFile, settings)
     let jobScriptFile = checkForWSL(job.scriptfile, settings)
 
@@ -62,7 +62,7 @@ module.exports = (job, settings) => {
     }
 
     if (settings['aeParams']) {
-        for (param of settings['aeParams']) {
+        for (const param of settings['aeParams']) {
             let ps = param.split(" ");
 
             if (ps.length > 0) {

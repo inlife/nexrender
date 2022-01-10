@@ -33,8 +33,8 @@ module.exports = (settings) => {
     if (data.indexOf('nexrender-patch') !== -1) {
         settings.logger.log('command line patch already is in place')
 
-        const patchedMatch = patched.match(/nexrender-patch-v([0-9\.]+)/)
-        const existingMatch = data.match(/nexrender-patch-v([0-9\.]+)/)
+        const patchedMatch = patched.match(/nexrender-patch-v([0-9.]+)/)
+        const existingMatch = data.match(/nexrender-patch-v([0-9.]+)/)
 
         if (patchedMatch[1] !== existingMatch[1]) {
             try {

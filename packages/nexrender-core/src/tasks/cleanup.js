@@ -1,5 +1,3 @@
-const fs     = require('fs')
-const path   = require('path')
 const rimraf = require('rimraf')
 
 /**
@@ -11,7 +9,7 @@ module.exports = function(job, settings) {
         return Promise.resolve(job)
     }
 
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
         settings.logger.log(`[${job.uid}] cleaning up...`);
 
         rimraf(job.workpath, {glob: false}, (err) => {

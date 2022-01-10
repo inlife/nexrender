@@ -5,6 +5,7 @@ var path = require("path");
 
 
 const download = (job, settings, src, dest, params) => {
+    // eslint-disable-next-line
     let parsed = global.URL ? new URL(src) : url.parse(src)
 
     params.host = parsed.hostname || parsed.host || 'localhost';
