@@ -20,6 +20,7 @@
   "dependencies": {
     "@nexrender/types": "^1.27.0",
     "arg": "^4.1.0",
+    "async-mutex": "^0.3.2",
     "chalk": "^2.4.2",
     "micro": "^9.3.3",
     "micro-cors": "^0.1.1",
