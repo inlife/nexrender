@@ -54,7 +54,7 @@ const s3instanceWithEndpoint = (endpoint, credentials) => {
 }
 
 /* define public methods */
-const download = (job, settings, src, dest, params, type) => {
+const download = (job, settings, src, dest, params, /* type */) => {
     src = src.replace('s3://', 'http://')
 
     if (src.indexOf('digitaloceanspaces.com') !== -1) {

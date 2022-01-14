@@ -48,7 +48,7 @@ const init = (settings) => {
     const binaryUser = settings.binary && fs.existsSync(settings.binary) ? settings.binary : null;
 
     if (!binaryUser && !binaryAuto) {
-        throw new Error('you should provide a proper path to After Effects\' \"aerender\" binary')
+        throw new Error('you should provide a proper path to After Effects\' "aerender" binary')
     }
 
     if (binaryAuto && !binaryUser) {

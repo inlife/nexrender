@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-unused-vars
 const job = {
     uid: 'string',
     type: 'default',
@@ -69,7 +70,7 @@ const job = {
                 module: '@nexrender/action-webhook',
                 success: 'http://example.com/api/render-callback',
                 failure: 'http://example.com/api/render-callback',
-                header: { 'Authorization: sometoken' }
+                header: { Authorization: 'sometoken' }
             }
         ]
     }

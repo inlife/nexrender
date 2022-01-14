@@ -45,8 +45,8 @@ const args = arg({
     '--ae':         '--aerender-parameter'
 });
 
-let serverHost = 'http://localhost:3000';
-let serverSecret = '';
+// let serverHost = 'http://localhost:3000';
+// let serverSecret = '';
 
 if (args['--help']) {
     console.error(chalk`
@@ -222,7 +222,7 @@ settings = init(Object.assign(settings, {
 }))
 
 render(parsedJob, settings)
-    .then(job => {
+    .then(() => {
         console.log('> job rendering successfully finished')
     })
     .catch(err => {

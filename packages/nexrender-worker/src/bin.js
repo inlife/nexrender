@@ -2,6 +2,7 @@
 
 const arg       = require('arg')
 const chalk     = require('chalk')
+const { init } = require('@nexrender/core')
 const {start}   = require('./index')
 const {version} = require('../package.json')
 const rimraf    = require('rimraf')
