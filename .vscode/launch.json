@@ -14,6 +14,18 @@
         },
         "program": "${workspaceFolder}/packages/nexrender-worker/src/bin.js",
         "args": ["--host", "http://localhost:3050", "--secret", "nexrender"]
+      },
+      {
+        "type": "node",
+        "request": "launch",
+        "name": "Debug Server",
+        "cwd": "${workspaceFolder}",
+        "protocol": "inspector",
+        "env": {
+            "NEXRENDER_DATABASE": "/etc/nexrender/database.json"
+        },
+        "program": "${workspaceFolder}/packages/nexrender-server/src/bin.js",
+        "args": ["--port", "3050", "--secret", "nexrender"]
       }
     ]
 }
