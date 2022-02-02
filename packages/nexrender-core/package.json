@@ -1,6 +1,6 @@
 {
   "name": "@nexrender/core",
-  "version": "1.37.4",
+  "version": "1.37.5",
   "main": "src/index.js",
   "author": "Inlife",
   "scripts": {
