@@ -1,20 +1,20 @@
 {
   "name": "@nexrender/core",
-  "version": "1.37.1",
+  "version": "1.37.3",
   "main": "src/index.js",
   "author": "Inlife",
   "scripts": {
     "pkg-prelink": "node ../../misc/prelink.js"
   },
   "dependencies": {
-    "@nexrender/types": "^1.27.0",
+    "@nexrender/types": "^1.37.3",
     "data-uri-to-buffer": "^3.0.0",
     "file-uri-to-path": "^2.0.0",
     "is-wsl": "^2.2.0",
     "match-all": "^1.2.5",
     "mime-types": "^2.1.29",
     "mkdirp": "^1.0.4",
-    "node-fetch": "^2.6.1",
+    "node-fetch": "^3.1.1",
     "requireg": "^0.2.1",
     "rimraf": "^3.0.2"
   },
