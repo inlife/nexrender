@@ -25,6 +25,7 @@ const download = (job, settings, asset) => {
         destName = path.basename(asset.src)
         destName = destName.indexOf('?') !== -1 ? destName.slice(0, destName.indexOf('?')) : destName;
         /* ^ remove possible query search string params ^ */
+        destName = decodeURI(destName) /* < remove/decode any special URI symbols within filename */
 
         /* prevent same name file collisions */
         if (fs.existsSync(path.join(job.workpath, destName))) {
