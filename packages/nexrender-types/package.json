@@ -4,7 +4,7 @@
   "author": "Inlife",
   "main": "src/index.js",
   "dependencies": {
-    "nanoid": "^2.0.1"
+    "nanoid": "^3.2.0"
   },
   "publishConfig": {
     "access": "public"

@@ -1,5 +1,5 @@
 const assert = require('assert')
-const nanoid = require('nanoid')
+const { nanoid } = require('nanoid')
 
 /**
  * Take an optional minimal job json/object
