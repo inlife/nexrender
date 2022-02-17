@@ -4,10 +4,9 @@
 
 <div align="center">
     <a href="https://travis-ci.org/inlife/nexrender"><img src="https://travis-ci.org/inlife/nexrender.svg?branch=master" alt="Build status" /></a>
-    <a href="https://www.npmjs.com/package/@nexrender/core"><a href="https://opencollective.com/nexrender" alt="Financial Contributors on Open Collective"><img src="https://opencollective.com/nexrender/all/badge.svg?label=financial+contributors" /></a> <img src="https://img.shields.io/npm/v/@nexrender/core.svg?maxAge=3600" alt="NPM version" /></a>
-    <a href="https://david-dm.org/inlife/nexrender?path=packages/nexrender-core"><img src="https://david-dm.org/inlife/nexrender/status.svg?path=packages/nexrender-core" alt="Dependencies" /></a>
+    <a href="https://github.com/inlife/nexrender/releases"><img src="https://img.shields.io/github/downloads/inlife/nexrender/total?label=release%20downloads"/></a>
+    <a href="https://www.npmjs.com/package/@nexrender/core"><img src="https://img.shields.io/npm/dt/@nexrender/core?label=npm%20downloads"/></a>
     <a href="https://discord.gg/S2JtRcB"><img src="https://discordapp.com/api/guilds/354670964400848898/embed.png" alt="Discord server" /></a>
-    <a href="LICENSE"><img src="https://img.shields.io/github/license/inlife/nexrender.svg" alt="license" /></a>
 </div>
 
 <br />
@@ -46,11 +45,13 @@
   - [Footage items](#footage-items)
     - [Fields](#fields)
     - [Example](#example)
+    - [Original source](#original-source)
+      - [Example](#example-1)
   - [Static assets](#static-assets)
     - [Example:](#example)
   - [Data Assets](#data-assets)
     - [Fields](#fields-1)
-    - [Example](#example-1)
+    - [Example](#example-2)
   - [Script Asset](#script-asset)
     - [Fields](#fields-2)
     - [Dynamic Parameters](#dynamic-parameters)
@@ -79,17 +80,24 @@
       - [Description:](#description)
       - [Supported platforms:](#supported-platforms)
       - [Requirements:](#requirements)
-      - [Example](#example-2)
+      - [Example](#example-3)
     - [`nexrender-worker`](#nexrender-worker)
       - [Description:](#description-1)
       - [Supported platforms:](#supported-platforms-1)
       - [Requirements:](#requirements-1)
-      - [Example](#example-3)
+      - [Example](#example-4)
   - [Using API](#using-api)
 - [Tested with](#tested-with)
 - [Additional Information](#additional-information)
   - [Protocols](#protocols)
     - [Examples](#examples-1)
+  - [WSL (Windows Subsystem for Linux)](#wsl)
+    - [Linux Mapping](#linux-mapping)
+    - [Windows Pathing](#windows-pathing)
+    - [Binary](#wsl-binary)
+    - [Workpath](#wsl-worthpath)
+    - [Memory](#wsl-memory)
+  - [Problems](#problems)
   - [Development](#development)
   - [Project Values](#project-values)
   - [Awesome External Packages](#awesome-external-packages)
@@ -161,6 +169,8 @@ We will be using `nexrender-cli` binary for this example. It's recommended to do
 Also, check out these example/tutorial videos made by our community:
 * ["Creating automated music video with nexrender"](https://www.youtube.com/watch?v=E64dXZ_AReQ) by **[douglas prod.](https://www.youtube.com/channel/UCDFTT_oX6VwmANKMng0-NUA)**
 
+>⚠ If using WSL check out [wsl support](#wsl)
+
 ## Job
 
 A job is a single working unit in the nexrender ecosystem. It is a json document, that describes what should be done, and how it should be done.
@@ -197,6 +207,9 @@ Submitting this data to the binary will result in start of the rendering process
 ```sh
 $ nexrender-cli '{"template":{"src":"file:///home/documents/myproject.aep","composition":"main"}}'
 ```
+
+> Note: on MacOS you might need to change the permissions for downloaded file, so it would be considered as an executable.  
+> You can do it by running: `$ chmod 755 nexrender-cli-macos`
 
 or more conveniently using the `--file` option
 
@@ -283,12 +296,16 @@ There are multiple built-in modules within nexrender ecosystem:
 * [@nexrender/action-copy](packages/nexrender-action-copy)
 * [@nexrender/action-encode](packages/nexrender-action-encode)
 * [@nexrender/action-upload](packages/nexrender-action-upload)
+* [@nexrender/action-cache](packages/nexrender-action-cache)
 * (list will be expanded)
 
 Every module might have his own set of fields, however, `module` field is always there.
 
 Also, you might've noticed that `actions` is an object, however, we described only one (`postrender`) field in it.
-And there is one more, its called `prerender`. The latter can be used to process data/assets just before the actual render will start.
+And there are more:
+ - `predownload` - can be used to modify the job before the assets are downloaded
+ - `postdownload` - can be used to modify the job after the assets are downloaded
+ - `prerender` - can be used to process data/assets just before the actual render will start.
 
 Also, if you are planning on having more than one action, please note: **actions are order-sensitive**,
 that means if you put let's say some encoding action after upload, the latter one might not be able to find a file that needs to be generated by former one,
@@ -321,7 +338,7 @@ And then using it:
 }
 ```
 
-Also, you can [checkout packages](#external-packages) made by other contributors across the network:
+Also, you can [checkout packages](#awesome-external-packages) made by other contributors across the network:
 
 ### Details
 
@@ -344,11 +361,14 @@ Job structure has more fields, that we haven't checked out yet. The detailed ver
     },
     "assets": [],
     "actions": {
+        "predownload": [],
+        "postdownload": [],
         "prerender": [],
         "postrender": [],
     },
     "onChange": Function,
-    "onRenderProgress": Function
+    "onRenderProgress": Function,
+    "onRenderError": Function
 }
 ```
 
@@ -358,6 +378,11 @@ values can be checked [here](https://helpx.adobe.com/after-effects/using/automat
 - `onChange` is a [callback](https://github.com/inlife/nexrender/blob/master/packages/nexrender-core/src/helpers/state.js) which will be triggered every time the job state is changed (happens on every task change).
 
 - `onRenderProgress` is a [callback](https://github.com/inlife/nexrender/blob/master/packages/nexrender-core/src/tasks/render.js) which will be triggered every time the rendering progress has changed.
+
+- `onRenderError` is a [callback](https://github.com/inlife/nexrender/blob/master/packages/nexrender-core/src/tasks/render.js) which will be triggered when `arender` encounters an error during its runtime. So far known errors are (please contribute):
+  - Errors from [nexrender.jsx](https://github.com/inlife/nexrender/blob/master/packages/nexrender-core/src/assets/nexrender.jsx) - most likely issue in the `assets` section within the job.
+  - `No comp was found with the given name.` - Composition from `template.composition` not present in the AE file.
+  - `After Effects error: file is damaged.` - AE file is broken and could not be opened (caused by incomplete transfer/download)
 
 
 Note: Callback functions are only available via programmatic use. For more information, please refer to the source code.
@@ -373,7 +398,9 @@ Job can have state feild (`job.state`) be set to one of those values:
  * `picked` (when somebody picked up job on nexrender-server)
  * `started` (when worker started preparing and running the job)
  * `render:setup` (bunch of states that are specific to each render step)
+ * `render:predownload`
  * `render:download`
+ * `render:postdownload`
  * `render:prerender`
  * `render:script`
  * `render:dorender`
@@ -440,13 +467,50 @@ Second one is responsible for mainly job-related operations of the full cycle: d
 * `skipCleanup` - boolean, providing true will prevent nexrender from removing the temp folder with project (false by default)
 * `skipRender` - boolean, providing true will prevent nexrender from running actual rendering, might be useful if you only want to call scripts
 * `multiFrames` - boolean, providing true will attmpt to use aerender's built-in feature of multi frame rendering (false by default)
+* `multiFramesCPU` - integer between 1-100, the percentage of CPU used by multi frame rendering, if enabled (90 by default)
 * `reuse` - boolean, false by default, (from Adobe site): Reuse the currently running instance of After Effects (if found) to perform the render. When an already running instance is used, aerender saves preferences to disk when rendering has completed, but does not quit After Effects. If this argument is not used, aerender starts a new instance of After Effects, even if one is already running. It quits that instance when rendering has completed, and does not save preferences.
 * `maxMemoryPercent` - integer, undefined by default, check [original documentation](https://helpx.adobe.com/after-effects/using/automated-rendering-network-rendering.html) for more info
 * `imageCachePercent` - integer, undefined by default, check [original documentation](https://helpx.adobe.com/after-effects/using/automated-rendering-network-rendering.html) for more info
 * `addLicense` - boolean, providing false will disable ae_render_only_node.txt license file auto-creation (true by default)
 * `forceCommandLinePatch` - boolean, providing true will force patch re-installation
+* `wslMap` - String, set WSL drive map, check [wsl](#wsl) for more info
 
 More info: [@nexrender/core](packages/nexrender-core)
+
+## Using the ${workPath} mask in @nexrender/action-encode
+
+The output of `@nexrender/action-encode` is always prepended by the working path of the job, so you don't have to guess paths. However if you want to use the working path of the job for something else such as encoding in multiple bitrates it is necessary to use the `${workPath}` mask.
+This is especially useful for HLS encoding
+
+```json
+//HLS encoding
+{
+    "module": "@nexrender/action-encode",
+    "output": "encoded_playlist_%v.m3u8",
+    "params": {
+        "-acodec": "aac",
+        "-vcodec": "libx264",
+        "-pix_fmt": "yuv420p",
+        "-map": [
+            "0:0",
+            "0:0",
+            "0:0"
+        ],
+        "-b:v:0": "2000k",
+        "-b:v:1": "1000k",
+        "-b:v:2": "500k",
+        "-f": "hls",
+        "-hls_time": "10",
+        "-hls_list_size": "0",
+        "-var_stream_map": "v:0,name:high v:1,name:medium v:2,name:low",
+        "-master_pl_name": "master.m3u8",
+        "-hls_segment_filename": "${workPath}\\encoded%d_%v.ts"
+    }
+}
+```
+
+The `-hls_segment_filename` flag requires the absolute paths or else it would save on the working path of the nexrender application hence the use of `${workPath}`
+
 
 # Template rendering
 
@@ -472,9 +536,11 @@ by specifying `src`, and one of the `layerName` or `layerIndex` options.
 * `layerName`: string, target layer name in the After Effects project
 * `layerIndex`: integer, can be used instead of `layerName` to select a layer by providing an index, starting from 1 (default behavior of AE jsx scripting env)
 * `composition`: string, composition where the layer is, useful for searching layer in specific compositions. If none is provided, it uses the wildcard composition "\*",
-that will result in a wildcard composition matching, and will apply this data to every matching layer in every matching composition.
+that will result in a wildcard composition matching, and will apply this data to every matching layer in every matching composition. If you want to search in a nested composition you can provide a path to that composition using  `"->"` delimiter.  
+For example, `"FULL_HD->intro->logo comp"` matches a composition named `logo comp` that is used in composition `intro` which in turn is used in composition `FULL_HD`. Note, that `FULL_HD` doesn't have to be the root composition. Make sure to specify a **composition** name, not a layer name.
 * `name`: string, and optional filename that the asset will be saved as, if not provided the `layerName` or the basename of the file will be used
 * `extension`: string, an optional extension to be added to the filename before it is sent for rendering. This is because After Effects expects the file extension to match the content type of the file. If none is provided, the filename will be unchanged.
+* `useOriginal`: boolean, an optional feature specific to the `file://` protocol, that prevents nexrender from copying an asset to local temp folder, and use original instead
 
 Specified asset from `src` field will be downloaded/copied to the working directory, and just before rendering will happen,
 a footage item with specified `layerName` or `layerIndex` in the original project will be replaced with the freshly downloaded asset.
@@ -503,6 +569,26 @@ This way you (if you are using network rendering) you can not only deliver asset
             "src": "file:///home/assets/audio.mp3",
             "type": "audio",
             "name": "music.mp3",
+            "layerIndex": 15
+        }
+    ]
+}
+```
+
+### Original source
+
+For `file` protocol based assets (assets coming from local filesystem/shared network), you can provide additional option `useOriginal`, that would force nexrender to use an original file
+rather than creating a local copy inside of the temp rendering folder. That could be useful for large asset files, that would otherwise take a long time to copy.
+
+#### Example
+
+```json
+{
+    "assets": [
+        {
+            "src": "file:///D:/assets/MyBigAsset.wav",
+            "type": "audio",
+            "useOriginal": true,
             "layerIndex": 15
         }
     ]
@@ -547,7 +633,8 @@ To do that a special asset of type `data` can be used.
 * `value`: mixed, optional, indicates which value you want to be set to a specified property
 * `expression`: string, optional, allows you to specify an expression that can be executed every frame to calculate the value
 * `composition`: string, composition where the layer is, useful for searching layer in specific compositions. If none is provided, it uses the wildcard composition "\*",
-that will result in a wildcard composition matching, and will apply this data to every matching layer in every matching composition.
+that will result in a wildcard composition matching, and will apply this data to every matching layer in every matching composition. If you want to search in a nested composition you can provide a path to that composition using  `"->"` delimiter.  
+For example, `"FULL_HD->intro->logo comp"` matches a composition named `logo comp` that is used in composition `intro` which in turn is used in composition `FULL_HD`. Note, that `FULL_HD` doesn't have to be the root composition. Make sure to specify a **composition** name, not a layer name.
 
 Since both `value` and `expression` are optional you can provide them in any combination, depending on the effect you want to achieve.
 Providing value will set the exact value for the property right after execution, and providing an expression will make sure it will be evaluated every frame.
@@ -746,7 +833,7 @@ The above function could be use in a string concatenation such as
         },
         {
             "key" : "eventInvitation",
-            "value": "(function (venue) { alert( 'This years\' Avengers Gala is on the presitigious ' + venue.name + ' located at ' + venue.location + '. Our special guests ' + NX.get('invitees').value.map(function (a, i) { return (i == NX.get('invitees').value.length - 1) ? ' and ' + a + ' (whoever that is)' : a + ', '; }).join('') + '  going to be present for the ceremony!');
+            "value": "(function (venue) { alert( 'This years\' Avengers Gala is on the prestigious ' + venue.name + ' located at ' + venue.location + '. Our special guests ' + NX.get('invitees').value.map(function (a, i) { return (i == NX.get('invitees').value.length - 1) ? ' and ' + a + ' (whoever that is)' : a + ', '; }).join('') + '  going to be present for the ceremony!');
     })({ name: NX.arg('venue'), location: NX.arg('location') })",
             "arguments": [
                 {
@@ -772,7 +859,7 @@ This convoluted function would return a lovely invitation string to an event usi
     // Output:
 
     /*
-        This years' Avengers Gala is on the presitigious Smithsonian Museum of Natural History located at 10th St. & Constitution Ave. Our special guests Steve, Natasha,Tony, Wanda, Thor, Peter and Clint (whoever that is) are going to be present for the ceremony! 
+        This years' Avengers Gala is on the prestigious Smithsonian Museum of Natural History located at 10th St. & Constitution Ave. Our special guests Steve, Natasha,Tony, Wanda, Thor, Peter and Clint (whoever that is) are going to be present for the ceremony! 
     */
 ```
 
@@ -965,6 +1052,8 @@ communications with the `nexrender-worker` instances, and serves mainly as a pro
 
 Technically speaking its a very tiny HTTP server running with a minimal version of REST API.
 
+Optional support for external databases can be added (like Redis, MongoDB, MySQL, etc.), with some of them already in place. Please check modules for more info.
+
 #### Supported platforms:
 Windows, macOS, Linux
 
@@ -1097,6 +1186,126 @@ data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12
 data:text/plain;charset=UTF-8,some%20data:1234,5678
 ```
 
+## WSL
+
+If running WSL (`Windows Subsystem for Linux`) you will need to configure your project a bit differently in order for it to render correctly.
+
+### Linux Mapping
+
+You will need to pass in which drive letter `Linux` is mapped to in `Windows`. This is the `Drive Letter` in which you can access your Linux file system from Windows.  
+
+> ⚠ Note: Drive mapping is setup when configuring WSL
+You can do this through the CLI like so assuming Linux is mapped to `Z`.
+
+
+```sh
+$ nexrender-cli -f mywsljob.json -m "Z"
+```
+
+or
+
+```sh
+$ nexrender-cli -f mywsljob.json -wsl-map "Z"
+```
+
+And you can do this Programmatically like
+
+```js
+const { render } = require('@nexrender/core')
+const main = async () => {
+    const result = await render(/*myWSLJobJson*/, {
+        skipCleanup: true,
+        addLicense: false,
+        debug: true,
+        wslMap: "Z"
+    })
+}
+main().catch(console.error);
+````
+
+### Windows Pathing
+
+When referencing windows file system you will need to use `/mnt/[DRIVE YOU WANT TO ACCESS]/[PATH TO YOUR FILE]`.
+
+like so
+```
+/mnt/d/Downloads/nexrender-boilerplate-master/assets/nm.png
+```
+
+CLI Example
+
+```sh
+nexrender-cli -f mywsljob.json -m "Z" -w /mnt/d/Downloads/tmp/nexrender
+```
+
+Job Example
+
+```json
+{
+    "template": {
+        "src": "file:///mnt/d/Downloads/nexrender-boilerplate-master/assets/nm05ae12.aepx",
+        "composition": "main",
+    },
+    "assets": [
+        {
+            "src": "file:///mnt/d/Downloads/nexrender-boilerplate-master/assets/2016-aug-deep.jpg",
+            "type": "image",
+            "layerName": "background.jpg"
+        }
+    ],
+    "actions": {
+        "postrender": [
+            {
+                "module": "@nexrender/action-encode",
+                "output": "output.mp4",
+                "preset": "mp4"
+            }
+        ]
+    }
+}
+```
+
+> ⚠ Note: nexrender does not currently support custom root pathing
+### WSL Binary
+
+If `After Effects` is installed into the default location `nexrender` should auto detected it. Otherwise you will need to provide its location following the [Windows Pathing Guide](#windows-pathing).
+
+Example for if you installed `After Effect` onto your `D drive`.
+
+```sh
+nexrender-cli -f mywsljob.json -b "/mnt/d/Program Files/Adobe/Adobe After Effects 2020/Support Files/aerender.exe"
+```
+
+### WSL Workpath
+
+By default nexrender will use your Linux /tmp folder to render out the jobs. 
+
+We suggest changing this to a secondary drive as rendering can eat up disk space causing an issue where `WSL` does no release disk space back to `Windows`.
+
+Example under [Windows Pathing Guide](#windows-pathing).
+
+> Github Issue: [WSL 2 should automatically release disk space back to the host OS
+](https://github.com/microsoft/WSL/issues/4699#issuecomment-656352632)
+### WSL Memory
+
+It's also suggested that you create a `.wslconfig` file in your `Windows user folder` and limit the memory that can be used by `WSL`. Otherwise your rendering will crash on large projects.
+
+.wslconfig Example
+```
+[wsl2]
+memory=4GB
+swap=0
+localhostForwarding=true
+```
+
+> Github Issue: [WSL 2 consumes massive amounts of RAM and doesn't return it](https://github.com/microsoft/WSL/issues/4166)
+
+## Problems
+
+There might be a lot of problems creeping around, since this tool works as an intermediary and coordinator for a bunch of existing complex technologies, problems is something inescapable. However, we will try our best to expand and keep this section up to date with all possible caveats and solutions for those problems.
+
+1. macOS access: there might be issues with nexrender accessing the aerender binary within the Adobe library folder, or accessing /tmp folders. For more details refer to https://github.com/inlife/nexrender/issues/534
+
 ## Development
 
 If you wish to contribute by taking an active part in development, you might need this basic tutorial on how to get started:
@@ -1151,6 +1360,9 @@ Here you can find a list of packages published by other contributors:
 * [HarryLafranc/nexrender-action-handbrake](https://github.com/HarryLafranc/nexrender-action-handbrake) - Encode a video with Handbrake on nexrender-postrender
 * [dberget/nexrender-action-cloudinary](https://github.com/dberget/nexrender-action-cloudinary) - Upload a video to Cloudinary platform
 * [dberget/nexrender-action-normalize-color](https://github.com/dberget/nexrender-action-normalize-color) - Normalize colors for each asset defined in options
+* [dylangarcia/nexrender-action-unzip](https://github.com/dylangarcia/nexrender-action-unzip) - Unzip composition source before starting to render
+* [pilskalns/nexrender-action-template-unzip](https://github.com/Pilskalns/nexrender-action-template-unzip) - Unzip template and find (first) `.aep` file within it. Minimal config.
+* [oreporan/nexrender-action-upload-s3-presigned](https://github.com/oreporan/nexrender-action-upload-s3-presigned) - A postrender upload plugin which uploads using https (for s3 presigned_url)
 * [somename/package-name](#) - a nice description of a nice package doing nice things
 
 Since nexrender allows to use external packages installed globally from npm, its quite easy to add your own modules
@@ -1158,10 +1370,11 @@ Since nexrender allows to use external packages installed globally from npm, its
 ## Awesome Related Projects
 
 * [Jeewes/nerc](https://github.com/Jeewes/nerc) - NERC: Tool for filling nexrender config templates with CSV data.
+* [newflight-co/createvid](https://github.com/newflight-co/createvid) - A fully functional, full-stack web app built in Vue. Actively looking for community support.
 
 ### Custom Actions
 
-To add a custom pre- or post-render action, all you need to do is to create a at least single file, that is going to return a function with promise.
+To add a custom pre- or post-render action, all you need to do is to create at least a single file, that is going to return a function with promise.
 
 ```js
 // mymodule.js
@@ -1274,13 +1487,24 @@ If you've used nexrender, and you like it, please feel free to add yourself into
 
 * [Noxcaos Music](https://www.youtube.com/channel/UC2D9WSUKnyTX8wWqNVITTAw)
 * [Two Bit Circus](https://twobitcircus.com)
+* [Flügerl](https://www.youtube.com/fluegerl)
+* [NewFlight](https://newflight.co)
 * you name goes here
 
 ## Plans
 
-1. Adding more upload/download providers
-2. Add an algo of splitting the main job onto sub jobs, rendering them on multiple machines
-and then combining back into a single job. `@nexrender/action-merge-parent, @nexrender/action-merge-child`
+Features for next major release (`v2.0.0`):
+1. Ability to switch renderers for a job (`none`, `aerender`, `media-encoder`)
+2. Ability to push a job onto a server with ability to auto-split and render parts independently on the network
+  1. API for tracking/managing active workers in the network
+  2. Algo of splitting based on time & amount of workers
+  3. New job type (`partitioned`), which would be excluded from some general API responses
+  4. Mechanism of selecting a single node to be the "finisher", that would await and merge results of other jobs
+  5. Possible names: `@nexrender/action-merge-parent, @nexrender/action-merge-child`
+3. Extend current scripting capabilities with an advanced real-time communication with the internal environment via TCP connection
+4. Define a general abstract inteface for the actions, and a general package that would contain basic funcitonality like input/output arguments, etc.
+5. Re-design networking layer, as well as server database layer, to count in cases where the jobs can be huge json objects.
+6. Create automated footage detection and asset generator
 
 ## Contributors
 

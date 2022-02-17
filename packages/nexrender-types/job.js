@@ -1,5 +1,5 @@
 const assert = require('assert')
-const nanoid = require('nanoid')
+const { nanoid } = require('nanoid')
 
 /**
  * Take an optional minimal job json/object
@@ -9,10 +9,11 @@ const nanoid = require('nanoid')
  * @return {Object}
  */
 const create = job => Object.assign({
-    uid: nanoid(),
+    uid: job.uid ? job.uid : nanoid(),
     type: 'default',
     state: 'created',
     output: '',
+    priority: job.priority ? job.priority : 0,
 
     template: {
         src: '',
@@ -89,7 +90,28 @@ const validate = job => {
     return true;
 }
 
+/**
+ * Returns a lightweight representation of the job. Containing only rendering infos.
+ * @param  {Object} job
+ * @return {Object} {uid: string, state: string, type: string, renderProgress: number, error: string}
+ */
+const getRenderingStatus = job => ({
+    uid: job.uid,
+    state: job.state,
+    type: job.type,
+    renderProgress: job.renderProgress || 0,
+    error: job.error || null,
+    createdAt: job.createdAt || null,
+    updatedAt: job.updatedAt || null,
+    startedAt: job.startedAt || null,
+    finishedAt: job.finishedAt || null,
+    errorAt: job.errorAt || null,
+    jobCreator: job.creator,
+    jobExecutor: job.executor || null
+})
+
 module.exports = {
     create,
     validate,
+    getRenderingStatus,
 }

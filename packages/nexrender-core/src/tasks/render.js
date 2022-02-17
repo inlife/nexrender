@@ -1,11 +1,13 @@
 const fs = require('fs')
 const path = require('path')
 const {spawn} = require('child_process')
-const {expandEnvironmentVariables} = require('../helpers/path')
+const {expandEnvironmentVariables, checkForWSL} = require('../helpers/path')
 
 const progressRegex = /([\d]{1,2}:[\d]{2}:[\d]{2}:[\d]{2})\s+(\(\d+\))/gi;
 const durationRegex = /Duration:\s+([\d]{1,2}:[\d]{2}:[\d]{2}:[\d]{2})/gi;
 const startRegex = /Start:\s+([\d]{1,2}:[\d]{2}:[\d]{2}:[\d]{2})/gi;
+const nexrenderErrorRegex = /Error:\s+(nexrender:.*)$/gim;
+const errorRegex =          /aerender Error:\s*(.*)$/gis;
 
 const option = (params, name, ...values) => {
     if (values !== undefined) {
@@ -25,14 +27,19 @@ module.exports = (job, settings) => {
     // create container for our parameters
     let params = [];
     let outputFile = expandEnvironmentVariables(job.output)
+    let projectFile = expandEnvironmentVariables(job.template.dest)
+
+    const outputFileAE = checkForWSL(outputFile, settings)
+    projectFile = checkForWSL(projectFile, settings)
+    let jobScriptFile = checkForWSL(job.scriptfile, settings)
+
 
     // setup parameters
-    params.push('-project', expandEnvironmentVariables(job.template.dest));
+    params.push('-project', projectFile);
     params.push('-comp', job.template.composition);
+    params.push('-output', outputFileAE);
 
-    if (!settings.skipRender){
-        params.push('-output', outputFile);
-
+    if (!settings.skipRender) {
         option(params, '-OMtemplate', job.template.outputModule);
         option(params, '-RStemplate', job.template.settingsTemplate);
 
@@ -44,9 +51,9 @@ module.exports = (job, settings) => {
         option(params, '-e', 1);
     }
 
-    option(params, '-r', job.scriptfile);
+    option(params, '-r', jobScriptFile);
 
-    if (!settings.skipRender && settings.multiFrames) params.push('-mp');
+    if (!settings.skipRender && settings.multiFrames) params.push('-mfr', 'ON', settings.multiFramesCPU);
     if (settings.reuse) params.push('-reuse');
     if (job.template.continueOnMissing) params.push('-continueOnMissingFootage')
 
@@ -54,12 +61,30 @@ module.exports = (job, settings) => {
         option(params, '-mem_usage', settings.imageCachePercent || 50, settings.maxMemoryPercent || 50);
     }
 
+    if (settings['aeParams']) {
+        for (const param of settings['aeParams']) {
+            let ps = param.split(" ");
+
+            if (ps.length > 0) {
+                params.push('-' + ps[0])
+            }
+
+            if (ps.length > 1) {
+                params.push(ps[1])
+            }
+        }
+    }
+
+
     // tracks progress
     let projectDuration = null;
     let currentProgress = null;
     let previousProgress = undefined;
     let renderStopwatch = null;
     let projectStart = null;
+
+    // tracks error
+    let errorSent = false;
 
     const parse = (data) => {
         const string = ('' + data).replace(/;/g, ':'); /* sanitize string */
@@ -89,6 +114,21 @@ module.exports = (job, settings) => {
             }
         }
 
+        // look for error from nexrender.jsx
+        // or maybe it has more global aerender error
+        const matchNexrenderError = nexrenderErrorRegex.exec(string);
+        const matchError = matchNexrenderError ? matchNexrenderError : errorRegex.exec(string);
+
+        // There will be multiple error messages parsed when nexrender throws an error,
+        // but we want only the first
+        if(matchError !== null && !errorSent){
+            settings.logger.log(`[${job.uid}] rendering reached an error: ${matchError[1]}`);
+            if (job.hasOwnProperty('onRenderError') && typeof job['onRenderError'] == 'function') {
+                job.onRenderError(job, matchError[1]);
+            }
+            errorSent = true
+        }
+
         return data;
     }
 
@@ -103,16 +143,19 @@ module.exports = (job, settings) => {
         const output = [];
         const logPath = path.resolve(job.workpath, `../aerender-${job.uid}.log`)
         const instance = spawn(settings.binary, params, {
+            windowsHide: true
             // NOTE: disabled PATH for now, there were a few
             // issues related to plugins not working properly
             // env: { PATH: path.dirname(settings.binary) },
         });
 
         instance.on('error', err => reject(new Error(`Error starting aerender process: ${err}`)));
+
         instance.stdout.on('data', (data) => {
             output.push(parse(data.toString('utf8')));
             (settings.verbose && settings.logger.log(data.toString('utf8')));
         });
+
         instance.stderr.on('data', (data) => {
             output.push(data.toString('utf8'));
             (settings.verbose && settings.logger.log(data.toString('utf8')));
@@ -143,16 +186,26 @@ module.exports = (job, settings) => {
                 return resolve(job)
             }
 
-            if (!fs.existsSync(outputFile)) {
+            // When a render has finished, look for a .mov file too, on AE 2022
+            // the outputfile appears to be forced as .mov.
+            // We need to maintain this here while we have 2022 and 2020
+            // workers simultaneously
+            const movOutputFile = outputFile.replace(/\.avi$/g, '.mov')
+            const existsMovOutputFile = fs.existsSync(movOutputFile)
+            if (existsMovOutputFile) {
+              job.output = movOutputFile
+            }
+
+            if (!fs.existsSync(job.output)) {
                 if (fs.existsSync(logPath)) {
                     settings.logger.log(`[${job.uid}] dumping aerender log:`)
                     settings.logger.log(fs.readFileSync(logPath, 'utf8'))
                 }
 
-                return reject(new Error(`Couldn't find a result file`))
+                return reject(new Error(`Couldn't find a result file: ${outputFile}`))
             }
 
-            const stats = fs.statSync(outputFile)
+            const stats = fs.statSync(job.output)
 
             /* file smaller than 1000 bytes */
             if (stats.size < 1000) {
@@ -161,6 +214,10 @@ module.exports = (job, settings) => {
 
             resolve(job)
         });
+
+        if (settings.onInstanceSpawn) {
+            settings.onInstanceSpawn(instance, job, settings)
+        }
     })
 };
 

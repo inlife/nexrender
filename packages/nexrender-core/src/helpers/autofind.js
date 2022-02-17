@@ -12,7 +12,9 @@ const defaultPaths = {
         '/Applications/Adobe After Effects CC 2019',
         '/Applications/Adobe After Effects 2020',
         '/Applications/Adobe After Effects 2021',
+        '/Applications/Adobe After Effects 2022',
         '/Applications/Adobe After Effects CC 2021',
+        '/Applications/Adobe After Effects CC 2022',
     ],
     win32: [
         'C:\\Program Files\\Adobe\\After Effects CC',
@@ -25,6 +27,7 @@ const defaultPaths = {
         'C:\\Program Files\\Adobe\\After Effects CC 2020\\Support Files',
         'C:\\Program Files\\Adobe\\After Effects 2020\\Support Files',
         'C:\\Program Files\\Adobe\\After Effects 2021\\Support Files',
+        'C:\\Program Files\\Adobe\\After Effects 2022\\Support Files',
 
         'C:\\Program Files\\Adobe\\Adobe After Effects CC',
         'C:\\Program Files\\Adobe\\Adobe After Effects CC\\Support Files',
@@ -36,6 +39,32 @@ const defaultPaths = {
         'C:\\Program Files\\Adobe\\Adobe After Effects CC 2020\\Support Files',
         'C:\\Program Files\\Adobe\\Adobe After Effects 2020\\Support Files',
         'C:\\Program Files\\Adobe\\Adobe After Effects 2021\\Support Files',
+        'C:\\Program Files\\Adobe\\Adobe After Effects 2022\\Support Files',
+    ],
+    wsl: [
+        '/mnt/c/Program Files/Adobe/After Effects CC',
+        '/mnt/c/Program Files/Adobe/After Effects CC/Support Files',
+        '/mnt/c/Program Files/Adobe/After Effects CC 2015/Support Files',
+        '/mnt/c/Program Files/Adobe/After Effects CC 2016/Support Files',
+        '/mnt/c/Program Files/Adobe/After Effects CC 2017/Support Files',
+        '/mnt/c/Program Files/Adobe/After Effects CC 2018/Support Files',
+        '/mnt/c/Program Files/Adobe/After Effects CC 2019/Support Files',
+        '/mnt/c/Program Files/Adobe/After Effects CC 2020/Support Files',
+        '/mnt/c/Program Files/Adobe/After Effects 2020/Support Files',
+        '/mnt/c/Program Files/Adobe/After Effects 2021/Support Files',
+        '/mnt/c/Program Files/Adobe/After Effects 2022/Support Files',
+
+        '/mnt/c/Program Files/Adobe/Adobe After Effects CC',
+        '/mnt/c/Program Files/Adobe/Adobe After Effects CC/Support Files',
+        '/mnt/c/Program Files/Adobe/Adobe After Effects CC 2015/Support Files',
+        '/mnt/c/Program Files/Adobe/Adobe After Effects CC 2016/Support Files',
+        '/mnt/c/Program Files/Adobe/Adobe After Effects CC 2017/Support Files',
+        '/mnt/c/Program Files/Adobe/Adobe After Effects CC 2018/Support Files',
+        '/mnt/c/Program Files/Adobe/Adobe After Effects CC 2019/Support Files',
+        '/mnt/c/Program Files/Adobe/Adobe After Effects CC 2020/Support Files',
+        '/mnt/c/Program Files/Adobe/Adobe After Effects 2020/Support Files',
+        '/mnt/c/Program Files/Adobe/Adobe After Effects 2021/Support Files',
+        '/mnt/c/Program Files/Adobe/Adobe After Effects 2022/Support Files',
     ],
 }
 
@@ -46,13 +75,15 @@ const defaultPaths = {
  * @return {String|null}
  */
 module.exports = settings => {
-    const platform = os.platform()
+    let platform = os.platform()
+
+    if (settings.wsl) platform = 'wsl'
 
     if (!defaultPaths.hasOwnProperty(platform)) {
         return null;
     }
 
-    const binary  = 'aerender' + (platform === 'win32' ? '.exe' : '' )
+    const binary  = 'aerender' + (platform === 'win32' || platform === 'wsl' ? '.exe' : '' )
     const results = defaultPaths[platform]
         .map(folderPath => path.join(folderPath, binary))
         .filter(binaryPath => fs.existsSync(binaryPath))
