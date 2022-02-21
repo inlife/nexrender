@@ -1,21 +1,5 @@
 'use strict';
 
-const fs = require('fs')
-const os = require('os')
-const path = require('path')
-
-const license = require('./helpers/license')
-const autofind = require('./helpers/autofind')
-const patch = require('./helpers/patch')
-const state = require('./helpers/state')
-
-const setup = require('./tasks/setup')
-const download = require('./tasks/download')
-const prerender = require('./tasks/actions')('prerender')
-const script = require('./tasks/script')
-const dorender = require('./tasks/render')
-const postrender = require('./tasks/actions')('postrender')
-const cleanup = require('./tasks/cleanup')
 const fs           = require('fs')
 const os           = require('os')
 const path         = require('path')
