@@ -31,6 +31,7 @@ if (process.env.NEXRENDER_REQUIRE_PLUGINS) {
     require('@nexrender/provider-s3');
     require('@nexrender/provider-ftp');
     require('@nexrender/provider-gs');
+    require('@nexrender/provider-sftp');
 }
 
 //
@@ -119,4 +120,7 @@ const render = (job, settings = {}) => {
         .then(job => state(job, settings, cleanup, 'cleanup'))
 }
 
-module.exports = { init, render }
+module.exports = {
+    init,
+    render
+}
