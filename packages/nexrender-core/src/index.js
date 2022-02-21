@@ -1,21 +1,25 @@
 'use strict';
 
-const fs = require('fs')
-const os = require('os')
-const path = require('path')
+const fs           = require('fs')
+const os           = require('os')
+const path         = require('path')
 
-const license = require('./helpers/license')
-const autofind = require('./helpers/autofind')
-const patch = require('./helpers/patch')
-const state = require('./helpers/state')
+const isWsl        = require('is-wsl')
 
-const setup = require('./tasks/setup')
-const download = require('./tasks/download')
-const prerender = require('./tasks/actions')('prerender')
-const script = require('./tasks/script')
-const dorender = require('./tasks/render')
-const postrender = require('./tasks/actions')('postrender')
-const cleanup = require('./tasks/cleanup')
+const license      = require('./helpers/license')
+const autofind     = require('./helpers/autofind')
+const patch        = require('./helpers/patch')
+const state        = require('./helpers/state')
+
+const setup        = require('./tasks/setup')
+const predownload  = require('./tasks/actions')('predownload')
+const download     = require('./tasks/download')
+const postdownload = require('./tasks/actions')('postdownload')
+const prerender    = require('./tasks/actions')('prerender')
+const script       = require('./tasks/script')
+const dorender     = require('./tasks/render')
+const postrender   = require('./tasks/actions')('postrender')
+const cleanup      = require('./tasks/cleanup')
 
 /* place to register all plugins */
 /* so they will be picked up and resolved by pkg */
@@ -38,11 +42,14 @@ const init = (settings) => {
     settings = Object.assign({}, settings);
     settings.logger = settings.logger || console;
 
+    // check for WSL
+    settings.wsl = isWsl
+
     const binaryAuto = autofind(settings);
     const binaryUser = settings.binary && fs.existsSync(settings.binary) ? settings.binary : null;
 
     if (!binaryUser && !binaryAuto) {
-        throw new Error('you should provide a proper path to After Effects\' \"aerender\" binary')
+        throw new Error('you should provide a proper path to After Effects\' "aerender" binary')
     }
 
     if (binaryAuto && !binaryUser) {
@@ -61,8 +68,12 @@ const init = (settings) => {
 
         debug: false,
         multiFrames: false,
+        multiFramesCPU: 90,
         maxMemoryPercent: undefined,
         imageCachePercent: undefined,
+        wslMap: undefined,
+
+        onInstanceSpawn: undefined,
 
         __initialized: true,
     }, settings, {
@@ -73,6 +84,11 @@ const init = (settings) => {
     if (!path.isAbsolute(settings.workpath)) {
         settings.workpath = path.join(process.cwd(), settings.workpath);
     }
+
+    // if WSL, ask user to define Mapping
+    if (settings.wsl && !settings.wslMap)
+        throw new Error('WSL detected: provide your WSL drive map; ie. "Z"')
+
 
     // add license helper
     if (settings.addLicense) {
@@ -94,7 +110,9 @@ const render = (job, settings = {}) => {
 
     return Promise.resolve(job)
         .then(job => state(job, settings, setup, 'setup'))
+        .then(job => state(job, settings, predownload, 'predownload'))
         .then(job => state(job, settings, download, 'download'))
+        .then(job => state(job, settings, postdownload, 'postdownload'))
         .then(job => state(job, settings, prerender, 'prerender'))
         .then(job => state(job, settings, script, 'script'))
         .then(job => state(job, settings, dorender, 'dorender'))

@@ -1,0 +1,49 @@
+{
+    "template": {
+        "src": "file:///mnt/d/Downloads/nexrender-boilerplate-master/assets/nm05ae12.aepx",
+        "composition": "main",
+
+        "frameStart": 0,
+        "frameEnd": 500
+    },
+    "assets": [
+        {
+            "src": "file:///mnt/d/Downloads/nexrender-boilerplate-master/assets/2016-aug-deep.jpg",
+            "type": "image",
+            "layerName": "background.jpg"
+        },
+        {
+            "src": "file:///mnt/d/Downloads/nexrender-boilerplate-master/assets/nm.png",
+            "type": "image",
+            "layerName": "nm.png"
+        },
+        {
+            "src": "file:///mnt/d/Downloads/nexrender-boilerplate-master/assets/deep_60s.mp3",
+            "type": "audio",
+            "useOriginal": true,
+            "layerName": "audio.mp3"
+        },
+        {
+            "type": "data",
+            "layerName": "artist",
+            "property": "position",
+            "value": [0, 250],
+            "expression": [50, 250]
+        },
+        {
+            "type": "data",
+            "layerName": "track name",
+            "property": "Source Text",
+            "value": "Test"
+        }
+    ],
+    "actions": {
+        "postrender": [
+            {
+                "module": "@nexrender/action-encode",
+                "output": "output.mp4",
+                "preset": "mp4"
+            }
+        ]
+    }
+}

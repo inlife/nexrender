@@ -14,6 +14,7 @@
     "start": "npm run bootstrap",
     "install-child": "lerna exec -- npm i",
     "bootstrap": "lerna bootstrap -- --no-package-lock",
+    "lint": "eslint .",
     "purge-cache": "lerna exec 'rm -rf node_modules && rm -f package-lock.json'",
     "purge-master": "rm -rf node_modules && rm -f package-lock.json",
     "publish": "lerna publish",
@@ -22,15 +23,15 @@
     "pkg-cli": "cross-env NEXRENDER_REQUIRE_PLUGINS=1 pkg packages/nexrender-cli/package.json --out-path bin/",
     "pkg-worker": "cross-env NEXRENDER_REQUIRE_PLUGINS=1 pkg packages/nexrender-worker/package.json --out-path bin/",
     "pkg-server": "pkg packages/nexrender-server/package.json --out-path bin/",
-    "pkg-prelink": "lerna run --scope @nexrender/core pkg-prelink",
-    "pkg-reduce": "node misc/reduce.js",
-    "pkg": "npm run pkg-prelink && npm run pkg-reduce && npm run pkg-cli && npm run pkg-server && npm run pkg-worker && npm run pkg-rename",
-    "test": "lerna bootstrap && node test.js"
+    "pkg-prelink": "lerna run --scope @nexrender/core pkg-prelink && lerna run --scope @nexrender/server pkg-prelink",
+    "pkg": "npm run pkg-prelink && npm run pkg-cli && npm run pkg-server && npm run pkg-worker && npm run pkg-rename",
+    "test": "npm run lint && lerna bootstrap && node test.js"
   },
   "devDependencies": {
     "cross-env": "^5.2.0",
-    "lerna": "^3.19.0",
-    "mocha": "^6.1.4",
+    "eslint": "^8.6.0",
+    "lerna": "^3.21.0",
+    "mocha": "^7.1.2",
     "pkg": "^4.4.1"
   }
 }

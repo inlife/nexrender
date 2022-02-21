@@ -6,7 +6,7 @@ const withEventEmitter = (fetch, job, polling = NEXRENDER_JOB_POLLING) => {
     const emitter  = new EventEmitter();
     const interval = setInterval(async () => {
         try {
-            const updatedJob = await fetch(`/jobs/${job.uid}`)
+            const updatedJob = await fetch(`/jobs/${job.uid}/status`)
 
             // Support updating render progress throughout rendering process
             if (updatedJob.state == 'render:dorender' && updatedJob.renderProgress) {
@@ -49,6 +49,15 @@ module.exports = (fetch, polling) => ({
             headers: { 'content-type': 'application/json' },
             body: JSON.stringify(data),
         }), polling),
+    
+    getJob: async id =>
+        withEventEmitter(fetch, await fetch(`/jobs/${id}`, {
+            method: 'get',
+            headers: { 'content-type': 'application/json' },
+        }), polling),
+    
+    resumeJob: async id =>
+        withEventEmitter(fetch, await fetch(`/jobs/${id}`), polling),
 
     updateJob: async (id, data) =>
         await fetch(`/jobs/${id}`, {

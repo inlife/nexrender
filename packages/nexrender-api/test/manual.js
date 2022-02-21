@@ -39,19 +39,20 @@ const job = {
 
 
 client.addJob(job).then(result => {
-    result.on('created', (job) => {
+    result.on('created', (/* job */) => {
         console.log('project has been created')
     })
 
-    result.on('started', (job) => {
+    result.on('started', (/* job */) => {
         console.log('project rendering started');
     })
 
-    result.on('finished', (job) => {
+    result.on('finished', (/* job */) => {
         console.log('project rendering finished');
     })
 
-    result.on('error', (err) => {
+    // eslint-disable-next-line
+    result.on('error', (/* err */) => {
         console.log('project rendering error');
     })
 }).catch(err => {

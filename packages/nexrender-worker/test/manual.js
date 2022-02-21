@@ -1,6 +1,6 @@
 process.env.NEXRENDER_API_POLLING = 500;
 
-const { delay, nextJob } = require('../src')
+const { nextJob } = require('../src')
 
 let i = 0;
 const listJobs = async () => {

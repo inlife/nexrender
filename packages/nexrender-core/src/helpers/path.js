@@ -23,6 +23,18 @@ function expandEnvironmentVariables(pathString) {
     }, pathString);
 }
 
+let checkForWSL = (pathString, settings) => {
+    if (!settings.wsl) return pathString
+
+    return pathString.match(/\/mnt\/[a-zA-Z]\//)
+        ? pathString.replace(
+              /\/mnt\/[a-zA-Z]\//,
+              `${pathString.split('/')[2].toUpperCase()}:/`
+          )
+        : `${settings.wslMap}:${pathString}`
+}
+
 module.exports = {
-    expandEnvironmentVariables: expandEnvironmentVariables
+    expandEnvironmentVariables: expandEnvironmentVariables,
+    checkForWSL
 };
