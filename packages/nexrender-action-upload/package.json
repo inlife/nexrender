@@ -15,6 +15,7 @@
   "peerDependencies": {
     "@nexrender/provider-ftp": "^1.17.2",
     "@nexrender/provider-gs": "^1.21.3",
-    "@nexrender/provider-s3": "^1.21.4"
+    "@nexrender/provider-s3": "^1.21.4",
+    "@nexrender/provider-sftp": "^1.37.10"
   }
 }
