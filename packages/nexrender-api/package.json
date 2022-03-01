@@ -4,7 +4,8 @@
   "version": "1.38.0",
   "main": "src/index.js",
   "dependencies": {
-    "@nexrender/types": "^1.38.0",
+    "@nexrender/types": "^1.37.6",
+    "fetch-retry": "^5.0.1",
     "isomorphic-unfetch": "^3.0.0"
   },
   "publishConfig": {
