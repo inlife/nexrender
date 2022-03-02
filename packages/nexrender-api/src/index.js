@@ -1,7 +1,4 @@
-const originalFetch = require('isomorphic-unfetch');
-const fetch = require('fetch-retry')(originalFetch);
-
-const retryDelayDefault = (attempt) => Math.pow(2, attempt) * 1000;
+const fetch = require('isomorphic-unfetch')
 
 const createClient = ({ host, secret, polling }) => {
     const wrappedFetch = async (path, options) => {
@@ -11,11 +8,6 @@ const createClient = ({ host, secret, polling }) => {
         if (secret) {
             options.headers['nexrender-secret'] = secret
         }
-
-        // Retry
-        options.retries = options.retries || 5;
-        options.retryDelay = options.retryDelay || retryDelayDefault;
-        options.retryOn = options.retryOn || [500, 501, 502, 503, 504];
 
         const response = await fetch(`${host}/api/v1${path}`, options)
 
