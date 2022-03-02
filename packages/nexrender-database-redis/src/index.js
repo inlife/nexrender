@@ -22,7 +22,7 @@ const scan = async parser => {
         results = results.concat(keys);
 
         if (cursor === '0') {
-            results = await results.map(parser);
+            results = await results.map(parser).filter(e => e !== null && e !== undefined);
             return results;
         } else {
             return _scan(parser);
