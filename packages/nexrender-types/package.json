@@ -1,6 +1,6 @@
 {
   "name": "@nexrender/types",
-  "version": "1.37.6",
+  "version": "1.38.0",
   "author": "Inlife",
   "main": "src/index.js",
   "dependencies": {
