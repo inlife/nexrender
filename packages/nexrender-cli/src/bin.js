@@ -18,7 +18,7 @@ const args = arg({
     '--workpath':   String,
     '--wsl-map':    String,
 
-    '--stop-on-error':  String,
+    '--stop-on-error':  Boolean,
 
     '--skip-cleanup':   Boolean,
     '--skip-render':    Boolean,
@@ -167,9 +167,6 @@ opt('maxMemoryPercent',     '--max-memory-percent');
 opt('imageCachePercent',    '--image-cache-percent');
 opt('wslMap',               '--wsl-map');
 opt('aeParams',             '--aerender-parameter');
-
-/* convert string arugument into a boolean */
-settings['stopOnError'] = settings['stopOnError'] == 'true';
 
 /* debug implies verbose */
 settings.verbose = settings.debug;
