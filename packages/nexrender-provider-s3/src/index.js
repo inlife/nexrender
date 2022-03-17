@@ -138,7 +138,7 @@ const upload = (job, settings, src, params, onProgress, onComplete) => {
             Key: params.key,
             ACL: params.acl,
             Body: file,
-            ContentType: params.contentType ?? "application/octet-stream"
+            ContentType: params.contentType || "application/octet-stream"
         }
         if (params.metadata) awsParams.Metadata = params.metadata;
 
