@@ -20,7 +20,7 @@ const args = arg({
     '--workpath':   String,
     '--wsl-map':    String,
 
-    '--stop-on-error':  String,
+    '--stop-on-error':  Boolean,
 
     '--skip-cleanup':   Boolean,
     '--skip-render':    Boolean,
@@ -184,9 +184,6 @@ opt('imageCachePercent',    '--image-cache-percent');
 opt('polling',              '--polling');
 opt('wslMap',               '--wsl-map');
 opt('aeParams',             '--aerender-parameter');
-
-/* convert string arugument into a boolean */
-settings['stopOnError'] = settings['stopOnError'] == 'true';
 
 if (args['--cleanup']) {
     settings = init(Object.assign(settings, {
