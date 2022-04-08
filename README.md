@@ -1363,6 +1363,7 @@ Here you can find a list of packages published by other contributors:
 * [dylangarcia/nexrender-action-unzip](https://github.com/dylangarcia/nexrender-action-unzip) - Unzip composition source before starting to render
 * [pilskalns/nexrender-action-template-unzip](https://github.com/Pilskalns/nexrender-action-template-unzip) - Unzip template and find (first) `.aep` file within it. Minimal config.
 * [oreporan/nexrender-action-upload-s3-presigned](https://github.com/oreporan/nexrender-action-upload-s3-presigned) - A postrender upload plugin which uploads using https (for s3 presigned_url)
+* [pulsedemon/nexrender-action-run-command](https://github.com/pulsedemon/nexrender-action-run-command) - Run shell commands as a nexrender action
 * [somename/package-name](#) - a nice description of a nice package doing nice things
 
 Since nexrender allows to use external packages installed globally from npm, its quite easy to add your own modules
