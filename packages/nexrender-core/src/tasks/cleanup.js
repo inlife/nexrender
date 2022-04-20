@@ -11,15 +11,20 @@ module.exports = function(job, settings) {
 
     return new Promise((resolve) => {
         settings.logger.log(`[${job.uid}] cleaning up...`);
-        if(!job.workpath){ job.workpath = settings.workpath.concat("/", job.uid, "/")}//Sometimes this attribute (workpath) was undefined.
-       	rimraf(job.workpath, {glob: false}, (err) => {
+        
+        // sometimes this attribute (workpath) is undefined
+        if (!job.workpath) {
+            job.workpath = settings.workpath.concat('/', job.uid, '/')
+        }
+       	
+        rimraf(job.workpath, {glob: false}, (err) => {
             if (!err) {
                 settings.logger.log(`[${job.uid}] Temporary AfterEffects project deleted. If you want to inspect it for debugging, use "--skip-cleanup"`)
             } else {
                 settings.logger.log(`[${job.uid}] Temporary AfterEffects could not be deleted. (Error: ${err.code}). Please delete the folder manually: ${job.workpath}`)
             }
             resolve(job)
-        })    
+        })
     })
 };
 
