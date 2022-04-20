@@ -11,7 +11,12 @@ module.exports = function(job, settings) {
 
     return new Promise((resolve) => {
         settings.logger.log(`[${job.uid}] cleaning up...`);
-
+        
+        // sometimes this attribute (workpath) is undefined
+        if (!job.workpath) {
+            job.workpath = settings.workpath.concat('/', job.uid, '/')
+        }
+       	
         rimraf(job.workpath, {glob: false}, (err) => {
             if (!err) {
                 settings.logger.log(`[${job.uid}] Temporary AfterEffects project deleted. If you want to inspect it for debugging, use "--skip-cleanup"`)
