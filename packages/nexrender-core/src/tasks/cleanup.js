@@ -23,6 +23,7 @@ module.exports = function(job, settings) {
             } else {
                 settings.logger.log(`[${job.uid}] Temporary AfterEffects could not be deleted. (Error: ${err.code}). Please delete the folder manually: ${job.workpath}`)
             }
+
             resolve(job)
         })
     })
