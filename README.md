@@ -352,7 +352,7 @@ Job structure has more fields, that we haven't checked out yet. The detailed ver
 
         "frameStart": Number,
         "frameEnd": Number,
-        "frameIncrement": Number,
+        "incrementFrame": Number,
 
         "continueOnMissing": Boolean,
         "settingsTemplate": String,
