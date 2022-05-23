@@ -161,6 +161,10 @@ console.log(chalk`> starting {bold.cyan nexrender-worker} endpoint {bold ${serve
 
 let settings = {};
 const opt = (key, arg) => {if (args[arg]) {
+    //If not specified == true, otherwise false
+    if(key === "stopOnError"){
+        args[arg] = false;
+    }
     settings[key] = args[arg];
 }}
 
