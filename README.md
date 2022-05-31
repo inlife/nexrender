@@ -1489,6 +1489,8 @@ If you've used nexrender, and you like it, please feel free to add yourself into
 * [Two Bit Circus](https://twobitcircus.com)
 * [Flügerl](https://www.youtube.com/fluegerl)
 * [NewFlight](https://newflight.co)
+* [den frie vilje](https://denfrievilje.dk)
+* [DR (Danish National Broadcaster)](https://dr.dk)
 * you name goes here
 
 ## Plans
