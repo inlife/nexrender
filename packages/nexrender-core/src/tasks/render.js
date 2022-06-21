@@ -65,14 +65,10 @@ module.exports = (job, settings) => {
 
             if (ps.length > 0) {
                 params.push('-' + ps[0])
-            }
-
-            if (ps.length > 1) {
-                params.push(ps[1])
+                params.push(...ps.slice(1))
             }
         }
     }
-
 
     // tracks progress
     let projectDuration = null;
