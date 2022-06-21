@@ -61,7 +61,7 @@ const start = async (host, secret, settings) => {
         }
 
         try {
-            job.onRenderProgress = function (job, progress) {
+            job.onRenderProgress = function (job, /* progress */) {
                 try {
                     /* send render progress to our server */
                     client.updateJob(job.uid, getRenderingStatus(job))
@@ -85,7 +85,13 @@ const start = async (host, secret, settings) => {
             job.error = err;
             job.errorAt = new Date()
 
-            await client.updateJob(job.uid, getRenderingStatus(job));
+            await client.updateJob(job.uid, getRenderingStatus(job)).catch((err) => {
+                if (settings.stopOnError) {
+                    throw err;
+                } else {
+                    console.log(`[${job.uid}] error occurred: ${err.stack}`)
+                }
+            });
 
             if (settings.stopOnError) {
                 throw err;

@@ -1,4 +1,3 @@
-const fs       = require('fs')
 const path     = require('path')
 const {name}   = require('./package.json')
 const requireg = require('requireg')
@@ -46,7 +45,7 @@ module.exports = (job, settings, { input, provider, params, ...options }, type) 
 
             } catch(e) {
                 if (e.message.indexOf('Could not require module') !== -1) {
-                    return Promise.reject(new Error(`Couldn\'t find module ${requirePackage}, Unknown provider given.`))
+                    return Promise.reject(new Error(`Couldn't find module ${requirePackage}, Unknown provider given.`))
                 }
 
                 throw e;

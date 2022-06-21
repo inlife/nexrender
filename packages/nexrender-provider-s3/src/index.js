@@ -1,5 +1,5 @@
 const fs  = require('fs')
-const uri = require('amazon-s3-uri')
+const uri = require('./uri')
 const AWS = require('aws-sdk/global')
 const S3 = require('aws-sdk/clients/s3')
 
@@ -13,6 +13,9 @@ const getCredentials = params => {
         return new AWS.SharedIniFileCredentials({ profile: params.profile })
     } else if (params && params.accessKeyId && params.secretAccessKey) {
         return { accessKeyId: params.accessKeyId, secretAccessKey: params.secretAccessKey }
+    // Cross-account role access pattern
+    } else if (params && params.RoleArn && params.RoleSessionName) {
+        return new AWS.ChainableTemporaryCredentials({ params: { ...params }})
     } else if (process.env.AWS_PROFILE) { // prioritize any explicitly set params before env variables
         // will throw if the profile is not configured
         return new AWS.SharedIniFileCredentials({ profile: process.env.AWS_PROFILE })
@@ -51,12 +54,8 @@ const s3instanceWithEndpoint = (endpoint, credentials) => {
 }
 
 /* define public methods */
-const download = (job, settings, src, dest, params, type) => {
+const download = (job, settings, src, dest, params, /* type */) => {
     src = src.replace('s3://', 'http://')
-
-    if (src.indexOf('digitaloceanspaces.com') !== -1) {
-        throw new Error('nexrender: Digital Ocean Spaces is not yet supported by the package: amazon-s3-uri')
-    }
 
     const parsed = uri(src)
     const file = fs.createWriteStream(dest)
@@ -135,6 +134,7 @@ const upload = (job, settings, src, params, onProgress, onComplete) => {
             Key: params.key,
             ACL: params.acl,
             Body: file,
+            ContentType: params.contentType || "application/octet-stream"
         }
         if (params.metadata) awsParams.Metadata = params.metadata;
 

@@ -18,7 +18,7 @@ const args = arg({
     '--workpath':   String,
     '--wsl-map':    String,
 
-    '--stop-on-error':  String,
+    '--stop-on-error':  Boolean,
 
     '--skip-cleanup':   Boolean,
     '--skip-render':    Boolean,
@@ -26,6 +26,7 @@ const args = arg({
     '--force-patch':    Boolean,
     '--debug':          Boolean,
     '--multi-frames':   Boolean,
+    '--multi-frames-cpu': Number,
     '--reuse':          Boolean,
 
     '--max-memory-percent':  Number,
@@ -44,8 +45,8 @@ const args = arg({
     '--ae':         '--aerender-parameter'
 });
 
-let serverHost = 'http://localhost:3000';
-let serverSecret = '';
+// let serverHost = 'http://localhost:3000';
+// let serverSecret = '';
 
 if (args['--help']) {
     console.error(chalk`
@@ -159,15 +160,13 @@ opt('skipRender',           '--skip-render');
 opt('forceCommandLinePatch','--force-patch');
 opt('debug',                '--debug');
 opt('multiFrames',          '--multi-frames');
+opt('multiFramesCPU',       '--multi-frames-cpu');
 opt('reuse',                '--reuse');
 opt('stopOnError',          '--stop-on-error');
 opt('maxMemoryPercent',     '--max-memory-percent');
 opt('imageCachePercent',    '--image-cache-percent');
 opt('wslMap',               '--wsl-map');
 opt('aeParams',             '--aerender-parameter');
-
-/* convert string arugument into a boolean */
-settings['stopOnError'] = settings['stopOnError'] == 'true';
 
 /* debug implies verbose */
 settings.verbose = settings.debug;
@@ -220,7 +219,7 @@ settings = init(Object.assign(settings, {
 }))
 
 render(parsedJob, settings)
-    .then(job => {
+    .then(() => {
         console.log('> job rendering successfully finished')
     })
     .catch(err => {

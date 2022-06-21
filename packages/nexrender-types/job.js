@@ -1,5 +1,5 @@
 const assert = require('assert')
-const nanoid = require('nanoid')
+const { nanoid } = require('nanoid')
 
 /**
  * Take an optional minimal job json/object
@@ -13,6 +13,7 @@ const create = job => Object.assign({
     type: 'default',
     state: 'created',
     output: '',
+    priority: job.priority ? job.priority : 0,
 
     template: {
         src: '',

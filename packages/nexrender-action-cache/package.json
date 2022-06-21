@@ -1,0 +1,9 @@
+{
+  "name": "@nexrender/action-cache",
+  "author": "dylangarcia",
+  "version": "1.39.0",
+  "main": "index.js",
+  "publishConfig": {
+    "access": "public"
+  }
+}

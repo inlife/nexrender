@@ -4,6 +4,7 @@ const {Storage} = require('@google-cloud/storage')
 const storage = new Storage()
 
 /* define public methods */
+// eslint-disable-next-line
 const download = (job, settings, src, dest, params, type) => {
     const parsed_src = src.replace('gs://', '').split('/')
     const bucket_name = parsed_src[0]
@@ -37,7 +38,7 @@ const upload = (job, settings, src, params) => {
         return Promise.reject(new Error('GCS item not provided.'))
     }
 
-    const onUploadStart = (src) => {
+    const onUploadStart = () => {
         settings.logger.log(`[${job.uid}] action-upload: upload started`)
     }
 
@@ -48,7 +49,7 @@ const upload = (job, settings, src, params) => {
     return new Promise((resolve, reject) => {
         const bucket = storage.bucket(params.bucket)
         const file = bucket.file(params.item)
-        const options = {
+        let options = {
             metadata: {}
         }
         if (params.contentType) {
@@ -61,6 +62,12 @@ const upload = (job, settings, src, params) => {
             options.metadata = {
                 ...options.metadata,
                 cacheControl: params.cacheControl
+            }
+        }
+        if (params.resumable) {
+            options = {
+                ...options,
+                resumable: params.resumable
             }
         }
         const in_stream = fs.createReadStream(src)

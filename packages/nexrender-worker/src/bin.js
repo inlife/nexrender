@@ -2,6 +2,7 @@
 
 const arg       = require('arg')
 const chalk     = require('chalk')
+const { init } = require('@nexrender/core')
 const {start}   = require('./index')
 const {version} = require('../package.json')
 const rimraf    = require('rimraf')
@@ -19,7 +20,7 @@ const args = arg({
     '--workpath':   String,
     '--wsl-map':    String,
 
-    '--stop-on-error':  String,
+    '--stop-on-error':  Boolean,
 
     '--skip-cleanup':   Boolean,
     '--skip-render':    Boolean,
@@ -27,6 +28,7 @@ const args = arg({
     '--force-patch':    Boolean,
     '--debug':          Boolean,
     '--multi-frames':   Boolean,
+    '--multi-frames-cpu': Number,
     '--reuse':          Boolean,
 
     '--max-memory-percent':  Number,
@@ -159,6 +161,10 @@ console.log(chalk`> starting {bold.cyan nexrender-worker} endpoint {bold ${serve
 
 let settings = {};
 const opt = (key, arg) => {if (args[arg]) {
+    //If not specified == true, otherwise false
+    if(key === "stopOnError"){
+        args[arg] = false;
+    }
     settings[key] = args[arg];
 }}
 
@@ -182,9 +188,6 @@ opt('imageCachePercent',    '--image-cache-percent');
 opt('polling',              '--polling');
 opt('wslMap',               '--wsl-map');
 opt('aeParams',             '--aerender-parameter');
-
-/* convert string arugument into a boolean */
-settings['stopOnError'] = settings['stopOnError'] == 'true';
 
 if (args['--cleanup']) {
     settings = init(Object.assign(settings, {

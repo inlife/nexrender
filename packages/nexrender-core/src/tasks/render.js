@@ -6,6 +6,8 @@ const {expandEnvironmentVariables, checkForWSL} = require('../helpers/path')
 const progressRegex = /([\d]{1,2}:[\d]{2}:[\d]{2}:[\d]{2})\s+(\(\d+\))/gi;
 const durationRegex = /Duration:\s+([\d]{1,2}:[\d]{2}:[\d]{2}:[\d]{2})/gi;
 const startRegex = /Start:\s+([\d]{1,2}:[\d]{2}:[\d]{2}:[\d]{2})/gi;
+const nexrenderErrorRegex = /Error:\s+(nexrender:.*)$/gim;
+const errorRegex =          /aerender Error:\s*(.*)$/gis;
 
 const option = (params, name, ...values) => {
     if (values !== undefined) {
@@ -27,7 +29,7 @@ module.exports = (job, settings) => {
     let outputFile = expandEnvironmentVariables(job.output)
     let projectFile = expandEnvironmentVariables(job.template.dest)
 
-    outputFileAE = checkForWSL(outputFile, settings)
+    const outputFileAE = checkForWSL(outputFile, settings)
     projectFile = checkForWSL(projectFile, settings)
     let jobScriptFile = checkForWSL(job.scriptfile, settings)
 
@@ -51,7 +53,7 @@ module.exports = (job, settings) => {
 
     option(params, '-r', jobScriptFile);
 
-    if (!settings.skipRender && settings.multiFrames) params.push('-mp');
+    if (!settings.skipRender && settings.multiFrames) params.push('-mfr', 'ON', settings.multiFramesCPU);
     if (settings.reuse) params.push('-reuse');
     if (job.template.continueOnMissing) params.push('-continueOnMissingFootage')
 
@@ -60,7 +62,7 @@ module.exports = (job, settings) => {
     }
 
     if (settings['aeParams']) {
-        for (param of settings['aeParams']) {
+        for (const param of settings['aeParams']) {
             let ps = param.split(" ");
 
             if (ps.length > 0) {
@@ -76,6 +78,9 @@ module.exports = (job, settings) => {
     let previousProgress = undefined;
     let renderStopwatch = null;
     let projectStart = null;
+
+    // tracks error
+    let errorSent = false;
 
     const parse = (data) => {
         const string = ('' + data).replace(/;/g, ':'); /* sanitize string */
@@ -105,6 +110,21 @@ module.exports = (job, settings) => {
             }
         }
 
+        // look for error from nexrender.jsx
+        // or maybe it has more global aerender error
+        const matchNexrenderError = nexrenderErrorRegex.exec(string);
+        const matchError = matchNexrenderError ? matchNexrenderError : errorRegex.exec(string);
+
+        // There will be multiple error messages parsed when nexrender throws an error,
+        // but we want only the first
+        if(matchError !== null && !errorSent){
+            settings.logger.log(`[${job.uid}] rendering reached an error: ${matchError[1]}`);
+            if (job.hasOwnProperty('onRenderError') && typeof job['onRenderError'] == 'function') {
+                job.onRenderError(job, matchError[1]);
+            }
+            errorSent = true
+        }
+
         return data;
     }
 
@@ -119,6 +139,7 @@ module.exports = (job, settings) => {
         const output = [];
         const logPath = path.resolve(job.workpath, `../aerender-${job.uid}.log`)
         const instance = spawn(settings.binary, params, {
+            windowsHide: true
             // NOTE: disabled PATH for now, there were a few
             // issues related to plugins not working properly
             // env: { PATH: path.dirname(settings.binary) },
@@ -161,7 +182,17 @@ module.exports = (job, settings) => {
                 return resolve(job)
             }
 
-            if (!fs.existsSync(outputFile)) {
+            // When a render has finished, look for a .mov file too, on AE 2022
+            // the outputfile appears to be forced as .mov.
+            // We need to maintain this here while we have 2022 and 2020
+            // workers simultaneously
+            const movOutputFile = outputFile.replace(/\.avi$/g, '.mov')
+            const existsMovOutputFile = fs.existsSync(movOutputFile)
+            if (existsMovOutputFile) {
+              job.output = movOutputFile
+            }
+
+            if (!fs.existsSync(job.output)) {
                 if (fs.existsSync(logPath)) {
                     settings.logger.log(`[${job.uid}] dumping aerender log:`)
                     settings.logger.log(fs.readFileSync(logPath, 'utf8'))
@@ -170,7 +201,7 @@ module.exports = (job, settings) => {
                 return reject(new Error(`Couldn't find a result file: ${outputFile}`))
             }
 
-            const stats = fs.statSync(outputFile)
+            const stats = fs.statSync(job.output)
 
             /* file smaller than 1000 bytes */
             if (stats.size < 1000) {

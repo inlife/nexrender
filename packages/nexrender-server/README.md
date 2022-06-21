@@ -18,6 +18,7 @@ Can be changed by providing `NEXRENDER_ORDERING` env vartiable before launching 
 * `oldest-first` - FIFO queue, oldest jobs will be rendered first
 * `newest-first` - LIFO queue, newest jobs will be rendered first, oldest will be rendered last
 * `random` - Random access queue, jobs will be selected based on random counter
+* `priority` - Jobs are selected based on their priority field (default 0), in case of a collision it will choose the oldest one.
 
 ## Installation
 
