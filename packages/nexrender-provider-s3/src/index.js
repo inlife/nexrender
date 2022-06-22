@@ -137,7 +137,9 @@ const upload = (job, settings, src, params, onProgress, onComplete) => {
             ContentType: params.contentType || "application/octet-stream"
         }
         if (params.metadata) awsParams.Metadata = params.metadata;
-
+        if (params.contentDisposition) awsParams.ContentDisposition = params.contentDisposition;
+        if (params.cacheControl) awsParams.CacheControl = params.cacheControl;
+        
         const credentials = getCredentials(params.credentials)
 
         const s3instance = params.endpoint ?
