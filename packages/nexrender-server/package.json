@@ -19,6 +19,7 @@
   },
   "dependencies": {
     "@nexrender/types": "^1.38.0",
+    "@nexrender/database-redis": "^1.38.1",
     "arg": "^4.1.0",
     "async-mutex": "^0.3.2",
     "chalk": "^2.4.2",
