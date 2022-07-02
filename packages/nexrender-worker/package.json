@@ -21,7 +21,9 @@
     "@nexrender/types": "^1.38.0",
     "arg": "^4.1.0",
     "chalk": "^2.4.2",
-    "rimraf": "^3.0.2"
+    "rimraf": "^3.0.2",
+    "rollbar": "^2.25.0",
+    "dd-trace": "^2.9.1"
   },
   "publishConfig": {
     "access": "public"
