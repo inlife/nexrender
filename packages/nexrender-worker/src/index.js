@@ -73,10 +73,19 @@ const processJob = async (job) => {
             }
         }
 
-        job = await renderWithTrace(job, settings); {
-            job.state = 'finished';
-            job.finishedAt = new Date()
-        }
+        if (process.env.ENABLE_DATADOG_APM) {
+            job = await renderWithTrace(job, settings); {
+                job.state = 'finished';
+                job.finishedAt = new Date()
+            }
+         }
+         else {
+            job = await render(job, settings); {
+                job.state = 'finished';
+                job.finishedAt = new Date()
+            }
+         }
+
 
         await client.updateJob(job.uid, getRenderingStatus(job))
     } catch (err) {
@@ -127,16 +136,16 @@ const start = async (host, secret, settings) => {
             const scope = tracer.scope()
             const jobSpan = tracer.startSpan('job')
             scope.activate(jobSpan, () => {
-                let job = nextJobSetStarted(client, settings)
+                let job = await nextJobSetStarted(client, settings)
                 const jobUidSpan = tracer.startSpan(job.uid)
                 scope.active(jobUidSpan, () => {
-                    processJob(job)
+                    await processJob(job)
                 })
             })
         }
         else {
-            let job = nextJobSetStarted(client, settings)
-            processJob(job)
+            let job = await nextJobSetStarted(client, settings)
+            await processJob(job)
         } 
     } while (active)
 }
