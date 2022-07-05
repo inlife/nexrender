@@ -135,10 +135,10 @@ const start = async (host, secret, settings) => {
         if(process.env.ENABLE_DATADOG_APM) {
             const scope = tracer.scope()
             const jobSpan = tracer.startSpan('job')
-            scope.activate(jobSpan, () => {
+            scope.activate(jobSpan, async () => {
                 let job = await nextJobSetStarted(client, settings)
                 const jobUidSpan = tracer.startSpan(job.uid)
-                scope.active(jobUidSpan, () => {
+                scope.active(jobUidSpan, async () => {
                     await processJob(job)
                 })
             })
