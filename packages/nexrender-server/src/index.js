@@ -1,3 +1,7 @@
+if(process.env.ENABLE_DATADOG_APM) {
+    var tracer = require('dd-trace').init();
+}
+
 const cors   = require('micro-cors')
 const micro  = require('micro')
 const {send} = require('micro')

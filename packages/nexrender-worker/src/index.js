@@ -10,14 +10,15 @@ if(process.env.ENABLE_ROLLBAR) {
       captureUnhandledRejections: true,
       payload: {
         code_version: '1.0.0',
+        environment: process.env.ENVIRONMENT
       }
     });
 }
 
 
 if(process.env.ENABLE_DATADOG_APM) {
-    const tracer = require('dd-trace').init();
-    const renderWithTrace = tracer.wrap('render', render);
+    var tracer = require('dd-trace').init();
+    var renderWithTrace = tracer.wrap('render', render);
 }
 
 
@@ -50,7 +51,7 @@ const nextJob = async (client, settings) => {
     } while (active)
 }
 
-const processJob = async (job) => {
+const processJob = async (client, settings, job) => {
     try {
         await client.updateJob(job.uid, job)
     } catch(err) {
@@ -92,7 +93,7 @@ const processJob = async (job) => {
         job.state = 'error';
         job.error = err;
         job.errorAt = new Date()
-
+        console.log(`[${job.uid}] error occurred: ${err.stack}`);
         await client.updateJob(job.uid, getRenderingStatus(job)).catch((err) => {
             if (settings.stopOnError) {
                 throw err;
@@ -110,10 +111,11 @@ const processJob = async (job) => {
 }
 
 const nextJobSetStarted = async(client, settings) => {
-    await nextJob(client, settings); {
+    let job = await nextJob(client, settings); {
         job.state = 'started';
         job.startedAt = new Date()
     }
+    return job
 }
 
 /**
@@ -133,19 +135,15 @@ const start = async (host, secret, settings) => {
 
     do {
         if(process.env.ENABLE_DATADOG_APM) {
-            const scope = tracer.scope()
-            const jobSpan = tracer.startSpan('job')
-            scope.activate(jobSpan, async () => {
-                let job = await nextJobSetStarted(client, settings)
-                const jobUidSpan = tracer.startSpan(job.uid)
-                scope.active(jobUidSpan, async () => {
-                    await processJob(job)
-                })
+            await tracer.trace('job', async span => {
+                let job = await nextJobSetStarted(client, settings);
+                span.setTag('uid', job.uid);
+                await processJob(client, settings, job)
             })
         }
         else {
-            let job = await nextJobSetStarted(client, settings)
-            await processJob(job)
+            let job = await nextJobSetStarted(client, settings);
+            await processJob(client, settings, job)
         } 
     } while (active)
 }
