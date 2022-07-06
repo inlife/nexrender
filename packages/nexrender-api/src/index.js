@@ -1,7 +1,3 @@
-if(process.env.ENABLE_DATADOG_APM) {
-    var tracer = require('dd-trace').init();
-}
-
 const fetch = require('isomorphic-unfetch')
 
 const createClient = ({ host, secret, polling }) => {

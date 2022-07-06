@@ -1,7 +1,3 @@
-if(process.env.ENABLE_DATADOG_APM) {
-    var tracer = require('dd-trace').init();
-}
-
 const fs  = require('fs')
 const url = require('url')
 const FTP = require('ftp')

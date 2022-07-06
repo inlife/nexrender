@@ -1,7 +1,3 @@
-if(process.env.ENABLE_DATADOG_APM) {
-    var tracer = require('dd-trace').init();
-}
-
 const path     = require('path')
 const {name}   = require('./package.json')
 const requireg = require('requireg')
