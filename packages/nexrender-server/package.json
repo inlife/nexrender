@@ -1,6 +1,6 @@
 {
   "name": "@nexrender/server",
-  "version": "1.39.4",
+  "version": "1.39.6",
   "author": "inlife",
   "main": "src/index.js",
   "scripts": {
@@ -23,7 +23,7 @@
     "arg": "^4.1.0",
     "async-mutex": "^0.3.2",
     "chalk": "^2.4.2",
-    "micro": "^9.3.3",
+    "micro": "~9.3.3",
     "micro-cors": "^0.1.1",
     "microrouter": "^3.1.3",
     "requireg": "^0.2.2"
