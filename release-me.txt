@@ -1,0 +1,1 @@
+VERSION="v1.39.6.$(git log -1 --pretty=%h)" git tag -a $VERSION -m $VERSION && git push origin $VERSION
