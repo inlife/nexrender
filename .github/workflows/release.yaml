@@ -16,7 +16,13 @@ jobs:
       with:
         fetch-depth: 0
     - name: Install dependencies
-      run: npm ci
+      run: npm install
+    - name: Install child dependencies
+      run: npm run install-child
+    - name: Run bootstrap 
+      run: npm run start
+    - name: Run test
+      run: npm run test
     - name: Build binaries
       run: npm run pkg
     - name: Publish release
