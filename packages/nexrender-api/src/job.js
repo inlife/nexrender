@@ -41,6 +41,7 @@ const withEventEmitter = (fetch, job, polling = NEXRENDER_JOB_POLLING) => {
 
 module.exports = (fetch, polling) => ({
     listJobs: async () => await fetch(`/jobs`),
+    fetchJob: async id => await fetch(`/jobs/${id}`),
     pickupJob: async () => await fetch(`/jobs/pickup`),
 
     addJob: async data =>
