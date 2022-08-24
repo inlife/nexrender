@@ -50,12 +50,6 @@ module.exports = (fetch, polling) => ({
             body: JSON.stringify(data),
         }), polling),
     
-    getJob: async id =>
-        withEventEmitter(fetch, await fetch(`/jobs/${id}`, {
-            method: 'get',
-            headers: { 'content-type': 'application/json' },
-        }), polling),
-    
     resumeJob: async id =>
         withEventEmitter(fetch, await fetch(`/jobs/${id}`), polling),
 
@@ -74,4 +68,11 @@ module.exports = (fetch, polling) => ({
 
 /* deprecated method name */
 /* keeping for now for, backward compatibility */
-module.exports.removejob = module.exports.removeJob
+module.exports.removejob = async id => {
+    console.warn("`removejob()` has been deprecated and will be removed in a future version. Please use `removeJob()` instead.")
+    return module.exports.removeJob(id)
+}
+module.exports.getJob = async id => {
+    console.warn("`getJob()` has been deprecated and will be removed in a future version. Please use `resumeJob()` instead.")
+    return module.exports.resumeJob(id)
+}
