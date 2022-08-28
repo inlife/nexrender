@@ -1,0 +1,16 @@
+{
+  "name": "@nexrender/provider-sftp",
+  "version": "1.38.0",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Bram Speeckaert",
+  "license": "ISC",
+  "keywords": [],
+  "description": "",
+  "publishConfig": {
+    "access": "public"
+  },
+  "gitHead": "b787c28c083185753d51cfb1b6d3dc4a6a5bda64"
+}

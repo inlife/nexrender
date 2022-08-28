@@ -1,10 +1,10 @@
 {
   "name": "@nexrender/types",
-  "version": "1.27.0",
+  "version": "1.38.0",
   "author": "Inlife",
   "main": "src/index.js",
   "dependencies": {
-    "nanoid": "^2.0.1"
+    "nanoid": "^3.2.0"
   },
   "publishConfig": {
     "access": "public"

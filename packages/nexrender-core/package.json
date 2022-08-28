@@ -1,20 +1,20 @@
 {
   "name": "@nexrender/core",
-  "version": "1.31.0",
+  "version": "1.39.4",
   "main": "src/index.js",
   "author": "Inlife",
   "scripts": {
     "pkg-prelink": "node ../../misc/prelink.js"
   },
   "dependencies": {
-    "@nexrender/types": "^1.27.0",
+    "@nexrender/types": "^1.38.0",
     "data-uri-to-buffer": "^3.0.0",
     "file-uri-to-path": "^2.0.0",
     "is-wsl": "^2.2.0",
     "match-all": "^1.2.5",
     "mime-types": "^2.1.29",
     "mkdirp": "^1.0.4",
-    "node-fetch": "^2.6.1",
+    "node-fetch": "^2.6.7",
     "requireg": "^0.2.1",
     "rimraf": "^3.0.2"
   },
@@ -24,7 +24,8 @@
     "@nexrender/action-upload": "^1.0.0",
     "@nexrender/provider-ftp": "^1.17.2",
     "@nexrender/provider-gs": "^1.21.3",
-    "@nexrender/provider-s3": "^1.21.4"
+    "@nexrender/provider-s3": "^1.21.4",
+    "@nexrender/provider-sftp": "^1.37.9"
   },
   "publishConfig": {
     "access": "public"

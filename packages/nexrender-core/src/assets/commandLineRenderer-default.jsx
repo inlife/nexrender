@@ -1,4 +1,4 @@
-module.exports = /*syntax:js*/ `// Command line renderer for After Effects. (nexrender-patch-v1.0.2)
+module.exports = /*syntax:js*/ `// Command line renderer for After Effects. (nexrender-patch-v1.0.3)
 
 // This function constructs an AECommandLineRenderer object.
 // One and only one of these will be created to perform rendering tasks
@@ -120,7 +120,7 @@ function AECommandLineRenderer() {
     // Report an error. This writes errors to the log file, if present.
     // This is called from the context of the application, so we
     // need to precede variable names with gAECommandLineRenderer
-    // 
+    //
     function checkParentDied() {
         var result = false;
         if (gAECommandLineRenderer.log_file instanceof Socket) {
@@ -143,13 +143,13 @@ function AECommandLineRenderer() {
         checkParentDied();
         if (severity_string == "PROBLEM" || severity_string == "FATAL") {
             // These two errors cause us to change the exit code.
-            // We don't write an error or throw here, because we got here as part of a thrown 
+            // We don't write an error or throw here, because we got here as part of a thrown
             // error already, and the message will be printed as part of the catch.
             gAECommandLineRenderer.SetExitCode(gAECommandLineRenderer.EXIT_AE_RUNTIME);
         } else {
             // PROBLEM and FATAL will throw exceptions, and so will be logged to the file
             // when we catch the exception.
-            // All other errors (NAKED, INFO, WARNING, PROGRESS, and DEBUG) will not 
+            // All other errors (NAKED, INFO, WARNING, PROGRESS, and DEBUG) will not
             // throw exceptions.  So we log them to the file right here:
             if (gAECommandLineRenderer.is_verbose_mode) {
                 if (gAECommandLineRenderer.log_file != null) {
@@ -177,7 +177,7 @@ function AECommandLineRenderer() {
 
     // Report an error. This establishes exitCodes for reporting errors from AfterFX.
     function my_SetExitCode(code) {
-        // Some codes are set differently depending on whether we have a custom user 
+        // Some codes are set differently depending on whether we have a custom user
         // log file.  Check for these and use the alternate if appropriate.
         var real_code = code;
         if (gAECommandLineRenderer.has_user_log_file) {
@@ -203,7 +203,7 @@ function AECommandLineRenderer() {
         }
     }
 
-    // Arguments may be enclosed in quotes.  This 
+    // Arguments may be enclosed in quotes.  This
     // will remove them and return the result.
     function my_StripAnyEnclosingQuotes(inString) {
         var result = inString;
@@ -514,7 +514,7 @@ function AECommandLineRenderer() {
         try {
             // While rendering we'll report errors to the log file.
             if (app.onError == this.onError) {
-                // If the previous error handler is just this one, don't store it. 
+                // If the previous error handler is just this one, don't store it.
                 // That can happen in extreme cases where this script does not get a
                 // chance to clean up and put back the oldErrorHandler when it's done.
                 this.oldErrorHandler = null;
@@ -719,10 +719,10 @@ function AECommandLineRenderer() {
                     }
                 } else {
                     // Render times are stored as timeSpanStart and timeSpanDuration.
-                    // Setting only the timeSpanStart will not change the timeSpanDuration and 
-                    // so will move the end time, but we want the end time unchanged if 
+                    // Setting only the timeSpanStart will not change the timeSpanDuration and
+                    // so will move the end time, but we want the end time unchanged if
                     // it was not specified.
-                    // So we must calculate both start_time and end_time, 
+                    // So we must calculate both start_time and end_time,
                     // then set both timeSpanStart and timeSpanDuration.
                     // Note: frameDuration is stored in the comp.
                     var start_time = rqi.timeSpanStart;
@@ -760,12 +760,12 @@ function AECommandLineRenderer() {
                     // Increment as defined here is one greater then the
                     // the render queue item's skipFrames.
                     // skipFrames 0 is the same as increment of 1.
-                    // 
+                    //
                     rqi.skipFrames = (this.in_increment - 1);
                 }
             }
 
-            // If we are in verbose mode, set the log type to ERRORS_AND_PER_FRAME_INFO 
+            // If we are in verbose mode, set the log type to ERRORS_AND_PER_FRAME_INFO
             // for all RQ items we are about to render.
             if (this.is_verbose_mode) {
                 this.SetLogPerFrameInfoInRQ();

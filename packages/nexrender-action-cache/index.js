@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const predownload = (job, settings, { cacheDirectory }) => {
+const predownload = (job, settings, { cacheDirectory, ttl }) => {
     if (job.template.src.startsWith('file://')) {
         settings.logger.log(`> Skipping template cache; local file protocol is being used`)
         return Promise.resolve();
@@ -9,10 +9,21 @@ const predownload = (job, settings, { cacheDirectory }) => {
     
     const fileName = path.basename(job.template.src);
     const maybeCachedFileLocation = path.join(cacheDirectory, fileName);
+
     
     if (!fs.existsSync(maybeCachedFileLocation)) {
         settings.logger.log(`> Template cache not found at ${maybeCachedFileLocation}`);
         return Promise.resolve();
+    }
+
+    if (ttl) {
+        const birthtime = fs.statSync(maybeCachedFileLocation).birthtimeMs;
+        if (Date.now() - birthtime > ttl) {
+            settings.logger.log(`> Template cache expired at ${maybeCachedFileLocation}`);
+            settings.logger.log(`> Deleting cache at ${maybeCachedFileLocation}`);
+            fs.unlinkSync(maybeCachedFileLocation);
+            return Promise.resolve();
+        }
     }
 
     settings.logger.log(`> Template cache found at ${maybeCachedFileLocation}`);
@@ -52,7 +63,7 @@ const postdownload = (job, settings, { cacheDirectory }) => {
     });
 }
 
-module.exports = (job, settings, { cacheDirectory }, type) => {
+module.exports = (job, settings, { cacheDirectory, ttl }, type) => {
     if (!cacheDirectory) {
         throw new Error(`cacheDirectory not provided.`);
     }
@@ -64,7 +75,7 @@ module.exports = (job, settings, { cacheDirectory }, type) => {
     }
 
     if (type === 'predownload') {
-        return predownload(job, settings, { cacheDirectory }, type);
+        return predownload(job, settings, { cacheDirectory, ttl }, type);
     }
 
     if (type === 'postdownload') {

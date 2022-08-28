@@ -1,5 +1,5 @@
 const fs  = require('fs')
-const uri = require('amazon-s3-uri')
+const uri = require('./uri')
 const AWS = require('aws-sdk/global')
 const S3 = require('aws-sdk/clients/s3')
 
@@ -54,12 +54,8 @@ const s3instanceWithEndpoint = (endpoint, credentials) => {
 }
 
 /* define public methods */
-const download = (job, settings, src, dest, params, type) => {
+const download = (job, settings, src, dest, params, /* type */) => {
     src = src.replace('s3://', 'http://')
-
-    if (src.indexOf('digitaloceanspaces.com') !== -1) {
-        throw new Error('nexrender: Digital Ocean Spaces is not yet supported by the package: amazon-s3-uri')
-    }
 
     const parsed = uri(src)
     const file = fs.createWriteStream(dest)
@@ -138,10 +134,12 @@ const upload = (job, settings, src, params, onProgress, onComplete) => {
             Key: params.key,
             ACL: params.acl,
             Body: file,
-            ContentType: params.contentType ?? "application/octet-stream"
+            ContentType: params.contentType || "application/octet-stream"
         }
         if (params.metadata) awsParams.Metadata = params.metadata;
-
+        if (params.contentDisposition) awsParams.ContentDisposition = params.contentDisposition;
+        if (params.cacheControl) awsParams.CacheControl = params.cacheControl;
+        
         const credentials = getCredentials(params.credentials)
 
         const s3instance = params.endpoint ?

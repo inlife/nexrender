@@ -48,7 +48,7 @@ const getBinary = (job, settings) => {
 
                 stream
                     .on('error', errorHandler)
-                    .on('finish', () => {
+                    .on('close', () => {
                         settings.logger.log(`> ffmpeg binary ${version} was successfully downloaded`)
                         fs.chmodSync(output, 0o755)
                         resolve(output)
@@ -188,12 +188,12 @@ const getDuration = (regex, data) => {
     return 0;
 }
 
-module.exports = (job, settings, options, type) => {
+module.exports = (job, settings, options/*, type */) => {
     settings.logger.log(`[${job.uid}] starting action-encode action (ffmpeg)`)
 
     return new Promise((resolve, reject) => {
         const params = constructParams(job, settings, options);
-        const binary = getBinary(job, settings).then(binary => {
+        getBinary(job, settings).then(binary => {
             if (settings.debug) {
                 settings.logger.log(`[${job.uid}] spawning ffmpeg process: ${binary} ${params.join(' ')}`);
             }
@@ -210,7 +210,7 @@ module.exports = (job, settings, options, type) => {
                     totalDuration = getDuration(/(\d+):(\d+):(\d+).(\d+), start:/, dataString);
                 }
 
-                currentProgress = getDuration(/time=(\d+):(\d+):(\d+).(\d+) bitrate=/, dataString);
+                let currentProgress = getDuration(/time=(\d+):(\d+):(\d+).(\d+) bitrate=/, dataString);
 
                 if (totalDuration > 0 && currentProgress > 0) {
                     const currentPercentage = Math.ceil(currentProgress / totalDuration * 100);
@@ -223,7 +223,7 @@ module.exports = (job, settings, options, type) => {
                 }
             });
 
-            instance.stdout.on('data', (data) => settings.debug && settings.logger.log(`[${job.uid}] ${dataString}`));
+            instance.stdout.on('data', (data) => settings.debug && settings.logger.log(`[${job.uid}] ${data.toString()}`));
 
             /* on finish (code 0 - success, other - error) */
             instance.on('close', (code) => {

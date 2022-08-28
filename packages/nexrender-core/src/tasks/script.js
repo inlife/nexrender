@@ -8,7 +8,7 @@ const { checkForWSL } = require('../helpers/path')
 const escape = str => {
     str = JSON.stringify(str)
     str = str.substring(1, str.length-1)
-    str = `'${str.replace(/\'/g, '\\\'')}'`
+    str = `'${str.replace(/'/g, '\\\'')}'`
     return str
 }
 
@@ -50,9 +50,9 @@ const wrapData = ({ property, value, expression, ...asset }) => (`(function() {
 })();\n`)
 
 // @deprecated in favor of wrapEnhancedScript (implementation below)
-const wrapScript = ({ dest }) => (`(function() {
-    ${fs.readFileSync(dest, 'utf8')}
-})();\n`)
+// const wrapScript = ({ dest }) => (`(function() {
+//     ${fs.readFileSync(dest, 'utf8')}
+// })();\n`)
 
 
 /*
@@ -72,7 +72,8 @@ const wrapScript = ({ dest }) => (`(function() {
 
     @return string             (String)         The compiled script with parameter injection outside its original scope to avoid user-defined defaults collision.
 */
-const wrapEnhancedScript = ({ dest, src, parameters = [], keyword, defaults,  ...asset }, jobID, settings) => {
+const wrapEnhancedScript = ({ dest, src, parameters = [], keyword, defaults,  /* ...asset */ }, jobID, settings) => {
+    let arg, fullMatch;
 
     function EnhancedScript (
             dest,
@@ -238,7 +239,8 @@ const wrapEnhancedScript = ({ dest, src, parameters = [], keyword, defaults,  ..
             this.getLogger().log("We found a self-invoking method with arguments!");
             this.getLogger().log(JSON.stringify(methodArgs));
             const foundArgument = methodArgs.filter( argMatch => {
-                [fullMatch, method, arg] = argMatch;
+                fullMatch = argMatch[0]
+                arg = argMatch[2]
 
                 return parameter.arguments && parameter.arguments.find(o => o.key == arg);
             });
@@ -315,7 +317,7 @@ const wrapEnhancedScript = ({ dest, src, parameters = [], keyword, defaults,  ..
         if (nxMatches && nxMatches.length > 0 ) {
 
             nxMatches.forEach( match => {
-                const [fullMatch, method, keyword] = match;
+                const keyword = match[2];
 
                 var nxMatch = {
                     key: keyword.replace(/\s/g, ''),
@@ -357,7 +359,7 @@ const wrapEnhancedScript = ({ dest, src, parameters = [], keyword, defaults,  ..
 
         return `
             "parameters" : [
-                ${missingParams.map((k, i) => template(k.key)).join("\n")}
+                ${missingParams.map((k) => template(k.key)).join("\n")}
             ]
         `
     }
@@ -406,7 +408,7 @@ const wrapEnhancedScript = ({ dest, src, parameters = [], keyword, defaults,  ..
     EnhancedScript.prototype.buildParameterConfigurator = function ()               {
 
         const defaultGlobalValue = this.getStringifiedDefaultValue( this.defaults.global );
-        const defaultFnValue = this.getDefaultValue( this.defaults.function );
+        // const defaultFnValue = this.getDefaultValue( this.defaults.function );
         const createParameterConfigurator = () => `
     function ParameterConfigurator () {
         this.params = [];

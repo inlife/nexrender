@@ -1,10 +1,10 @@
 {
   "name": "@nexrender/action-encode",
   "author": "inlife",
-  "version": "1.28.2",
+  "version": "1.39.7",
   "main": "index.js",
   "ffmpeg-static": {
-    "version": "b4.2.2",
+    "version": "b5.0.1",
     "url": "https://github.com/eugeneware/ffmpeg-static",
     "_": "This is built-in ffmpeg-static dynamic dependency, visit url for more info."
   },
@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "date-fns": "^1.30.1",
-    "node-fetch": "^2.6.1",
+    "node-fetch": "^2.6.7",
     "node-fetch-progress": "^1.0.2"
   }
 }

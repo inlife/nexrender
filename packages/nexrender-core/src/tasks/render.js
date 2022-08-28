@@ -29,7 +29,7 @@ module.exports = (job, settings) => {
     let outputFile = expandEnvironmentVariables(job.output)
     let projectFile = expandEnvironmentVariables(job.template.dest)
 
-    outputFileAE = checkForWSL(outputFile, settings)
+    const outputFileAE = checkForWSL(outputFile, settings)
     projectFile = checkForWSL(projectFile, settings)
     let jobScriptFile = checkForWSL(job.scriptfile, settings)
 
@@ -53,7 +53,7 @@ module.exports = (job, settings) => {
 
     option(params, '-r', jobScriptFile);
 
-    if (!settings.skipRender && settings.multiFrames) params.push('-mp');
+    if (!settings.skipRender && settings.multiFrames) params.push('-mfr', 'ON', settings.multiFramesCPU);
     if (settings.reuse) params.push('-reuse');
     if (job.template.continueOnMissing) params.push('-continueOnMissingFootage')
 
@@ -62,19 +62,15 @@ module.exports = (job, settings) => {
     }
 
     if (settings['aeParams']) {
-        for (param of settings['aeParams']) {
+        for (const param of settings['aeParams']) {
             let ps = param.split(" ");
 
             if (ps.length > 0) {
                 params.push('-' + ps[0])
-            }
-
-            if (ps.length > 1) {
-                params.push(ps[1])
+                params.push(...ps.slice(1))
             }
         }
     }
-
 
     // tracks progress
     let projectDuration = null;
@@ -186,7 +182,17 @@ module.exports = (job, settings) => {
                 return resolve(job)
             }
 
-            if (!fs.existsSync(outputFile)) {
+            // When a render has finished, look for a .mov file too, on AE 2022
+            // the outputfile appears to be forced as .mov.
+            // We need to maintain this here while we have 2022 and 2020
+            // workers simultaneously
+            const movOutputFile = outputFile.replace(/\.avi$/g, '.mov')
+            const existsMovOutputFile = fs.existsSync(movOutputFile)
+            if (existsMovOutputFile) {
+              job.output = movOutputFile
+            }
+
+            if (!fs.existsSync(job.output)) {
                 if (fs.existsSync(logPath)) {
                     settings.logger.log(`[${job.uid}] dumping aerender log:`)
                     settings.logger.log(fs.readFileSync(logPath, 'utf8'))
@@ -195,7 +201,7 @@ module.exports = (job, settings) => {
                 return reject(new Error(`Couldn't find a result file: ${outputFile}`))
             }
 
-            const stats = fs.statSync(outputFile)
+            const stats = fs.statSync(job.output)
 
             /* file smaller than 1000 bytes */
             if (stats.size < 1000) {

@@ -22,7 +22,7 @@ const scan = async parser => {
         results = results.concat(keys);
 
         if (cursor === '0') {
-            results = await results.map(parser);
+            results = await results.map(parser).filter(e => e !== null && e !== undefined);
             return results;
         } else {
             return _scan(parser);
@@ -36,6 +36,11 @@ const scan = async parser => {
 
 /* public api */
 const insert = async entry => {
+    const now = new Date();
+
+    entry.updatedAt = now;
+    entry.createdAt = now;
+    
     await client.setAsync(`nexjob:${entry.uid}`, JSON.stringify(entry));
 };
 

@@ -31,6 +31,7 @@ if (process.env.NEXRENDER_REQUIRE_PLUGINS) {
     require('@nexrender/provider-s3');
     require('@nexrender/provider-ftp');
     require('@nexrender/provider-gs');
+    require('@nexrender/provider-sftp');
 }
 
 //
@@ -48,7 +49,7 @@ const init = (settings) => {
     const binaryUser = settings.binary && fs.existsSync(settings.binary) ? settings.binary : null;
 
     if (!binaryUser && !binaryAuto) {
-        throw new Error('you should provide a proper path to After Effects\' \"aerender\" binary')
+        throw new Error('you should provide a proper path to After Effects\' "aerender" binary')
     }
 
     if (binaryAuto && !binaryUser) {
@@ -67,6 +68,7 @@ const init = (settings) => {
 
         debug: false,
         multiFrames: false,
+        multiFramesCPU: 90,
         maxMemoryPercent: undefined,
         imageCachePercent: undefined,
         wslMap: undefined,
@@ -116,6 +118,13 @@ const render = (job, settings = {}) => {
         .then(job => state(job, settings, dorender, 'dorender'))
         .then(job => state(job, settings, postrender, 'postrender'))
         .then(job => state(job, settings, cleanup, 'cleanup'))
-}
+        .catch(e => {
+            state(job, settings, cleanup, 'cleanup');
+            throw e;
+        });
+};
 
-module.exports = { init, render }
+module.exports = {
+    init,
+    render
+}

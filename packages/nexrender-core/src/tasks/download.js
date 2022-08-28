@@ -13,8 +13,9 @@ const requireg = require('requireg')
 const download = (job, settings, asset) => {
     if (asset.type == 'data') return Promise.resolve();
 
+    // eslint-disable-next-line
     const uri = global.URL ? new URL(asset.src) : url.parse(asset.src)
-    const protocol = uri.protocol.replace(/\:$/, '');
+    const protocol = uri.protocol.replace(/:$/, '');
     let destName = '';
 
     /* if asset doesnt have a file name, make up a random one */
@@ -23,7 +24,8 @@ const download = (job, settings, asset) => {
     } else {
         destName = path.basename(asset.src)
         destName = destName.indexOf('?') !== -1 ? destName.slice(0, destName.indexOf('?')) : destName;
-        /* ^ remove possible query search string params ^ */;
+        /* ^ remove possible query search string params ^ */
+        destName = decodeURI(destName) /* < remove/decode any special URI symbols within filename */
 
         /* prevent same name file collisions */
         if (fs.existsSync(path.join(job.workpath, destName))) {
@@ -61,7 +63,6 @@ const download = (job, settings, asset) => {
                     reject(err)
                 }
             });
-            break;
 
         case 'http':
         case 'https':
@@ -77,14 +78,13 @@ const download = (job, settings, asset) => {
 
                        asset.extension = fileExt
                         const destHasExtension = path.extname(asset.dest) ? true : false
-                        //don't do this if asset.dest already has extension else it gives you example.jpg.jpg  like file in case of  assets and aep/aepx file 
+                        //don't do this if asset.dest already has extension else it gives you example.jpg.jpg  like file in case of  assets and aep/aepx file
                         if (asset.extension && !destHasExtension) {
                             asset.dest += `.${fileExt}`
                         }
                     }
 
                     const stream = fs.createWriteStream(asset.dest)
-                    let timer
 
                     return new Promise((resolve, reject) => {
                         const errorHandler = (error) => {
@@ -100,7 +100,6 @@ const download = (job, settings, asset) => {
                             .on('finish', resolve)
                     })
                 });
-            break;
 
         case 'file':
             const filepath = uri2path(expandEnvironmentVariables(asset.src))
@@ -125,7 +124,6 @@ const download = (job, settings, asset) => {
                 wr.end()
                 throw error
             })
-            break;
 
         /* custom/external handlers */
         default:
@@ -134,13 +132,12 @@ const download = (job, settings, asset) => {
                 return requireg('@nexrender/provider-' + protocol).download(job, settings, asset.src, asset.dest, asset.params || {});
             } catch (e) {
                 if (e.message.indexOf('Could not require module') !== -1) {
-                    return Promise.reject(new Error(`Couldn\'t find module @nexrender/provider-${protocol}, Unknown protocol provided.`))
+                    return Promise.reject(new Error(`Couldn't find module @nexrender/provider-${protocol}, Unknown protocol provided.`))
                 }
 
                 throw e;
             }
 
-            break;
     }
 }
 
@@ -156,5 +153,5 @@ module.exports = function(job, settings) {
         job.assets.map(asset => download(job, settings, asset))
     )
 
-    return Promise.all(promises).then(_ => job);
+    return Promise.all(promises).then(() => job);
 }

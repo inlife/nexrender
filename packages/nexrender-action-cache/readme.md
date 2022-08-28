@@ -12,6 +12,9 @@ npm i -g @nexrender/action-cache
 
 When creating your render job provide this module in **both** of the `predownload` and `postdownload` actions:
 
+## Additional Params
+- ttl (optional): a time-to-live in milliseconds for which after that the cached item is invalidated
+
 ```js
 // job.json
 {
@@ -19,7 +22,8 @@ When creating your render job provide this module in **both** of the `predownloa
         "predownload": [
             {
                 "module": "@nexrender/action-cache",
-                "cacheDirectory": "~/cache"
+                "cacheDirectory": "~/cache",
+                "ttl": 3600000
             }
         ],
         "postdownload": [
