@@ -41,6 +41,7 @@ const withEventEmitter = (fetch, job, polling = NEXRENDER_JOB_POLLING) => {
 
 module.exports = (fetch, polling) => ({
     listJobs: async () => await fetch(`/jobs`),
+    fetchJob: async id => await fetch(`/jobs/${id}`),
     pickupJob: async () => await fetch(`/jobs/pickup`),
 
     addJob: async data =>
@@ -48,12 +49,6 @@ module.exports = (fetch, polling) => ({
             method: 'post',
             headers: { 'content-type': 'application/json' },
             body: JSON.stringify(data),
-        }), polling),
-    
-    getJob: async id =>
-        withEventEmitter(fetch, await fetch(`/jobs/${id}`, {
-            method: 'get',
-            headers: { 'content-type': 'application/json' },
         }), polling),
     
     resumeJob: async id =>
@@ -74,4 +69,11 @@ module.exports = (fetch, polling) => ({
 
 /* deprecated method name */
 /* keeping for now for, backward compatibility */
-module.exports.removejob = module.exports.removeJob
+module.exports.removejob = async id => {
+    console.warn("`removejob()` has been deprecated and will be removed in a future version. Please use `removeJob()` instead.")
+    return module.exports.removeJob(id)
+}
+module.exports.getJob = async id => {
+    console.warn("`getJob()` has been deprecated and will be removed in a future version. Please use `resumeJob()` instead.")
+    return module.exports.resumeJob(id)
+}
