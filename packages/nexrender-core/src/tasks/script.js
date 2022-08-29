@@ -12,12 +12,11 @@ const escape = str => {
     return str
 }
 
-const selectLayers = ({ composition, layerName, layerIndex }, callbackString) => {
+const selectLayers = ({ composition, layerName, layerIndex, continueOnMissing }, callbackString) => {
     const method = layerName ? 'selectLayersByName' : 'selectLayersByIndex';
     const compo  = composition === undefined ? 'null' : escape(composition);
     const value  = layerName ? escape(layerName) : layerIndex;
-
-    return (`nexrender.${method}(${compo}, ${value}, ${callbackString});`);
+    return (`nexrender.${method}(${compo}, ${value}, ${callbackString},null,${continueOnMissing});`);
 }
 
 const renderIf = (value, string) => {
