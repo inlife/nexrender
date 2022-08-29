@@ -7,7 +7,7 @@ module.exports = async (req, res) => {
     const data = await json(req, {limit: "100mb"})
     const job  = await create(data); {
         job.state = 'queued';
-        job.creator = req.socket.remoteAddress
+        job.creator = req.headers["x-forwarded-for"] || req.socket.remoteAddress
     }
 
     console.log(`creating new job ${job.uid}`)
