@@ -103,7 +103,7 @@ nexrender.selectCompositionsByName = function(name, callback) {
 };
 
 /* call callback for an every layer matching specific name and composition */
-nexrender.selectLayersByName = function(compositionName, name, callback, types) {
+nexrender.selectLayersByName = function(compositionName, name, callback, types, continueOnMissing) {
     var foundOnce = false;
 
     if (!compositionName) compositionName = nexrender.defaultCompositionName;
@@ -130,7 +130,7 @@ nexrender.selectLayersByName = function(compositionName, name, callback, types) 
         }
     });
 
-    if (!foundOnce) {
+    if (!foundOnce && !continueOnMissing) {
         throw new Error("nexrender: Couldn't find any layers by provided name (" + name + ") inside a composition: " + compositionName);
     }
 };
@@ -140,7 +140,8 @@ nexrender.selectLayersByType = function(
   compositionName,
   type,
   callback,
-  types
+  types,
+  continueOnMissing
 ) {
   var foundOnce = false;
 
@@ -169,7 +170,7 @@ nexrender.selectLayersByType = function(
     }
   });
 
-  if (!foundOnce) {
+  if (!foundOnce && !continueOnMissing) {
     throw new Error( 
       "nexrender: Couldn't find any layers by provided type (" 
       + type +
@@ -180,7 +181,7 @@ nexrender.selectLayersByType = function(
 };
 
 /* call callback for an every layer matching specific index and composition */
-nexrender.selectLayersByIndex = function(compositionName, index, callback, types) {
+nexrender.selectLayersByIndex = function(compositionName, index, callback, types, continueOnMissing) {
     var foundOnce = false;
 
     if (!compositionName) compositionName = nexrender.defaultCompositionName;
@@ -194,7 +195,7 @@ nexrender.selectLayersByIndex = function(compositionName, index, callback, types
         }
     })
 
-    if (!foundOnce) {
+    if (!foundOnce && !continueOnMissing) {
         throw new Error("nexrender: Couldn't find any layers by provided index (" + index + ") inside a composition: " + compositionName);
     }
 };
