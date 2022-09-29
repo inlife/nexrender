@@ -4,7 +4,7 @@
     "inlife",
     "zuntah"
   ],
-  "version": "1.38.0",
+  "version": "1.39.8",
   "main": "index.js",
   "publishConfig": {
     "access": "public"
