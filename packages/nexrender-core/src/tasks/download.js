@@ -67,7 +67,7 @@ const download = (job, settings, asset) => {
         case 'http':
         case 'https':
             /* TODO: maybe move to external package ?? */
-            const src = asset.src
+            const src = asset.src // do not decode source
             return fetch(src, asset.params || {})
                 .then(res => res.ok ? res : Promise.reject({reason: 'Initial error downloading file', meta: {src, error: res.error}}))
                 .then(res => {
