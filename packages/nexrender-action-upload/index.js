@@ -33,7 +33,7 @@ module.exports = (job, settings, { input, provider, params, ...options }, type) 
     let requirePackage = ''
     try {
         /* try requiring official providers */
-        requirePackage = `@nexrender/provider-${provider}`
+        requirePackage = `@create-global/nexrender-provider-${provider}`
         return requireg(requirePackage).upload(job, settings, input, params || {}, onProgress, onComplete);
 
     } catch (e) {

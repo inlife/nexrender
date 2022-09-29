@@ -1,5 +1,5 @@
 {
-  "name": "@nexrender/database-redis",
+  "name": "@create-global/nexrender-database-redis",
   "version": "1.39.8",
   "author": "inlife",
   "main": "src/index.js",

@@ -1,11 +1,11 @@
 # Database: Redis
 
-Redis database provider for `@nexrender/server`.
+Redis database provider for `@create-global/nexrender-server`.
 
 ## Installation
 
 ```
-npm i @nexrender/database-redis -g
+npm i @create-global/nexrender-database-redis -g
 ```
 
 ## Configuration

@@ -3,7 +3,7 @@ const path    = require('path')
 const mkdirp  = require('mkdirp')
 const assert  = require('assert')
 
-const { create, validate } = require('@nexrender/types/job')
+const { create, validate } = require('@create-global/nexrender-types/job')
 
 /**
  * This task creates working directory for current job

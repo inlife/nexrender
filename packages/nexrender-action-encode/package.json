@@ -1,5 +1,5 @@
 {
-  "name": "@nexrender/action-encode",
+  "name": "@create-global/nexrender-action-encode",
   "author": "inlife",
   "version": "1.39.8",
   "main": "index.js",

@@ -50,24 +50,24 @@ const job = {
         postrender: [
             {
                 // upload original
-                module: '@nexrender/action-upload',
+                module: '@create-global/nexrender-action-upload',
                 provider: 's3',
                 credentials: { key: 'XXXX-XX111XXX-XXXX' },
                 pattern: '*.(avi|mov)'
             },
             {
-                module: '@nexrender/action-ffmpeg',
+                module: '@create-global/nexrender-action-ffmpeg',
                 output: 'result.mp4'
             },
             {
                 // upload processed
-                module: '@nexrender/action-upload',
+                module: '@create-global/nexrender-action-upload',
                 provider: 'youtube',
                 credentials: { key: 'XXXX-XX111XXX-XXXX' },
                 input: 'result.mp4'
             },
             {
-                module: '@nexrender/action-webhook',
+                module: '@create-global/nexrender-action-webhook',
                 success: 'http://example.com/api/render-callback',
                 failure: 'http://example.com/api/render-callback',
                 header: { Authorization: 'sometoken' }

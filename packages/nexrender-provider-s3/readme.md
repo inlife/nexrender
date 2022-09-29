@@ -7,7 +7,7 @@ Refer to [aws/aws-sdk-js](https://github.com/aws/aws-sdk-js) for information reg
 ## Installation
 
 ```
-npm i @nexrender/provider-s3 -g
+npm i @create-global/nexrender-provider-s3 -g
 ```
 
 ## Authentication
@@ -98,7 +98,7 @@ If region is not provided, the default region of `us-east-1` will be used.
 
 ## Usage (upload)
 
-Upload via FTP can be done using [@nexrender/action-upload](../nexrender-action-upload)
+Upload via FTP can be done using [@create-global/nexrender-action-upload](../nexrender-action-upload)
 
 Basic params info:
 
@@ -116,7 +116,7 @@ Example:
     "actions": {
         "postrender": [
             {
-                "module": "@nexrender/action-upload",
+                "module": "@create-global/nexrender-action-upload",
                 "input": "result.mp4",
                 "provider": "s3",
                 "params": {

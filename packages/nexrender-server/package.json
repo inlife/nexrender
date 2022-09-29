@@ -1,5 +1,5 @@
 {
-  "name": "@nexrender/server",
+  "name": "@create-global/nexrender-server",
   "version": "1.39.8",
   "author": "inlife",
   "main": "src/index.js",
@@ -18,8 +18,8 @@
     ]
   },
   "dependencies": {
-    "@nexrender/database-redis": "^1.39.8",
-    "@nexrender/types": "^1.39.8",
+    "@create-global/nexrender-database-redis": "^1.39.8",
+    "@create-global/nexrender-types": "^1.39.8",
     "arg": "^4.1.0",
     "async-mutex": "^0.3.2",
     "chalk": "^2.4.2",
@@ -29,7 +29,7 @@
     "requireg": "^0.2.2"
   },
   "peerDependencies": {
-    "@nexrender/database-redis": "^1.0.0"
+    "@create-global/nexrender-database-redis": "^1.0.0"
   },
   "publishConfig": {
     "access": "public"

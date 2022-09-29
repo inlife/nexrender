@@ -5,7 +5,7 @@
 <div align="center">
     <a href="https://travis-ci.org/inlife/nexrender"><img src="https://travis-ci.org/inlife/nexrender.svg?branch=master" alt="Build status" /></a>
     <a href="https://github.com/inlife/nexrender/releases"><img src="https://img.shields.io/github/downloads/inlife/nexrender/total?label=release%20downloads"/></a>
-    <a href="https://www.npmjs.com/package/@nexrender/core"><img src="https://img.shields.io/npm/dt/@nexrender/core?label=npm%20downloads"/></a>
+    <a href="https://www.npmjs.com/package/@create-global/nexrender-core"><img src="https://img.shields.io/npm/dt/@create-global/nexrender-core?label=npm%20downloads"/></a>
     <a href="https://discord.gg/S2JtRcB"><img src="https://discordapp.com/api/guilds/354670964400848898/embed.png" alt="Discord server" /></a>
 </div>
 
@@ -159,7 +159,7 @@ However, please note: the npm version of the binaries doesn't include all option
 If you wish to install them as well, please do so by providing each one individually:
 
 ```
-npm i -g @nexrender/cli @nexrender/action-copy @nexrender/action-encode ...
+npm i -g @create-global/nexrender-cli @create-global/nexrender-action-copy @create-global/nexrender-action-encode ...
 ```
 
 # Usage
@@ -219,7 +219,7 @@ $ nexrender-cli --file myjob.json
 
 > Note: its recommended to run `nexrender-cli -h` at least once, to read all useful information about available options.
 
-More info: [@nexrender/cli](packages/nexrender-cli)
+More info: [@create-global/nexrender-cli](packages/nexrender-cli)
 
 ### Assets
 
@@ -274,12 +274,12 @@ The reason is that we haven't defined any actions that we need to do after we fi
     "actions":{
         "postrender": [
             {
-                "module": "@nexrender/action-encode",
+                "module": "@create-global/nexrender-action-encode",
                 "preset": "mp4",
                 "output": "encoded.mp4"
             },
             {
-                "module": "@nexrender/action-copy",
+                "module": "@create-global/nexrender-action-copy",
                 "input": "encoded.mp4",
                 "output": "d:/mydocuments/results/myresult.mp4"
             }
@@ -293,10 +293,10 @@ A module that we described in this case, is responsible for copying result file 
 
 There are multiple built-in modules within nexrender ecosystem:
 
-* [@nexrender/action-copy](packages/nexrender-action-copy)
-* [@nexrender/action-encode](packages/nexrender-action-encode)
-* [@nexrender/action-upload](packages/nexrender-action-upload)
-* [@nexrender/action-cache](packages/nexrender-action-cache)
+* [@create-global/nexrender-action-copy](packages/nexrender-action-copy)
+* [@create-global/nexrender-action-encode](packages/nexrender-action-encode)
+* [@create-global/nexrender-action-upload](packages/nexrender-action-upload)
+* [@create-global/nexrender-action-cache](packages/nexrender-action-cache)
 * (list will be expanded)
 
 Every module might have his own set of fields, however, `module` field is always there.
@@ -414,16 +414,16 @@ Job can have state feild (`job.state`) be set to one of those values:
 In case you are building your own application and just need to use a rendering part, or you wanna manually trigger jobs from your code,
 there is a way to use nexrender programmatically:
 
-Install the [@nexrender/core](https://github.com/inlife/nexrender/tree/master/packages/nexrender-core)
+Install the [@create-global/nexrender-core](https://github.com/inlife/nexrender/tree/master/packages/nexrender-core)
 
 ```sh
-$ npm install @nexrender/core --save
+$ npm install @create-global/nexrender-core --save
 ```
 
 And then load it, and run it
 
 ```js
-const { render } = require('@nexrender/core')
+const { render } = require('@create-global/nexrender-core')
 
 const main = async () => {
     const result = await render(/*myJobJson*/)
@@ -435,7 +435,7 @@ main().catch(console.error);
 Or you can go more advanced, and provide some settings as your 2nd argument to the `render` function:
 
 ```js
-const { render } = require('@nexrender/core')
+const { render } = require('@create-global/nexrender-core')
 
 const main = async () => {
     const result = await render(/*myJobJson*/, {
@@ -475,17 +475,17 @@ Second one is responsible for mainly job-related operations of the full cycle: d
 * `forceCommandLinePatch` - boolean, providing true will force patch re-installation
 * `wslMap` - String, set WSL drive map, check [wsl](#wsl) for more info
 
-More info: [@nexrender/core](packages/nexrender-core)
+More info: [@create-global/nexrender-core](packages/nexrender-core)
 
-## Using the ${workPath} mask in @nexrender/action-encode
+## Using the ${workPath} mask in @create-global/nexrender-action-encode
 
-The output of `@nexrender/action-encode` is always prepended by the working path of the job, so you don't have to guess paths. However if you want to use the working path of the job for something else such as encoding in multiple bitrates it is necessary to use the `${workPath}` mask.
+The output of `@create-global/nexrender-action-encode` is always prepended by the working path of the job, so you don't have to guess paths. However if you want to use the working path of the job for something else such as encoding in multiple bitrates it is necessary to use the `${workPath}` mask.
 This is especially useful for HLS encoding
 
 ```json
 //HLS encoding
 {
-    "module": "@nexrender/action-encode",
+    "module": "@create-global/nexrender-action-encode",
     "output": "encoded_playlist_%v.m3u8",
     "params": {
         "-acodec": "aac",
@@ -1067,7 +1067,7 @@ $ nexrender-server \
         --secret=myapisecret
 ```
 
-More info: [@nexrender/server](packages/nexrender-server)
+More info: [@create-global/nexrender-server](packages/nexrender-server)
 
 ### `nexrender-worker`
 
@@ -1091,7 +1091,7 @@ $ nexrender-worker \
 
 > Note: its recommended to run `nexrender-worker -h` at least once, to read all useful information about available options.
 
-More info: [@nexrender/worker](packages/nexrender-worker)
+More info: [@create-global/nexrender-worker](packages/nexrender-worker)
 
 ## Using API
 
@@ -1110,11 +1110,11 @@ curl \
 Or you can use the javascript API client:
 
 ```sh
-npm install @nexrender/api --save
+npm install @create-global/nexrender-api --save
 ```
 
 ```js
-const { createClient } = require('@nexrender/api')
+const { createClient } = require('@create-global/nexrender-api')
 
 const client = createClient({
     host: 'http://my.server.com:3050',
@@ -1139,7 +1139,7 @@ const main = async () => {
 main().catch(console.error);
 ```
 
-More info: [@nexrender/api](packages/nexrender-api)
+More info: [@create-global/nexrender-api](packages/nexrender-api)
 
 # Tested with
 
@@ -1164,9 +1164,9 @@ Current software was successfully tested on:
     * `data://` - URI encoded data, can be a [base64 or plain text](https://en.wikipedia.org/wiki/Data_URI_scheme)
 
 * External:
-    * `gs://` - [@nexrender/provider-gs](packages/nexrender-provider-gs) - Google Cloud Storage provider
-    * `s3://` - [@nexrender/provider-s3](packages/nexrender-provider-s3) - Amazon S3 provider
-    * `ftp://` - [@nexrender/provider-ftp](packages/nexrender-provider-ftp) - Node.js FTP provider
+    * `gs://` - [@create-global/nexrender-provider-gs](packages/nexrender-provider-gs) - Google Cloud Storage provider
+    * `s3://` - [@create-global/nexrender-provider-s3](packages/nexrender-provider-s3) - Amazon S3 provider
+    * `ftp://` - [@create-global/nexrender-provider-ftp](packages/nexrender-provider-ftp) - Node.js FTP provider
     * (other protocols will be added there)
 
 ### Examples
@@ -1210,7 +1210,7 @@ $ nexrender-cli -f mywsljob.json -wsl-map "Z"
 And you can do this Programmatically like
 
 ```js
-const { render } = require('@nexrender/core')
+const { render } = require('@create-global/nexrender-core')
 const main = async () => {
     const result = await render(/*myWSLJobJson*/, {
         skipCleanup: true,
@@ -1255,7 +1255,7 @@ Job Example
     "actions": {
         "postrender": [
             {
-                "module": "@nexrender/action-encode",
+                "module": "@create-global/nexrender-action-encode",
                 "output": "output.mp4",
                 "preset": "mp4"
             }
@@ -1504,7 +1504,7 @@ Features for next major release (`v2.0.0`):
   2. Algo of splitting based on time & amount of workers
   3. New job type (`partitioned`), which would be excluded from some general API responses
   4. Mechanism of selecting a single node to be the "finisher", that would await and merge results of other jobs
-  5. Possible names: `@nexrender/action-merge-parent, @nexrender/action-merge-child`
+  5. Possible names: `@create-global/nexrender-action-merge-parent, @create-global/nexrender-action-merge-child`
 3. Extend current scripting capabilities with an advanced real-time communication with the internal environment via TCP connection
 4. Define a general abstract inteface for the actions, and a general package that would contain basic funcitonality like input/output arguments, etc.
 5. Re-design networking layer, as well as server database layer, to count in cases where the jobs can be huge json objects.

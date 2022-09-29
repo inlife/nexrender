@@ -1,5 +1,5 @@
 {
-  "name": "@nexrender/provider-gs",
+  "name": "@create-global/nexrender-provider-gs",
   "version": "1.39.8",
   "author": "dockheas23",
   "main": "src/index.js",

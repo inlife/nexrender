@@ -49,7 +49,7 @@ const job = {
         // ],
         postrender: [
             {
-                module: '@nexrender/action-encode',
+                module: '@create-global/nexrender-action-encode',
                 output: 'output.mp4',
                 preset: 'mp4',
             }

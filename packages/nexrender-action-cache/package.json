@@ -1,5 +1,5 @@
 {
-  "name": "@nexrender/action-cache",
+  "name": "@create-global/nexrender-action-cache",
   "author": "dylangarcia",
   "version": "1.39.8",
   "main": "index.js",

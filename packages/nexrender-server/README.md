@@ -25,13 +25,13 @@ Can be changed by providing `NEXRENDER_ORDERING` env vartiable before launching 
 * For binary usage:
 
 ```sh
-npm install @nexrender/server -g
+npm install @create-global/nexrender-server -g
 ```
 
 * For programmatic usage:
 
 ```sh
-npm install @nexrender/server --save
+npm install @create-global/nexrender-server --save
 ```
 
 ## Usage (binary)
@@ -53,7 +53,7 @@ nexrender-server --help
 Programmatic usage allows to embed the server directly into your application and use it as a controlled server:
 
 ```js
-const server = require('@nexrender/server')
+const server = require('@create-global/nexrender-server')
 
 const port = 3000
 const secret = 'myapisecret'
@@ -64,7 +64,7 @@ server.listen(port, secret)
 Or, alternatively you can use `createHandler` method, to integrate it with your custom http server:
 
 ```js
-const {createHandler} = require('@nexrender/server')
+const {createHandler} = require('@create-global/nexrender-server')
 const handler = createHandler('myapisecret')
 
 module.exports = (req, res) => handler(req, res)

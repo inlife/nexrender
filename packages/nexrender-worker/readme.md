@@ -29,10 +29,10 @@ $ nexrender-worker \
 
 ### Installation
 
-Install the [@nexrender/worker](https://github.com/inlife/nexrender/tree/master/packages/nexrender-worker)
+Install the [@create-global/nexrender-worker](https://github.com/inlife/nexrender/tree/master/packages/nexrender-worker)
 
 ```sh
-$ npm install @nexrender/worker --save
+$ npm install @create-global/nexrender-worker --save
 ```
 
 ### Usage
@@ -40,7 +40,7 @@ $ npm install @nexrender/worker --save
 And then load it, and run it
 
 ```js
-const { start } = require('@nexrender/worker')
+const { start } = require('@create-global/nexrender-worker')
 
 const main = async () => {
     const serverHost = 'http://localhost:3000'

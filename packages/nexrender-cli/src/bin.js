@@ -4,7 +4,7 @@ const fs               = require('fs')
 const arg              = require('arg')
 const chalk            = require('chalk')
 const {version}        = require('../package.json')
-const {init, render}   = require('@nexrender/core')
+const {init, render}   = require('@create-global/nexrender-core')
 const rimraf           = require('rimraf')
 
 const args = arg({

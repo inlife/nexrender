@@ -128,10 +128,10 @@ const download = (job, settings, asset) => {
         default:
 
             try {
-                return requireg('@nexrender/provider-' + protocol).download(job, settings, asset.src, asset.dest, asset.params || {});
+                return requireg('@create-global/nexrender-provider-' + protocol).download(job, settings, asset.src, asset.dest, asset.params || {});
             } catch (e) {
                 if (e.message.indexOf('Could not require module') !== -1) {
-                    return Promise.reject(new Error(`Couldn't find module @nexrender/provider-${protocol}, Unknown protocol provided.`))
+                    return Promise.reject(new Error(`Couldn't find module @create-global/nexrender-provider-${protocol}, Unknown protocol provided.`))
                 }
 
                 throw e;

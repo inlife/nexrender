@@ -1,10 +1,10 @@
 {
-  "name": "@nexrender/api",
+  "name": "@create-global/nexrender-api",
   "author": "inlife",
   "version": "1.39.8",
   "main": "src/index.js",
   "dependencies": {
-    "@nexrender/types": "^1.39.8",
+    "@create-global/nexrender-types": "^1.39.8",
     "isomorphic-unfetch": "^3.0.0"
   },
   "publishConfig": {

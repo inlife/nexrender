@@ -1,6 +1,6 @@
 const assert            = require('assert')
 const { send, json }    = require('micro')
-const { validate }      = require('@nexrender/types/job')
+const { validate }      = require('@create-global/nexrender-types/job')
 const { update, fetch } = require('../helpers/database')
 
 module.exports = async (req, res) => {

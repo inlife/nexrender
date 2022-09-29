@@ -5,7 +5,7 @@ Cache your template source to a specified location and reuse it on subsequent ru
 ## Installation
 
 ```
-npm i -g @nexrender/action-cache
+npm i -g @create-global/nexrender-action-cache
 ```
 
 ## Usage
@@ -21,14 +21,14 @@ When creating your render job provide this module in **both** of the `predownloa
     "actions": {
         "predownload": [
             {
-                "module": "@nexrender/action-cache",
+                "module": "@create-global/nexrender-action-cache",
                 "cacheDirectory": "~/cache",
                 "ttl": 3600000
             }
         ],
         "postdownload": [
             {
-                "module": "@nexrender/action-cache",
+                "module": "@create-global/nexrender-action-cache",
                 "cacheDirectory": "~/cache"
             }
         ],

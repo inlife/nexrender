@@ -5,7 +5,7 @@ Upload video to an external storage provider ie. Amazon S3.
 ## Installation
 
 ```
-npm i @nexrender/action-upload -g
+npm i @create-global/nexrender-action-upload -g
 ```
 
 ## Usage
@@ -18,7 +18,7 @@ When creating your render job provide this module as one of the `postrender` act
     "actions": {
         "postrender": [
             {
-                "module": "@nexrender/action-upload",
+                "module": "@create-global/nexrender-action-upload",
                 "input": "output.mp4",
                 "provider": "s3",
                 "params": {
@@ -101,7 +101,7 @@ Example:
     "actions": {
         "postrender": [
             {
-                "module": "@nexrender/action-upload",
+                "module": "@create-global/nexrender-action-upload",
                 "input": "output.mp4",
                 "provider": "gs",
                 "params": {

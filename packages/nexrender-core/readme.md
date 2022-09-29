@@ -4,10 +4,10 @@ In case you are building your own application and just need to use a rendering p
 there is a way to use nexrender programmatically:
 
 ## Installation
-Install the [@nexrender/core](https://github.com/inlife/nexrender/tree/master/packages/nexrender-core)
+Install the [@create-global/nexrender-core](https://github.com/inlife/nexrender/tree/master/packages/nexrender-core)
 
 ```sh
-$ npm install @nexrender/core --save
+$ npm install @create-global/nexrender-core --save
 ```
 
 ## Usage
@@ -15,7 +15,7 @@ $ npm install @nexrender/core --save
 And then load it, and run it
 
 ```js
-const { render } = require('@nexrender/core')
+const { render } = require('@create-global/nexrender-core')
 
 const main = async () => {
     const result = await render(/*myJobJson*/)
@@ -27,7 +27,7 @@ main().catch(console.error);
 Or you can go more advanced, and provide some settings as your 2nd argument to the `render` function:
 
 ```js
-const { render } = require('@nexrender/core')
+const { render } = require('@create-global/nexrender-core')
 
 const main = async () => {
     const result = await render(/*myJobJson*/, {

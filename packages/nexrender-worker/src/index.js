@@ -1,6 +1,6 @@
-const { createClient } = require('@nexrender/api')
-const { init, render } = require('@nexrender/core')
-const { getRenderingStatus } = require('@nexrender/types/job')
+const { createClient } = require('@create-global/nexrender-api')
+const { init, render } = require('@create-global/nexrender-core')
+const { getRenderingStatus } = require('@create-global/nexrender-types/job')
 
 const NEXRENDER_API_POLLING = process.env.NEXRENDER_API_POLLING || 30 * 1000;
 

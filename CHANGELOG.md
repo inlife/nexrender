@@ -8,7 +8,7 @@
  * Aded FTP upload/download support for assets and action-upload
 
 ## 1.2.0
- * added @nexrender/action-upload
+ * added @create-global/nexrender-action-upload
  * added result S3 upload support
 
 ## 1.1.0

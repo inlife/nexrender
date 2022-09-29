@@ -8,7 +8,7 @@ If you are using [binary](https://github.com/inlife/nexrender/releases) version 
 there is no need to install the module, it is **included** in the binary build.
 
 ```
-npm i @nexrender/action-encode -g
+npm i @create-global/nexrender-action-encode -g
 ```
 
 The module downloads a statically defined version of ffmpeg and places it into `/temp/nexrender` folder (by default).
@@ -28,7 +28,7 @@ When creating your render job provide this module as one of the `postrender` act
     "actions": {
         "postrender": [
             {
-                "module": "@nexrender/action-encode",
+                "module": "@create-global/nexrender-action-encode",
                 "output": "foobar.mp4",
                 "preset": "mp4",
                 "params": {"-vcodec": "libx264", "-r": 25}

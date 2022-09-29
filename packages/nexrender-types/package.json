@@ -1,5 +1,5 @@
 {
-  "name": "@nexrender/types",
+  "name": "@create-global/nexrender-types",
   "version": "1.39.8",
   "author": "Inlife",
   "main": "src/index.js",

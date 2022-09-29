@@ -1,5 +1,5 @@
 {
-  "name": "@nexrender/action-copy",
+  "name": "@create-global/nexrender-action-copy",
   "author": "inlife",
   "version": "1.39.8",
   "main": "index.js",

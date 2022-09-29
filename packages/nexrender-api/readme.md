@@ -5,13 +5,13 @@ If you want to use nexrender API from browser/nodejs env you can use this module
 ## Installation
 
 ```sh
-npm install @nexrender/api --save
+npm install @create-global/nexrender-api --save
 ```
 
 ## Usage
 
 ```js
-const { createClient } = require('@nexrender/api')
+const { createClient } = require('@create-global/nexrender-api')
 
 const client = createClient({
     host: 'http://my.server.com:3050',

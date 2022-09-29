@@ -8,7 +8,7 @@ If you are using [binary](https://github.com/inlife/nexrender/releases) version 
 there is no need to install the module, it is **included** in the binary build.
 
 ```
-npm i @nexrender/action-copy -g
+npm i @create-global/nexrender-action-copy -g
 ```
 
 ## Usage
@@ -21,7 +21,7 @@ When creating your render job provide this module as one of the `postrender` act
     "actions": {
         "postrender": [
             {
-                "module": "@nexrender/action-copy",
+                "module": "@create-global/nexrender-action-copy",
                 "output": "/home/videos/myvideo.mov"
             }
         ]

@@ -1,5 +1,5 @@
 {
-  "name": "@nexrender/worker",
+  "name": "@create-global/nexrender-worker",
   "version": "1.39.11",
   "author": "inlife",
   "main": "src/index.js",
@@ -16,9 +16,9 @@
     ]
   },
   "dependencies": {
-    "@nexrender/api": "^1.39.8",
-    "@nexrender/core": "^1.39.11",
-    "@nexrender/types": "^1.39.8",
+    "@create-global/nexrender-api": "^1.39.8",
+    "@create-global/nexrender-core": "^1.39.11",
+    "@create-global/nexrender-types": "^1.39.8",
     "arg": "^4.1.0",
     "chalk": "^2.4.2",
     "rimraf": "^3.0.2"
@@ -26,5 +26,5 @@
   "publishConfig": {
     "access": "public"
   },
-  "gitHead": "f040e60a6f31e3507ef6dfbc9abc2c2acc86d06d"
+  "gitHead": "aff3c4c60ccf80a2219ace823c13ec02ff574247"
 }

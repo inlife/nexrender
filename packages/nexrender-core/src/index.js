@@ -24,14 +24,14 @@ const cleanup      = require('./tasks/cleanup')
 /* place to register all plugins */
 /* so they will be picked up and resolved by pkg */
 if (process.env.NEXRENDER_REQUIRE_PLUGINS) {
-    require('@nexrender/action-copy');
-    require('@nexrender/action-encode');
-    require('@nexrender/action-upload');
+    require('@create-global/nexrender-action-copy');
+    require('@create-global/nexrender-action-encode');
+    require('@create-global/nexrender-action-upload');
 
-    require('@nexrender/provider-s3');
-    require('@nexrender/provider-ftp');
-    require('@nexrender/provider-gs');
-    require('@nexrender/provider-sftp');
+    require('@create-global/nexrender-provider-s3');
+    require('@create-global/nexrender-provider-ftp');
+    require('@create-global/nexrender-provider-gs');
+    require('@create-global/nexrender-provider-sftp');
 }
 
 //

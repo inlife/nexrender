@@ -1,5 +1,5 @@
 {
-  "name": "@nexrender/provider-sftp",
+  "name": "@create-global/nexrender-provider-sftp",
   "version": "1.39.8",
   "main": "src/index.js",
   "scripts": {

@@ -7,7 +7,7 @@ Refer to [mscdex/node-ftp](https://github.com/mscdex/node-ftp) for information r
 ## Installation
 
 ```
-npm i @nexrender/provider-ftp -g
+npm i @create-global/nexrender-provider-ftp -g
 ```
 
 ## Usage (download)
@@ -35,7 +35,7 @@ To download assets from an FTP server you would need to specify relevant informa
 
 ## Usage (upload)
 
-Upload via FTP can be done using [@nexrender/action-upload](../nexrender-action-upload)
+Upload via FTP can be done using [@create-global/nexrender-action-upload](../nexrender-action-upload)
 
 Basic params info:
 
@@ -52,7 +52,7 @@ Example:
     "actions": {
         "postrender": [
             {
-                "module": "@nexrender/action-upload",
+                "module": "@create-global/nexrender-action-upload",
                 "input": "result.mp4",
                 "provider": "ftp",
                 "params": {

@@ -7,12 +7,12 @@ Refer to [theophilusx/ssh2-sftp-client](https://github.com/theophilusx/ssh2-sftp
 ## Installation
 
 ```
-npm i @nexrender/provider-sftp -g
+npm i @create-global/nexrender-provider-sftp -g
 ```
 
 ## Usage (upload)
 
-Upload via SFTP can be done using [@nexrender/action-upload](../nexrender-action-upload)
+Upload via SFTP can be done using [@create-global/nexrender-action-upload](../nexrender-action-upload)
 
 Basic params info:
 
@@ -29,7 +29,7 @@ Example:
     "actions": {
         "postrender": [
             {
-                "module": "@nexrender/action-upload",
+                "module": "@create-global/nexrender-action-upload",
                 "input": "result.mp4",
                 "provider": "sftp",
                 "params": {

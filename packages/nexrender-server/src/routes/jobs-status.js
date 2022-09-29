@@ -1,6 +1,6 @@
 const { send }  = require('micro')
 const { fetch } = require('../helpers/database')
-const { getRenderingStatus } = require('@nexrender/types/job')
+const { getRenderingStatus } = require('@create-global/nexrender-types/job')
 
 module.exports = async (req, res) => {
     if (req.params.uid) {

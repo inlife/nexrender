@@ -7,7 +7,7 @@ Refer to [@google-cloud/storage](https://github.com/googleapis/nodejs-storage) f
 ## Installation
 
 ```
-npm i @nexrender/provider-gs -g
+npm i @create-global/nexrender-provider-gs -g
 ```
 
 You most likely need to authenticate to interact with a GCS bucket. This provider uses _Application Default Credentials_. Refer to the [Google Cloud Documentation](https://cloud.google.com/docs/authentication/getting-started) for more information on authentication.
@@ -41,7 +41,7 @@ gs://[BUCKET]/[ITEM]
 
 ## Usage (upload)
 
-Upload via GCS can be done using [@nexrender/action-upload](../nexrender-action-upload)
+Upload via GCS can be done using [@create-global/nexrender-action-upload](../nexrender-action-upload)
 
 Basic params info:
 
@@ -59,7 +59,7 @@ Example:
     "actions": {
         "postrender": [
             {
-                "module": "@nexrender/action-upload",
+                "module": "@create-global/nexrender-action-upload",
                 "input": "result.mp4",
                 "provider": "gs",
                 "params": {
