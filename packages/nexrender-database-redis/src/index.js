@@ -56,7 +56,7 @@ const fetch = async uid => {
 
         // Sort items so the oldest is always at the top
         return results.sort((a, b) => {
-            return new Date(a.createdAt).getTime() > new Date(b.createdAt).getTime() ? -1 : 1;
+            return new Date(a.createdAt).getTime() > new Date(b.createdAt).getTime() ? 1 : -1;
         })
     }
 };
