@@ -49,10 +49,15 @@ const fetch = async uid => {
         const entry = await client.getAsync(`nexjob:${uid}`);
         return JSON.parse(entry);
     } else {
-        return await scan(async (result) => {
+        const results = await scan(async (result) => {
             const value = await client.getAsync(result);
             return JSON.parse(value);
         });
+
+        // Sort items so the oldest is always at the top
+        return results.sort((a, b) => {
+            return new Date(a.createdAt).getTime() > new Date(b.createdAt).getTime() ? -1 : 1;
+        })
     }
 };
 
