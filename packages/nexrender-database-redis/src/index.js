@@ -54,7 +54,7 @@ const fetch = async uid => {
             return JSON.parse(value);
         });
 
-        // Sort items so the oldest is always at the top
+        // Sort items so the oldest is always first
         return results.sort((a, b) => {
             return new Date(a.createdAt).getTime() > new Date(b.createdAt).getTime() ? 1 : -1;
         })
