@@ -1,6 +1,6 @@
 {
   "name": "@create-global/nexrender-cli",
-  "version": "1.39.13",
+  "version": "1.39.16",
   "author": "inlife",
   "main": "src/index.js",
   "scripts": {
@@ -16,7 +16,7 @@
     ]
   },
   "dependencies": {
-    "@create-global/nexrender-core": "^1.39.13",
+    "@create-global/nexrender-core": "^1.39.16",
     "arg": "^4.1.0",
     "chalk": "^2.4.2",
     "rimraf": "^3.0.2"
