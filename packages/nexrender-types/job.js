@@ -98,6 +98,7 @@ const validate = job => {
 const getRenderingStatus = job => ({
     uid: job.uid,
     jobId: job.jobId || null,
+    jobHistoryId: job.jobHistoryId || null,
     state: job.state,
     type: job.type,
     renderProgress: job.renderProgress || 0,
