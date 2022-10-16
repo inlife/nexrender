@@ -33,12 +33,16 @@ const indexOf = value => {
 }
 
 /* public api */
-const fetch = (uid,type='default') => {
+const fetch = (uid,type) => {
     if(uid) {
         return data[indexOf(uid)]
     }
 
-    return data.filter(job => job.type === type)
+    if(type) {
+        return data.filter(job => job.type === type)
+    }
+
+    return data
 }
 
 const insert = entry => {
