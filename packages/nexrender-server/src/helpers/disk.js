@@ -33,7 +33,13 @@ const indexOf = value => {
 }
 
 /* public api */
-const fetch = uid => uid ? data[indexOf(uid)] : data
+const fetch = (uid,type='default') => {
+    if(uid) {
+        return data[indexOf(uid)]
+    }
+
+    return data.filter(job => job.type === type)
+}
 
 const insert = entry => {
     const now = new Date()
