@@ -3,6 +3,7 @@ const { init, render } = require('@create-global/nexrender-core')
 const { getRenderingStatus } = require('@create-global/nexrender-types/job')
 
 const NEXRENDER_API_POLLING = process.env.NEXRENDER_API_POLLING || 30 * 1000;
+const NEXRENDER_MAX_RETRIES = process.env.NEXRENDER_MAX_RETRIES || 2
 
 /* TODO: possibly add support for graceful shutdown */
 let active = true;
@@ -81,7 +82,14 @@ const start = async (host, secret, settings) => {
 
             await client.updateJob(job.uid, getRenderingStatus(job))
         } catch (err) {
-            job.state = 'error';
+            job.retries = job.retries || 0
+
+            if (job.retries < NEXRENDER_MAX_RETRIES) {
+                job.retries += 1;
+                job.state = 'queued';
+            } else {
+                job.state = 'error';
+            }
             job.error = err;
             job.errorAt = new Date()
 

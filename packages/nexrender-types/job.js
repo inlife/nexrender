@@ -99,6 +99,7 @@ const getRenderingStatus = job => ({
     uid: job.uid,
     jobId: job.jobId || null,
     state: job.state,
+    retries: job.retries,
     type: job.type,
     renderProgress: job.renderProgress || 0,
     error: job.error || null,
