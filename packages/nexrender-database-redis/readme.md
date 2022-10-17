@@ -17,4 +17,3 @@ export NEXRENDER_DATABASE_PROVIDER="redis"
 export REDIS_URL="redis://localhost:6379"
 ```
 
-temp
