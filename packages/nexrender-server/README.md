@@ -73,7 +73,7 @@ module.exports = (req, res) => handler(req, res)
 
 Here is a short description of all api routes:
 
-### GET `/api/v1/jobs`
+### GET `/api/v1/jobs?type=default`
 
 Gets list of all jobs, returns an array of json records.
 
@@ -96,7 +96,7 @@ Requires `content-type=application/json` header to be present.
 
 Removes provided job from the server.
 
-### GET `/api/v1/jobs/pickup`
+### GET `/api/v1/jobs/pickup?type=default`
 
 An internall method, used by worker to fetch a random job from the list, and start rendering.
 Probably should not be used by users, unless they know what are they doing.
