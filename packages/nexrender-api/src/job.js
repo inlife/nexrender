@@ -40,9 +40,17 @@ const withEventEmitter = (fetch, job, polling = NEXRENDER_JOB_POLLING) => {
 }
 
 module.exports = (fetch, polling) => ({
-    listJobs: async () => await fetch(`/jobs`),
+    listJobs: async (type=null) => {
+        const endpoint = '/jobs'
+        if(type) {
+            return fetch(`${endpoint}?type=${type}`)
+        }
+
+        return fetch(endpoint)
+    },
     fetchJob: async id => await fetch(`/jobs/${id}`),
-    pickupJob: async () => await fetch(`/jobs/pickup`),
+    // default to 'default' jobs for backwards compatibility with nexrender-worker
+    pickupJob: async (type='default') => await fetch(`/jobs/pickup?type=${type}`),
 
     addJob: async data =>
         withEventEmitter(fetch, await fetch(`/jobs`, {
@@ -50,7 +58,7 @@ module.exports = (fetch, polling) => ({
             headers: { 'content-type': 'application/json' },
             body: JSON.stringify(data),
         }), polling),
-    
+
     resumeJob: async id =>
         withEventEmitter(fetch, await fetch(`/jobs/${id}`), polling),
 

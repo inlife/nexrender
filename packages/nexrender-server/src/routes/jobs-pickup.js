@@ -11,7 +11,10 @@ module.exports = async (req, res) => {
     try{
         console.log(`fetching a pickup job for a worker`)
 
-        const listing = await fetch()
+        // Default to 'default' jobs for backwards compatibility
+        const type = req.query.type || 'default'
+
+        const listing = await fetch(null,type)
         const queued  = listing.filter(job => job.state == 'queued')
 
         if (queued.length < 1) {

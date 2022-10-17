@@ -44,7 +44,7 @@ const insert = async entry => {
     await client.setAsync(`nexjob:${entry.uid}`, JSON.stringify(entry));
 };
 
-const fetch = async uid => {
+const fetch = async (uid,type) => {
     if (uid) {
         const entry = await client.getAsync(`nexjob:${uid}`);
         return JSON.parse(entry);
@@ -55,7 +55,7 @@ const fetch = async uid => {
         });
 
         // Sort items so the oldest is always first
-        return results.sort((a, b) => {
+        return results.filter(result => !type || result.type === type).sort((a, b) => {
             return new Date(a.createdAt).getTime() > new Date(b.createdAt).getTime() ? 1 : -1;
         })
     }
