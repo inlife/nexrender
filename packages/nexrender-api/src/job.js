@@ -49,6 +49,7 @@ module.exports = (fetch, polling) => ({
         return fetch(endpoint)
     },
     fetchJob: async id => await fetch(`/jobs/${id}`),
+    // default to 'default' jobs for backwards compatibility with nexrender-worker
     pickupJob: async (type='default') => await fetch(`/jobs/pickup?type=${type}`),
 
     addJob: async data =>
