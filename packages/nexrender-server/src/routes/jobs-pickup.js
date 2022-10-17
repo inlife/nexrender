@@ -11,6 +11,7 @@ module.exports = async (req, res) => {
     try{
         console.log(`fetching a pickup job for a worker`)
 
+        // Default to 'default' jobs for backwards compatibility
         const type = req.query.type || 'default'
 
         const listing = await fetch(null,type)
