@@ -106,3 +106,4 @@ Probably should not be used by users, unless they know what are they doing.
 Can serve as the health check for the service, does not require the secret header to be passed.
 Returns 200 always.
 
+test
