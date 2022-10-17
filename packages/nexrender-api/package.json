@@ -1,7 +1,7 @@
 {
   "name": "@create-global/nexrender-api",
   "author": "inlife",
-  "version": "1.41.0",
+  "version": "1.43.0",
   "main": "src/index.js",
   "dependencies": {
     "@create-global/nexrender-types": "^1.40.0",
