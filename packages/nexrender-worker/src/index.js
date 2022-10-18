@@ -97,7 +97,9 @@ const start = async (host, secret, settings) => {
                 }
                 await new Promise((resolve) => {
                     rimraf(job.workpath, {glob: false}, (err) => {
-                        console.error(err);
+                        if (err) {
+                            console.error(err);
+                        }
                         resolve()
                     })
                 })
