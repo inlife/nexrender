@@ -85,7 +85,7 @@ const start = async (host, secret, settings) => {
                 }
             }
 
-            job = Promise.race([
+            job = await Promise.race([
                 waitAndThrow(NEXRENDER_TIMEOUT, 'render timeout'),
                 render(job, settings)
             ]);
