@@ -96,7 +96,10 @@ const start = async (host, secret, settings) => {
                     job.workpath = settings.workpath.concat('/', job.uid, '/')
                 }
                 await new Promise((resolve) => {
-                    rimraf(job.workpath, {glob: false}, resolve)
+                    rimraf(job.workpath, {glob: false}, (err) => {
+                        console.error(err);
+                        resolve()
+                    })
                 })
             } else {
                 job.state = 'error';
