@@ -111,7 +111,8 @@ const getRenderingStatus = job => ({
     errorAt: job.errorAt || null,
     jobCreator: job.creator,
     jobExecutor: job.executor || null,
-    logger: job.logger || null
+    logger: job.logger || null,
+    composition: job.template?.composition || null,
 })
 
 module.exports = {
