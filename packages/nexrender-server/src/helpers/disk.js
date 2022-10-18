@@ -33,13 +33,13 @@ const indexOf = value => {
 }
 
 /* public api */
-const fetch = (uid,type) => {
+const fetch = (uid,types = []) => {
     if(uid) {
         return data[indexOf(uid)]
     }
 
-    if(type) {
-        return data.filter(job => job.type === type)
+    if(types.length) {
+        return data.filter(job => types.includes(job.type))
     }
 
     return data
