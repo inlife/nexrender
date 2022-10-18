@@ -1,6 +1,7 @@
 const { createClient } = require('@create-global/nexrender-api')
 const { init, render } = require('@create-global/nexrender-core')
 const { getRenderingStatus } = require('@create-global/nexrender-types/job')
+const rimraf = require('rimraf')
 
 const NEXRENDER_API_POLLING = process.env.NEXRENDER_API_POLLING || 30 * 1000;
 const NEXRENDER_MAX_RETRIES = process.env.NEXRENDER_MAX_RETRIES || 2
@@ -84,9 +85,19 @@ const start = async (host, secret, settings) => {
         } catch (err) {
             job.retries = job.retries || 0
 
-            if (job.retries < NEXRENDER_MAX_RETRIES) {
+            if (job.retries <= NEXRENDER_MAX_RETRIES) {
                 job.retries += 1;
                 job.state = 'queued';
+
+                // Remove re-queued jobs as they may be picked up
+                // by the same worker
+                // sometimes this attribute (workpath) is undefined
+                if (!job.workpath) {
+                    job.workpath = settings.workpath.concat('/', job.uid, '/')
+                }
+                await new Promise((resolve) => {
+                    rimraf(job.workpath, {glob: false}, resolve)
+                })
             } else {
                 job.state = 'error';
             }
