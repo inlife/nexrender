@@ -1,0 +1,2 @@
+registry=https://npm.pkg.github.com/create-global
+//npm.pkg.github.com/:_authToken=GITHUB_PERSONAL_ACCESS_TOKEN
