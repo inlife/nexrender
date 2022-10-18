@@ -5,6 +5,7 @@ const rimraf = require('rimraf')
 
 const NEXRENDER_API_POLLING = process.env.NEXRENDER_API_POLLING || 30 * 1000;
 const NEXRENDER_MAX_RETRIES = process.env.NEXRENDER_MAX_RETRIES || 2
+const NEXRENDER_TIMEOUT = process.env.NEXRENDER_TIMEOUT || 1000 * 60 * 30 // 30 minutes
 
 /* TODO: possibly add support for graceful shutdown */
 let active = true;
@@ -12,6 +13,14 @@ let active = true;
 const delay = amount => (
     new Promise(resolve => setTimeout(resolve, amount))
 )
+
+const waitAndThrow = (ms, errorMessage) => {
+    return new Promise((_, reject) => {
+        setTimeout(() => {
+            reject(errorMessage);
+        }, ms);
+    });
+};
 
 const nextJob = async (client, settings) => {
     do {
@@ -76,10 +85,12 @@ const start = async (host, secret, settings) => {
                 }
             }
 
-            job = await render(job, settings); {
-                job.state = 'finished';
-                job.finishedAt = new Date()
-            }
+            job = await Promise.race([
+                waitAndThrow(NEXRENDER_TIMEOUT, 'render timeout'),
+                render(job, settings)
+            ]);
+            job.state = 'finished';
+            job.finishedAt = new Date()
 
             await client.updateJob(job.uid, getRenderingStatus(job))
         } catch (err) {
