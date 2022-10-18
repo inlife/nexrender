@@ -1,7 +1,7 @@
 {
   "name": "@create-global/nexrender-api",
   "author": "inlife",
-  "version": "1.41.0",
+  "version": "1.44.0",
   "main": "src/index.js",
   "dependencies": {
     "@create-global/nexrender-types": "^1.40.0",
@@ -10,5 +10,5 @@
   "publishConfig": {
     "access": "public"
   },
-  "gitHead": "84cef65e008026f6fcf4f040943144401f101fce"
+  "gitHead": "c785ecbcec0dd72e45fe3d3371ed74840b97f46b"
 }

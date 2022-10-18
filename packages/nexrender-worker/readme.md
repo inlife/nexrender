@@ -85,3 +85,4 @@ Available settings (almost same as for `nexrender-core`):
 * `aeParams` - array of strings, any additional params that will be passed to the aerender binary, a name-value parameter pair separated by a space,
 * `actions` - an object with keys corresponding to the `module` field when defining an action, value should be a function matching expected signature of an action. Used for defining actions programmatically without needing to package the action as a separate package
 
+t

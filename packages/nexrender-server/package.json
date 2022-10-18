@@ -1,6 +1,6 @@
 {
   "name": "@create-global/nexrender-server",
-  "version": "1.41.0",
+  "version": "1.44.0",
   "author": "inlife",
   "main": "src/index.js",
   "scripts": {
@@ -18,7 +18,7 @@
     ]
   },
   "dependencies": {
-    "@create-global/nexrender-database-redis": "^1.41.0",
+    "@create-global/nexrender-database-redis": "^1.44.0",
     "@create-global/nexrender-types": "^1.40.0",
     "arg": "^4.1.0",
     "async-mutex": "^0.3.2",
@@ -34,5 +34,5 @@
   "publishConfig": {
     "access": "public"
   },
-  "gitHead": "84cef65e008026f6fcf4f040943144401f101fce"
+  "gitHead": "c785ecbcec0dd72e45fe3d3371ed74840b97f46b"
 }

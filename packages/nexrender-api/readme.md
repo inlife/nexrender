@@ -43,3 +43,4 @@ Main returned function is `createClient` which allows you to create multiple cli
 
 Instead of returning `Job` object, `client.addJob` returns an event emitter instance, which allows you to bind your callbacks
 and handle changes in the Job lifetime. API will be constantly polling the specific API server every `NEXRENDER_JOB_POLLING` ms for changes, and if there will be any - you will be notified.
+
