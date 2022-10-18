@@ -85,7 +85,7 @@ const start = async (host, secret, settings) => {
         } catch (err) {
             job.retries = job.retries || 0
 
-            if (job.retries < NEXRENDER_MAX_RETRIES) {
+            if (job.retries <= NEXRENDER_MAX_RETRIES) {
                 job.retries += 1;
                 job.state = 'queued';
 
