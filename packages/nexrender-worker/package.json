@@ -1,6 +1,6 @@
 {
   "name": "@create-global/nexrender-worker",
-  "version": "1.45.3",
+  "version": "1.45.4",
   "author": "inlife",
   "main": "src/index.js",
   "scripts": {
