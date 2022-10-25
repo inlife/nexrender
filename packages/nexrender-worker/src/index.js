@@ -25,10 +25,14 @@ const waitAndThrow = (ms, errorMessage) => {
 const nextJob = async (client, settings) => {
     do {
         try {
-            const job = await client.pickupJob();
+            // check things like disk space here
+            const isReadyForPickup = await settings.onReadyForPickup()
+            if (isReadyForPickup) {
+                const job = await client.pickupJob();
 
-            if (job && job.uid) {
-                return job
+                if (job && job.uid) {
+                    return job
+                }
             }
         } catch (err) {
             if (settings.stopOnError) {
@@ -54,6 +58,11 @@ const start = async (host, secret, settings) => {
     settings = init(Object.assign({}, settings, {
         logger: console,
     }))
+    // onReadyForPickup will be called before each pickup attempt
+    // return false to skip pickup. Return true to pickup
+    if (!settings.onReadyForPickup) {
+        settings.onReadyForPickup = () => true
+    }
 
     const client = createClient({ host, secret });
 
