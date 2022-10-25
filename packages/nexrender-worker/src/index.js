@@ -25,7 +25,8 @@ const waitAndThrow = (ms, errorMessage) => {
 const nextJob = async (client, settings) => {
     do {
         try {
-            // check things like disk space here
+            // Check to see if we should pickup, otherwise skip till
+            // next check
             const isReadyForPickup = await settings.onReadyForPickup()
             if (isReadyForPickup) {
                 const job = await client.pickupJob();
