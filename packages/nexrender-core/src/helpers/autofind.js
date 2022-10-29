@@ -15,6 +15,7 @@ const defaultPaths = {
         '/Applications/Adobe After Effects 2022',
         '/Applications/Adobe After Effects CC 2021',
         '/Applications/Adobe After Effects CC 2022',
+        '/Applications/Adobe After Effects CC 2023',
     ],
     win32: [
         'C:\\Program Files\\Adobe\\After Effects CC',
