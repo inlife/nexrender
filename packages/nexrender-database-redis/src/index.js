@@ -85,7 +85,6 @@ const cleanup = () => {
 module.exports = {
     insert,
     fetch,
-    count,
     update,
     remove,
     cleanup,
