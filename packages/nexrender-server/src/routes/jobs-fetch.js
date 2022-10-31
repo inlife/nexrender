@@ -37,6 +37,21 @@ const filterAndSort = (results, types = []) => {
     })
 }
 
+const fetchAllJobs = async (page = 1, size = 20, types = [],) => {
+    const results = await fetch(null)
+
+    const filteredAndSortedResults = filterAndSort(results, types)
+
+    const paginatedResults = page ?
+        paginate(filteredAndSortedResults, {
+            page: clamp(page, {min: 1}),
+            size: clamp(size, {min: 1, max: 30})
+        })
+        : results
+
+    return transformResults(paginatedResults, {page, size})
+}
+
 module.exports = async (req, res) => {
     const page = parseInt(req.query.page || '1')
     const size = parseInt(req.query.size || '20')
@@ -46,34 +61,17 @@ module.exports = async (req, res) => {
 
         send(res, 200, await fetch(req.params.uid))
     } else if (req.query.types) {
-        const parsedTypes = req.query.types.split(',')
-        console.log(`fetching page ${page} jobs by types ${parsedTypes.join(',')}`)
+        const types = req.query.types.split(',')
+        console.log(`fetching page ${page} jobs by types ${types.join(',')}`)
 
-        const results = filterAndSort(fetch(null, parsedTypes))
+        const jobs = await fetchAllJobs(page, size, types)
 
-        const finalResults = page ?
-            paginate(results, {
-                page: clamp(page, {min: 1}),
-                size: clamp(size, {min: 1, max: 30})
-            })
-            : results
-
-        const transformed = transformResults(finalResults, {page, size})
-
-        send(res, 200, transformed)
+        send(res, 200, jobs)
     } else {
         console.log(`fetching page ${page} of all jobs`)
 
-        const results = await filterAndSort(fetch())
-        const finalResults = page ?
-            paginate(results, {
-                page: clamp(page, {min: 1}),
-                size: clamp(size, {min: 1, max: 30})
-            })
-            : results
+        const jobs = await fetchAllJobs(page, size)
 
-        const transformed = transformResults(finalResults, {page, size})
-
-        send(res, 200, transformed)
+        send(res, 200, jobs)
     }
 }
