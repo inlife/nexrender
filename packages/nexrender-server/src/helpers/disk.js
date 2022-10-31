@@ -1,7 +1,7 @@
 const os = require('os')
 const fs = require('fs')
 const path = require('path')
-const {filterAndSort} = require('../../../nexrender-core')
+const {filterAndSortJobs} = require('../../../nexrender-core')
 
 /* initial data */
 const defaultPath = path.join(os.homedir(), 'nexrender')
@@ -39,7 +39,7 @@ const fetch = (uid, types = []) => {
         return data[indexOf(uid)]
     }
 
-    return filterAndSort(data, types)
+    return filterAndSortJobs(data, types)
 }
 
 const insert = entry => {

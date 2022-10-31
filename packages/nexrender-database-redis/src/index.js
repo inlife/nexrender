@@ -1,6 +1,6 @@
 const redis = require('redis')
 const {promisify} = require('util')
-const { filterAndSort } = require('@create-global/nexrender-core')
+const { filterAndSortJobs } = require('@create-global/nexrender-core')
 
 const client = redis.createClient({
     url: process.env.REDIS_URL
