@@ -18,6 +18,7 @@
     ]
   },
   "dependencies": {
+    "@create-global/nexrender-core": "^1.45.0",
     "@create-global/nexrender-database-redis": "^1.45.0",
     "@create-global/nexrender-types": "^1.45.0",
     "arg": "^4.1.0",

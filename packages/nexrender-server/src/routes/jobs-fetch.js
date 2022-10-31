@@ -30,20 +30,11 @@ const clamp = (input, {min, max}) => {
     return input
 }
 
-const filterAndSort = (results, types = []) => {
-    // Filter by types and sort items so the oldest is always first
-    return results.filter(result => !types.length || types.includes(result.type)).sort((a, b) => {
-        return new Date(a.createdAt).getTime() > new Date(b.createdAt).getTime() ? 1 : -1
-    })
-}
-
 const fetchAllJobs = async (page = 1, size = 20, types = [],) => {
-    const results = await fetch(null)
-
-    const filteredAndSortedResults = filterAndSort(results, types)
+    const results = await fetch(null, types)
 
     const paginatedResults = page ?
-        paginate(filteredAndSortedResults, {
+        paginate(results, {
             page: clamp(page, {min: 1}),
             size: clamp(size, {min: 1, max: 30})
         })
