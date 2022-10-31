@@ -4,10 +4,7 @@ const {fetch} = require('../helpers/database')
 const transformResults = (results, meta) => {
     return {
         results,
-        meta: {
-            ...meta,
-            total: results.length,
-        }
+        meta
     }
 }
 
@@ -32,6 +29,7 @@ const clamp = (input, {min, max}) => {
 
 const fetchAllJobs = async (page = 1, size = 20, types = [],) => {
     const results = await fetch(null, types)
+    const total = results.length
 
     const paginatedResults = page ?
         paginate(results, {
@@ -40,7 +38,7 @@ const fetchAllJobs = async (page = 1, size = 20, types = [],) => {
         })
         : results
 
-    return transformResults(paginatedResults, {page, size})
+    return transformResults(paginatedResults, {page, size, total})
 }
 
 module.exports = async (req, res) => {
