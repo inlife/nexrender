@@ -33,22 +33,12 @@ const indexOf = value => {
 }
 
 /* public api */
-const fetch = (uid,types = []) => {
+const fetch = (uid) => {
     if(uid) {
         return data[indexOf(uid)]
     }
 
-    if(types.length) {
-        return data.filter(job => types.includes(job.type))
-    }
-
     return data
-}
-
-const count = (uid,types = []) => {
-    const data = fetch(uid, types)
-
-    return data.length
 }
 
 const insert = entry => {
@@ -99,7 +89,6 @@ const cleanup = () => {
 module.exports = {
     insert,
     fetch,
-    count,
     update,
     remove,
     cleanup,

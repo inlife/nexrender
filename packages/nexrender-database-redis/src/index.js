@@ -9,7 +9,6 @@ client.getAsync = promisify(client.get).bind(client);
 client.setAsync = promisify(client.set).bind(client);
 client.delAsync = promisify(client.del).bind(client);
 client.scanAsync = promisify(client.scan).bind(client);
-client.countAsync = promisify(client.siz).bind(client);
 
 /* internal methods */
 const scan = async parser => {
@@ -45,7 +44,7 @@ const insert = async entry => {
     await client.setAsync(`nexjob:${entry.uid}`, JSON.stringify(entry));
 };
 
-const fetch = async (uid,types = []) => {
+const fetch = async (uid) => {
     if (uid) {
         const entry = await client.getAsync(`nexjob:${uid}`);
         return JSON.parse(entry);
@@ -55,18 +54,9 @@ const fetch = async (uid,types = []) => {
             return JSON.parse(value);
         });
 
-        // Filter by types and sort items so the oldest is always first
-        return results.filter(result => !types.length || types.includes(result.type)).sort((a, b) => {
-            return new Date(a.createdAt).getTime() > new Date(b.createdAt).getTime() ? 1 : -1;
-        })
+        return results
     }
 };
-
-const count = async (uid,types = []) => {
-    const data = await fetch(uid, types)
-
-    return data.length
-}
 
 const update = async (uid, object) => {
     const now = new Date();
