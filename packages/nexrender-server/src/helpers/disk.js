@@ -45,6 +45,12 @@ const fetch = (uid,types = []) => {
     return data
 }
 
+const count = (uid,types = []) => {
+    const data = fetch(uid, types)
+
+    return data.length
+}
+
 const insert = entry => {
     const now = new Date()
 
@@ -93,6 +99,7 @@ const cleanup = () => {
 module.exports = {
     insert,
     fetch,
+    count,
     update,
     remove,
     cleanup,

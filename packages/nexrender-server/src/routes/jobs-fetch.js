@@ -1,14 +1,19 @@
 const { send }  = require('micro')
-const { fetch } = require('../helpers/database')
+const { fetch, count } = require('../helpers/database')
+
+const transformResults = (results, pagination) => {
+    return {
+        results,
+        meta: pagination
+    }
+}
 
 const paginate = (results, { page, size }) => {
     const index = (page - 1) * size;
-    const pagedResults = results
+    return results
         .reverse()
         .slice(index, index + size)
         .reverse();
-
-    return pagedResults
 }
 
 const clamp = (input, { min, max }) => {
@@ -22,7 +27,8 @@ const clamp = (input, { min, max }) => {
 };
 
 module.exports = async (req, res) => {
-    const { page, size = 20 } = req.query || {};
+    const { page = 1, size = 20 } = req.query || {};
+    const total = await count(req.params.uid, req.query.types)
 
     if (req.params.uid) {
         console.log(`fetching job ${req.params.uid}`)
@@ -32,9 +38,21 @@ module.exports = async (req, res) => {
         const parsedTypes = req.query.types.split(',')
         console.log(`fetching jobs by types ${parsedTypes.join(',')}`)
 
-        send(res, 200, await fetch(null,parsedTypes))
+        const results = fetch(null,parsedTypes)
+
+        const finalResults = page ?
+            paginate(results, {
+                page: clamp(page, { min: 1 }),
+                size: clamp(size, { min: 1, max: 30 })
+            })
+            : results
+
+        const transformed = transformResults(finalResults, {page, size, total})
+
+        send(res, 200, transformed)
     } else {
         console.log(`fetching list of all jobs`)
+
         const results = await fetch()
         const finalResults = page ?
             paginate(results, {
@@ -42,6 +60,9 @@ module.exports = async (req, res) => {
                 size: clamp(size, { min: 1, max: 30 })
             })
             : results
-        send(res, 200, finalResults)
+
+        const transformed = transformResults(finalResults, {page, size, total})
+
+        send(res, 200, transformed)
     }
 }
