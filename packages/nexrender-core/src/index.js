@@ -10,6 +10,7 @@ const license      = require('./helpers/license')
 const autofind     = require('./helpers/autofind')
 const patch        = require('./helpers/patch')
 const state        = require('./helpers/state')
+const filterAndSortJobs = require('./helpers/filter-and-sort-jobs')
 
 const setup        = require('./tasks/setup')
 const predownload  = require('./tasks/actions')('predownload')
@@ -126,5 +127,6 @@ const render = (job, settings = {}) => {
 
 module.exports = {
     init,
-    render
+    render,
+    filterAndSortJobs
 }

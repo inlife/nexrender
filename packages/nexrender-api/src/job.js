@@ -1,61 +1,61 @@
-const EventEmitter = require('events');
+const EventEmitter = require('events')
 
-const NEXRENDER_JOB_POLLING = process.env.NEXRENDER_JOB_POLLING || 10 * 1000;
+const NEXRENDER_JOB_POLLING = process.env.NEXRENDER_JOB_POLLING || 10 * 1000
 
 const withEventEmitter = (fetch, job, polling = NEXRENDER_JOB_POLLING) => {
-    const emitter  = new EventEmitter();
+    const emitter = new EventEmitter()
     const interval = setInterval(async () => {
         try {
             const updatedJob = await fetch(`/jobs/${job.uid}/status`)
 
             // Support updating render progress throughout rendering process
             if (updatedJob.state == 'render:dorender' && updatedJob.renderProgress) {
-                emitter.emit('progress', updatedJob, updatedJob.renderProgress);
+                emitter.emit('progress', updatedJob, updatedJob.renderProgress)
             }
 
             if (updatedJob.state == 'finished') {
-                emitter.emit('progress', updatedJob, 100);
+                emitter.emit('progress', updatedJob, 100)
             }
 
             // push only strict state changes
             if (job.state != updatedJob.state) {
-                job.state = updatedJob.state;
-                emitter.emit(job.state, updatedJob, fetch);
+                job.state = updatedJob.state
+                emitter.emit(job.state, updatedJob, fetch)
             }
 
             if (job.state == 'finished' || job.state == 'error') {
-                clearInterval(interval);
+                clearInterval(interval)
             }
         } catch (err) {
-            clearInterval(interval);
-            emitter.emit('error', err);
+            clearInterval(interval)
+            emitter.emit('error', err)
         }
 
-    }, polling);
+    }, polling)
 
     /* trigger first callback */
     setImmediate(() => emitter.emit('created', job))
 
-    return emitter;
+    return emitter
 }
 
 module.exports = (fetch, polling) => ({
-    listJobs: async (type=null) => {
+    listJobs: async (types = null) => {
         const endpoint = '/jobs'
-        if(type) {
-            return fetch(`${endpoint}?type=${type}`)
+        if (types) {
+            return fetch(`${endpoint}?types=${types}`)
         }
 
         return fetch(endpoint)
     },
     fetchJob: async id => await fetch(`/jobs/${id}`),
     // default to 'default' jobs for backwards compatibility with nexrender-worker
-    pickupJob: async (types=['default']) => await fetch(`/jobs/pickup?types=${types.join(',')}`),
+    pickupJob: async (types = ['default']) => await fetch(`/jobs/pickup?types=${types.join(',')}`),
 
     addJob: async data =>
         withEventEmitter(fetch, await fetch(`/jobs`, {
             method: 'post',
-            headers: { 'content-type': 'application/json' },
+            headers: {'content-type': 'application/json'},
             body: JSON.stringify(data),
         }), polling),
 
@@ -65,7 +65,7 @@ module.exports = (fetch, polling) => ({
     updateJob: async (id, data) =>
         await fetch(`/jobs/${id}`, {
             method: 'put',
-            headers: { 'content-type': 'application/json' },
+            headers: {'content-type': 'application/json'},
             body: JSON.stringify(data),
         }),
 
