@@ -55,7 +55,7 @@ const fetch = async (uid, types = []) => {
             return JSON.parse(value)
         })
 
-        return filterAndSort(results, types)
+        return filterAndSortJobs(results, types)
     }
 }
 
