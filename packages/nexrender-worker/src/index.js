@@ -24,6 +24,8 @@ const nextJob = async (client, settings) => {
                 throw err;
             } else {
                 console.error(err)
+                console.error("render proccess stopped with error...")
+                console.error("continue listening next job...")
             }
         }
 
@@ -66,12 +68,20 @@ const start = async (host, secret, settings) => {
                     /* send render progress to our server */
                     client.updateJob(job.uid, getRenderingStatus(job))
                 } catch (err) {
+                    
                     if (settings.stopOnError) {
                         throw err;
                     } else {
                         console.log(`[${job.uid}] error occurred: ${err.stack}`)
+                        console.log(`[${job.uid}] render proccess stopped with error...`)
+                        console.log(`[${job.uid}] continue listening next job...`)
                     }
                 }
+            }
+
+            job.onRenderError = function (undefined, err /* on render error */) {
+                /* set job render error to send to our server */
+                job.error = [err];
             }
 
             job = await render(job, settings); {
@@ -82,7 +92,17 @@ const start = async (host, secret, settings) => {
             await client.updateJob(job.uid, getRenderingStatus(job))
         } catch (err) {
             job.state = 'error';
-            job.error = err;
+
+            /* append existing error message with another error message */
+            if( job?.error ) {
+                if(Array.isArray(job.error)){
+                    job.error = [...job.error,err?.toString?.()];
+                }else{
+                    job.error = [job?.error?.toString?.(),err?.toString?.()];
+                }
+            }else{
+                job.error = err?.toString?.();
+            }
             job.errorAt = new Date()
 
             await client.updateJob(job.uid, getRenderingStatus(job)).catch((err) => {
@@ -90,6 +110,9 @@ const start = async (host, secret, settings) => {
                     throw err;
                 } else {
                     console.log(`[${job.uid}] error occurred: ${err.stack}`)
+                    console.log(`[${job.uid}] render proccess stopped with error...`)
+                    console.log(`[${job.uid}] continue listening next job...`)
+
                 }
             });
 
@@ -97,6 +120,8 @@ const start = async (host, secret, settings) => {
                 throw err;
             } else {
                 console.log(`[${job.uid}] error occurred: ${err.stack}`)
+                console.log(`[${job.uid}] render proccess stopped with error...`)
+                console.log(`[${job.uid}] continue listening next job...`)
             }
         }
     } while (active)
