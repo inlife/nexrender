@@ -190,6 +190,13 @@ module.exports = (job, settings) => {
             const existsMovOutputFile = fs.existsSync(movOutputFile)
             if (existsMovOutputFile) {
               job.output = movOutputFile
+            } else {
+                // AE 2023 use mp4 output files
+                const mp4OutputFile = outputFile.replace(/\.avi$/g, '.mp4')
+                const existsMp4OutputFile = fs.existsSync(mp4OutputFile)
+                if (existsMp4OutputFile) {
+                    job.output = mp4OutputFile
+                }
             }
 
             if (!fs.existsSync(job.output)) {

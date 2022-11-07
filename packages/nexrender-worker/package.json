@@ -1,6 +1,6 @@
 {
   "name": "@nexrender/worker",
-  "version": "1.39.7",
+  "version": "1.39.8",
   "author": "inlife",
   "main": "src/index.js",
   "scripts": {
@@ -17,7 +17,7 @@
   },
   "dependencies": {
     "@nexrender/api": "^1.39.7",
-    "@nexrender/core": "^1.39.4",
+    "@nexrender/core": "^1.39.8",
     "@nexrender/types": "^1.38.0",
     "arg": "^4.1.0",
     "chalk": "^2.4.2",
