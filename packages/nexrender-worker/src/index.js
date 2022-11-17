@@ -81,7 +81,11 @@ const start = async (host, secret, settings) => {
 
             job.onRenderError = function (undefined, err /* on render error */) {
                 /* set job render error to send to our server */
-                job.error = [err];
+                if( typeof err.toString == "function" ){
+                    job.error = [err.toString()];
+                }else{
+                    job.error = [err];
+                }
             }
 
             job = await render(job, settings); {
@@ -94,14 +98,32 @@ const start = async (host, secret, settings) => {
             job.state = 'error';
 
             /* append existing error message with another error message */
-            if( job?.error ) {
+            if( job.hasOwnProperty("error") && job.error ) {
                 if(Array.isArray(job.error)){
-                    job.error = [...job.error,err?.toString?.()];
+                    if( typeof job.error.toString == "function" ){ /* Use toString as possible to prevent JSON stringify null return */
+                        job.error = [].concat.apply(job.error,[err.toString()]);
+                    }else{
+                        job.error = [].concat.apply(job.error,[err]);
+                    }
                 }else{
-                    job.error = [job?.error?.toString?.(),err?.toString?.()];
+                    if( typeof job.error.toString == "function" ){ /* Use toString as possible to prevent JSON stringify null return */
+                        job.error = [job.error.toString()];
+                    }else{
+                        job.error = [job.error];
+                    }
+
+                    if( typeof err.toString == "function" ){ /* Use toString as possible to prevent JSON stringify null return */
+                        job.error.push(err.toString());
+                    }else{
+                        job.error.push(err);
+                    }
                 }
             }else{
-                job.error = err?.toString?.();
+                if( typeof err.toString == "function" ){  /* Use toString as possible to prevent JSON stringify null return */
+                    job.error = err.toString();
+                }else{
+                    job.error = err;
+                }
             }
             job.errorAt = new Date()
 
