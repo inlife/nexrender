@@ -24,6 +24,8 @@ const nextJob = async (client, settings) => {
                 throw err;
             } else {
                 console.error(err)
+                console.error("render proccess stopped with error...")
+                console.error("continue listening next job...")
             }
         }
 
@@ -66,11 +68,23 @@ const start = async (host, secret, settings) => {
                     /* send render progress to our server */
                     client.updateJob(job.uid, getRenderingStatus(job))
                 } catch (err) {
+                    
                     if (settings.stopOnError) {
                         throw err;
                     } else {
                         console.log(`[${job.uid}] error occurred: ${err.stack}`)
+                        console.log(`[${job.uid}] render proccess stopped with error...`)
+                        console.log(`[${job.uid}] continue listening next job...`)
                     }
+                }
+            }
+
+            job.onRenderError = function (undefined, err /* on render error */) {
+                /* set job render error to send to our server */
+                if( typeof err.toString == "function" ){
+                    job.error = [err.toString()];
+                }else{
+                    job.error = [err];
                 }
             }
 
@@ -82,7 +96,35 @@ const start = async (host, secret, settings) => {
             await client.updateJob(job.uid, getRenderingStatus(job))
         } catch (err) {
             job.state = 'error';
-            job.error = err;
+
+            /* append existing error message with another error message */
+            if( job.hasOwnProperty("error") && job.error ) {
+                if(Array.isArray(job.error)){
+                    if( typeof job.error.toString == "function" ){ /* Use toString as possible to prevent JSON stringify null return */
+                        job.error = [].concat.apply(job.error,[err.toString()]);
+                    }else{
+                        job.error = [].concat.apply(job.error,[err]);
+                    }
+                }else{
+                    if( typeof job.error.toString == "function" ){ /* Use toString as possible to prevent JSON stringify null return */
+                        job.error = [job.error.toString()];
+                    }else{
+                        job.error = [job.error];
+                    }
+
+                    if( typeof err.toString == "function" ){ /* Use toString as possible to prevent JSON stringify null return */
+                        job.error.push(err.toString());
+                    }else{
+                        job.error.push(err);
+                    }
+                }
+            }else{
+                if( typeof err.toString == "function" ){  /* Use toString as possible to prevent JSON stringify null return */
+                    job.error = err.toString();
+                }else{
+                    job.error = err;
+                }
+            }
             job.errorAt = new Date()
 
             await client.updateJob(job.uid, getRenderingStatus(job)).catch((err) => {
@@ -90,6 +132,9 @@ const start = async (host, secret, settings) => {
                     throw err;
                 } else {
                     console.log(`[${job.uid}] error occurred: ${err.stack}`)
+                    console.log(`[${job.uid}] render proccess stopped with error...`)
+                    console.log(`[${job.uid}] continue listening next job...`)
+
                 }
             });
 
@@ -97,6 +142,8 @@ const start = async (host, secret, settings) => {
                 throw err;
             } else {
                 console.log(`[${job.uid}] error occurred: ${err.stack}`)
+                console.log(`[${job.uid}] render proccess stopped with error...`)
+                console.log(`[${job.uid}] continue listening next job...`)
             }
         }
     } while (active)
