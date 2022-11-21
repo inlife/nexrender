@@ -1,28 +1,26 @@
-const redis = require('redis')
-const {promisify} = require('util')
+const redis = require('redis');
 const { filterAndSortJobs } = require('@create-global/nexrender-core')
+
 
 const client = redis.createClient({
     url: process.env.REDIS_URL
 })
 
-client.getAsync = promisify(client.get).bind(client)
-client.setAsync = promisify(client.set).bind(client)
-client.delAsync = promisify(client.del).bind(client)
-client.scanAsync = promisify(client.scan).bind(client)
+client.on('error', (err) => console.log('Redis Client Error', err))
+client.connect()
 
 /* internal methods */
 const scan = async parser => {
-    let cursor = '0'
+    let cursor = 0
     let results = []
 
     const _scan = async () => {
-        const [next, keys] = await client.scanAsync(cursor, 'MATCH', 'nexjob:*', 'COUNT', '10')
+        const { cursor: next, keys } = await client.scan(cursor, 'MATCH', 'nexjob:*', 'COUNT', '10')
 
         cursor = next
         results = results.concat(keys)
 
-        if (cursor === '0') {
+        if (cursor === 0) {
             results = await results.map(parser).filter(e => e !== null && e !== undefined)
             return results
         } else {
@@ -42,16 +40,16 @@ const insert = async entry => {
     entry.updatedAt = now
     entry.createdAt = now
 
-    await client.setAsync(`nexjob:${entry.uid}`, JSON.stringify(entry))
+    await client.set(`nexjob:${entry.uid}`, JSON.stringify(entry))
 }
 
 const fetch = async (uid, types = []) => {
     if (uid) {
-        const entry = await client.getAsync(`nexjob:${uid}`)
+        const entry = await client.get(`nexjob:${uid}`)
         return JSON.parse(entry)
     } else {
         const results = await scan(async (result) => {
-            const value = await client.getAsync(result)
+            const value = await client.get(result)
             return JSON.parse(value)
         })
 
@@ -60,16 +58,23 @@ const fetch = async (uid, types = []) => {
 }
 
 const update = async (uid, object) => {
-    const now = new Date()
-    let entry = await fetch(uid)
+    const key = `nexjob:${uid}`;
+    return client.executeIsolated(async isolatedClient => {
+        await isolatedClient.watch(key)
 
-    entry = Object.assign(
-        {}, entry, object,
-        {updatedAt: now}
-    )
+        const multi = isolatedClient.multi()
+        const entry = JSON.parse(await isolatedClient.get(key))
 
-    await client.setAsync(`nexjob:${uid}`, JSON.stringify(entry))
-    return entry
+        const updatedEntry = Object.assign(
+            {}, entry, object, { updatedAt: new Date() }
+        )
+
+        multi.set(key, JSON.stringify(updatedEntry))
+
+        await multi.exec()
+
+        return updatedEntry
+    })
 }
 
 const remove = async uid => {
