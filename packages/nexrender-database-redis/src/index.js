@@ -1,7 +1,6 @@
 const redis = require('redis');
 const { filterAndSortJobs } = require('@create-global/nexrender-core')
 
-
 const client = redis.createClient({
     url: process.env.REDIS_URL
 })
@@ -11,26 +10,18 @@ client.connect()
 
 /* internal methods */
 const scan = async parser => {
-    let cursor = 0
-    let results = []
+    const scanIterator =  client.scanIterator({
+        TYPE: 'string',
+        MATCH: 'nexjob:*',
+        COUNT: 10
+    })
 
-    const _scan = async () => {
-        const { cursor: next, keys } = await client.scan(cursor, 'MATCH', 'nexjob:*', 'COUNT', '10')
-
-        cursor = next
-        results = results.concat(keys)
-
-        if (cursor === 0) {
-            results = await results.map(parser).filter(e => e !== null && e !== undefined)
-            return results
-        } else {
-            return _scan(parser)
-        }
+    const keys = [];
+    for await (const key of scanIterator) {
+        keys.push(key)
     }
 
-    await _scan(parser)
-
-    return Promise.all(results)
+    return Promise.all(keys.map(parser))
 }
 
 /* public api */
