@@ -1,16 +1,31 @@
 const redis = require('redis');
 const { filterAndSortJobs } = require('@create-global/nexrender-core')
 
-const client = redis.createClient({
-    url: process.env.REDIS_URL
-})
+let redisClient = null;
 
-client.on('error', (err) => console.log('Redis Client Error', err))
-client.connect()
+const getRedisClient = async () => {
+    if (redisClient) {
+        return redisClient;
+    }
+
+    const client = redis.createClient({
+        url: process.env.REDIS_URL
+    });
+
+    client.on('error', (err) => console.log('Redis Client Error', err))
+
+    await client.connect();
+
+    redisClient = client;
+
+    return redisClient;
+};
 
 /* internal methods */
 const scan = async parser => {
-    const scanIterator =  client.scanIterator({
+    const client = await getRedisClient();
+
+    const scanIterator = client.scanIterator({
         TYPE: 'string',
         MATCH: 'nexjob:*',
         COUNT: 10
@@ -26,6 +41,7 @@ const scan = async parser => {
 
 /* public api */
 const insert = async entry => {
+    const client = await getRedisClient();
     const now = new Date()
 
     entry.updatedAt = now
@@ -35,6 +51,7 @@ const insert = async entry => {
 }
 
 const fetch = async (uid, types = []) => {
+    const client = await getRedisClient();
     if (uid) {
         const entry = await client.get(`nexjob:${uid}`)
         return JSON.parse(entry)
@@ -49,7 +66,9 @@ const fetch = async (uid, types = []) => {
 }
 
 const update = async (uid, object) => {
+    const client = await getRedisClient();
     const key = `nexjob:${uid}`;
+
     return client.executeIsolated(async isolatedClient => {
         await isolatedClient.watch(key)
 
@@ -69,11 +88,13 @@ const update = async (uid, object) => {
 }
 
 const remove = async uid => {
+    const client = await getRedisClient();
     await client.del(`nexjob:${uid}`)
     return true
 }
 
-const cleanup = () => {
+const cleanup = async () => {
+    const client = await getRedisClient();
     return scan(async (result) => {
         return await client.del(result)
     })
