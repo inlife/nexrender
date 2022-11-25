@@ -51,6 +51,10 @@ const start = async (host, secret, settings) => {
         logger: console,
     }))
 
+    if( typeof settings.tagSelector == 'string' ){
+        settings.tagSelector = settings.tagSelector.replace(/[^a-z0-9, ]/gi, '')
+    }
+
     const client = createClient({ host, secret });
 
     do {
