@@ -346,6 +346,8 @@ Job structure has more fields, that we haven't checked out yet. The detailed ver
 
 ```js
 {
+    "tags": String,
+    "priority": Number,
     "template": {
         "src": String,
         "composition": String,
@@ -374,6 +376,10 @@ Job structure has more fields, that we haven't checked out yet. The detailed ver
 
 Majority of the fields are just proxied to the `aerender` binary, and their descriptions and default
 values can be checked [here](https://helpx.adobe.com/after-effects/using/automated-rendering-network-rendering.html).
+
+- `tags` (optional) (example `primary,plugins` : comma delimited ) is a piece of information that describes the job that it is assigned to. It can be used by the worker(s) / or api client(s) to pickup the job with specific tags (see `tagSelector` [here](packages/nexrender-worker) ). 
+
+- `priority` (default 0) is a number of priority. Jobs are selected based on their priority field by the worker, in case of a collision it will choose the oldest one.
 
 - `onChange` is a [callback](https://github.com/inlife/nexrender/blob/master/packages/nexrender-core/src/helpers/state.js) which will be triggered every time the job state is changed (happens on every task change).
 

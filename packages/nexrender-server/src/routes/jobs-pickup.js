@@ -1,6 +1,7 @@
 const { send }   = require('micro')
 const { fetch }  = require('../helpers/database')
 const { update } = require('../helpers/database')
+const { arrayIntersec } = require('../helpers/functions')
 const { Mutex }  = require('async-mutex');
 
 const mutex = new Mutex();
@@ -12,7 +13,13 @@ module.exports = async (req, res) => {
         console.log(`fetching a pickup job for a worker`)
 
         const listing = await fetch()
-        const queued  = listing.filter(job => job.state == 'queued')
+        let queued = []
+
+        if(req.params.tags){
+            queued  = listing.filter(job => job.state == 'queued' && job.tags && arrayIntersec(req.params.tags.split(','),job.tags.split(',')).length )
+        }else{
+            queued  = listing.filter(job => job.state == 'queued')
+        }
 
         if (queued.length < 1) {
             return send(res, 200, {})

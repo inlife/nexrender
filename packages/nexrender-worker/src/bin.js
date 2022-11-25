@@ -9,36 +9,38 @@ const rimraf    = require('rimraf')
 
 const args = arg({
     // Types
-    '--help':       Boolean,
-    '--version':    Boolean,
-    '--cleanup':    Boolean,
+    '--help':                   Boolean,
+    '--version':                Boolean,
+    '--cleanup':                Boolean,
 
-    '--host':       String,
-    '--secret':     String,
+    '--host':                   String,
+    '--secret':                 String,
 
-    '--binary':     String,
-    '--workpath':   String,
-    '--wsl-map':    String,
+    '--binary':                 String,
+    '--workpath':               String,
+    '--wsl-map':                String,
+    '--tag-selector':           String,
 
-    '--stop-on-error':  Boolean,
+    '--stop-on-error':          Boolean,
 
-    '--skip-cleanup':   Boolean,
-    '--skip-render':    Boolean,
-    '--no-license':     Boolean,
-    '--force-patch':    Boolean,
-    '--debug':          Boolean,
-    '--multi-frames':   Boolean,
-    '--multi-frames-cpu': Number,
-    '--reuse':          Boolean,
+    '--skip-cleanup':           Boolean,
+    '--skip-render':            Boolean,
+    '--no-license':             Boolean,
+    '--force-patch':            Boolean,
+    '--debug':                  Boolean,
+    '--multi-frames':           Boolean,
+    '--multi-frames-cpu':       Number,
+    '--reuse':                  Boolean,
 
-    '--max-memory-percent':  Number,
-    '--image-cache-percent': Number,
-    '--polling':             Number,
+    '--max-memory-percent':     Number,
+    '--image-cache-percent':    Number,
+    '--polling':                Number,
 
-    '--aerender-parameter': [String],
+    '--aerender-parameter':     [String],
 
     // Aliases
     '-v':           '--version',
+    '-t':           '--tag-selector',
     '-c':           '--cleanup',
     '-h':           '--help',
     '-s':           '--secret',
@@ -87,11 +89,13 @@ if (args['--help']) {
       -w, --workpath {underline absolute_path}          manually override path to the working directory
                                             by default nexrender is using os tmpdir/nexrender folder
 
-      -m, --wsl-map                       drive letter of your WSL mapping in Windows
+      -m, --wsl-map                         drive letter of your WSL mapping in Windows
+
+      -t, --tag-selector                    the string tags (comma delimited) to pickup the job with specific tag.
 
   {bold ADVANCED OPTIONS}
 
-
+  
     --stop-on-error                         forces worker to stop if processing/rendering error occures,
                                             otherwise worker will report an error, and continue working
 
@@ -188,6 +192,7 @@ opt('imageCachePercent',    '--image-cache-percent');
 opt('polling',              '--polling');
 opt('wslMap',               '--wsl-map');
 opt('aeParams',             '--aerender-parameter');
+opt('tagSelector',          '--tag-selector');
 
 if (args['--cleanup']) {
     settings = init(Object.assign(settings, {
