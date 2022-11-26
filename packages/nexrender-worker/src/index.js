@@ -14,7 +14,12 @@ const delay = amount => (
 const nextJob = async (client, settings) => {
     do {
         try {
-            const job = await client.pickupJob();
+            let job = {};
+            if(settings.tagSelector){
+                job = await client.pickupJob(settings.tagSelector);
+            }else{
+                job = await client.pickupJob();
+            }
 
             if (job && job.uid) {
                 return job
@@ -45,6 +50,10 @@ const start = async (host, secret, settings) => {
     settings = init(Object.assign({}, settings, {
         logger: console,
     }))
+
+    if( typeof settings.tagSelector == 'string' ){
+        settings.tagSelector = settings.tagSelector.replace(/[^a-z0-9, ]/gi, '')
+    }
 
     const client = createClient({ host, secret });
 

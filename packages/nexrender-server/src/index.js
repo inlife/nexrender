@@ -15,6 +15,7 @@ const subhandler = router(
     ns(get('/jobs',             require('./routes/jobs-fetch'))),
     ns(get('/jobs/status',      require('./routes/jobs-status'))),
     ns(get('/jobs/pickup',      require('./routes/jobs-pickup'))),
+    ns(get('/jobs/pickup/:tags',require('./routes/jobs-pickup'))),
     ns(get('/jobs/:uid/status', require('./routes/jobs-status'))),
     ns(get('/jobs/:uid',        require('./routes/jobs-fetch'))),
     ns(put('/jobs/:uid',        require('./routes/jobs-update'))),

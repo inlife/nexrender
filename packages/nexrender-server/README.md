@@ -98,7 +98,12 @@ Removes provided job from the server.
 
 ### GET `/api/v1/jobs/pickup`
 
-An internall method, used by worker to fetch a random job from the list, and start rendering.
+An internal method, used by worker to fetch a random job from the list, and start rendering.
+Probably should not be used by users, unless they know what are they doing.
+
+### GET `/api/v1/jobs/pickup/:tags`
+
+An internal method, used by worker to fetch a random job with specific tags from the list, and start rendering. Tags name must be an alphanumeric.
 Probably should not be used by users, unless they know what are they doing.
 
 ### GET `/api/v1/health`
