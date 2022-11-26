@@ -1,6 +1,6 @@
 {
   "name": "@nexrender/server",
-  "version": "1.39.8",
+  "version": "1.40.0",
   "author": "inlife",
   "main": "src/index.js",
   "scripts": {
@@ -19,7 +19,7 @@
   },
   "dependencies": {
     "@nexrender/database-redis": "^1.38.1",
-    "@nexrender/types": "^1.38.0",
+    "@nexrender/types": "^1.40.0",
     "arg": "^4.1.0",
     "async-mutex": "^0.3.2",
     "chalk": "^2.4.2",
