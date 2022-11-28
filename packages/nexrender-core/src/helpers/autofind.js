@@ -13,6 +13,7 @@ const defaultPaths = {
         '/Applications/Adobe After Effects 2020',
         '/Applications/Adobe After Effects 2021',
         '/Applications/Adobe After Effects 2022',
+        '/Applications/Adobe After Effects 2023',
         '/Applications/Adobe After Effects CC 2021',
         '/Applications/Adobe After Effects CC 2022',
         '/Applications/Adobe After Effects CC 2023',
