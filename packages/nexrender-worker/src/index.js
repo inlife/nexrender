@@ -3,9 +3,9 @@ const { init, render } = require('@create-global/nexrender-core')
 const { getRenderingStatus } = require('@create-global/nexrender-types/job')
 const rimraf = require('rimraf')
 
-const NEXRENDER_API_POLLING = process.env.NEXRENDER_API_POLLING || 30 * 1000;
-const NEXRENDER_MAX_RETRIES = process.env.NEXRENDER_MAX_RETRIES || 2
-const NEXRENDER_TIMEOUT = process.env.NEXRENDER_TIMEOUT || 1000 * 60 * 30 // 30 minutes
+const NEXRENDER_API_POLLING = Number(process.env.NEXRENDER_API_POLLING || 30 * 1000);
+const NEXRENDER_MAX_RETRIES = Number(process.env.NEXRENDER_MAX_RETRIES || 2)
+const NEXRENDER_TIMEOUT = Number(process.env.NEXRENDER_TIMEOUT || 1000 * 60 * 30) // 30 minutes
 
 /* TODO: possibly add support for graceful shutdown */
 let active = true;
