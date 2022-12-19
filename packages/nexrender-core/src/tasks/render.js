@@ -197,15 +197,13 @@ module.exports = (job, settings) => {
                     settings.logger.log(`[${job.uid}] dumping aerender log:`)
                     settings.logger.log(fs.readFileSync(logPath, 'utf8'))
                 }
+            } else {
+                const stats = fs.statSync(job.output)
 
-                return reject(new Error(`Couldn't find a result file: ${outputFile}`))
-            }
-
-            const stats = fs.statSync(job.output)
-
-            /* file smaller than 1000 bytes */
-            if (stats.size < 1000) {
-                settings.logger.log(`[${job.uid}] Warning: output file size is less than 1000 bytes (${stats.size} bytes), be advised that file is corrupted, or rendering is still being finished`)
+                /* file smaller than 1000 bytes */
+                if (stats.size < 1000) {
+                    settings.logger.log(`[${job.uid}] Warning: output file size is less than 1000 bytes (${stats.size} bytes), be advised that file is corrupted, or rendering is still being finished`)
+                }
             }
 
             resolve(job)
