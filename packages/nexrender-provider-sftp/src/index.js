@@ -1,5 +1,4 @@
 const fs = require('fs')
-const url = require('url')
 var path = require("path");
 let Client = require('ssh2-sftp-client');
 let sftp = new Client();
