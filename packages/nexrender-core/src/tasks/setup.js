@@ -3,15 +3,12 @@ const path    = require('path')
 const mkdirp  = require('mkdirp')
 const assert  = require('assert')
 
-const { create, validate } = require('@nexrender/types/job')
+const { validate } = require('@nexrender/types/job')
 
 /**
  * This task creates working directory for current job
  */
 module.exports = (job, settings) => {
-    /* fill default job fields */
-    job = create(job)
-
     settings.logger.log(`[${job.uid}] setting up job...`);
 
     try {

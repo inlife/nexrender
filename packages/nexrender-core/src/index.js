@@ -21,6 +21,8 @@ const dorender     = require('./tasks/render')
 const postrender   = require('./tasks/actions')('postrender')
 const cleanup      = require('./tasks/cleanup')
 
+const { create } = require('@nexrender/types/job')
+
 /* place to register all plugins */
 /* so they will be picked up and resolved by pkg */
 if (process.env.NEXRENDER_REQUIRE_PLUGINS) {
@@ -103,11 +105,13 @@ const init = (settings) => {
 }
 
 
-const render = (job, settings = {}) => {
+const render = (jobConfig, settings = {}) => {
     if (!settings.__initialized) {
         settings = init(settings)
     }
 
+     /* fill default job fields */
+    const job = create(jobConfig)
     return Promise.resolve(job)
         .then(job => state(job, settings, setup, 'setup'))
         .then(job => state(job, settings, predownload, 'predownload'))
