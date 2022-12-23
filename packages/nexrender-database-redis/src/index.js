@@ -53,11 +53,15 @@ const insert = async entry => {
 const fetch = async (uid, types = []) => {
     const client = await getRedisClient();
     if (uid) {
+        console.log('TEMP LOG: fetch uid', `"nexjob:${uid}"`)
         const entry = await client.get(`nexjob:${uid}`)
+        console.log('TEMP LOG: fetch entry', entry)
         return JSON.parse(entry)
     } else {
         const results = await scan(async (result) => {
+            console.log('TEMP LOG: fetch scan', `"${result}"`)
             const value = await client.get(result)
+            console.log('TEMP LOG: fetch scan entry', value)
             return JSON.parse(value)
         })
 
@@ -75,12 +79,16 @@ const update = async (uid, object) => {
         const multi = isolatedClient.multi()
         const entry = JSON.parse(await isolatedClient.get(key))
 
+        if (!entry) {
+            throw new Error('The object you are trying to update does not exist')
+        }
+
         const updatedEntry = Object.assign(
             {}, entry, object, { updatedAt: new Date() }
         )
 
-        if (key !== `nexjob:${updatedEntry.uid}`) {
-            throw new Error('Cannot change job uid')
+        if (uid !== updatedEntry.uid) {
+            throw new Error(`Update failure, uid is mismatched. ${uid}, ${updatedEntry.uid}`)
         }
 
         multi.set(key, JSON.stringify(updatedEntry))
