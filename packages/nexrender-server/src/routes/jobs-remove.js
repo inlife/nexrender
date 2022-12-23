@@ -4,6 +4,8 @@ const { remove } = require('../helpers/database')
 module.exports = async (req, res) => {
     console.log(`removing job ${req.params.uid}`)
 
+    console.log(`TEMP LOG: remove`, req.params.uid)
+
     try {
         await remove(req.params.uid);
     } catch (err) {

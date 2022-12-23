@@ -69,15 +69,21 @@ const update = async (uid, object) => {
     const client = await getRedisClient();
     const key = `nexjob:${uid}`;
 
+    console.log(`TEMP LOG: nexjob:${uid}`, object)
+
     return client.executeIsolated(async isolatedClient => {
         await isolatedClient.watch(key)
 
         const multi = isolatedClient.multi()
         const entry = JSON.parse(await isolatedClient.get(key))
 
+        console.log(`TEMP LOG: entry`, entry)
+
         const updatedEntry = Object.assign(
             {}, entry, object, { updatedAt: new Date() }
         )
+
+        console.log(`TEMP LOG: updatedEntry`, updatedEntry)
 
         multi.set(key, JSON.stringify(updatedEntry))
 
