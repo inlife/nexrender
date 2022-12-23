@@ -53,10 +53,12 @@ const insert = async entry => {
 const fetch = async (uid, types = []) => {
     const client = await getRedisClient();
     if (uid) {
+        console.log('TEMP LOG: fetch uid', uid)
         const entry = await client.get(`nexjob:${uid}`)
         return JSON.parse(entry)
     } else {
         const results = await scan(async (result) => {
+            console.log('TEMP LOG: fetch scan', result)
             const value = await client.get(result)
             return JSON.parse(value)
         })
