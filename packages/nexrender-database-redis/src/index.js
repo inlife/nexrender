@@ -53,15 +53,11 @@ const insert = async entry => {
 const fetch = async (uid, types = []) => {
     const client = await getRedisClient();
     if (uid) {
-        console.log('TEMP LOG: fetch uid', `"nexjob:${uid}"`)
         const entry = await client.get(`nexjob:${uid}`)
-        console.log('TEMP LOG: fetch entry', entry)
         return JSON.parse(entry)
     } else {
         const results = await scan(async (result) => {
-            console.log('TEMP LOG: fetch scan', `"${result}"`)
             const value = await client.get(result)
-            console.log('TEMP LOG: fetch scan entry', { result, value })
             return JSON.parse(value)
         })
 
@@ -73,21 +69,19 @@ const update = async (uid, object) => {
     const client = await getRedisClient();
     const key = `nexjob:${uid}`;
 
-    console.log(`TEMP LOG: nexjob:${uid}`, object)
-
     return client.executeIsolated(async isolatedClient => {
         await isolatedClient.watch(key)
 
         const multi = isolatedClient.multi()
         const entry = JSON.parse(await isolatedClient.get(key))
 
-        console.log(`TEMP LOG: entry`, entry)
-
         const updatedEntry = Object.assign(
             {}, entry, object, { updatedAt: new Date() }
         )
 
-        console.log(`TEMP LOG: updatedEntry`, updatedEntry)
+        if (key !== `nexjob:${updatedEntry.uid}`) {
+            throw new Error('Cannot change job uid')
+        }
 
         multi.set(key, JSON.stringify(updatedEntry))
 

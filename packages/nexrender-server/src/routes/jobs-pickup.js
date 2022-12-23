@@ -17,8 +17,6 @@ module.exports = async (req, res) => {
         const listing = await fetch(null,types)
         const queued  = listing.filter(job => job.state == 'queued')
 
-        console.log(`TEMP LOG: queued`, queued)
-
         if (queued.length < 1) {
             return send(res, 200, {})
         }
@@ -45,11 +43,6 @@ module.exports = async (req, res) => {
         else { /* fifo (oldest-first) */
             job = queued[0];
         }
-
-        console.log(`TEMP LOG: job`, job)
-
-        const tempFetch = await fetch(job.uid)
-        console.log(`TEMP LOG: tempFetch`, tempFetch)
 
         /* update the job locally, and send it to the worker */
         send(res, 200, await update(job.uid, { state: 'picked', executor: req.headers["x-forwarded-for"] || req.socket.remoteAddress }))
