@@ -61,7 +61,7 @@ const fetch = async (uid, types = []) => {
         const results = await scan(async (result) => {
             console.log('TEMP LOG: fetch scan', `"${result}"`)
             const value = await client.get(result)
-            console.log('TEMP LOG: fetch scan entry', value)
+            console.log('TEMP LOG: fetch scan entry', { result, value })
             return JSON.parse(value)
         })
 
