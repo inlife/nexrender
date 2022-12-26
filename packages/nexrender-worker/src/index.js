@@ -88,7 +88,7 @@ const start = async (host, secret, settings) => {
                 }
             }
 
-            job.onRenderError = function (undefined, err /* on render error */) {
+            job.onRenderError = function (_, err /* on render error */) {
                 /* set job render error to send to our server */
                 if( typeof err.toString == "function" ){
                     job.error = [err.toString()];
