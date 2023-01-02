@@ -69,12 +69,16 @@ const fetch = async (uid, types = []) => {
     }
 }
 
-const update = async (uid, object) => {
+const update = async (uid, object, config) => {
     const client = await getRedisClient();
     const key = `nexjob:${uid}`;
 
+    const useTransaction = Boolean(config?.transaction);
+
     return client.executeIsolated(async isolatedClient => {
-        await isolatedClient.watch(key)
+        if (useTransaction) {
+            await isolatedClient.watch(key)
+        }
 
         const multi = isolatedClient.multi()
         const entry = JSON.parse(await isolatedClient.get(key))
