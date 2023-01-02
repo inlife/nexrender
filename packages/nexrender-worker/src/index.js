@@ -1,6 +1,7 @@
 const { createClient } = require('@create-global/nexrender-api')
 const { init, render } = require('@create-global/nexrender-core')
 const { getRenderingStatus } = require('@create-global/nexrender-types/job')
+const throttle = require('lodash.throttle');
 const rimraf = require('rimraf')
 
 const NEXRENDER_API_POLLING = Number(process.env.NEXRENDER_API_POLLING || 30 * 1000);
@@ -81,19 +82,21 @@ const start = async (host, secret, settings) => {
             continue;
         }
 
-        try {
-            job.onRenderProgress = function (job, /* progress */) {
-                try {
-                    /* send render progress to our server */
-                    client.updateJob(job.uid, getRenderingStatus(job))
-                } catch (err) {
-                    if (settings.stopOnError) {
-                        throw err;
-                    } else {
-                        console.log(`[${job.uid}] error occurred: ${err.stack}`)
-                    }
+        const handleRenderProgress = throttle(function (job, /* progress */) {
+            try {
+                /* send render progress to our server */
+                client.updateJob(job.uid, getRenderingStatus(job))
+            } catch (err) {
+                if (settings.stopOnError) {
+                    throw err;
+                } else {
+                    console.log(`[${job.uid}] error occurred: ${err.stack}`)
                 }
             }
+        }, 1000);
+
+        try {
+            job.onRenderProgress = handleRenderProgress
 
             job = await Promise.race([
                 waitAndThrow(NEXRENDER_TIMEOUT, 'render timeout'),
@@ -101,9 +104,12 @@ const start = async (host, secret, settings) => {
             ]);
             job.state = 'finished';
             job.finishedAt = new Date()
+            // invoke last-scheduled onRenderProgress
+            handleRenderProgress.flush();
 
             await client.updateJob(job.uid, getRenderingStatus(job))
         } catch (err) {
+            handleRenderProgress.flush();
             job.retries = job.retries || 0
 
             if (err.retry !== false && job.retries <= NEXRENDER_MAX_RETRIES) {
