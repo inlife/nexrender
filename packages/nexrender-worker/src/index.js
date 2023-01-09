@@ -67,7 +67,7 @@ const start = async (host, secret, settings) => {
 
     // if there is no setting for how many empty queues to tolerate, make one from the
     // environment variable, or the default (which is zero)
-    if( !typeof settings.tolerateEmptyQueues == 'number' ){
+    if( !(typeof settings.tolerateEmptyQueues == 'number') ){
         settings.tolerateEmptyQueues = NEXRENDER_TOLERATE_EMPTY_QUEUES;
     }
 
