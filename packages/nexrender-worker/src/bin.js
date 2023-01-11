@@ -35,6 +35,7 @@ const args = arg({
     '--max-memory-percent':     Number,
     '--image-cache-percent':    Number,
     '--polling':                Number,
+    '--header':                 [String],
 
     '--aerender-parameter':     [String],
 
@@ -112,6 +113,10 @@ if (args['--help']) {
 
     --polling                               amount of miliseconds to wait before checking queued projects from the api,
                                             if specified will be used instead of NEXRENDER_API_POLLING env variable
+
+    --header                                Define custom header that the worker will use to communicate with nexrender-server.
+                                            Accepted format follows curl or wget request header definition,
+                                            eg. --header="Some-Custom-Header: myCustomValue".
 
     --multi-frames                          (from Adobe site): More processes may be created to render multiple frames simultaneously,
                                             depending on system configuration and preference settings.
@@ -215,4 +220,16 @@ if (settings['no-license']) {
     settings.addLicense = true;
 }
 
-start(serverHost, serverSecret, settings);
+const headers = {};
+if (args['--header']){
+    args['--header'].forEach((header) => {
+        const [key, value] = header.split(":");
+
+        // Only set header if both header key and value are defined
+        if(key && value){
+            headers[key.trim()] = value.trim();
+        }
+    });
+}
+
+start(serverHost, serverSecret, settings, headers);
