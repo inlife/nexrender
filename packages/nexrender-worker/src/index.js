@@ -46,7 +46,7 @@ const nextJob = async (client, settings) => {
  * @param  {Object} settings
  * @return {Promise}
  */
-const start = async (host, secret, settings) => {
+const start = async (host, secret, settings, headers) => {
     settings = init(Object.assign({}, settings, {
         logger: console,
     }))
@@ -55,7 +55,7 @@ const start = async (host, secret, settings) => {
         settings.tagSelector = settings.tagSelector.replace(/[^a-z0-9, ]/gi, '')
     }
 
-    const client = createClient({ host, secret });
+    const client = createClient({ host, secret, headers });
 
     do {
         let job = await nextJob(client, settings); {
