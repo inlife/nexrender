@@ -480,6 +480,7 @@ Second one is responsible for mainly job-related operations of the full cycle: d
 * `addLicense` - boolean, providing false will disable ae_render_only_node.txt license file auto-creation (true by default)
 * `forceCommandLinePatch` - boolean, providing true will force patch re-installation
 * `wslMap` - String, set WSL drive map, check [wsl](#wsl) for more info
+* `maxRenderTimeout` - Number, set max render timeout in seconds, will abort rendering if it takes longer than this value (default: 0 - disabled)
 
 More info: [@nexrender/core](packages/nexrender-core)
 
