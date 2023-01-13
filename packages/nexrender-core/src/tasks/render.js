@@ -132,6 +132,18 @@ module.exports = (job, settings) => {
     return new Promise((resolve, reject) => {
         renderStopwatch = Date.now();
 
+        let timeoutID = 0;
+
+        if(settings.maxRenderTimeout){
+            const timeout = 1000*settings.maxRenderTimeout;
+            timeoutID = setTimeout(
+                () => reject(new Error(`Maximum rendering time exceeded`)),
+                timeout
+            );
+        }
+
+        
+
         if (settings.debug) {
             settings.logger.log(`[${job.uid}] spawning aerender process: ${settings.binary} ${params.join(' ')}`);
         }
@@ -145,7 +157,10 @@ module.exports = (job, settings) => {
             // env: { PATH: path.dirname(settings.binary) },
         });
 
-        instance.on('error', err => reject(new Error(`Error starting aerender process: ${err}`)));
+        instance.on('error', err => {
+            clearTimeout(timeoutID);
+            return reject(new Error(`Error starting aerender process: ${err}`));
+        });
 
         instance.stdout.on('data', (data) => {
             output.push(parse(data.toString('utf8')));
@@ -168,7 +183,7 @@ module.exports = (job, settings) => {
                     settings.logger.log(`[${job.uid}] dumping aerender log:`)
                     settings.logger.log(fs.readFileSync(logPath, 'utf8'))
                 }
-
+                clearTimeout(timeoutID);
                 return reject(new Error(outputStr || 'aerender.exe failed to render the output into the file due to an unknown reason'));
             }
 
@@ -179,6 +194,7 @@ module.exports = (job, settings) => {
 
             /* resolve job without checking if file exists, or its size for image sequences */
             if (settings.skipRender || job.template.imageSequence || ['jpeg', 'jpg', 'png'].indexOf(outputFile) !== -1) {
+                clearTimeout(timeoutID);
                 return resolve(job)
             }
 
@@ -204,7 +220,7 @@ module.exports = (job, settings) => {
                     settings.logger.log(`[${job.uid}] dumping aerender log:`)
                     settings.logger.log(fs.readFileSync(logPath, 'utf8'))
                 }
-
+                clearTimeout(timeoutID);
                 return reject(new Error(`Couldn't find a result file: ${outputFile}`))
             }
 
@@ -214,7 +230,7 @@ module.exports = (job, settings) => {
             if (stats.size < 1000) {
                 settings.logger.log(`[${job.uid}] Warning: output file size is less than 1000 bytes (${stats.size} bytes), be advised that file is corrupted, or rendering is still being finished`)
             }
-
+            clearTimeout(timeoutID);
             resolve(job)
         });
 
