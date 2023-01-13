@@ -14,6 +14,7 @@ const option = (params, name, ...values) => {
         values.every(value => value !== undefined) ? params.push(name, ...values) : undefined
     }
 }
+
 const seconds = (string) => string.split(':')
     .map((e, i) => (i < 3) ? +e * Math.pow(60, 2 - i) : +e * 10e-6)
     .reduce((acc, val) => acc + val);
@@ -117,7 +118,7 @@ module.exports = (job, settings) => {
 
         // There will be multiple error messages parsed when nexrender throws an error,
         // but we want only the first
-        if(matchError !== null && !errorSent){
+        if (matchError !== null && !errorSent) {
             settings.logger.log(`[${job.uid}] rendering reached an error: ${matchError[1]}`);
             if (job.hasOwnProperty('onRenderError') && typeof job['onRenderError'] == 'function') {
                 job.onRenderError(job, matchError[1]);
@@ -133,16 +134,6 @@ module.exports = (job, settings) => {
         renderStopwatch = Date.now();
 
         let timeoutID = 0;
-
-        if(settings.maxRenderTimeout){
-            const timeout = 1000*settings.maxRenderTimeout;
-            timeoutID = setTimeout(
-                () => reject(new Error(`Maximum rendering time exceeded`)),
-                timeout
-            );
-        }
-
-        
 
         if (settings.debug) {
             settings.logger.log(`[${job.uid}] spawning aerender process: ${settings.binary} ${params.join(' ')}`);
@@ -172,6 +163,17 @@ module.exports = (job, settings) => {
             (settings.verbose && settings.logger.log(data.toString('utf8')));
         });
 
+        if (settings.maxRenderTimeout && settings.maxRenderTimeout > 0) {
+            const timeout = 1000 * settings.maxRenderTimeout;
+            timeoutID = setTimeout(
+                () => {
+                    reject(new Error(`Maximum rendering time exceeded`));
+                    instance.kill('SIGINT');
+                },
+                timeout
+            );
+        }
+
         /* on finish (code 0 - success, other - error) */
         instance.on('close', (code) => {
 
@@ -183,6 +185,7 @@ module.exports = (job, settings) => {
                     settings.logger.log(`[${job.uid}] dumping aerender log:`)
                     settings.logger.log(fs.readFileSync(logPath, 'utf8'))
                 }
+
                 clearTimeout(timeoutID);
                 return reject(new Error(outputStr || 'aerender.exe failed to render the output into the file due to an unknown reason'));
             }
@@ -220,6 +223,7 @@ module.exports = (job, settings) => {
                     settings.logger.log(`[${job.uid}] dumping aerender log:`)
                     settings.logger.log(fs.readFileSync(logPath, 'utf8'))
                 }
+
                 clearTimeout(timeoutID);
                 return reject(new Error(`Couldn't find a result file: ${outputFile}`))
             }
@@ -230,6 +234,7 @@ module.exports = (job, settings) => {
             if (stats.size < 1000) {
                 settings.logger.log(`[${job.uid}] Warning: output file size is less than 1000 bytes (${stats.size} bytes), be advised that file is corrupted, or rendering is still being finished`)
             }
+
             clearTimeout(timeoutID);
             resolve(job)
         });
