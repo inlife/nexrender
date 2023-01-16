@@ -1,5 +1,4 @@
 const fs = require('fs')
-const os = require('os')
 const path = require('path')
 const {spawn} = require('child_process')
 const {expandEnvironmentVariables, checkForWSL} = require('../helpers/path')
@@ -206,31 +205,25 @@ module.exports = (job, settings) => {
             // the outputfile appears to be forced as .mov.
             // We need to maintain this here while we have 2022 and 2020
             // workers simultaneously
-            
-            const existsOutputFile = fs.existsSync(job.output)
 
-            //only check for varients if the current job.output as defined as part of the setup isn't found. 
-            if (!existsOutputFile){
-                const movOutputFile = outputFile.replace(/\.avi$/g, '.mov')
-                const existsMovOutputFile = fs.existsSync(movOutputFile)
-                const renderPlatform = os.platform()
-                if (existsMovOutputFile) {
-                job.output = movOutputFile
-                }  else if (renderPlatform != 'darwin'){
-                    // AE 2023 use mp4 output files we need to check both windows and mac 
-                    const aviToMp4OutputFile = outputFile.replace(/\.avi$/g, '.mp4')
-                    const existsAviToMp4OutputFile = fs.existsSync(aviToMp4OutputFile)
-                    if (existsAviToMp4OutputFile) {
-                        job.output = aviToMp4OutputFile
-                    }
-                } else {
-                    const movToMp4OutputFile = outputFile.replace(/\.mov$/g, '.mp4')
-                    const existsMovToMp4OutputFile = fs.existsSync(movToMp4OutputFile)
-                    if (existsMovToMp4OutputFile) {
-                        job.output = movToMp4OutputFile
-                    }
-                }
+            const defaultOutputs = [
+                job.output,
+                job.output.replace(/\.avi$/g, '.mov'),
+                job.output.replace(/\.avi$/g, '.mp4'),
+                job.output.replace(/\.mov$/g, '.avi'),
+                job.output.replace(/\.mov$/g, '.mp4'),
+            ]
+
+            while (!fs.existsSync(defaultOutputs[0]) && defaultOutputs.length > 0) {
+                defaultOutputs.shift();
             }
+
+            if (defaultOutputs.length === 0) {
+                clearTimeout(timeoutID);
+                return reject(new Error(`Output file not found: ${job.output}`));
+            }
+
+            job.output = defaultOutputs[0];
 
             if (!fs.existsSync(job.output)) {
                 if (fs.existsSync(logPath)) {
