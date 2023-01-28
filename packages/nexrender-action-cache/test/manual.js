@@ -34,7 +34,7 @@ const settings = {
     try{
         await fs.writeFile(path.join(cacheDirectory, "test.aep"), "Some content");
         await fs.writeFile(path.join(cacheDirectory, "image.jpg"), "Not an image");
-        await cacheAction(job, settings, {cacheDirectory, ttl}, "predownload");
+        await cacheAction(job, settings, {cacheDirectory, ttl, cacheAssets: true}, "predownload");
 
         assert.equal(job.template.src, `file://${path.join(cacheDirectory, "test.aep")}`);
         assert.deepEqual(job.assets, [
@@ -57,7 +57,7 @@ const settings = {
         await fs.writeFile(path.join(workpathDirectory, "test.aep"), "Some content");
         await fs.writeFile(path.join(workpathDirectory, "image.jpg"), "Not an image");
 
-        await cacheAction(job, settings, {cacheDirectory, ttl}, "postdownload");
+        await cacheAction(job, settings, {cacheDirectory, ttl, cacheAssets: true}, "postdownload");
 
         assert(existsSync(path.join(cacheDirectory, "test.aep")));
         assert(existsSync(path.join(cacheDirectory, "image.jpg")));

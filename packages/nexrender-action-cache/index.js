@@ -34,15 +34,17 @@ async function findValidateCache(asset, settings, cacheDirectory, ttl){
     settings.logger.log(`> New source: ${asset.src}`);
 }
 
-const predownload = async (job, settings, { cacheDirectory, ttl }) => {
+const predownload = async (job, settings, { cacheDirectory, ttl, cacheAssets }) => {
     // Job template
     await findValidateCache(job.template, settings, cacheDirectory, ttl);
 
-    // Job assets
-    for(const asset of job.assets){
-        // Only asset types that can be downloaded files
-        if(['image', 'audio', 'video', 'script', 'static'].includes(asset.type)){
-            await findValidateCache(asset, settings, cacheDirectory, ttl);
+    if(cacheAssets){
+        // Job assets
+        for(const asset of job.assets){
+            // Only asset types that can be downloaded files
+            if(['image', 'audio', 'video', 'script', 'static'].includes(asset.type)){
+                await findValidateCache(asset, settings, cacheDirectory, ttl);
+            }
         }
     }
 }
@@ -69,20 +71,22 @@ async function saveCache(asset, settings, workpath, cacheDirectory){
     fs.copyFileSync(from, to);
 }
 
-const postdownload = async (job, settings, { cacheDirectory }) => {
+const postdownload = async (job, settings, { cacheDirectory, cacheAssets }) => {
     // Job template
     await saveCache(job.template, settings, job.workpath, cacheDirectory);
 
-    // Job assets
-    for(const asset of job.assets){
-        // Only asset types that can be downloaded files
-        if(['image', 'audio', 'video', 'script', 'static'].includes(asset.type)){
-            await saveCache(asset, settings, job.workpath, cacheDirectory);
+    if(cacheAssets){
+        // Job assets
+        for(const asset of job.assets){
+            // Only asset types that can be downloaded files
+            if(['image', 'audio', 'video', 'script', 'static'].includes(asset.type)){
+                await saveCache(asset, settings, job.workpath, cacheDirectory);
+            }
         }
     }
 }
 
-module.exports = (job, settings, { cacheDirectory, ttl }, type) => {
+module.exports = (job, settings, { cacheDirectory, ttl, cacheAssets }, type) => {
     if (!cacheDirectory) {
         throw new Error(`cacheDirectory not provided.`);
     }
@@ -94,11 +98,11 @@ module.exports = (job, settings, { cacheDirectory, ttl }, type) => {
     }
 
     if (type === 'predownload') {
-        return predownload(job, settings, { cacheDirectory, ttl }, type);
+        return predownload(job, settings, { cacheDirectory, ttl, cacheAssets }, type);
     }
 
     if (type === 'postdownload') {
-        return postdownload(job, settings, { cacheDirectory }, type);
+        return postdownload(job, settings, { cacheDirectory, cacheAssets }, type);
     }
 
     return Promise.resolve();
