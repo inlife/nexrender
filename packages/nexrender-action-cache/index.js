@@ -2,11 +2,8 @@ const fs = require('fs');
 const path = require('path');
 
 async function findValidateCache(asset, settings, cacheDirectory, ttl){
-    if (
-        !asset.src.startsWith('http://') &&
-        !asset.src.startsWith('https://')
-    ) {
-        settings.logger.log(`> Skipping cache for ${asset.src}; only http/https protocols are supported`);
+    if (asset.src.startsWith('file://')) {
+        settings.logger.log(`> Skipping cache for ${asset.src}; local file protocol is being used`);
         return;
     }
 
@@ -50,11 +47,8 @@ const predownload = async (job, settings, { cacheDirectory, ttl, cacheAssets }) 
 }
 
 async function saveCache(asset, settings, workpath, cacheDirectory){
-    if (
-        !asset.src.startsWith('http://') &&
-        !asset.src.startsWith('https://')
-    ) {
-        settings.logger.log(`> Skipping cache for ${asset.src}; only http/https protocols are supported`);
+    if (asset.src.startsWith('file://')) {
+        settings.logger.log(`> Skipping cache for ${asset.src}; local file protocol is being used`);
         return;
     }
 
