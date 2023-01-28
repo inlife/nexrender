@@ -2,7 +2,10 @@ const fs = require('fs');
 const path = require('path');
 
 const predownload = (job, settings, { cacheDirectory, ttl }) => {
-    if (job.template.src.startsWith('file://')) {
+    if (
+        !job.template.src.startsWith('http://') &&
+        !job.template.src.startsWith('https://')
+    ) {
         settings.logger.log(`> Skipping template cache; local file protocol is being used`)
         return Promise.resolve();
     }
@@ -35,7 +38,10 @@ const predownload = (job, settings, { cacheDirectory, ttl }) => {
 }
 
 const postdownload = (job, settings, { cacheDirectory }) => {
-    if (job.template.src.startsWith('file://')) {
+    if (
+        !job.template.src.startsWith('http://') &&
+        !job.template.src.startsWith('https://')
+    ) {
         settings.logger.log(`> Skipping template cache; local file protocol is being used`);
         return Promise.resolve();
     }
