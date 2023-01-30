@@ -72,3 +72,4 @@ Second one is responsible for mainly job-related operations of the full cycle: d
 * `forceCommandLinePatch` - boolean, providing true will force patch re-installation
 * `onInstanceSpawn` - a callback, if provided, gets called when **aerender** instance is getting spawned, with instance pointer. Can be later used to kill a hung aerender process. Callback signature: `function (instance, job, settings) {}`
 * `actions` - an object with keys corresponding to the `module` field when defining an action, value should be a function matching expected signature of an action. Used for defining actions programmatically without needing to package the action as a separate package
+* `cache` - boolean or string. Set the cache folder used by HTTP assets. If `true` will use the default path of `${workpath}/http-cache`, if set to a string it will be interpreted as a filesystem path to the cache folder.

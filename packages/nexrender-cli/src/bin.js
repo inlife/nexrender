@@ -17,6 +17,8 @@ const args = arg({
     '--binary':     String,
     '--workpath':   String,
     '--wsl-map':    String,
+    '--cache':      Boolean,
+    '--cache-path': String,
 
     '--stop-on-error':  Boolean,
 
@@ -83,8 +85,15 @@ if (args['--help']) {
 
       -m, --wsl-map                         drive letter of your WSL mapping in Windows
 
+
   {bold ADVANCED OPTIONS}
 
+
+    --cache                                 Boolean flag that enables default HTTP caching of assets.
+                                            Will save cache to [workpath]/http-cache unless "--cache-path is used"
+
+    --cache-path                            String value that sets the HTTP cache path to the provided folder path.
+                                            "--cache" will default to true if this is used.
 
     --stop-on-error                         forces worker to stop if processing/rendering error occures,
                                             otherwise worker will report an error, and continue working
@@ -167,6 +176,12 @@ opt('maxMemoryPercent',     '--max-memory-percent');
 opt('imageCachePercent',    '--image-cache-percent');
 opt('wslMap',               '--wsl-map');
 opt('aeParams',             '--aerender-parameter');
+
+if(args['--cache-path']){
+    opt('cache', '--cache-path');
+}else if(args['--cache']){
+    opt('cache', '--cache');
+}
 
 /* debug implies verbose */
 settings.verbose = settings.debug;

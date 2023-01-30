@@ -20,6 +20,8 @@ const args = arg({
     '--workpath':               String,
     '--wsl-map':                String,
     '--tag-selector':           String,
+    '--cache':                  Boolean,
+    '--cache-path':             String,
 
     '--stop-on-error':          Boolean,
 
@@ -96,7 +98,13 @@ if (args['--help']) {
 
   {bold ADVANCED OPTIONS}
 
-  
+
+    --cache                                 Boolean flag that enables default HTTP caching of assets.
+                                            Will save cache to [workpath]/http-cache unless "--cache-path is used"
+
+    --cache-path                            String value that sets the HTTP cache path to the provided folder path.
+                                            "--cache" will default to true if this is used.
+
     --stop-on-error                         forces worker to stop if processing/rendering error occures,
                                             otherwise worker will report an error, and continue working
 
@@ -198,6 +206,12 @@ opt('polling',              '--polling');
 opt('wslMap',               '--wsl-map');
 opt('aeParams',             '--aerender-parameter');
 opt('tagSelector',          '--tag-selector');
+
+if(args['--cache-path']){
+    opt('cache', '--cache-path');
+}else if(args['--cache']){
+    opt('cache', '--cache');
+}
 
 if (args['--cleanup']) {
     settings = init(Object.assign(settings, {
