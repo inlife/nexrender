@@ -14,7 +14,7 @@
     "match-all": "^1.2.5",
     "mime-types": "^2.1.29",
     "mkdirp": "^1.0.4",
-    "node-fetch": "^2.6.7",
+    "make-fetch-happen": "^11.0.2",
     "requireg": "^0.2.1",
     "rimraf": "^3.0.2"
   },
