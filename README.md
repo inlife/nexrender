@@ -397,7 +397,7 @@ Note: Callback functions are only available via programmatic use. For more infor
 
 > **Note:** Job states are mainly used for network rendering. If you are using `nexrender-cli` you can skip this section.
 
-Job can have state feild (`job.state`) be set to one of those values:
+Job can have state field (`job.state`) be set to one of those values:
 
  * `created` (default)
  * `queued` (when pushed to the nexrender-server)
