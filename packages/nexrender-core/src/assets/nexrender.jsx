@@ -237,7 +237,7 @@ nexrender.changeValueForKeypath = function (layer, keys, val) {
                 }
                 return { "value": o, "changed": true };
             } else {
-                throw new Error("nexrender: Can't find a property sequence " + keys.join('.') + " for key: " + key);
+                throw new Error("nexrender: Can't find a property sequence " + keys.join('.') + " for key: " + key + "within layer: " + layer);
             }
         }
     }
