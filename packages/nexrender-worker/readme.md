@@ -87,4 +87,5 @@ Available settings (almost same as for `nexrender-core`):
 * `wslMap` - string, drive letter of your WSL mapping in Windows
 * `aeParams` - array of strings, any additional params that will be passed to the aerender binary, a name-value parameter pair separated by a space,
 * `actions` - an object with keys corresponding to the `module` field when defining an action, value should be a function matching expected signature of an action. Used for defining actions programmatically without needing to package the action as a separate package
+* `cache` - boolean or string. Set the cache folder used by HTTP assets. If `true` will use the default path of `${workpath}/http-cache`, if set to a string it will be interpreted as a filesystem path to the cache folder.
 

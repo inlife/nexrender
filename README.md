@@ -397,7 +397,7 @@ Note: Callback functions are only available via programmatic use. For more infor
 
 > **Note:** Job states are mainly used for network rendering. If you are using `nexrender-cli` you can skip this section.
 
-Job can have state feild (`job.state`) be set to one of those values:
+Job can have state field (`job.state`) be set to one of those values:
 
  * `created` (default)
  * `queued` (when pushed to the nexrender-server)
@@ -481,6 +481,7 @@ Second one is responsible for mainly job-related operations of the full cycle: d
 * `forceCommandLinePatch` - boolean, providing true will force patch re-installation
 * `wslMap` - String, set WSL drive map, check [wsl](#wsl) for more info
 * `maxRenderTimeout` - Number, set max render timeout in seconds, will abort rendering if it takes longer than this value (default: 0 - disabled)
+* `cache` - boolean or string. Set the cache folder used by HTTP assets. If `true` will use the default path of `${workpath}/http-cache`, if set to a string it will be interpreted as a filesystem path to the cache folder.
 
 More info: [@nexrender/core](packages/nexrender-core)
 
@@ -577,6 +578,40 @@ This way you (if you are using network rendering) can not only deliver assets to
             "type": "audio",
             "name": "music.mp3",
             "layerIndex": 15
+        }
+    ]
+}
+```
+
+### HTTP caching
+When using the `http` or `https` protocol, you can utilize local caching to minimize the amount of data that have to be transferred over a network and speed up project/assets download. To use HTTP caching, the server serving your assets must support the relevant [HTTP caching semantics](https://developer.mozilla.org/en-US/docs/Web/HTTP/Caching).
+
+The simplest way to enable caching is to use the setting wide cache option (setting`--cache` flag if using CLI or worker CLI, setting `cache: true` when using programmatically). This will enable HTTP based caching for all your assets and project files if they are requested over HTTP from a server that supports the relevant headers.
+
+You can also control caching on a more granular level if desired. For each asset's setting if a `params` property is set, it will be passed directly to [make-fetch-happen](https://github.com/npm/make-fetch-happen) which includes the `cachePath` property that you can set to a custom folder path (or null if you want to disable caching for a particular asset only).
+
+> Note: caches are not cleared automatically so you may need to monitor the cache folder size if you are using a lot of large assets over time. Assets, if they have been cached, will always resolve even if they are stale and the server is not available.
+
+### Example
+```json
+{
+    "assets": [
+        {
+            "src": "https://example.com/assets/image.jpg",
+            "type": "image",
+            "layerName": "MyNicePicture.jpg",
+            "params": {
+                "cachePath": "/tmp/my-nexrender-cache"
+            }
+        },
+        {
+            "src": "https://example.com/assets/jpeg-without-extension",
+            "type": "image",
+            "layerName": "MyOtherNicePicture.jpg",
+            "extension": "jpg",
+            "params": {
+                "cachePath": "/tmp/my-nexrender-cache"
+            }
         }
     ]
 }
