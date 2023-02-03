@@ -50,7 +50,12 @@ module.exports = (fetch, polling) => ({
     },
     fetchJob: async id => await fetch(`/jobs/${id}`),
     // default to 'default' jobs for backwards compatibility with nexrender-worker
-    pickupJob: async (types = ['default']) => await fetch(`/jobs/pickup?types=${types.join(',')}`),
+    pickupJob: async (types = [{ type: 'default' }]) => {
+        const params = new URLSearchParams({
+            types: JSON.stringify(types)
+        })
+        return fetch(`/jobs/pickup?${params}`)
+    },
 
     addJob: async data =>
         withEventEmitter(fetch, await fetch(`/jobs`, {

@@ -4,7 +4,8 @@
   "main": "src/index.js",
   "author": "Inlife",
   "scripts": {
-    "pkg-prelink": "node ../../misc/prelink.js"
+    "pkg-prelink": "node ../../misc/prelink.js",
+    "test": "jest"
   },
   "dependencies": {
     "@create-global/nexrender-types": "^1.45.0",
