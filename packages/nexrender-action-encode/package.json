@@ -1,7 +1,7 @@
 {
   "name": "@nexrender/action-encode",
   "author": "inlife",
-  "version": "1.39.7",
+  "version": "1.42.2",
   "main": "index.js",
   "ffmpeg-static": {
     "version": "b5.0.1",
