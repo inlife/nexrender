@@ -14,7 +14,7 @@ module.exports = (job, settings) => {
     try {
         assert(validate(job) == true)
     } catch (err) {
-        return Promise.reject('Error veryifing job: ' + err)
+        return Promise.reject(new Error('Error veryifing job: ' + err))
     }
 
     if (job.template.outputModule && !job.template.outputExt) {

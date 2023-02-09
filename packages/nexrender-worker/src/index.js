@@ -14,12 +14,10 @@ const delay = amount => (
 const nextJob = async (client, settings) => {
     do {
         try {
-            let job = {};
-            if(settings.tagSelector){
-                job = await client.pickupJob(settings.tagSelector);
-            }else{
-                job = await client.pickupJob();
-            }
+            let job = await (settings.tagSelector ?
+                await client.pickupJob(settings.tagSelector) :
+                await client.pickupJob()
+            );
 
             if (job && job.uid) {
                 return job
@@ -51,7 +49,7 @@ const start = async (host, secret, settings, headers) => {
         logger: console,
     }))
 
-    if( typeof settings.tagSelector == 'string' ){
+    if (typeof settings.tagSelector == 'string') {
         settings.tagSelector = settings.tagSelector.replace(/[^a-z0-9, ]/gi, '')
     }
 
@@ -72,12 +70,11 @@ const start = async (host, secret, settings, headers) => {
         }
 
         try {
-            job.onRenderProgress = function (job, /* progress */) {
+            job.onRenderProgress = (job) => {
                 try {
                     /* send render progress to our server */
                     client.updateJob(job.uid, getRenderingStatus(job))
                 } catch (err) {
-                    
                     if (settings.stopOnError) {
                         throw err;
                     } else {
@@ -88,13 +85,8 @@ const start = async (host, secret, settings, headers) => {
                 }
             }
 
-            job.onRenderError = function (_, err /* on render error */) {
-                /* set job render error to send to our server */
-                if( typeof err.toString == "function" ){
-                    job.error = [err.toString()];
-                }else{
-                    job.error = [err];
-                }
+            job.onRenderError = (job, err /* on render error */) => {
+                job.error = [].concat(job.error || [], [err.toString()]);
             }
 
             job = await render(job, settings); {
@@ -104,37 +96,9 @@ const start = async (host, secret, settings, headers) => {
 
             await client.updateJob(job.uid, getRenderingStatus(job))
         } catch (err) {
+            job.error = [].concat(job.error || [], [err.toString()]);
+            job.errorAt = new Date();
             job.state = 'error';
-
-            /* append existing error message with another error message */
-            if( job.hasOwnProperty("error") && job.error ) {
-                if(Array.isArray(job.error)){
-                    if( typeof job.error.toString == "function" ){ /* Use toString as possible to prevent JSON stringify null return */
-                        job.error = [].concat.apply(job.error,[err.toString()]);
-                    }else{
-                        job.error = [].concat.apply(job.error,[err]);
-                    }
-                }else{
-                    if( typeof job.error.toString == "function" ){ /* Use toString as possible to prevent JSON stringify null return */
-                        job.error = [job.error.toString()];
-                    }else{
-                        job.error = [job.error];
-                    }
-
-                    if( typeof err.toString == "function" ){ /* Use toString as possible to prevent JSON stringify null return */
-                        job.error.push(err.toString());
-                    }else{
-                        job.error.push(err);
-                    }
-                }
-            }else{
-                if( typeof err.toString == "function" ){  /* Use toString as possible to prevent JSON stringify null return */
-                    job.error = err.toString();
-                }else{
-                    job.error = err;
-                }
-            }
-            job.errorAt = new Date()
 
             await client.updateJob(job.uid, getRenderingStatus(job)).catch((err) => {
                 if (settings.stopOnError) {
@@ -143,7 +107,6 @@ const start = async (host, secret, settings, headers) => {
                     console.log(`[${job.uid}] error occurred: ${err.stack}`)
                     console.log(`[${job.uid}] render proccess stopped with error...`)
                     console.log(`[${job.uid}] continue listening next job...`)
-
                 }
             });
 

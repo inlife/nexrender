@@ -121,7 +121,7 @@ module.exports = (job, settings) => {
         if (matchError !== null && !errorSent) {
             settings.logger.log(`[${job.uid}] rendering reached an error: ${matchError[1]}`);
             if (job.hasOwnProperty('onRenderError') && typeof job['onRenderError'] == 'function') {
-                job.onRenderError(job, matchError[1]);
+                job.onRenderError(job, new Error(matchError[1]));
             }
             errorSent = true
         }
