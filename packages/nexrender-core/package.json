@@ -1,6 +1,6 @@
 {
   "name": "@create-global/nexrender-core",
-  "version": "1.48.12",
+  "version": "1.49.0",
   "main": "src/index.js",
   "author": "Inlife",
   "scripts": {
