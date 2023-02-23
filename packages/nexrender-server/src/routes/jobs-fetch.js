@@ -53,7 +53,7 @@ module.exports = async (req, res) => {
         const types = req.query.types.split(',')
         console.log(`fetching page ${page} jobs by types ${types.join(',')}`)
 
-        const jobs = await fetchAllJobs(page, size, types)
+        const jobs = await fetchAllJobs(page, size, types.map(type => ({ type })))
 
         send(res, 200, jobs)
     } else {
