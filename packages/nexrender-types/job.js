@@ -102,7 +102,7 @@ const getRenderingStatus = job => ({
     type: job.type,
     tags: job.tags || null,
     renderProgress: job.renderProgress || 0,
-    error: job.error || null,
+    error: (job.error && Array.isArray(job.error) ? job.error.join('\n\n') : job.error) || null,
     createdAt: job.createdAt || null,
     updatedAt: job.updatedAt || null,
     startedAt: job.startedAt || null,

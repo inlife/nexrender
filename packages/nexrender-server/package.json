@@ -1,6 +1,6 @@
 {
   "name": "@nexrender/server",
-  "version": "1.40.0",
+  "version": "1.42.3",
   "author": "inlife",
   "main": "src/index.js",
   "scripts": {
@@ -12,14 +12,14 @@
   },
   "pkg": {
     "targets": [
-      "node12-macos-x64",
-      "node12-linux-x64",
-      "node12-win-x64"
+      "node14-macos-x64",
+      "node14-linux-x64",
+      "node14-win-x64"
     ]
   },
   "dependencies": {
     "@nexrender/database-redis": "^1.38.1",
-    "@nexrender/types": "^1.40.0",
+    "@nexrender/types": "^1.42.2",
     "arg": "^4.1.0",
     "async-mutex": "^0.3.2",
     "chalk": "^2.4.2",

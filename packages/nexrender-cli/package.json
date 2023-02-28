@@ -1,6 +1,6 @@
 {
   "name": "@nexrender/cli",
-  "version": "1.40.1",
+  "version": "1.42.3",
   "author": "inlife",
   "main": "src/index.js",
   "scripts": {
@@ -11,12 +11,12 @@
   },
   "pkg": {
     "targets": [
-      "node12-macos-x64",
-      "node12-win-x64"
+      "node14-macos-x64",
+      "node14-win-x64"
     ]
   },
   "dependencies": {
-    "@nexrender/core": "^1.40.1",
+    "@nexrender/core": "^1.42.2",
     "arg": "^4.1.0",
     "chalk": "^2.4.2",
     "rimraf": "^3.0.2"
