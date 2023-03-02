@@ -108,6 +108,13 @@ if (args['--help']) {
     --stop-on-error                         forces worker to stop if processing/rendering error occures,
                                             otherwise worker will report an error, and continue working
 
+    --exit-on-empty-queue                   worker will exit when too many empty queues (see --tolerate-empty-queues) have been detected.
+                                            Useful when running on AWS EC2, to allow the instance to self-terminate and reduce compute costs
+
+    --tolerate-empty-queues                 worker will check an empty queue this many times before exiting (if that option has
+                                            been set using --exit-on-empty-queues). Defaults to zero. If specified will be used instead of
+                                            NEXRENDER_TOLERATE_EMPTY_QUEUES env variable
+
     --no-license                            prevents creation of the ae_render_only_node.txt file (enabled by default),
                                             which allows free usage of trial version of Adobe After Effects
 
