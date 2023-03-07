@@ -30,7 +30,7 @@
   "devDependencies": {
     "cross-env": "^5.2.0",
     "eslint": "^8.6.0",
-    "lerna": "^3.21.0",
+    "lerna": "^6.5.1",
     "mocha": "^7.1.2",
     "pkg": "^5.8.0"
   }
