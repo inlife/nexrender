@@ -24,7 +24,9 @@ const args = arg({
     '--cache-path':             String,
 
     '--stop-on-error':          Boolean,
-
+    '--exit-on-empty-queue':    Boolean,
+    '--tolerate-empty-queues':  Number,
+    
     '--skip-cleanup':           Boolean,
     '--skip-render':            Boolean,
     '--no-license':             Boolean,
