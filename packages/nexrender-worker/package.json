@@ -1,6 +1,6 @@
 {
   "name": "@nexrender/worker",
-  "version": "1.42.3",
+  "version": "1.42.4",
   "author": "inlife",
   "main": "src/index.js",
   "scripts": {
@@ -11,8 +11,8 @@
   },
   "pkg": {
     "targets": [
-      "node14-macos-x64",
-      "node14-win-x64"
+      "node18-macos-x64",
+      "node18-win-x64"
     ]
   },
   "dependencies": {
