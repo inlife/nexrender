@@ -209,6 +209,8 @@ opt('debug',                '--debug');
 opt('multiFrames',          '--multi-frames');
 opt('reuse',                '--reuse');
 opt('stopOnError',          '--stop-on-error');
+opt('tolerateEmptyQueues',  '--tolerate-empty-queues');
+opt('exitOnEmptyQueue',     '--exit-on-empty-queue');
 opt('maxMemoryPercent',     '--max-memory-percent');
 opt('imageCachePercent',    '--image-cache-percent');
 opt('polling',              '--polling');
