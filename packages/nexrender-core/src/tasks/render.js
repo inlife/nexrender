@@ -7,7 +7,7 @@ const progressRegex = /([\d]{1,2}:[\d]{2}:[\d]{2}:[\d]{2})\s+(\(\d+\))/gi;
 const durationRegex = /Duration:\s+([\d]{1,2}:[\d]{2}:[\d]{2}:[\d]{2})/gi;
 const startRegex = /Start:\s+([\d]{1,2}:[\d]{2}:[\d]{2}:[\d]{2})/gi;
 const nexrenderErrorRegex = /Error:\s+(nexrender:.*)$/gim;
-const errorRegex =          /aerender Error:\s*(.*)$/gis;
+const errorRegex = /aerender Error:\s*(.*)$/gis;
 
 const option = (params, name, ...values) => {
     if (values !== undefined) {
@@ -29,11 +29,29 @@ module.exports = (job, settings) => {
     let params = [];
     let outputFile = expandEnvironmentVariables(job.output)
     let projectFile = expandEnvironmentVariables(job.template.dest)
+    let logPath = path.resolve(job.workpath, `../aerender-${job.uid}.log`)
+
+    if (process.env.NEXRENDER_ENABLE_AELOG_PROJECT_FOLDER) {
+        logPath = path.join(job.workpath, `aerender.log`)
+        settings.logger.log(`[${job.uid}] setting aerender log path to project folder: ${logPath}`);
+    } else if (process.env.NEXRENDER_ENABLE_AELOG_LEGACY_TEMP_FOLDER) {
+        settings.logger.log(`[${job.uid}] setting aerender log path to temp folder: ${logPath}`);
+    } else {
+        settings.logger.log(`[${job.uid}] -- D E P R E C A T I O N: --
+
+nexrender is changing the default aerender log path to the project folder.
+This is done to streamline the log management and enable efficient log cleanup.
+
+If you want to keep the old behavior and mute this message, please set the environment variable NEXRENDER_ENABLE_AELOG_LEGACY_TEMP_FOLDER to true.
+If you want to switch to the new behavior, please set the environment variable NEXRENDER_ENABLE_AELOG_PROJECT_FOLDER to true.
+
+Right now, the old behavior is still the default, but this will change in the next minor releases.
+Estimated date of change to the new behavior: 2023-06-01.\n`);
+    }
 
     const outputFileAE = checkForWSL(outputFile, settings)
     projectFile = checkForWSL(projectFile, settings)
     let jobScriptFile = checkForWSL(job.scriptfile, settings)
-
 
     // setup parameters
     params.push('-project', projectFile);
@@ -140,7 +158,6 @@ module.exports = (job, settings) => {
         }
 
         const output = [];
-        const logPath = path.resolve(job.workpath, `../aerender-${job.uid}.log`)
         const instance = spawn(settings.binary, params, {
             windowsHide: true
             // NOTE: disabled PATH for now, there were a few
