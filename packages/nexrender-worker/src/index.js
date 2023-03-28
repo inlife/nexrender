@@ -3,6 +3,8 @@ const { init, render } = require('@nexrender/core')
 const { getRenderingStatus } = require('@nexrender/types/job')
 
 const NEXRENDER_API_POLLING = process.env.NEXRENDER_API_POLLING || 30 * 1000;
+const NEXRENDER_TOLERATE_EMPTY_QUEUES = process.env.NEXRENDER_TOLERATE_EMPTY_QUEUES;
+var emptyReturns = 0;
 
 /* TODO: possibly add support for graceful shutdown */
 let active = true;
@@ -20,8 +22,14 @@ const nextJob = async (client, settings) => {
             );
 
             if (job && job.uid) {
+                emptyReturns = 0;
                 return job
+            } else {
+                // no job was returned by the server. If enough checks have passed, and the exit option is set, deactivate the worker
+                emptyReturns++;
+                if (settings.exitOnEmptyQueue && emptyReturns > settings.tolerateEmptyQueues) active = false;
             }
+
         } catch (err) {
             if (settings.stopOnError) {
                 throw err;
@@ -32,7 +40,7 @@ const nextJob = async (client, settings) => {
             }
         }
 
-        await delay(settings.polling || NEXRENDER_API_POLLING)
+        if (active) await delay(settings.polling || NEXRENDER_API_POLLING)
     } while (active)
 }
 
@@ -52,14 +60,22 @@ const start = async (host, secret, settings, headers) => {
     if (typeof settings.tagSelector == 'string') {
         settings.tagSelector = settings.tagSelector.replace(/[^a-z0-9, ]/gi, '')
     }
-
+    // if there is no setting for how many empty queues to tolerate, make one from the
+    // environment variable, or the default (which is zero)
+    if (!(typeof settings.tolerateEmptyQueues == 'number')) {
+        settings.tolerateEmptyQueues = NEXRENDER_TOLERATE_EMPTY_QUEUES;
+    }
+    
     const client = createClient({ host, secret, headers });
 
     do {
-        let job = await nextJob(client, settings); {
-            job.state = 'started';
-            job.startedAt = new Date()
-        }
+        let job = await nextJob(client, settings);
+
+        // if the worker has been deactivated, exit this loop
+        if (!active) break;
+
+        job.state = 'started';
+        job.startedAt = new Date()
 
         try {
             await client.updateJob(job.uid, job)
