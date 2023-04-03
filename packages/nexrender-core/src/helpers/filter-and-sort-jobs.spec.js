@@ -94,5 +94,13 @@ describe('filterAndSortJobs', function () {
                 ]
             );
         })
+
+        it('filter jobs using different configs for the same job type', () => {
+            const res = filterAndSortJobs(jobs, [
+                { type: 'ct-analysis', filterPolicy: { a: 0 }  },
+                { type: 'ct-analysis', filterPolicy: { c: 'testString' } }
+            ])
+            expect(res).toEqual([expect.objectContaining({ id: 1 })])
+        })
     })
 });

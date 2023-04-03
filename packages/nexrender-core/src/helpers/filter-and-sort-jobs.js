@@ -1,50 +1,47 @@
 module.exports = (results, types = []) => {
-    const filterPolicyMap = types.reduce((res, config) => {
-        res.set(config.type, config.filterPolicy)
-        return res
-    }, new Map())
-
     return results.filter((job) => {
         if (!types.length) {
             return true
         }
 
-        if (filterPolicyMap.has(job.type)) {
-            const filterPolicy = filterPolicyMap.get(job.type)
+        const matchedType = types.find(config => {
+            if (config.type !== job.type) {
+                return false;
+            }
+            const filterPolicy = config.filterPolicy;
 
             if (!filterPolicy) {
                 return true
             }
 
             return Object.entries(filterPolicy).every(([filterKey, filterValue]) => {
-               const jobAttributes = job?.ct?.attributes
-               if (!jobAttributes) {
-                   return false
-               }
+                const jobAttributes = job?.ct?.attributes
+                if (!jobAttributes) {
+                    return false
+                }
 
-               const jobAttributeValue = jobAttributes[filterKey]
+                const jobAttributeValue = jobAttributes[filterKey]
 
-               // check primitive value types (string/numbers/values)
-               if (jobAttributeValue === filterValue) {
-                   return true
-               }
+                // check primitive value types (string/numbers/values)
+                if (jobAttributeValue === filterValue) {
+                    return true
+                }
 
-               if (Array.isArray(filterValue) && Array.isArray(jobAttributeValue)) {
-                   return filterValue.some(value => jobAttributeValue.includes(value))
-               }
+                if (Array.isArray(filterValue) && Array.isArray(jobAttributeValue)) {
+                    return filterValue.some(value => jobAttributeValue.includes(value))
+                }
 
-               if (Array.isArray(filterValue)) {
-                   return filterValue.some(value => value === jobAttributeValue)
+                if (Array.isArray(filterValue)) {
+                    return filterValue.some(value => value === jobAttributeValue)
 
-               }
-               if (Array.isArray(jobAttributeValue)) {
-                   return jobAttributeValue.includes(filterValue)
-               }
+                }
+                if (Array.isArray(jobAttributeValue)) {
+                    return jobAttributeValue.includes(filterValue)
+                }
             })
+        });
 
-        }
-
-        return false
+        return Boolean(matchedType);
     }).sort((a, b) => {
         return new Date(a.createdAt).getTime() > new Date(b.createdAt).getTime() ? 1 : -1
     })
