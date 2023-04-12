@@ -65,6 +65,9 @@ const start = async (host, secret, settings) => {
     if (!settings.onReadyForPickup) {
         settings.onReadyForPickup = () => true
     }
+    if (!settings.onError) {
+        settings.onError = () => {}
+    }
 
     const client = createClient({ host, secret });
 
@@ -145,6 +148,7 @@ const start = async (host, secret, settings) => {
             });
 
             if (settings.stopOnError) {
+                await settings.onError(err, job)
                 throw err;
             } else {
                 console.log(`[${job.uid}] error occurred: ${err.stack}`)
