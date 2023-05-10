@@ -57,12 +57,19 @@ module.exports = (fetch, polling) => ({
         return fetch(`/jobs/pickup?${params}`)
     },
 
-    addJob: async data =>
-        withEventEmitter(fetch, await fetch(`/jobs`, {
+    addJob: async (data, options = {withEvents: true}) => {
+        const fetchJobs = fetch(`/jobs`, {
             method: 'post',
             headers: {'content-type': 'application/json'},
             body: JSON.stringify(data),
-        }), polling),
+        })
+
+        if (options.withEvents) {
+            return withEventEmitter(fetch, await fetchJobs, polling)
+        }
+
+        return fetchJobs
+    },
 
     resumeJob: async id =>
         withEventEmitter(fetch, await fetch(`/jobs/${id}`), polling),
