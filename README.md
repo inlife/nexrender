@@ -221,6 +221,23 @@ $ nexrender-cli --file myjob.json
 
 More info: [@nexrender/cli](packages/nexrender-cli)
 
+#### After Effects 2023
+
+Please not that for After Effects 2023, it's vital to set up an Output Module, even if you want to rely on the default output module. After Effects 2023 rendering binary (aerender) in a lot of cases will not render a composition unless it has a configured output module. Additionally, AE2023 now allows rendering directly to mp4, so consider setting up a custom value for `outputExt` as well. To do that, take a look at following example:
+
+```json
+// myjob.json
+{
+    "template": {
+        "src": "file:///users/myuser/documents/myproject_ae2023.aep",
+        "composition": "main",
+        "outputModule": "H.264 - Match Render Settings - 15 Mbps",
+        "outputExt": "mp4",
+        "settingsTemplate": "Best Settings"
+    }
+}
+```
+
 ### Assets
 
 We've successfully rendered a static project file using nexrender, however, there is not much point doing that unless we
