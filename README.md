@@ -3,7 +3,7 @@
 </p>
 
 <div align="center">
-    <a href="https://travis-ci.org/inlife/nexrender"><img src="https://travis-ci.org/inlife/nexrender.svg?branch=master" alt="Build status" /></a>
+    <a href="https://github.com/inlife/nexrender/releases"><img alt="GitHub Release Date" src="https://img.shields.io/github/release-date/inlife/nexrender" /></a>
     <a href="https://github.com/inlife/nexrender/releases"><img src="https://img.shields.io/github/downloads/inlife/nexrender/total?label=release%20downloads"/></a>
     <a href="https://www.npmjs.com/package/@nexrender/core"><img src="https://img.shields.io/npm/dt/@nexrender/core?label=npm%20downloads"/></a>
     <a href="https://discord.gg/S2JtRcB"><img src="https://discordapp.com/api/guilds/354670964400848898/embed.png" alt="Discord server" /></a>
@@ -220,6 +220,23 @@ $ nexrender-cli --file myjob.json
 > Note: its recommended to run `nexrender-cli -h` at least once, to read all useful information about available options.
 
 More info: [@nexrender/cli](packages/nexrender-cli)
+
+#### After Effects 2023
+
+Please not that for After Effects 2023, it's vital to set up an Output Module, even if you want to rely on the default output module. After Effects 2023 rendering binary (aerender) in a lot of cases will not render a composition unless it has a configured output module. Additionally, AE2023 now allows rendering directly to mp4, so consider setting up a custom value for `outputExt` as well. To do that, take a look at following example:
+
+```json
+// myjob.json
+{
+    "template": {
+        "src": "file:///users/myuser/documents/myproject_ae2023.aep",
+        "composition": "main",
+        "outputModule": "H.264 - Match Render Settings - 15 Mbps",
+        "outputExt": "mp4",
+        "settingsTemplate": "Best Settings"
+    }
+}
+```
 
 ### Assets
 
