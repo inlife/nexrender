@@ -29,6 +29,9 @@ const create = job => Object.assign({
         outputModule: undefined,
         outputExt: undefined,
         imageSequence: false,
+
+        renderSettings: undefined,
+        outputSettings: undefined,
     },
     assets: [],
     actions: {

@@ -360,6 +360,9 @@ Job structure has more fields, that we haven't checked out yet. The detailed ver
         "settingsTemplate": String,
         "outputModule": String,
         "outputExt": String,
+
+        "renderSettings": String,
+        "outputSettings": String,
     },
     "assets": [],
     "actions": {

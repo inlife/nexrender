@@ -62,6 +62,9 @@ Estimated date of change to the new behavior: 2023-06-01.\n`);
         option(params, '-OMtemplate', job.template.outputModule);
         option(params, '-RStemplate', job.template.settingsTemplate);
 
+        option(params, '-renderSettings', job.template.renderSettings);
+        option(params, '-outputSettings', job.template.outputSettings);
+
         option(params, '-s', job.template.frameStart);
         option(params, '-e', job.template.frameEnd);
         option(params, '-i', job.template.incrementFrame);
