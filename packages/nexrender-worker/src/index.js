@@ -57,6 +57,11 @@ const start = async (host, secret, settings, headers) => {
         logger: console,
     }))
 
+    settings.logger.log('starting nexrender-worker with following settings:')
+    Object.keys(settings).forEach(key => {
+        settings.logger.log(` - ${key}: ${settings[key]}`)
+    })
+
     if (typeof settings.tagSelector == 'string') {
         settings.tagSelector = settings.tagSelector.replace(/[^a-z0-9, ]/gi, '')
     }
@@ -65,7 +70,7 @@ const start = async (host, secret, settings, headers) => {
     if (!(typeof settings.tolerateEmptyQueues == 'number')) {
         settings.tolerateEmptyQueues = NEXRENDER_TOLERATE_EMPTY_QUEUES;
     }
-    
+
     const client = createClient({ host, secret, headers });
 
     do {

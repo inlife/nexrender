@@ -26,7 +26,7 @@ const args = arg({
     '--stop-on-error':          Boolean,
     '--exit-on-empty-queue':    Boolean,
     '--tolerate-empty-queues':  Number,
-    
+
     '--skip-cleanup':           Boolean,
     '--skip-render':            Boolean,
     '--no-license':             Boolean,
@@ -187,10 +187,6 @@ console.log(chalk`> starting {bold.cyan nexrender-worker} endpoint {bold ${serve
 
 let settings = {};
 const opt = (key, arg) => {if (args[arg]) {
-    //If not specified == true, otherwise false
-    if(key === "stopOnError"){
-        args[arg] = false;
-    }
     settings[key] = args[arg];
 }}
 
@@ -222,6 +218,12 @@ if(args['--cache-path']){
     opt('cache', '--cache-path');
 }else if(args['--cache']){
     opt('cache', '--cache');
+}
+
+if (args['--stop-on-error']) {
+    settings['stopOnError'] = true;
+} else {
+    settings['stopOnError'] = false;
 }
 
 if (args['--cleanup']) {

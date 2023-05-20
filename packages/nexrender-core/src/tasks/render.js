@@ -238,14 +238,7 @@ Estimated date of change to the new behavior: 2023-06-01.\n`);
                 defaultOutputs.shift();
             }
 
-            if (defaultOutputs.length === 0) {
-                clearTimeout(timeoutID);
-                return reject(new Error(`Output file not found: ${job.output}`));
-            }
-
-            job.output = defaultOutputs[0];
-
-            if (!fs.existsSync(job.output)) {
+            if (defaultOutputs.length === 0 || !fs.existsSync(defaultOutputs[0])) {
                 if (fs.existsSync(logPath)) {
                     settings.logger.log(`[${job.uid}] dumping aerender log:`)
                     settings.logger.log(fs.readFileSync(logPath, 'utf8'))
@@ -255,6 +248,7 @@ Estimated date of change to the new behavior: 2023-06-01.\n`);
                 return reject(new Error(`Couldn't find a result file: ${outputFile}`))
             }
 
+            job.output = defaultOutputs[0];
             const stats = fs.statSync(job.output)
 
             /* file smaller than 1000 bytes */
