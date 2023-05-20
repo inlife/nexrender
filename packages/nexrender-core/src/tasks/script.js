@@ -16,7 +16,7 @@ const selectLayers = (job, settings, { composition, layerName, layerIndex }, cal
     const method = layerName ? 'selectLayersByName' : 'selectLayersByIndex';
     const compo  = composition === undefined ? 'null' : escape(composition);
     const value  = layerName ? escape(layerName) : layerIndex;
-    return (`nexrender.${method}(${compo}, ${value}, ${callbackString},null,${job.template.continueOnMissing});`);
+    return (`nexrender.${method}(${compo}, ${value}, ${callbackString}, null, ${job.template.continueOnMissing});`);
 }
 
 const renderIf = (value, string) => {
@@ -31,7 +31,7 @@ const partsOfKeypath = (keypath) => {
 
 /* scripting wrappers */
 const wrapFootage = (job, settings, { dest, ...asset }) => (`(function() {
-    ${selectLayers(job, settings, `function(layer) {
+    ${selectLayers(job, settings, asset, `function(layer) {
         nexrender.replaceFootage(layer, '${checkForWSL(dest.replace(/\\/g, "\\\\"), settings)}')
     }`)}
 })();\n`)
@@ -42,8 +42,6 @@ const wrapData = (job, settings, { property, value, expression, ...asset }) => (
         ${renderIf(value, `var value = { "value": $value }`)}
         ${renderIf(expression, `var value = { "expression": $value }`)}
         nexrender.changeValueForKeypath(layer, parts, value);
-
-        return true;
     }`)}
 })();\n`)
 
