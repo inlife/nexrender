@@ -254,7 +254,7 @@ function AECommandLineRenderer() {
 
         // ExtendScript too old to have str.trim(), replace when it does
         function trim(s) {
-            return s.replace(/^\s+|\s+$/g, '');
+            return s.replace(/^s+|s+$/g, '');
         }
 
         for (var i in keyValuePairs) {
