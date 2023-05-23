@@ -6,7 +6,7 @@
     <a href="https://github.com/inlife/nexrender/releases"><img alt="GitHub Release Date" src="https://img.shields.io/github/release-date/inlife/nexrender" /></a>
     <a href="https://github.com/inlife/nexrender/releases"><img src="https://img.shields.io/github/downloads/inlife/nexrender/total?label=release%20downloads"/></a>
     <a href="https://www.npmjs.com/package/@nexrender/core"><img src="https://img.shields.io/npm/dt/@nexrender/core?label=npm%20downloads"/></a>
-    <a href="https://discord.gg/S2JtRcB"><img src="https://discordapp.com/api/guilds/354670964400848898/embed.png" alt="Discord server" /></a>
+    <a href="https://discord.gg/S2JtRcB"><img src="https://discordapp.com/api/guilds/250389725406429199/embed.png" alt="Discord server" /></a>
 </div>
 
 <br />
