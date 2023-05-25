@@ -3,7 +3,7 @@ const path = require('path')
 const {spawn} = require('child_process')
 const {expandEnvironmentVariables, checkForWSL} = require('../helpers/path')
 
-const progressRegex = /([\d]{1,2}:[\d]{2}:[\d]{2}:[\d]{2})\s+(\(\d+\))/gi;
+const progressRegex = /([\d]{1,2}:[\d]{2}:[\d]{2}:[\d]{2})\s+(\(\d+[UL]?\))/gi;
 const durationRegex = /Duration:\s+([\d]{1,2}:[\d]{2}:[\d]{2}:[\d]{2})/gi;
 const startRegex = /Start:\s+([\d]{1,2}:[\d]{2}:[\d]{2}:[\d]{2})/gi;
 const nexrenderErrorRegex = /Error:\s+(nexrender:.*)$/gim;
