@@ -13,15 +13,24 @@ module.exports = (settings) => {
     settings.logger.log(' - ' + nodefile1)
     settings.logger.log(' - ' + nodefile2)
 
+    let applied = false
+
     if (!fs.existsSync(adobe)) {
         fs.mkdirSync(adobe)
     }
 
     if (!fs.existsSync(nodefile1)) {
         fs.writeFileSync(nodefile1, '')
+        applied = true
     }
 
     if (!fs.existsSync(nodefile2)) {
         fs.writeFileSync(nodefile2, '')
+        applied = true
+    }
+
+    if (applied) {
+        settings.track('Init Render License Added')
+        settings.logger.log('added render-only-node licenses for After Effects')
     }
 }

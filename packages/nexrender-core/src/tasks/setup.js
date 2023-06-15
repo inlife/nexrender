@@ -56,10 +56,17 @@ P.S. to prevent nexrender from removing temp file data, you also can please prov
 
     // setup paths
     job.workpath = path.join(settings.workpath, job.uid);
-    job.output   = job.output || path.join(job.workpath, job.resultname);
+    job.output   = job.template.output || job.output || path.join(job.workpath, job.resultname);
     mkdirp.sync(job.workpath);
 
     settings.logger.log(`[${job.uid}] working directory is: ${job.workpath}`);
+
+    settings.track('Job Setup Succeeded', {
+        job_id: job.uid, // anonymized internally
+        job_set_output_ext: !!job.template.outputExt,
+        job_set_output_module: !!job.template.outputModule,
+        job_set_output_image_sequence: !!job.template.imageSequence,
+    })
 
     return Promise.resolve(job)
 };

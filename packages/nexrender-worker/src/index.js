@@ -53,7 +53,7 @@ const nextJob = async (client, settings) => {
  * @return {Promise}
  */
 const start = async (host, secret, settings, headers) => {
-    settings = init(Object.assign({}, settings, {
+    settings = init(Object.assign({ process: 'nexrender-worker' }, settings, {
         logger: console,
     }))
 
@@ -73,11 +73,23 @@ const start = async (host, secret, settings, headers) => {
 
     const client = createClient({ host, secret, headers });
 
+    settings.track('Worker Started', {
+        worker_tags_set: !!settings.tagSelector,
+        worker_setting_tolerate_empty_queues: settings.tolerateEmptyQueues,
+        worker_setting_exit_on_empty_queue: settings.exitOnEmptyQueue,
+        worker_setting_polling: settings.polling,
+        worker_setting_stop_on_error: settings.stopOnError,
+    })
+
     do {
         let job = await nextJob(client, settings);
 
         // if the worker has been deactivated, exit this loop
         if (!active) break;
+
+        settings.track('Worker Job Started', {
+            job_id: job.uid, // anonymized internally
+        })
 
         job.state = 'started';
         job.startedAt = new Date()
@@ -115,11 +127,15 @@ const start = async (host, secret, settings, headers) => {
                 job.finishedAt = new Date()
             }
 
+            settings.track('Worker Job Finished', { job_id: job.uid })
+
             await client.updateJob(job.uid, getRenderingStatus(job))
         } catch (err) {
             job.error = [].concat(job.error || [], [err.toString()]);
             job.errorAt = new Date();
             job.state = 'error';
+
+            settings.track('Worker Job Error', { job_id: job.uid })
 
             await client.updateJob(job.uid, getRenderingStatus(job)).catch((err) => {
                 if (settings.stopOnError) {

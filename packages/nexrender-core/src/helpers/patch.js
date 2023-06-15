@@ -39,8 +39,11 @@ module.exports = (settings) => {
         if (patchedMatch[1] !== existingMatch[1]) {
             try {
                 settings.logger.log('out-of-date version of the commandLineRenderer.jsx patch is detected, attepmting to update')
+                settings.track('Init Patch Update Succeeded')
                 writeTo(patched, originalFile)
             } catch (err) {
+                settings.trackSync('Init Patch Update Failed')
+
                 if (err.code == 'EPERM') {
                     settings.logger.log('\n\n              -- E R R O R --\n');
                     settings.logger.log('you need to run application with admin priviledges once');
@@ -62,6 +65,7 @@ module.exports = (settings) => {
 
         if (settings.forceCommandLinePatch) {
             settings.logger.log('forced rewrite of command line patch')
+            settings.track('Init Patch Forced')
             writeTo(patched, originalFile)
         }
     } else {
@@ -75,7 +79,11 @@ module.exports = (settings) => {
             settings.logger.log('patching the command line script')
             fs.chmodSync(originalFile, '755');
             writeTo(patched, originalFile)
+
+            settings.track('Init Patch Install Succeeded')
         } catch (err) {
+            settings.trackSync('Init Patch Install Failed')
+
             if (err.code == 'EPERM') {
                 settings.logger.log('\n\n              -- E R R O R --\n');
                 settings.logger.log('you need to run application with admin priviledges once');

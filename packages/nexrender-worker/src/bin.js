@@ -30,6 +30,7 @@ const args = arg({
     '--skip-cleanup':           Boolean,
     '--skip-render':            Boolean,
     '--no-license':             Boolean,
+    '--no-analytics':           Boolean,
     '--force-patch':            Boolean,
     '--debug':                  Boolean,
     '--multi-frames':           Boolean,
@@ -120,6 +121,9 @@ if (args['--help']) {
     --no-license                            prevents creation of the ae_render_only_node.txt file (enabled by default),
                                             which allows free usage of trial version of Adobe After Effects
 
+    --no-analytics                          prevents collection of fully anonymous analytics by nexrender (enabled by default),
+                                            this data is used to improve nexrender and its features, read on what is collected in the readme
+
     --force-patch                           forces commandLineRenderer.jsx patch (re)installation
 
     --debug                                 enables command dump for aerender, and other debugging stuff
@@ -198,6 +202,7 @@ if (settings.hasOwnProperty('ae-params')) {
 opt('binary',               '--binary');
 opt('workpath',             '--workpath');
 opt('no-license',           '--no-license');
+opt('no-analytics',         '--no-analytics');
 opt('skipCleanup',          '--skip-cleanup');
 opt('skipRender',           '--skip-render');
 opt('forceCommandLinePatch','--force-patch');
@@ -246,6 +251,13 @@ if (settings['no-license']) {
 } else {
     settings.addLicense = true;
 }
+
+if (settings['no-analytics']) {
+    settings.noAnalytics = true;
+    delete settings['no-analytics'];
+}
+
+settings['process'] = 'nexrender-worker-cli';
 
 const headers = {};
 if (args['--header']){

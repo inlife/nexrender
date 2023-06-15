@@ -1,0 +1,10 @@
+#!/usr/bin/env node
+console.log('imitating rendering with aerender :p')
+
+console.log('rendering... 0%')
+Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 1000)
+console.log('rendering... 50%')
+Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 1000)
+console.log('rendering... 100%')
+
+process.exit(0)

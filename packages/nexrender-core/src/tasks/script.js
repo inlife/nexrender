@@ -432,6 +432,17 @@ module.exports = (job, settings) => {
     const base = job.workpath;
 
     job.assets.map(asset => {
+        settings.track('Job Script Asset Wrap', {
+            job_id: job.uid, // anonymized internally
+            script_type: asset.type,
+            script_compostion_set: asset.composition !== undefined,
+            script_layer_strat: asset.layerName ? 'name' : 'index',
+            script_value_strat:
+                asset.value !== undefined ? 'value' : // eslint-disable-line no-nested-ternary, multiline-ternary
+                asset.expression !== undefined ? 'expression' : // eslint-disable-line multiline-ternary
+                undefined,
+        })
+
         switch (asset.type) {
             case 'video':
             case 'audio':

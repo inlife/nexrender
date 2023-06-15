@@ -88,6 +88,7 @@ Available settings (almost same as for `nexrender-core`):
 * `tagSelector` - string, (optional) provide the string tags (example `primary,plugins,halowell` : comma delimited) to pickup the job with specific tags. Leave it false to ignore and pick a random job from the server with no specific tags. Tags name must be an alphanumeric.
 * `wslMap` - string, drive letter of your WSL mapping in Windows
 * `aeParams` - array of strings, any additional params that will be passed to the aerender binary, a name-value parameter pair separated by a space,
+* `noAnalytics` - boolean, enables or disables built-in fully-anonymous analytics, false by default
 * `actions` - an object with keys corresponding to the `module` field when defining an action, value should be a function matching expected signature of an action. Used for defining actions programmatically without needing to package the action as a separate package
 * `cache` - boolean or string. Set the cache folder used by HTTP assets. If `true` will use the default path of `${workpath}/http-cache`, if set to a string it will be interpreted as a filesystem path to the cache folder.
 

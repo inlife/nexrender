@@ -20,3 +20,5 @@ notmytest.js
 
 # https://github.com/inlife/nexrender/pull/307#issuecomment-581802928
 yarn.lock
+
+packages/nexrender-core/test/workpath/

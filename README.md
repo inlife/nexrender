@@ -499,6 +499,7 @@ Second one is responsible for mainly job-related operations of the full cycle: d
 * `imageCachePercent` - integer, undefined by default, check [original documentation](https://helpx.adobe.com/after-effects/using/automated-rendering-network-rendering.html) for more info
 * `addLicense` - boolean, providing false will disable ae_render_only_node.txt license file auto-creation (true by default)
 * `forceCommandLinePatch` - boolean, providing true will force patch re-installation
+* `noAnalytics` - boolean, enables or disables built-in fully-anonymous analytics, false by default
 * `wslMap` - String, set WSL drive map, check [wsl](#wsl) for more info
 * `maxRenderTimeout` - Number, set max render timeout in seconds, will abort rendering if it takes longer than this value (default: 0 - disabled)
 * `cache` - boolean or string. Set the cache folder used by HTTP assets. If `true` will use the default path of `${workpath}/http-cache`, if set to a string it will be interpreted as a filesystem path to the cache folder.
@@ -1360,6 +1361,48 @@ localhostForwarding=true
 ```
 
 > Github Issue: [WSL 2 consumes massive amounts of RAM and doesn't return it](https://github.com/microsoft/WSL/issues/4166)
+
+## Analytics
+
+Product collects fully anonymous analytics. This is done to allow us to understand how our customers use the product, and to improve it. We do not collect any personal information. The analytics/telemetry data does not contain any Personally Identifiable Information or anything that could be used to identify a user, organiztion or any other entity.
+
+Only identifier used to distinct between users is a unique random 32-character hash.
+
+Data that is collected:
+* nexrender process status
+    * initialization succeeded/not
+    * did any errors happen, if so how many
+    * did render start and end successfully
+    * how long did render take
+    * what was the after effects version
+    * etc
+* some of nexreder configuration options
+    * is wsl enabled yes/no
+    * was workpath changed yes/no
+    * was the skip cleanup enabled yes/no
+    * etc
+    * **this is done to better understand usage of key parameters and combiation of options**
+* a few general-level points on the system
+    * what is the OS name and version (Windows/macOS/Linux)
+    * what is the CPU and GPU models
+    * what is the amount of memory
+    * is nexrender being run within a docker yes/no
+    * **this is done to better understand capabilities of hardware the nexrender is typically being run on**
+
+Data is **IS NOT** being collected:
+* any personal identifiable information
+    * no email/name/ip address
+    * no os user names
+    * no system/hardware indentifiers
+    * no location/country data
+* any project related data
+    * no project/template names
+    * no server/host names
+    * no asset names or urls
+    * no script, expression or textual data
+    * no credentials or any other configuration parameters
+
+Analytics can be disabled by either using option: `noAnalytics: true`, or setting binary flag: `--no-analytics`.
 
 ## Problems
 

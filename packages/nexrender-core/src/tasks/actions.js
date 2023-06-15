@@ -21,9 +21,15 @@ module.exports = actionType => (job, settings) => {
     settings.logger.log(`[${job.uid}] applying ${actionType} actions...`);
 
     return PromiseSerial((job.actions[actionType] || []).map(action => () => {
-        if(settings.actions && settings.actions[action.module]){
+        settings.track(`Job Action Started`, {
+            job_id: job.uid, // anonymized internally
+            action_type: actionType,
+            action_module: action.module,
+        })
+
+        if (settings.actions && settings.actions[action.module]) {
             return settings.actions[action.module](job, settings, action, actionType);
-        }else{
+        } else {
             return requireg(action.module)(job, settings, action, actionType).catch(err => {
                 return Promise.reject(new Error(`Error loading ${actionType} module ${action.module}: ${err}`));
             });

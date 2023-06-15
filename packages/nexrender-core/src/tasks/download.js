@@ -1,18 +1,14 @@
 const fs       = require('fs')
 const url      = require('url')
 const path     = require('path')
+const requireg = require('requireg')
 const fetch    = require('make-fetch-happen')
 const uri2path = require('file-uri-to-path')
 const data2buf = require('data-uri-to-buffer')
-const mime = require('mime-types')
+const mime     = require('mime-types')
 const {expandEnvironmentVariables} = require('../helpers/path')
 
-// TODO: redeuce dep size
-const requireg = require('requireg')
-
 const download = (job, settings, asset) => {
-    if (asset.type == 'data') return Promise.resolve();
-
     // eslint-disable-next-line
     const uri = global.URL ? new URL(asset.src) : url.parse(asset.src)
     const protocol = uri.protocol.replace(/:$/, '');
@@ -50,6 +46,13 @@ const download = (job, settings, asset) => {
 
     asset.dest = path.join(job.workpath, destName);
 
+    settings.track('Job Asset Download Started', {
+        job_id: job.uid, // anonymized internally
+        asset_type: asset.type,
+        asset_protocol: protocol,
+        asset_extension: asset.extension,
+    })
+
     switch (protocol) {
         /* built-in handlers */
         case 'data':
@@ -72,7 +75,7 @@ const download = (job, settings, asset) => {
                 path.join(settings.workpath, "http-cache") :
                 settings.cache;
 
-            if(!asset.params) asset.params = {};
+            if (!asset.params) asset.params = {};
             // Asset's own `params.cachePath` takes precedence (including falsy values)
             asset.params.cachePath = Object.hasOwn(asset.params, 'cachePath') ?
                 asset.params.cachePath :

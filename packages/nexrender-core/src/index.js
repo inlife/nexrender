@@ -10,6 +10,7 @@ const license      = require('./helpers/license')
 const autofind     = require('./helpers/autofind')
 const patch        = require('./helpers/patch')
 const state        = require('./helpers/state')
+const track        = require('./helpers/analytics')
 
 const setup        = require('./tasks/setup')
 const predownload  = require('./tasks/actions')('predownload')
@@ -36,13 +37,18 @@ if (process.env.NEXRENDER_REQUIRE_PLUGINS) {
     require('@nexrender/provider-sftp');
 }
 
-//
-// https://video.stackexchange.com/questions/16706/rendered-file-with-after-effects-is-very-huge
-//
-
 const init = (settings) => {
     settings = Object.assign({}, settings);
     settings.logger = settings.logger || console;
+    settings.track = (...args) => track(settings, ...args);
+    settings.trackSync = (event, params) => track(settings, event, { forced: true, ...params })
+
+    // set default process name for analytics
+    if (!settings.process) {
+        settings.process = 'nexrender-core';
+    }
+
+    settings.trackSync('Init Started')
 
     // check for WSL
     settings.wsl = isWsl
@@ -51,12 +57,16 @@ const init = (settings) => {
     const binaryUser = settings.binary && fs.existsSync(settings.binary) ? settings.binary : null;
 
     if (!binaryUser && !binaryAuto) {
+        settings.trackSync('Init Failed', { error: 'no_aerender_binary_found' })
         throw new Error('you should provide a proper path to After Effects\' "aerender" binary')
     }
 
     if (binaryAuto && !binaryUser) {
         settings.logger.log('using automatically determined directory of After Effects installation:')
         settings.logger.log(' - ' + binaryAuto)
+        settings.aeBinaryStrategy = 'auto';
+    } else {
+        settings.aeBinaryStrategy = 'manual';
     }
 
     settings = Object.assign({
@@ -82,15 +92,19 @@ const init = (settings) => {
         binary: binaryUser || binaryAuto,
     })
 
+    // try to detect version
+    settings.aeBinaryVersion = (settings.binary.match(/([0-9]{4})\/Support Files/) || [])[1] || 'Unknown';
+
     // make sure we will have absolute path
     if (!path.isAbsolute(settings.workpath)) {
         settings.workpath = path.join(process.cwd(), settings.workpath);
     }
 
     // if WSL, ask user to define Mapping
-    if (settings.wsl && !settings.wslMap)
+    if (settings.wsl && !settings.wslMap) {
+        settings.trackSync('Init Failed', { error: 'wsl_detected_no_map' });
         throw new Error('WSL detected: provide your WSL drive map; ie. "Z"')
-
+    }
 
     // add license helper
     if (settings.addLicense) {
@@ -100,6 +114,24 @@ const init = (settings) => {
     // attempt to patch the default
     // Scripts/commandLineRenderer.jsx
     patch(settings);
+
+    settings.trackSync('Init Succeeded', {
+        ae_binary_strategy: settings.aeBinaryStrategy,
+        ae_binary_version: settings.aeBinaryVersion,
+        ae_multi_frames: settings.multiFrames,
+        ae_max_memory_percent: !!settings.maxMemoryPercent,
+        ae_image_cache_percent: !!settings.imageCachePercent,
+
+        wsl_is_detected: !!settings.wsl,
+        wsl_map: !!settings.wslMap,
+
+        set_add_license: settings.addLicense,
+        set_force_patch: settings.forceCommandLinePatch,
+        set_skip_cleanup: settings.skipCleanup,
+        set_skip_render: settings.skipRender,
+        set_stop_onerror: settings.stopOnError,
+        set_custom_workpath: settings.workpath !== path.join(os.tmpdir(), 'nexrender'),
+    })
 
     return settings;
 }
@@ -130,5 +162,5 @@ const render = (jobConfig, settings = {}) => {
 
 module.exports = {
     init,
-    render
+    render,
 }
