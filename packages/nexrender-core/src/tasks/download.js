@@ -9,6 +9,8 @@ const mime     = require('mime-types')
 const {expandEnvironmentVariables} = require('../helpers/path')
 
 const download = (job, settings, asset) => {
+    if (asset.type == 'data') return Promise.resolve();
+
     // eslint-disable-next-line
     const uri = global.URL ? new URL(asset.src) : url.parse(asset.src)
     const protocol = uri.protocol.replace(/:$/, '');
