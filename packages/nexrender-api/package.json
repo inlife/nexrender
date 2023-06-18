@@ -1,13 +1,13 @@
 {
   "name": "@nexrender/api",
   "author": "inlife",
-  "version": "1.43.1",
+  "version": "1.44.1",
   "main": "src/index.js",
   "homepage": "https://github.com/inlife/nexrender",
   "bugs": "https://github.com/inlife/nexrender/issues",
   "repository": "https://github.com/inlife/nexrender.git",
   "dependencies": {
-    "@nexrender/types": "^1.43.1",
+    "@nexrender/types": "^1.44.1",
     "isomorphic-unfetch": "^3.0.0"
   },
   "publishConfig": {
