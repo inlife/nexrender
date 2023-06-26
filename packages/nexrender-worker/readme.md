@@ -58,6 +58,7 @@ const main = async () => {
                 // Custom action code
             }
         },
+        onRenderProgress: function(progress) {}
     })
 }
 

@@ -106,7 +106,11 @@ const start = async (host, secret, settings, headers) => {
             job.onRenderProgress = (job) => {
                 try {
                     /* send render progress to our server */
-                    client.updateJob(job.uid, getRenderingStatus(job))
+                    client.updateJob(job.uid, getRenderingStatus(job));
+
+                    if (settings.onRenderProgress) {
+                        settings.onRenderProgress(job.renderProgress || 0);
+                    }
                 } catch (err) {
                     if (settings.stopOnError) {
                         throw err;
