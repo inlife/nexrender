@@ -1,6 +1,6 @@
 {
   "name": "@nexrender/worker",
-  "version": "1.44.2",
+  "version": "1.44.3",
   "author": "inlife",
   "main": "src/index.js",
   "homepage": "https://github.com/inlife/nexrender",
