@@ -109,7 +109,7 @@ const start = async (host, secret, settings, headers) => {
                     client.updateJob(job.uid, getRenderingStatus(job));
 
                     if (settings.onRenderProgress) {
-                        settings.onRenderProgress(job.renderProgress || 0);
+                        settings.onRenderProgress(job);
                     }
                 } catch (err) {
                     if (settings.stopOnError) {
