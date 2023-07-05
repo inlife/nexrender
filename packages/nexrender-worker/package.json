@@ -1,6 +1,6 @@
 {
   "name": "@nexrender/worker",
-  "version": "1.44.3",
+  "version": "1.44.4",
   "author": "inlife",
   "main": "src/index.js",
   "homepage": "https://github.com/inlife/nexrender",
@@ -19,7 +19,7 @@
     ]
   },
   "dependencies": {
-    "@nexrender/api": "^1.44.1",
+    "@nexrender/api": "^1.44.4",
     "@nexrender/core": "^1.44.1",
     "@nexrender/types": "^1.44.1",
     "arg": "^4.1.0",
