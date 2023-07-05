@@ -150,6 +150,8 @@ and that have basic knowledge of `javascript` language and `json` formats.
 Probably the closest (feature-wise) alternative that exists at the moment is the Dataclay's [Templater](http://dataclay.com/) bot edition.
 Compared to nexrender it has a rich GUI support and a number of enterprise-scale features, however, it is not free.
 
+Another noteworthy mention is [Plainly](https://plainlyvideos.com/), guys created a great amazing automated platform and actually used nexrender as the backend.
+
 # Installation
 
 You can download binaries directly from the [releases](https://github.com/inlife/nexrender/releases) section,
