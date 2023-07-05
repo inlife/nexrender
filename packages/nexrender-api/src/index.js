@@ -1,15 +1,17 @@
-const fetch = require('isomorphic-unfetch')
+// require node fetch if we are in nodejs environment (not browser)
+const localFetch = typeof process == 'undefined' ? fetch : require('node-fetch')
+const fetchAgent = typeof process == 'undefined' ? null : require('http').Agent
 
 const createClient = ({ host, secret, polling, headers }) => {
     const wrappedFetch = async (path, options) => {
         options = options || {}
-
         const defaultHeaders = {};
-        if(headers){
-            for(const [key, value] of Object.entries(headers)){
-                if(typeof value === "string"){
+
+        if (headers) {
+            for (const [key, value] of Object.entries(headers)) {
+                if (typeof value === "string") {
                     defaultHeaders[key] = value;
-                }else if(typeof value === "function"){
+                } else if (typeof value === "function") {
                     defaultHeaders[key] = await value();
                 }
             }
@@ -21,7 +23,14 @@ const createClient = ({ host, secret, polling, headers }) => {
             options.headers['nexrender-secret'] = secret
         }
 
-        const response = await fetch(`${host}/api/v1${path}`, options)
+        if (typeof process != 'undefined') {
+            // NOTE: keepalive is enabled by default in node-fetch, so we need to disable it because of a bug
+            options.agent = new fetchAgent({ keepAlive: false })
+        } else {
+            options.keepalive = false
+        }
+
+        const response = await localFetch(`${host}/api/v1${path}`, options)
 
         if (!response.ok) {
             throw new Error(await response.text())

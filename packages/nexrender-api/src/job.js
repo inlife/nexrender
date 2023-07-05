@@ -2,11 +2,11 @@ const EventEmitter = require('events');
 
 const NEXRENDER_JOB_POLLING = process.env.NEXRENDER_JOB_POLLING || 10 * 1000;
 
-const withEventEmitter = (fetch, job, polling = NEXRENDER_JOB_POLLING) => {
+const withEventEmitter = (wrappedFetch, job, polling = NEXRENDER_JOB_POLLING) => {
     const emitter  = new EventEmitter();
     const interval = setInterval(async () => {
         try {
-            const updatedJob = await fetch(`/jobs/${job.uid}/status`)
+            const updatedJob = await wrappedFetch(`/jobs/${job.uid}/status`)
 
             // Support updating render progress throughout rendering process
             if (updatedJob.state == 'render:dorender' && updatedJob.renderProgress) {
@@ -39,30 +39,30 @@ const withEventEmitter = (fetch, job, polling = NEXRENDER_JOB_POLLING) => {
     return emitter;
 }
 
-module.exports = (fetch, polling) => ({
-    listJobs: async () => await fetch(`/jobs`),
-    fetchJob: async id => await fetch(`/jobs/${id}`),
-    pickupJob: async (selector) => await fetch(`/jobs/pickup${ selector ? `/${selector}` : '' }`),
+module.exports = (wrappedFetch, polling) => ({
+    listJobs: async () => await wrappedFetch(`/jobs`),
+    fetchJob: async id => await wrappedFetch(`/jobs/${id}`),
+    pickupJob: async (selector) => await wrappedFetch(`/jobs/pickup${ selector ? `/${selector}` : '' }`),
 
     addJob: async data =>
-        withEventEmitter(fetch, await fetch(`/jobs`, {
+        withEventEmitter(wrappedFetch, await wrappedFetch(`/jobs`, {
             method: 'post',
             headers: { 'content-type': 'application/json' },
             body: JSON.stringify(data),
         }), polling),
 
     resumeJob: async id =>
-        withEventEmitter(fetch, await fetch(`/jobs/${id}`), polling),
+        withEventEmitter(wrappedFetch, await wrappedFetch(`/jobs/${id}`), polling),
 
     updateJob: async (id, data) =>
-        await fetch(`/jobs/${id}`, {
+        await wrappedFetch(`/jobs/${id}`, {
             method: 'put',
             headers: { 'content-type': 'application/json' },
             body: JSON.stringify(data),
         }),
 
     removeJob: async id =>
-        await fetch(`/jobs/${id}`, {
+        await wrappedFetch(`/jobs/${id}`, {
             method: 'delete'
         }),
 })
