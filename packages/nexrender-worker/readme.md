@@ -58,7 +58,8 @@ const main = async () => {
                 // Custom action code
             }
         },
-        onRenderProgress: function(progress) {}
+        onRenderProgress: function(job) {},
+        onRenderError: function(job, err) {},
     })
 }
 

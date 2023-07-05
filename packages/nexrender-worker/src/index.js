@@ -124,6 +124,10 @@ const start = async (host, secret, settings, headers) => {
 
             job.onRenderError = (job, err /* on render error */) => {
                 job.error = [].concat(job.error || [], [err.toString()]);
+
+                if (settings.onRenderError) {
+                    settings.onRenderError(job, err);
+                }
             }
 
             job = await render(job, settings); {
