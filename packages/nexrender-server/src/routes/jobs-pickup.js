@@ -39,6 +39,20 @@ module.exports = async (req, res) => {
                 if (isNaN(b.priority)) b.priority = 0
                 return b.priority - a.priority
             })[0]
+        } else if (process.env.NEXRENDER_ORDERING === 'stage-distributed') {
+            const jobs = Object.values(queued.reduce((res, item) => {
+                const stage = item.ct?.attributes?.stage || 'no-stage';
+                if (!res[stage]) {
+                    return {
+                        ...res,
+                        [stage]: item
+                    };
+                }
+                return res;
+            }, {}))
+
+            // pick random
+            job = jobs[Math.floor(Math.random() * jobs.length)];
         }
         else { /* fifo (oldest-first) */
             job = queued[0];
