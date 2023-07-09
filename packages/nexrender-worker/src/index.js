@@ -96,7 +96,7 @@ const start = async (host, secret, settings, headers) => {
 
         try {
             await client.updateJob(job.uid, job)
-        } catch(err) {
+        } catch (err) {
             console.log(`[${job.uid}] error while updating job state to ${job.state}. Job abandoned.`)
             console.log(`[${job.uid}] error stack: ${err.stack}`)
             continue;
@@ -132,7 +132,10 @@ const start = async (host, secret, settings, headers) => {
 
             job = await render(job, settings); {
                 job.state = 'finished';
-                job.finishedAt = new Date()
+                job.finishedAt = new Date();
+                if (settings.onFinished) {
+                    settings.onFinished(job);
+                }
             }
 
             settings.track('Worker Job Finished', { job_id: job.uid })
@@ -143,7 +146,11 @@ const start = async (host, secret, settings, headers) => {
             job.errorAt = new Date();
             job.state = 'error';
 
-            settings.track('Worker Job Error', { job_id: job.uid })
+            settings.track('Worker Job Error', { job_id: job.uid });
+
+            if (settings.onError) {
+                settings.onError(job, err);
+            }
 
             await client.updateJob(job.uid, getRenderingStatus(job)).catch((err) => {
                 if (settings.stopOnError) {
