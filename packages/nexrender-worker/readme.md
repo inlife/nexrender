@@ -60,6 +60,8 @@ const main = async () => {
         },
         onRenderProgress: function(job) {},
         onRenderError: function(job, err) {},
+        onFinished: function(job) {},
+        onError: function(job, err) {},
     })
 }
 
