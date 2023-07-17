@@ -1,6 +1,9 @@
 // require node fetch if we are in nodejs environment (not browser)
 const localFetch = typeof process == 'undefined' ? fetch : require('node-fetch')
-const fetchAgent = typeof process == 'undefined' ? null : require('http').Agent
+const fetchAgent = typeof process == 'undefined' ? null : { // eslint-disable-line multiline-ternary
+    http: require('http').Agent,
+    https: require('https').Agent,
+}
 
 const createClient = ({ host, secret, polling, headers }) => {
     const wrappedFetch = async (path, options) => {
@@ -25,7 +28,14 @@ const createClient = ({ host, secret, polling, headers }) => {
 
         if (typeof process != 'undefined') {
             // NOTE: keepalive is enabled by default in node-fetch, so we need to disable it because of a bug
-            options.agent = new fetchAgent({ keepAlive: false })
+            // related to an invalidated session by the client
+            options.agent = function(_parsedURL) {
+                if (_parsedURL.protocol == 'http:') {
+                    return new fetchAgent.http({ keepAlive: false });
+                } else {
+                    return new fetchAgent.https({ keepAlive: false });
+                }
+            }
         } else {
             options.keepalive = false
         }
