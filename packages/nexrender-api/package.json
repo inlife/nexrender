@@ -1,7 +1,7 @@
 {
   "name": "@nexrender/api",
   "author": "inlife",
-  "version": "1.44.5",
+  "version": "1.45.1",
   "main": "src/index.js",
   "homepage": "https://github.com/inlife/nexrender",
   "bugs": "https://github.com/inlife/nexrender/issues",
