@@ -37,6 +37,12 @@ const forceSyncRequest = (settings, event, properties) => {
     })
 }
 
+// cache for combined events
+let cache = {
+    job_id: null,
+    data: {},
+}
+
 /**
  * Tracking function for analytics
  *
@@ -75,9 +81,32 @@ const track = async (settings, event, properties = {}, isRemote) => {
         return forceSyncRequest(settings, event, properties)
     }
 
+    // anonymize job_id (we are doing it after the forced check,
+    // to ensure we won't be hashing the same value twice)
+    if (properties.job_id) {
+        properties.job_id = hash(properties.job_id, settings.analyticsId)
+    }
+
+    // we are not sending the event itself, but rather combining it with other events of the same type
+    // and sending it as a single event when flush is triggered
+    if (properties.combined === true) {
+        delete properties.combined
+
+        // remove any data from previous jobs
+        if (cache.job_id != properties.job_id) {
+            cache.job_id = properties.job_id
+            cache.data = {}
+        }
+
+        cache.data[event] = cache.data[event] || []
+        cache.data[event].push(properties)
+
+        return;
+    }
+
     // collect system info
     if (!settings.systemInfo) {
-        if (isRemote) console.log('collectiing systeminfo')
+        // if (isRemote) console.log('collecting systeminfo')
 
         settings.systemInfo = await si.get({
             cpu: 'manufacturer,brand,cores',
@@ -102,9 +131,45 @@ const track = async (settings, event, properties = {}, isRemote) => {
         }
     }
 
-    // anonymize job_id
-    if (properties.job_id) {
-        properties.job_id = hash(properties.job_id, settings.analyticsId)
+    if (event == 'Job Cleanup') {
+        const events = Object.keys(cache.data)
+
+        for (let i = 0; i < events.length; i++) {
+            const combinedEvent = events[i]
+            const combinedProperties = cache.data[combinedEvent]
+
+            switch (combinedEvent) {
+                case 'Asset Download':
+                    properties.assets_total = combinedProperties.length
+
+                    for (let j = 0; j < combinedProperties.length; j++) {
+                        const asset = combinedProperties[j]
+                        const byProtocol = `assets_by_protocol_${asset.asset_protocol}`
+                        const byExtension = `assets_by_extension_${asset.asset_extension}`
+                        properties[byProtocol] = (properties[byProtocol] || 0) + 1
+                        properties[byExtension] = (properties[byExtension] || 0) + 1
+                    }
+
+                    break;
+
+                case 'Asset Script Wraps':
+                    properties.assets_script_wraps = combinedProperties.length
+
+                    for (let j = 0; j < combinedProperties.length; j++) {
+                        const script = combinedProperties[j]
+                        const byType = `assets_by_type_${script.script_type}`
+                        const byComposition = `assets_by_composition_set_${script.script_composition_set ? 'true' : 'false'}`
+                        const byLayerStrategy = `assets_by_layer_strategy_${script.script_layer_strat || 'none'}`
+                        const byValueStrategy = `assets_by_value_strategy_${script.script_value_strat || 'none'}`
+                        properties[byType] = (properties[byType] || 0) + 1
+                        properties[byComposition] = (properties[byComposition] || 0) + 1
+                        properties[byLayerStrategy] = (properties[byLayerStrategy] || 0) + 1
+                        properties[byValueStrategy] = (properties[byValueStrategy] || 0) + 1
+                    }
+
+                    break;
+            }
+        }
     }
 
     const params = {
@@ -118,6 +183,8 @@ const track = async (settings, event, properties = {}, isRemote) => {
             $session_id: settings.session,
         }, properties)
     }
+
+    // console.log('tracking event:', params)
 
     analytics.capture(params);
     await analytics.flush();

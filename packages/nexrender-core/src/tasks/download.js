@@ -48,7 +48,7 @@ const download = (job, settings, asset) => {
 
     asset.dest = path.join(job.workpath, destName);
 
-    settings.track('Job Asset Download Started', {
+    settings.trackCombined('Asset Download', {
         job_id: job.uid, // anonymized internally
         asset_type: asset.type,
         asset_protocol: protocol,
@@ -95,7 +95,8 @@ const download = (job, settings, asset) => {
 
                         asset.extension = fileExt
                         const destHasExtension = path.extname(asset.dest) ? true : false
-                        //don't do this if asset.dest already has extension else it gives you example.jpg.jpg  like file in case of  assets and aep/aepx file
+                        // don't do this if asset.dest already has extension else it gives you example.jpg.jpg
+                        // like file in case of assets and aep/aepx file
                         if (asset.extension && !destHasExtension) {
                             asset.dest += `.${fileExt}`
                         }

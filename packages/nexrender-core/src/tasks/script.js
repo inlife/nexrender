@@ -432,7 +432,7 @@ module.exports = (job, settings) => {
     const base = job.workpath;
 
     job.assets.map(asset => {
-        settings.track('Job Script Asset Wrap', {
+        settings.trackCombined('Asset Script Wraps', {
             job_id: job.uid, // anonymized internally
             script_type: asset.type,
             script_compostion_set: asset.composition !== undefined,

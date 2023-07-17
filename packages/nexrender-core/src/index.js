@@ -41,6 +41,7 @@ const init = (settings) => {
     settings = Object.assign({}, settings);
     settings.logger = settings.logger || console;
     settings.track = (...args) => track(settings, ...args);
+    settings.trackCombined = (event, params) => track(settings, event, { combined: true, ...params });
     settings.trackSync = (event, params) => track(settings, event, { forced: true, ...params })
 
     // set default process name for analytics

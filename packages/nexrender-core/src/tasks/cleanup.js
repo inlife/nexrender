@@ -5,6 +5,8 @@ const path = require('path')
  * Clean up all workpath files and remove folder
  */
 module.exports = function(job, settings) {
+    settings.track('Job Cleanup');
+
     if (settings.skipCleanup) {
         settings.logger.log(`[${job.uid}] skipping the clean up...`);
         return Promise.resolve(job)
