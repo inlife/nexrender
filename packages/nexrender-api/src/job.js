@@ -20,7 +20,7 @@ const withEventEmitter = (wrappedFetch, job, polling = NEXRENDER_JOB_POLLING) =>
             // push only strict state changes
             if (job.state != updatedJob.state) {
                 job.state = updatedJob.state;
-                emitter.emit(job.state, updatedJob, fetch);
+                emitter.emit(job.state, updatedJob, wrappedFetch);
             }
 
             if (job.state == 'finished' || job.state == 'error') {
