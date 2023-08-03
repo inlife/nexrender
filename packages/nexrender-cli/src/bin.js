@@ -251,4 +251,5 @@ nexrender.render(parsedJob, settings)
     .catch(err => {
         console.error('> job rendering failed')
         console.error(err)
+        process.exit(1);
     })
