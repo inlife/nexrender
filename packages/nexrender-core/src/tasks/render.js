@@ -75,7 +75,16 @@ Estimated date of change to the new behavior: 2023-06-01.\n`);
 
     option(params, '-r', jobScriptFile);
 
-    if (!settings.skipRender && settings.multiFrames) params.push('-mfr', 'ON', settings.multiFramesCPU);
+    if (!settings.skipRender && settings.multiFrames) {
+        const afterEffects = path.dirname(settings.binary)
+        const afterEffectsYearMatch = afterEffects.match(/(20[0-9]{2})/);
+
+        if (afterEffectsYearMatch && afterEffectsYearMatch[0] >= "2022") {
+            params.push('-mfr', 'ON', settings.multiFramesCPU);
+        } else {
+            params.push('-mp');
+        }
+    }
     if (settings.reuse) params.push('-reuse');
     if (job.template.continueOnMissing) params.push('-continueOnMissingFootage')
 
