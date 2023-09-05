@@ -202,7 +202,7 @@ if (settings['no-analytics']) {
 }
 
 if (args['--cleanup']) {
-    settings = init(Object.assign(settings, {
+    settings = nexrender.init(Object.assign(settings, {
         logger: console
     }))
 
