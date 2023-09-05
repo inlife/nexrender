@@ -116,7 +116,7 @@ const start = async (host, secret, settings, headers) => {
                         throw err;
                     } else {
                         console.log(`[${job.uid}] error occurred: ${err.stack}`)
-                        console.log(`[${job.uid}] render proccess stopped with error...`)
+                        console.log(`[${job.uid}] render process stopped with error...`)
                         console.log(`[${job.uid}] continue listening next job...`)
                     }
                 }
@@ -130,13 +130,23 @@ const start = async (host, secret, settings, headers) => {
                 }
             }
 
-            job = await render(job, settings); {
-                job.state = 'finished';
-                job.finishedAt = new Date();
-                if (settings.onFinished) {
-                    settings.onFinished(job);
+            const renderWithRetry = async (job, settings) => {
+                try {
+                    job = await render(job, settings);
+                    job.state = 'finished';
+                    job.finishedAt = new Date();
+                    if (settings.onFinished) {
+                        settings.onFinished(job);
+                    }
+                } catch (error) {
+                    if (settings.onShouldRetry?.(job, error)) {
+                        return renderWithRetry(job, settings);
+                    } else {
+                        throw error;
+                    }
                 }
             }
+            await renderWithRetry(job, settings);
 
             settings.track('Worker Job Finished', { job_id: job.uid })
 

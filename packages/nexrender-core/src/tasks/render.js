@@ -233,7 +233,7 @@ Estimated date of change to the new behavior: 2023-06-01.\n`);
             const outputStr = output
                 .map(a => '' + a).join('');
 
-            if (code !== 0 && settings.stopOnError) {
+            if (code !== 0) {
                 if (fs.existsSync(logPath)) {
                     settings.logger.log(`[${job.uid}] dumping aerender log:`)
                     settings.logger.log(fs.readFileSync(logPath, 'utf8'))
@@ -246,7 +246,7 @@ Estimated date of change to the new behavior: 2023-06-01.\n`);
                 });
 
                 clearTimeout(timeoutID);
-                return reject(new Error(outputStr || 'aerender.exe failed to render the output into the file due to an unknown reason'));
+                return reject(new RenderError(code, outputStr || 'aerender.exe failed to render the output into the file due to an unknown reason'));
             }
 
             const renderTime = (Date.now() - renderStopwatch) / 1000
