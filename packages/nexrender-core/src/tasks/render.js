@@ -116,9 +116,9 @@ Estimated date of change to the new behavior: 2023-06-01.\n`);
     const parse = (data) => {
         const string = ('' + data).replace(/;/g, ':'); /* sanitize string */
 
-        // Only execute startRegex if project start hasnt been found
+        // Only execute startRegex if project start hasn't been found
         const matchStart = isNaN(parseInt(projectStart)) ? startRegex.exec(string) : false;
-        // Only execute durationRegex if project duration hasnt been found
+        // Only execute durationRegex if project duration hasn't been found
         const matchDuration = isNaN(parseInt(projectDuration)) ? durationRegex.exec(string) : false;
         // Only execute progressRegex if project duration has been found
         const matchProgress = !isNaN(parseInt(projectDuration)) ? progressRegex.exec(string) : null;
@@ -228,7 +228,7 @@ Estimated date of change to the new behavior: 2023-06-01.\n`);
         }
 
         /* on finish (code 0 - success, other - error) */
-        instance.on('close', (code) => {
+        instance.on('close', (code, signal) => {
 
             const outputStr = output
                 .map(a => '' + a).join('');
@@ -246,7 +246,7 @@ Estimated date of change to the new behavior: 2023-06-01.\n`);
                 });
 
                 clearTimeout(timeoutID);
-                return reject(new RenderError(code, outputStr || 'aerender.exe failed to render the output into the file due to an unknown reason'));
+                return reject(new RenderProcessError(code, signal, outputStr || 'aerender.exe failed to render the output into the file due to an unknown reason'));
             }
 
             const renderTime = (Date.now() - renderStopwatch) / 1000
