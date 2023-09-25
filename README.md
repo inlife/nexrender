@@ -12,7 +12,7 @@
 
 <br />
 <div align="center">
-    Automate your Adobe After Effects rendering workflows. Create data-driven and template based videos.
+    Automate your <a href="https://github.com/inlife/awesome-ae">Adobe After Effects</a> rendering workflows. Create data-driven and template based videos.
 </div>
 
 <div align="center">
