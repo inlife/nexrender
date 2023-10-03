@@ -2,7 +2,7 @@
   "name": "@nexrender/action-cache",
   "homepage": "https://www.nexrender.com",
   "author": "dylangarcia",
-  "version": "1.42.0",
+  "version": "1.45.6",
   "main": "index.js",
   "publishConfig": {
     "access": "public"
