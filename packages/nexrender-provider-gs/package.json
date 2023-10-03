@@ -1,5 +1,6 @@
 {
   "name": "@nexrender/provider-gs",
+  "homepage": "https://www.nexrender.com",
   "version": "1.38.0",
   "author": "dockheas23",
   "main": "src/index.js",

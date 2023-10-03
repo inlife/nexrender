@@ -2,6 +2,7 @@
   "name": "nexrender",
   "private": true,
   "version": "1.0.0",
+  "homepage": "https://www.nexrender.com",
   "description": "Automate your After Effects project creation and rendering routine.",
   "repository": "inlife/nexrender",
   "license": "MIT",
