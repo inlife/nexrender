@@ -1,0 +1,32 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/setup-node@v3
+      with:
+        node-version: 16
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+    - name: Install dependencies
+      run: npm install
+    - name: Install child dependencies
+      run: npm run install-child
+    - name: Run bootstrap 
+      run: npm run start
+    - name: Run test
+      run: npm run test
+    - name: Build binaries
+      run: npm run pkg
+    - name: Publish release
+      uses: softprops/action-gh-release@v1
+      if: success()
+      with:
+        files: bin/*
