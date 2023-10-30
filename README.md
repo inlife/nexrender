@@ -1473,7 +1473,12 @@ Here you can find a list of packages published by other contributors:
 * [pulsedemon/nexrender-action-run-command](https://github.com/pulsedemon/nexrender-action-run-command) - Run shell commands as a nexrender action
 * [oksr/nexrender-action-slack-message](https://github.com/oksr/nexrender-action-slack-message) - Utility module for sending a Slack message when render start/finish or render error.
 * [vonstring/nexrender-action-mogrt-template](https://github.com/vonstring/nexrender-action-mogrt-template) - Added .mogrt support to Nexrender
-* [sumitgohil/nexrender-action-webhook](https://github.com/sumitgohil/nexrender-action-webhook) - Call a WebHook url once the project completion has been done. 
+* [sumitgohil/nexrender-action-webhook](https://github.com/sumitgohil/nexrender-action-webhook) - Call a WebHook url once the project completion has been done.
+* [backbeatmedia/nexrender-action-s3-cache](https://github.com/backbeatmedia/nexrender-action-s3-cache) - Cache your template source and assets to a local S3 bucket and use it on future runs, and make it available to other instances rendering the same material
+* [backbeatmedia/nexrender-comp-sequence](https://github.com/backbeatmedia/nexrender-comp-sequence) - This plugin causes comps in the target project to be combined into one comp before rendering
+* [backbeatmedia/nexrender-trim-comp](https://github.com/backbeatmedia/nexrender-trim-comp) - This plugin trims the work area of a comp to the duration of a layer, plus an optional, configurable handle.
+* [backbeatmedia/nexrender-action-sanity-patch](https://github.com/backbeatmedia/nexrender-action-sanity-patch) - Modify data in a Sanity document
+* [backbeatmedia/nexrender-sanity-upload](https://github.com/backbeatmedia/nexrender-sanity-upload) - Upload assets to a Sanity account and connect them to a document
 * [somename/package-name](#) - a nice description of a nice package doing nice things
 
 Since nexrender allows to use external packages installed globally from npm, its quite easy to add your own modules
