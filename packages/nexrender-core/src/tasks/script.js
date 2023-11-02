@@ -1,7 +1,6 @@
 const fs     = require('fs')
 const path   = require('path')
 const script = require('../assets/nexrender.jsx')
-const matchAll = require('match-all')
 const { checkForWSL } = require('../helpers/path')
 
 /* helpers */
@@ -186,7 +185,7 @@ const wrapEnhancedScript = (job, settings, { dest, src, parameters = [], keyword
     }
 
     EnhancedScript.prototype.parseMethod = function (parameter) {
-        const selfInvokingFn = matchAll(parameter.value, this.getRegex('selfInvokingFn'));
+        const selfInvokingFn = parameter.value.matchAll(this.getRegex('selfInvokingFn'));
         if (selfInvokingFn ) {
             this.getLogger().log(Array.from(selfInvokingFn));
             return this.parseMethodWithArgs(parameter);
@@ -201,7 +200,7 @@ const wrapEnhancedScript = (job, settings, { dest, src, parameters = [], keyword
 
     EnhancedScript.prototype.parseMethodWithArgs = function (parameter) {
         let value = parameter.value;
-        const methodArgs = matchAll(parameter.value, this.getRegex('searchUsageByMethod')('arg', "gm")).toArray();
+        const methodArgs = parameter.value.matchAll(this.getRegex('searchUsageByMethod')('arg', "gm")).toArray();
 
         if (methodArgs.length > 0 ) {
             this.getLogger().log("We found a self-invoking method with arguments!");
