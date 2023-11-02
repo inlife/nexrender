@@ -29,6 +29,7 @@
     "test": "npm run lint && lerna bootstrap && node test.js"
   },
   "devDependencies": {
+    "chai": "^4.3.10",
     "cross-env": "^5.2.0",
     "eslint": "^8.6.0",
     "lerna": "^3.21.0",
