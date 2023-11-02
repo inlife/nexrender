@@ -5,7 +5,6 @@ const crypto       = require('crypto')
 
 const si           = require('systeminformation')
 const { nanoid }   = require('nanoid')
-const {PostHog}    = require('posthog-node')
 const childProcess = require('child_process')
 
 const { version }  = require('../../package.json')
@@ -15,13 +14,6 @@ const hash = (data, salt) => crypto
     .update(data)
     .digest('hex');
 
-const analyticsPublicKey = 'phc_AWcZMlCOqHJiFyFKSoxT9WSrRkdKDFxpiFn8Ww0ZMHu';
-const analytics = new PostHog(analyticsPublicKey, {
-    host: 'https://eu.posthog.com',
-    flushAt: 1,
-    flushInterval: 0,
-    disableGeoip: true,
-});
 
 /**
  * A helper function to force syncronous tracking
@@ -186,8 +178,11 @@ const track = async (settings, event, properties = {}) => {
 
     // console.log('tracking event:', params)
 
-    analytics.capture(params);
-    await analytics.flush();
+
+    // removed posthog for now
+    params.foo = 1;
+    // analytics.capture(params);
+    // await analytics.flush();
 }
 
 if (process.argv[2] === 'child') {
