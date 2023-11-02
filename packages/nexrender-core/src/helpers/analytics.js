@@ -32,7 +32,7 @@ const analytics = new PostHog(analyticsPublicKey, {
  */
 const forceSyncRequest = (settings, event, properties) => {
     const args = JSON.stringify({settings, event, properties})
-    const proc = childProcess.fork(__filename, ['child', args], {
+    childProcess.fork(__filename, ['child', args], {
         stdio: 'ignore',
     })
 }
@@ -51,7 +51,7 @@ let cache = {
  * @param {*} properties
  * @returns {Promise<void>}
  */
-const track = async (settings, event, properties = {}, isRemote) => {
+const track = async (settings, event, properties = {}) => {
     // if (isRemote) console.log('tracking', event, properties, settings)
 
     if (settings.noAnalytics === true) return;
@@ -192,7 +192,7 @@ const track = async (settings, event, properties = {}, isRemote) => {
 
 if (process.argv[2] === 'child') {
     const args = JSON.parse(process.argv[3])
-    track(args.settings, args.event, args.properties, true)
+    track(args.settings, args.event, args.properties)
         .then(() => {})
 }
 

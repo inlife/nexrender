@@ -32,10 +32,13 @@ const getBinary = (job, settings) => {
 
 
         fetch(fileurl)
-            .then(res => res.ok ? res : Promise.reject(new Error({
-                reason: 'Initial error downloading file',
-                meta: {fileurl, error: res.error}
-            })))
+            .then(res => res.ok
+                ? res
+                : Promise.reject(new Error({
+                    reason: 'Initial error downloading file',
+                    meta: {fileurl, error: res.error}
+                })
+            ))
             .then(res => {
                 const progress = new nfp(res)
 
