@@ -156,7 +156,7 @@ const wrapEnhancedScript = (job, settings, { dest, src, parameters = [], keyword
         this.regexes.fnDetect = new RegExp(/(?:(?:(?:function *(?:[a-zA-Z0-9_]+)?) *(?:\((?:.*)\)) *(?:\{(?:.*)\}))|(?:(?:.*) *(?:=>) *(?:\{)(?:.*?)?\}))/);
 
         // This regex will detect a self-invoking function like (function(){})() and will catch the invoking parameters in a single string for further inspection.
-        this.regexes.selfInvokingFn = new RegExp(/(?:(?:^\() *(?:.*?)(?:} *\)))(?: *(?:\() *(.*?) *(?:\) *$))/);
+        this.regexes.selfInvokingFn = new RegExp(/(?:(?:^\() *(?:.*?)(?:} *\)))(?: *(?:\() *(.*?) *(?:\) *$))/, "gm");
     }
 
     EnhancedScript.prototype.escapeForRegex = function(str) {
@@ -185,9 +185,11 @@ const wrapEnhancedScript = (job, settings, { dest, src, parameters = [], keyword
     }
 
     EnhancedScript.prototype.parseMethod = function (parameter) {
-        const selfInvokingFn = parameter.value.matchAll(this.getRegex('selfInvokingFn'));
+        this.getLogger().log("parseMethod", parameter);
+
+        const selfInvokingFn = [...parameter.value.matchAll(this.getRegex('selfInvokingFn'))];
         if (selfInvokingFn ) {
-            this.getLogger().log(Array.from(selfInvokingFn));
+            this.getLogger().log(selfInvokingFn);
             return this.parseMethodWithArgs(parameter);
         }
         return parameter.value;
@@ -200,7 +202,9 @@ const wrapEnhancedScript = (job, settings, { dest, src, parameters = [], keyword
 
     EnhancedScript.prototype.parseMethodWithArgs = function (parameter) {
         let value = parameter.value;
-        const methodArgs = parameter.value.matchAll(this.getRegex('searchUsageByMethod')('arg', "gm")).toArray();
+        const methodArgs = [...parameter.value.matchAll(this.getRegex('searchUsageByMethod')('arg', "gm"))];
+
+        this.getLogger().log(methodArgs);
 
         if (methodArgs.length > 0 ) {
             this.getLogger().log("We found a self-invoking method with arguments!");
