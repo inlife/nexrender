@@ -273,7 +273,7 @@ const wrapEnhancedScript = (job, settings, { dest, src, parameters = [], keyword
         const script = this.stripCommentsFromScript(this.getJSXScript());
 
         // Parse all occurrences of the usage of NX on the provided script.
-        const nxMatches = matchAll(script, this.getRegex("searchUsageByMethod")("get", "gm")).toArray();
+        const nxMatches = [...script.matchAll(this.getRegex("searchUsageByMethod")("get", "gm"))];
 
         if (nxMatches && nxMatches.length > 0 ) {
             nxMatches.forEach( match => {
