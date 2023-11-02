@@ -19,7 +19,6 @@
     "mime-types": "^2.1.29",
     "mkdirp": "^1.0.4",
     "nanoid": "^3.2.0",
-    "posthog-node": "^3.1.1",
     "requireg": "^0.2.1",
     "rimraf": "^3.0.2",
     "systeminformation": "^5.18.3"
@@ -36,5 +35,5 @@
   "publishConfig": {
     "access": "public"
   },
-  "gitHead": "84cef65e008026f6fcf4f040943144401f101fce"
+  "gitHead": "441c3e3127cb50b603263fd560b617482b31eda8"
 }
