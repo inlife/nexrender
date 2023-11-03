@@ -1,32 +1,17 @@
 const fs = require('fs')
+const strip = require('strip-comments');
 
-    /**
-     * Strip comment blocks from Script [EXPERIMENTAL]
-     * ================================
-     * @description                Removes /* * / comments  from script to avoid mismatching occurrences.
-     * @param script               (String)            The target script to strip.
-     * @returns string             (String)            A one-line version of the original script without comment blocks.
-     */
-    const stripCommentsFromScript = (script) => {
-        // https://levelup.gitconnected.com/advanced-regex-find-and-remove-multi-line-comments-in-your-code-c162ba6e5811
-        return script
-            .replace(/\n/g, " ")
-            .replace(/\/\*.*\*\//g, " ")
-            .replace(/\s+/g, " ")
-            .trim();
-    }
+const escapeForRegex = (str) => {
+    return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
+}
 
-    const escapeForRegex = (str) => {
-        return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
-    }
-
-    const stripComments = (templateLiteral) => {
+    /*const stripComments = (templateLiteral) => {
         return templateLiteral.replace(/\/\*[\s\S]*?\*\/|([^:]|^)\/\/.*$/gm, '');
-    }
+    }*/
 
-    const buildRegex = (templateLiteral, flags) => {
+    /*const buildRegex = (templateLiteral, flags) => {
         return new RegExp(stripComments(templateLiteral).replace(/(\r\n|r\|\n|\s)/gm, ''), flags);
-    }
+    }*/
 
 function EnhancedScript (
             dest,
@@ -90,7 +75,8 @@ function EnhancedScript (
     EnhancedScript.prototype.setupRegexes = function() {
         this.regexes.searchUsageByMethod = (method = "set", flags = "g") => {
             const str = `(?<!(?:[\\/\\s]))(?<!(?:[\\*\\s]))(?:\\s*${this.getKeyword()}\\s*\\.)\\s*(${method})\\s*(?:\\()(?:["']{1})([a-zA-Z0-9._-]+)(?:["']{1})(?:\\))`;
-            return buildRegex(str, flags);
+            return new RegExp(str, flags);
+            //return buildRegex(str, flags);
         }
 
         // Find instances of a function inside a single-line string.
@@ -149,7 +135,7 @@ function EnhancedScript (
                 // Search if argument is present in JSON and has `arguments` array to match against the results.
                 // And do a replacement with either the found argument on the array or a global default value.
                 let argReplacement = parameter.arguments && parameter.arguments.find(o => o.key == arg).value || this.getStringifiedDefaultValue(this.defaults.global);
-                const fullMatchRegex = buildRegex(escapeForRegex(fullMatch), "gm");
+                const fullMatchRegex = new RegExp(escapeForRegex(fullMatch), "gm");
                 value = parameter.value.replace(fullMatchRegex, argReplacement);
             }
         }
@@ -181,7 +167,7 @@ function EnhancedScript (
      * @return bool                (Boolean)           Whether or not there are any variables to inject. Defaults to false.
      */
     EnhancedScript.prototype.findMissingMatchesInJSX = function () {
-        const script = stripCommentsFromScript(this.script);
+        const script = strip(this.script);
 
         // Parse all occurrences of the usage of NX on the provided script.
         const nxMatches = [...script.matchAll(this.regexes.searchUsageByMethod("get", "gm"))];
@@ -214,8 +200,6 @@ function EnhancedScript (
      * Generated Placeholder Parameters
      * ================================
      * @description            Generates placeholder for "parameters" JSON Object based on keys from an array.
-     * @param keys             (Array)     Array of strings. These should be the occurences of `keyword` variable use on the JSX script.
-     *
      * @return string          (String)    JSON "parameters" object.
      */
      EnhancedScript.prototype.generatePlaceholderParameters = function ( ) {
@@ -225,7 +209,6 @@ function EnhancedScript (
                     "value" : ${this.getStringifiedDefaultValue(this.defaults.global)}
                 }\n
         `;
-
         return `
             "parameters" : [
                 ${this.missingJSONParams.map((k) => template(k.key)).join("\n")}

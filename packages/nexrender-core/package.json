@@ -7,7 +7,8 @@
   "bugs": "https://github.com/inlife/nexrender/issues",
   "repository": "https://github.com/inlife/nexrender.git",
   "scripts": {
-    "pkg-prelink": "node ../../misc/prelink.js"
+    "pkg-prelink": "node ../../misc/prelink.js",
+    "test": "mocha"
   },
   "dependencies": {
     "@nexrender/types": "^1.45.6",
@@ -20,6 +21,7 @@
     "nanoid": "^3.2.0",
     "requireg": "^0.2.1",
     "rimraf": "^3.0.2",
+    "strip-comments": "^2.0.1",
     "systeminformation": "^5.18.3"
   },
   "peerDependencies": {
