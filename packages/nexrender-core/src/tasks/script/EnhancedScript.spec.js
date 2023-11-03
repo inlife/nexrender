@@ -40,8 +40,8 @@ describe('tasks/script/EnhancedScript', () => {
 
     })
 
-    it("parseMethodWithArgs", () => {
-    //    enhancedScript.parseMethodWithArgs
+    it("injects functions and functions with arguments", () => {
+        // enhancedScript.parseMethodWithArgs
 
         //FIXME: NX.get('unittest_undefined_function', 'arg1')  is currently not found and no warning is given
         fs.writeFileSync(testJsxFilePath,`
@@ -103,12 +103,26 @@ describe('tasks/script/EnhancedScript', () => {
 
         // TODO: test functions are correct in build script
 
-        console.log(enhancedScript.build());
+
+        const anyMissing = enhancedScript.findMissingMatchesInJSX();
+        expect(anyMissing).false;
+
+        const injected = enhancedScript.injectParameters();
+
+        expect(injected).to.equal([
+            `NX.set('invitees', ["Steve","Natasha","Tony","Bruce","Wanda","Thor","Peter","Clint"]);`,
+            `NX.set('eventInvitation', (function (venue) { alert( 'This years' Avengers Gala is on the prestigious ' + venue.name + ' located at ' + venue.location + '. Our special guests ' + NX.get('invitees').value.map(function (a, i) { return (i == NX.get('invitees').value.length - 1) ? ' and ' + a + ' (whoever that is)' : a + ', '; }).join('') + '  going to be present for the ceremony!');
+        })({ name: NX.arg('venue'), location:10th St. & Constitution Ave. }));`,
+            `NX.set('dogs', ["Captain Sparkles","Summer","Neptune"]);`,
+            `NX.set('anAmount', undefined);`,
+            `NX.set('getDogsCount', function() { return NX.get('dogs').length; });`,
+            `NX.set('exampleFn', function ( parameter ) { return parameter; });`,
+            `NX.set('dogCount', (function(length) { return length })(NX.call('exampleFn', [NX.call('getDogsCount') + NX.get('anAmount')])));`
+        ].join('\n'))
+
 
     })
 
     // further tests for enhancedScript.parseMethodWithArgs
-
     // test for enhancedScript.parseMethod
-
 })
