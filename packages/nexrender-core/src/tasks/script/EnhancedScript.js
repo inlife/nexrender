@@ -5,13 +5,30 @@ const escapeForRegex = (str) => {
     return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
 }
 
-    /*const stripComments = (templateLiteral) => {
-        return templateLiteral.replace(/\/\*[\s\S]*?\*\/|([^:]|^)\/\/.*$/gm, '');
-    }*/
+// Find instances of a function inside a single-line string.
+const REGEX_FN_DETECT = new RegExp(/(?:(?:(?:function *(?:[a-zA-Z0-9_]+)?) *(?:\((?:.*)\)) *(?:\{(?:.*)\}))|(?:(?:.*) *(?:=>) *(?:\{)(?:.*?)?\}))/);
 
-    /*const buildRegex = (templateLiteral, flags) => {
-        return new RegExp(stripComments(templateLiteral).replace(/(\r\n|r\|\n|\s)/gm, ''), flags);
-    }*/
+
+// This regex will detect a self-invoking function like (function(){})() and will catch the invoking parameters in a single string for further inspection.
+const REGEX_SELF_INVOKING_FN = new RegExp(/(?:(?:^\() *(?:.*?)(?:} *\)))(?: *(?:\() *(.*?) *(?:\) *$))/, "gm");
+
+/**
+ * Parse method from parameter
+ * @description                    Given a parameter detect whether it should be casted as a function in the final argument injection.
+ * @param param                (string|number|boolean|null|object|array) The parameter to parse a method from.
+ * @return bool                (Boolean) If a method is detected then it's stripped from String quotes, else it's returned in it's original type.
+*/
+const isMethod = (param) => {
+    if (typeof param == "string") {
+        return (param.match(REGEX_FN_DETECT) ? true : false);
+    }
+    return false
+}
+
+const getSearchUsageByMethodRegex = (keyword = 'NX', method = "set", flags = "g") => {
+    const str = `(?<!(?:[\\/\\s]))(?<!(?:[\\*\\s]))(?:\\s*${keyword}\\s*\\.)\\s*(${method})\\s*(?:\\()(?:["']{1})([a-zA-Z0-9._-]+)(?:["']{1})(?:\\))`;
+    return new RegExp(str, flags);
+}
 
 function EnhancedScript (
             dest,
@@ -39,27 +56,14 @@ function EnhancedScript (
         this.logger = logger;
         this.jsonParameters = parameters;
 
-        this.regexes = {};
-
-        /*
-            * { key: string
-            *   isVar: boolean
-            *   isFn: boolean
-            *   needsDefault: boolean.
-            *  }
+        /** @type { key: string
+         *   isVar: boolean
+         *   isFn: boolean
+         *   needsDefault: boolean.
+         *  }
         */
-            
         this.missingJSONParams = [];
-
-        // Setup
-        this.setupRegexes();
     }
-
-    /**
-     * Utilities, one-liners
-     */
-    EnhancedScript.prototype.getJSONParams = function ()            { return this.jsonParameters; }
-    EnhancedScript.prototype.getKeyword = function ()               { return this.keyword; }
 
     /**
      * Get Default Value
@@ -69,38 +73,8 @@ function EnhancedScript (
      */
     EnhancedScript.prototype.getDefaultValue = function(key) { return key in this.defaults ? this.defaults[key] : this.defaults[this.defaults.global]; }
 
-    /**
-     * End one-liners
-     */
-    EnhancedScript.prototype.setupRegexes = function() {
-        this.regexes.searchUsageByMethod = (method = "set", flags = "g") => {
-            const str = `(?<!(?:[\\/\\s]))(?<!(?:[\\*\\s]))(?:\\s*${this.getKeyword()}\\s*\\.)\\s*(${method})\\s*(?:\\()(?:["']{1})([a-zA-Z0-9._-]+)(?:["']{1})(?:\\))`;
-            return new RegExp(str, flags);
-            //return buildRegex(str, flags);
-        }
-
-        // Find instances of a function inside a single-line string.
-        this.regexes.fnDetect = new RegExp(/(?:(?:(?:function *(?:[a-zA-Z0-9_]+)?) *(?:\((?:.*)\)) *(?:\{(?:.*)\}))|(?:(?:.*) *(?:=>) *(?:\{)(?:.*?)?\}))/);
-
-        // This regex will detect a self-invoking function like (function(){})() and will catch the invoking parameters in a single string for further inspection.
-        this.regexes.selfInvokingFn = new RegExp(/(?:(?:^\() *(?:.*?)(?:} *\)))(?: *(?:\() *(.*?) *(?:\) *$))/, "gm");
-    }
-
-    /**
-     * Parse method from parameter
-     * @description                    Given a parameter detect whether it should be casted as a function in the final argument injection.
-     * @param param                (string|number|boolean|null|object|array) The parameter to parse a method from.
-     * @return bool                (Boolean) If a method is detected then it's stripped from String quotes, else it's returned in it's original type.
-    */
-    EnhancedScript.prototype.isMethod = function (param) {
-        if (typeof param == "string") {
-            return (param.match(this.regexes.fnDetect) ? true : false);
-        }
-        return false
-    }
-
     EnhancedScript.prototype.parseMethod = function (parameter) {
-        const selfInvokingFn = [...parameter.value.matchAll(this.regexes.selfInvokingFn)];
+        const selfInvokingFn = [...parameter.value.matchAll(REGEX_SELF_INVOKING_FN)];
         if (selfInvokingFn ) {
             return this.parseMethodWithArgs(parameter);
         }
@@ -108,13 +82,13 @@ function EnhancedScript (
     }
 
     EnhancedScript.prototype.matchAsJSONParameterKey = function( key ) {
-        const parameterMatch = this.getJSONParams().find(o => o.key == key);
+        const parameterMatch = this.jsonParameters.find(o => o.key == key);
         return parameterMatch ? parameterMatch.value : key;
     }
 
     EnhancedScript.prototype.parseMethodWithArgs = function (parameter) {
         let value = parameter.value;
-        const methodArgs = [...parameter.value.matchAll(this.regexes.searchUsageByMethod('arg', "gm"))];
+        const methodArgs = [...parameter.value.matchAll(getSearchUsageByMethodRegex(this.keyword, 'arg', "gm"))];
 
         if (methodArgs.length > 0 ) {
             this.logger.log("We found a self-invoking method with arguments!");
@@ -141,7 +115,7 @@ function EnhancedScript (
     }
 
     EnhancedScript.prototype.detectValueType = function (parameter) {
-        return this.isMethod(parameter.value) ? this.parseMethod(parameter) : JSON.stringify(parameter.value);
+        return isMethod(parameter.value) ? this.parseMethod(parameter) : JSON.stringify(parameter.value);
     }
 
     /**
@@ -164,7 +138,7 @@ function EnhancedScript (
         const script = strip(this.script);
 
         // Parse all occurrences of the usage of NX on the provided script.
-        const nxMatches = [...script.matchAll(this.regexes.searchUsageByMethod("get", "gm"))];
+        const nxMatches = [...script.matchAll(getSearchUsageByMethodRegex(this.keyword, "get", "gm"))];
 
         if (nxMatches && nxMatches.length > 0 ) {
             nxMatches.forEach( match => {
@@ -176,7 +150,7 @@ function EnhancedScript (
                     isFn: false,
                     value: this.getDefaultValue(match.default ? match.default : this.defaults.global)
                 };
-                if (this.getJSONParams().filter( o => o.key == nxMatch.key ).length == 0) { // If the parameter doesn't have a value defined in JSON
+                if (this.jsonParameters.filter( o => o.key == nxMatch.key ).length == 0) { // If the parameter doesn't have a value defined in JSON
                     this.missingJSONParams.push(nxMatch);
                 }
             });
@@ -210,20 +184,14 @@ function EnhancedScript (
         `
     }
 
-    // FIXME: documentation for displayAlert is not accurate, it does not receive any parameters and rather it gets them from 'this'. And showJSXWarning is not implemented.
     /** 
      * Display Missing Alert
      * =====================
      * @description              Display a log message if theres any missing parameter set on the JSON configuration but is being referred in the script.
-     *
-     * @param missingParam      (Object)   Missing Parameters object. See below for its construction. Must have child objects `fn` and `vars`
-     * @param showJSXWarning    (Boolean)  Flag for whether or not to display warning about not initializing variable in JSX script. Defaults to false.
-     * @param injectionVar      (String)   Variable initialized with placeholder values. Defaults to "".
-     *
      * @return string           (String)   The template literal string displaying all the occurences if any.
     */
     EnhancedScript.prototype.displayAlert = function () {
-        const keyword = this.getKeyword();
+        const keyword = this.keyword;
 
         return ` -- W A R N I N G --
         The following parameters used in the script were NOT found on the JSON "parameters" object of your script asset ${this.scriptPath }
@@ -241,14 +209,14 @@ function EnhancedScript (
     }
 
     EnhancedScript.prototype.injectParameters = function () {
-        return [...this.getJSONParams(), ...this.missingJSONParams].map( param => {
+        return [...this.jsonParameters, ...this.missingJSONParams].map( param => {
             let value = param.type ? this.getStringifiedDefaultValue(param.type) : this.getDefaultValue(this.defaults.global);
 
             if (param.value ) {
                 value = this.detectValueType(param);
             }
 
-            return `${this.getKeyword()}.set('${param.key}', ${value});`
+            return `${this.keyword}.set('${param.key}', ${value});`
         }).join("\n");
     }
 
@@ -285,7 +253,7 @@ function EnhancedScript (
                 }
                 return ${ defaultGlobalValue }
             };
-            var ${ this.getKeyword() } = new ParameterConfigurator();
+            var ${ this.keyword } = new ParameterConfigurator();
 
             // Parameter injection from job configuration
             ${ this.injectParameters() }

@@ -5,16 +5,12 @@ const os = require("os");
 const chai = require('chai')
 const expect = chai.expect
 
-// TODO: move specific unittest tests into .spec files next to the tested code 
 describe('tasks/script/EnhancedScript', () => {
     const EnhancedScript = require('./EnhancedScript')
 
     const testJsxFilePath = path.join(os.tmpdir(), 'unittest.jsx')
-    
-
 
     it("Finds parameters in jsx with missing values in json and injects", () => {
-
         fs.writeFileSync(testJsxFilePath,`
         /* var c = NX.get('unittest_undefined_parameter_multi_line_comment')
         */
@@ -41,7 +37,6 @@ describe('tasks/script/EnhancedScript', () => {
     })
 
     it("injects functions and functions with arguments", () => {
-        // enhancedScript.parseMethodWithArgs
 
         //FIXME: NX.get('unittest_undefined_function', 'arg1')  is currently not found and no warning is given
         fs.writeFileSync(testJsxFilePath,`
@@ -119,10 +114,5 @@ describe('tasks/script/EnhancedScript', () => {
             `NX.set('exampleFn', function ( parameter ) { return parameter; });`,
             `NX.set('dogCount', (function(length) { return length })(NX.call('exampleFn', [NX.call('getDogsCount') + NX.get('anAmount')])));`
         ].join('\n'))
-
-
     })
-
-    // further tests for enhancedScript.parseMethodWithArgs
-    // test for enhancedScript.parseMethod
 })
