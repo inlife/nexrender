@@ -116,8 +116,6 @@ function EnhancedScript (
         let value = parameter.value;
         const methodArgs = [...parameter.value.matchAll(this.regexes.searchUsageByMethod('arg', "gm"))];
 
-        this.logger.log(methodArgs);
-
         if (methodArgs.length > 0 ) {
             this.logger.log("We found a self-invoking method with arguments!");
             this.logger.log(JSON.stringify(methodArgs));
@@ -129,7 +127,6 @@ function EnhancedScript (
 
                 return parameter.arguments && parameter.arguments.find(o => o.key == arg);
             });
-
 
             if (foundArgument) {
                 // Search if argument is present in JSON and has `arguments` array to match against the results.
@@ -161,9 +158,6 @@ function EnhancedScript (
      * Find Missing Matches in JSX Script
      * ====================
      * @description                RegEx Searches a given JSX script to find occurences and saves an object with keys
-     * @param script               (String)            JSX script to find occurences in.
-     * @param regex                (Object)            RegEx object to match against JSX script.
-     * @param parameters           (Array<Object>)     Array with the parameters to compare against the matches.
      * @return bool                (Boolean)           Whether or not there are any variables to inject. Defaults to false.
      */
     EnhancedScript.prototype.findMissingMatchesInJSX = function () {
