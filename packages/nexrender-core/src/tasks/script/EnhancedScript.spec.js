@@ -96,9 +96,6 @@ describe('tasks/script/EnhancedScript', () => {
             }
         ], 'NX', {}, 'unittest', console);
 
-        // TODO: test functions are correct in build script
-
-
         const anyMissing = enhancedScript.findMissingMatchesInJSX();
         expect(anyMissing).false;
 
