@@ -1,10 +1,9 @@
 {
   "name": "@nexrender/provider-sftp",
   "homepage": "https://www.nexrender.com",
-  "version": "1.45.6",
+  "version": "1.46.4",
   "main": "src/index.js",
-  "scripts": {
-  },
+  "scripts": {},
   "author": "Bram Speeckaert",
   "license": "ISC",
   "keywords": [],
