@@ -1,7 +1,7 @@
-const { selectLayers } = require('./helpers')
+const { selectLayers, nexEscape } = require('./helpers')
 
 const renderIf = (value, string) => {
-    const encoded = typeof value == 'string' ? escape(value) : JSON.stringify(value);
+    const encoded = typeof value == 'string' ? nexEscape(value) : JSON.stringify(value);
     return value === undefined ? '' : string.replace('$value', () => encoded);
 }
 
