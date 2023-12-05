@@ -72,26 +72,12 @@ const start = async (host, secret, settings) => {
     const client = createClient({ host, secret });
 
     do {
-        let job = await nextJob(client, settings);
-
-        if (job.jobId && job.logger) {
-            const { isCancelled } = await client.loadJobDetails(job.uid, job);
-
-            if (isCancelled) {
-                try {
-                    job.state = 'cancelled';
-                    job.finishedAt = new Date();
-                    await client.updateJob(job.uid, job);
-                } catch(err) {
-                    console.log(`[${job.uid}] error while updating job state to ${job.state}. Job abandoned.`);
-                }
-                continue;
-            }
+        let job = await nextJob(client, settings); {
+            job.state = 'started';
+            job.startedAt = new Date()
         }
 
         try {
-            job.state = 'started';
-            job.startedAt = new Date()
             await client.updateJob(job.uid, job)
         } catch(err) {
             console.log(`[${job.uid}] error while updating job state to ${job.state}. Job abandoned.`)
