@@ -34,6 +34,7 @@ const args = arg({
 
     '--max-memory-percent':  Number,
     '--image-cache-percent': Number,
+    '--max-render-timeout': Number,
 
     '--aerender-parameter': [String],
 
@@ -122,6 +123,9 @@ if (args['--help']) {
                                             the value is a percentage of the installed RAM, and is otherwise a percentage of n.
                                             The value of n is 2 GB for 32-bit Windows, 4 GB for 64-bit Windows, and 3.5 GB for Mac OS.
 
+    --max-render-timeout                    set max render timeout in seconds,
+                                            will abort rendering if it takes longer than this value (default: 0 -disabled)
+
     --image-cache-percent                   (from Adobe site): specifies the maximum percentage of memory used
                                             to cache already rendered images and footage.
 
@@ -135,7 +139,6 @@ if (args['--help']) {
     --aerender-parameter, --ae              forward parameter to aerender (see Adobe site). Parameters with arguments have to be
                                             enclosed in single quotes. For example:
                                             nexrender --aerender-parameter 'close SAVE_CHANGES' --ae 'i 10' job.json
-
 
   {bold ENV VARS}
 
@@ -178,6 +181,7 @@ opt('multiFramesCPU',       '--multi-frames-cpu');
 opt('reuse',                '--reuse');
 opt('stopOnError',          '--stop-on-error');
 opt('maxMemoryPercent',     '--max-memory-percent');
+opt('maxRenderTimeout',     '--max-render-timeout');
 opt('imageCachePercent',    '--image-cache-percent');
 opt('wslMap',               '--wsl-map');
 opt('aeParams',             '--aerender-parameter');
