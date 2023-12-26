@@ -14,7 +14,7 @@
   "scripts": {
     "start": "npm run bootstrap",
     "install-child": "lerna exec -- npm i",
-    "bootstrap": "lerna bootstrap -- --no-package-lock",
+    "bootstrap": "lerna bootstrap --no-ci -- --no-package-lock",
     "lint": "eslint .",
     "purge-cache": "lerna exec 'rm -rf node_modules && rm -f package-lock.json'",
     "purge-master": "rm -rf node_modules && rm -f package-lock.json",
