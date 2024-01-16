@@ -38,37 +38,12 @@ When creating your render job provide this module as one of the `postrender` act
 }
 ```
 
-
-
 ## Information
 
 * `output` is a path on your system where result will be saved to, can be either relative or absulte path.
 * `input` optional argument, path of the file you want to encode, can be either relative or absulte path. Defaults to current job output video file.
 * `preset` optional argument, if provided will be used as a preset for the renderer, if not, will take input directly from params
 * `params` optional argument, object containing additional params that will be provided to the ffmpeg binary
-### Params (optional)
-Params are passed as an object of key-value pairs. In case of a param without value, you can provide `null` or empty string `""` as a value.
-Eg. `{"-vcodec": "libx264", "-r": 25, "-an": null}` would end up as `-vcodec libx264 -r 25 -an` in the final ffmpeg command.
-
-```json
-// job.json
-{
-    "actions": {
-        "postrender": [
-            {
-                "module": "@nexrender/action-encode",
-                "output": "foobar.mp4",
-                "preset": "mp4",
-                "params": {
-                    "-vcodec": "libx264", 
-                    "-r": 25,
-                    "-an": null, // disable audio
-                }
-            }
-        ]
-    }
-}
-```
 
 ## Presets
 
