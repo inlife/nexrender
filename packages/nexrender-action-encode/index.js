@@ -1,13 +1,13 @@
-const fs      = require('fs')
-const path    = require('path')
-const pkg     = require('./package.json')
-const fetch   = require('node-fetch')
-const {spawn} = require('child_process')
-const nfp     = require('node-fetch-progress')
+const fs = require('fs')
+const path = require('path')
+const pkg = require('./package.json')
+const fetch = require('node-fetch')
+const { spawn } = require('child_process')
+const nfp = require('node-fetch-progress')
 
 const getBinary = (job, settings) => {
     return new Promise((resolve, reject) => {
-        const {version} = pkg['ffmpeg-static']
+        const { version } = pkg['ffmpeg-static']
         const filename = `ffmpeg-${version}${process.platform == 'win32' ? '.exe' : ''}`
         const fileurl = `https://github.com/eugeneware/ffmpeg-static/releases/download/${version}/${process.platform}-x64`
         const output = path.join(settings.workpath, filename)
@@ -27,7 +27,7 @@ const getBinary = (job, settings) => {
 
         const errorHandler = (error) => reject(new Error({
             reason: 'Unable to download file',
-            meta: {fileurl, error}
+            meta: { fileurl, error }
         }))
 
 
@@ -36,9 +36,9 @@ const getBinary = (job, settings) => {
                 ? res
                 : Promise.reject(new Error({
                     reason: 'Initial error downloading file',
-                    meta: {fileurl, error: res.error}
+                    meta: { fileurl, error: res.error }
                 })
-            ))
+                ))
             .then(res => {
                 const progress = new nfp(res)
 
@@ -97,17 +97,17 @@ const constructParams = (job, settings, { preset, input, output, params }) => {
         '-ar': '44100',
     };
 
-    switch(preset) {
+    switch (preset) {
         case 'mp4':
             params = Object.assign(baseParams, {
                 '-acodec': 'aac',
                 '-vcodec': 'libx264',
-                '-pix_fmt' : 'yuv420p',
+                '-pix_fmt': 'yuv420p',
                 '-r': '25',
             }, params, {
-              '-y': output
+                '-y': output
             });
-        break;
+            break;
 
         case 'ogg':
             params = Object.assign(baseParams, {
@@ -117,7 +117,7 @@ const constructParams = (job, settings, { preset, input, output, params }) => {
             }, params, {
                 '-y': output
             });
-        break;
+            break;
 
         case 'webm':
             params = Object.assign(baseParams, {
@@ -128,7 +128,7 @@ const constructParams = (job, settings, { preset, input, output, params }) => {
             }, params, {
                 '-y': output
             });
-        break;
+            break;
 
         case 'mp3':
             params = Object.assign(baseParams, {
@@ -136,7 +136,7 @@ const constructParams = (job, settings, { preset, input, output, params }) => {
             }, params, {
                 '-y': output
             });
-        break;
+            break;
 
         case 'm4a':
             params = Object.assign(baseParams, {
@@ -146,7 +146,7 @@ const constructParams = (job, settings, { preset, input, output, params }) => {
             }, params, {
                 '-y': output
             });
-        break;
+            break;
 
         case 'gif':
             params = Object.assign({}, {
@@ -155,7 +155,7 @@ const constructParams = (job, settings, { preset, input, output, params }) => {
             }, params, {
                 '-y': output
             });
-        break;
+            break;
 
         default:
             params = Object.assign({}, {
@@ -163,7 +163,16 @@ const constructParams = (job, settings, { preset, input, output, params }) => {
             }, params, {
                 '-y': output
             });
-        break;
+            break;
+    }
+
+    /* convert key-value pair to array */
+    /* replace ${workPath} with actual workpath */
+    /* handles flags, like -y, -vcodec, -an, etc. In which case, it returns only the key */
+    const parseKeyValuePair = (key, value) => {
+        // only relied on null check or empty string, since 0, true, false are all valid possible values
+        if (value === null || !String(value)) return [key];
+        return [key, String(value).replace('${workPath}', job.workpath)];
     }
 
     /* convert to plain array */
@@ -171,16 +180,16 @@ const constructParams = (job, settings, { preset, input, output, params }) => {
         (cur, key) => {
             const value = params[key];
             if (Array.isArray(value)) {
-                value.forEach(item => cur.push(key, item.replace('${workPath}', job.workpath)));
+                value.forEach(item => cur.push(...parseKeyValuePair(key, item)));
             } else {
-                cur.push(key, String(value).replace('${workPath}', job.workpath))
+                cur.push(...parseKeyValuePair(key, value))
             }
             return cur;
         }, []
     );
 }
 
-const convertToMilliseconds = (h, m, s) => ((h*60*60+m*60+s)*1000);
+const convertToMilliseconds = (h, m, s) => ((h * 60 * 60 + m * 60 + s) * 1000);
 
 const getDuration = (regex, data) => {
     const matches = data.match(regex);
@@ -201,7 +210,7 @@ module.exports = (job, settings, options/*, type */) => {
             if (settings.debug) {
                 settings.logger.log(`[${job.uid}] spawning ffmpeg process: ${binary} ${params.join(' ')}`);
             }
-            const instance = spawn(binary, params, {windowsHide: true});
+            const instance = spawn(binary, params, { windowsHide: true });
             let totalDuration = 0
 
             instance.on('error', err => reject(new Error(`Error starting ffmpeg process: ${err}`)));
