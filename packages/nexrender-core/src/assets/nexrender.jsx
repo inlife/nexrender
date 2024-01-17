@@ -29,10 +29,16 @@ nexrender.replaceFootage = function (layer, filepath) {
     var importOptions = new ImportOptions(file);
     //importOptions.importAs = ImportAsType.COMP; // you can do stuff like this at this point for PSDs
     var theImport = app.project.importFile(importOptions);
+    
+    var oldFootage = layer.source || null;
+
     layer.replaceSource(theImport, true);
+
+    if (oldFootage) oldFootage.remove();
 
     return true;
 };
+
 
 /* invoke callback for every composition matching specific name */
 nexrender.selectCompositionsByName = function(name, callback) {
