@@ -58,7 +58,9 @@ const server = require('@nexrender/server')
 const port = 3000
 const secret = 'myapisecret'
 
-server.listen(port, secret)
+server.listen(port, secret, () => {
+    console.log(`Server listening on port ${port}`)
+})
 ```
 
 Or, alternatively you can use `createHandler` method, to integrate it with your custom http server:
