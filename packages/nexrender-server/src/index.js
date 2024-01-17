@@ -38,7 +38,7 @@ const handler = secret => {
 
 module.exports = {
     createHandler: handler,
-    listen: (port = 3000, secret = '') => {
-        return micro(handler(secret)).listen(port)
+    listen: (port = 3000, secret = '', callback) => {
+        return micro(handler(secret)).listen(port, callback)
     }
 }
