@@ -166,14 +166,23 @@ const constructParams = (job, settings, { preset, input, output, params }) => {
         break;
     }
 
+    /* convert key-value pair to array */
+    /* replace ${workPath} with actual workpath */
+    /* handles flags, like -y, -vcodec, -an, etc. In which case, it returns only the key */
+    const parseKeyValuePair = (key, value) => {
+        // only relied on null check or empty string, since 0, true, false are all valid possible values
+        if (value === null || !String(value)) return [key];
+        return [key, String(value).replace('${workPath}', job.workpath)];
+    }
+
     /* convert to plain array */
     return Object.keys(params).reduce(
         (cur, key) => {
             const value = params[key];
             if (Array.isArray(value)) {
-                value.forEach(item => cur.push(key, item.replace('${workPath}', job.workpath)));
+                value.forEach(item => cur.push(...parseKeyValuePair(key, item)));
             } else {
-                cur.push(key, String(value).replace('${workPath}', job.workpath))
+                cur.push(...parseKeyValuePair(key, value))
             }
             return cur;
         }, []
