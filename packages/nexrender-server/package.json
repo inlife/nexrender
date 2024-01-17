@@ -1,6 +1,6 @@
 {
   "name": "@nexrender/server",
-  "version": "1.46.4",
+  "version": "1.46.9",
   "author": "inlife",
   "main": "src/index.js",
   "homepage": "https://www.nexrender.com",
