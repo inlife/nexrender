@@ -38,15 +38,7 @@ const handler = secret => {
 
 module.exports = {
     createHandler: handler,
-    listen: (port = 3000, secret = '') => {
-        const server = micro(handler(secret));
-        server.listen(port, (err) => {
-            if (err) {
-                console.error(`Failed to start server: ${err.message}`);
-            } else {
-                console.log(`Server is live on port ${port}`);
-            }
-        });
-        return server;
+    listen: (port = 3000, secret = '', callback) => {
+        return micro(handler(secret)).listen(port, callback)
     }
 }
