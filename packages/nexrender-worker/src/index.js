@@ -152,15 +152,13 @@ const start = async (host, secret, settings, headers) => {
                 settings.onError(job, err);
             }
 
-            await client.updateJob(job.uid, getRenderingStatus(job)).catch((err) => {
-                if (settings.stopOnError) {
-                    throw err;
-                } else {
-                    console.log(`[${job.uid}] error occurred: ${err.stack}`)
-                    console.log(`[${job.uid}] render proccess stopped with error...`)
-                    console.log(`[${job.uid}] continue listening next job...`)
-                }
-            });
+            try {
+                await client.updateJob(job.uid, getRenderingStatus(job))
+            }
+            catch (e) {
+                console.log(`[${job.uid}] error while updating job state to ${job.state}. Job abandoned.`)
+                console.log(`[${job.uid}] error stack: ${e.stack}`)
+            }
 
             if (settings.stopOnError) {
                 throw err;
