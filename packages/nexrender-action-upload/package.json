@@ -5,7 +5,7 @@
     "inlife",
     "zuntah"
   ],
-  "version": "1.45.6",
+  "version": "1.47.0",
   "main": "index.js",
   "publishConfig": {
     "access": "public"
@@ -16,8 +16,8 @@
   "peerDependencies": {
     "@nexrender/provider-ftp": "^1.17.2",
     "@nexrender/provider-gs": "^1.21.3",
+    "@nexrender/provider-nx": "^1.0.0",
     "@nexrender/provider-s3": "^1.21.4",
-    "@nexrender/provider-sftp": "^1.37.9",
-    "@nexrender/provider-nx": "^1.0.0"
+    "@nexrender/provider-sftp": "^1.37.9"
   }
 }
