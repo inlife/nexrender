@@ -31,7 +31,8 @@
     "@nexrender/provider-ftp": "^1.17.2",
     "@nexrender/provider-gs": "^1.21.3",
     "@nexrender/provider-s3": "^1.21.4",
-    "@nexrender/provider-sftp": "^1.37.9"
+    "@nexrender/provider-sftp": "^1.37.9",
+    "@nexrender/provider-nx": "^1.37.9"
   },
   "publishConfig": {
     "access": "public"

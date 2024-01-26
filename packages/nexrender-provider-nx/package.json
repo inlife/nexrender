@@ -1,0 +1,14 @@
+{
+    "name": "@nexrender/provider-nx",
+    "homepage": "https://www.nexrender.com",
+    "version": "1.46.4",
+    "main": "src/index.js",
+    "scripts": {},
+    "author": "Vladyslav Hrytsenko",
+    "license": "MIT",
+    "keywords": [],
+    "description": "",
+    "publishConfig": {
+        "access": "public"
+    }
+}
