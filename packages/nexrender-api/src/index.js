@@ -5,7 +5,9 @@ const fetchAgent = typeof process == 'undefined' ? null : { // eslint-disable-li
     https: require('https').Agent,
 }
 
-const createClient = ({ host, secret, polling, headers }) => {
+const pkg = require('../package.json')
+
+const createClient = ({ host, secret, polling, headers, name }) => {
     const wrappedFetch = async (path, options) => {
         options = options || {}
         const defaultHeaders = {};
@@ -25,6 +27,12 @@ const createClient = ({ host, secret, polling, headers }) => {
         if (secret) {
             options.headers['nexrender-secret'] = secret
         }
+
+        if (name) {
+            options.headers['nexrender-name'] = name
+        }
+
+        options.headers['user-agent'] = ('nexrender-api/' + pkg.version + ' ' + (options.headers['user-agent'] || '')).trim()
 
         if (typeof process != 'undefined') {
             // NOTE: keepalive is enabled by default in node-fetch, so we need to disable it because of a bug

@@ -14,6 +14,7 @@ const args = arg({
     '--cleanup':                Boolean,
 
     '--host':                   String,
+    '--name':                   String,
     '--secret':                 String,
 
     '--binary':                 String,
@@ -49,6 +50,7 @@ const args = arg({
     '-t':           '--tag-selector',
     '-c':           '--cleanup',
     '-h':           '--help',
+    '-n':           '--name',
     '-s':           '--secret',
     '-b':           '--binary',
     '-w':           '--workpath',
@@ -85,6 +87,10 @@ if (args['--help']) {
       -h, --host {underline \{scheme\}://\{domain/ip\}:\{port\}}
                                             specify which host {cyan nexrender-server} is running at,
                                             and where all api requests will be forwarded to
+
+      -n, --name {underline unique_worker_name}
+                                            specify which name the {cyan nexrender-worker} will have,
+                                            and how it will be identified in the {cyan nexrender-server}
 
       -s, --secret {underline secret_string}            specify a secret that will be required for every
                                             incoming http request to validate again
@@ -199,6 +205,7 @@ if (settings.hasOwnProperty('ae-params')) {
     settings['aeParams'] = settings['ae-params']
 }
 
+opt('name',                 '--name');
 opt('binary',               '--binary');
 opt('workpath',             '--workpath');
 opt('no-license',           '--no-license');
