@@ -60,7 +60,7 @@ jobs:
     - name: Notarize (nexrender-worker-macos)
       shell: bash
       run: |
-        TMP=${{ steps.tmp.outputs.path }}
+        TMP=${{ steps.tmp2.outputs.path }}
         xcrun notarytool submit \
             "${{ steps.zip2.outputs.zip_path }}" \
             --wait \
