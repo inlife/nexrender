@@ -40,7 +40,7 @@ jobs:
       shell: bash
       run: |
         security find-identity -v signing_temp.keychain | grep "89QX7NXPQM" | grep "Developer ID Application"
-        codesign --keychain signing_temp.keychain --force --deep --sign "89QX7NXPQM" "nexrender-worker-macos" --options=runtime
+        codesign --keychain signing_temp.keychain --force --deep --sign "89QX7NXPQM" "bin/nexrender-worker-macos" --options=runtime
 
     - name: Create a tmp directory
       id: tmp2
@@ -54,7 +54,7 @@ jobs:
       run: |
         TMP=${{ steps.tmp2.outputs.path }}
         ZIP_PATH="$TMP/app2.zip"
-        zip -j "$ZIP_PATH" "nexrender-worker-macos"
+        zip -j "$ZIP_PATH" "bin/nexrender-worker-macos"
         echo "zip_path=$ZIP_PATH" >> $GITHUB_OUTPUT
 
     - name: Notarize (nexrender-worker-macos)
