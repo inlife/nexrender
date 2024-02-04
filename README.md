@@ -317,6 +317,7 @@ There are multiple built-in modules within nexrender ecosystem:
 * [@nexrender/action-encode](packages/nexrender-action-encode)
 * [@nexrender/action-upload](packages/nexrender-action-upload)
 * [@nexrender/action-cache](packages/nexrender-action-cache)
+* [@nexrender/action-decompress](packages/nexrender-action-decompress)
 * (list will be expanded)
 
 Every module might have his own set of fields, however, `module` field is always there.
