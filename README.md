@@ -568,11 +568,12 @@ by specifying `src`, and one of the `layerName` or `layerIndex` options.
 * `layerName`: string, target layer name in the After Effects project
 * `layerIndex`: integer, can be used instead of `layerName` to select a layer by providing an index, starting from 1 (default behavior of AE jsx scripting env)
 * `composition`: string, composition where the layer is. Useful for searching layer in specific compositions. If none is provided, it uses the wildcard composition "\*",
-that will result in a wildcard composition matching, and will apply this data to every matching layer in every matching composition. If you want to search in a nested composition you can provide a path to that composition using  `"->"` delimiter.  
+that will result in a wildcard composition matching, and will apply this data to every matching layer in every matching composition. If you want to search in a nested composition you can provide a path to that composition using  `"->"` delimiter.
 For example, `"FULL_HD->intro->logo comp"` matches a composition named `logo comp` that is used in composition `intro` which in turn is used in composition `FULL_HD`. Note, that `FULL_HD` doesn't have to be the root composition. Make sure to specify a **composition** name, not a layer name.
 * `name`: string, an optional filename that the asset will be saved as. If not provided the `layerName` or the basename of the file will be used
 * `extension`: string, an optional extension to be added to the filename before it is sent for rendering. This is because After Effects expects the file extension to match the content type of the file. If none is provided, the filename will be unchanged.
 * `useOriginal`: boolean, an optional feature specific to the `file://` protocol that prevents nexrender from copying an asset to a local temp folder, and use original instead
+* `sequence` : boolean, an optional feature that allows you to specify that the asset is a sequence of images. If set to true, the asset will be treated as a sequence of images and will be imported as such in After Effects. (default: false) For more information on how to use sequences, check out the [Adobe After Effects documentation](https://helpx.adobe.com/after-effects/using/preparing-importing-still-images.html#Importafootageitemsfromasequenceoffiles)
 
 The specified asset from `src` field will be downloaded/copied to the working directory, and just before rendering will happen,
 a footage item with specified `layerName` or `layerIndex` in the original project will be replaced with the freshly downloaded asset.

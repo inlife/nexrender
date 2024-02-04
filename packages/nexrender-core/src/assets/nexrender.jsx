@@ -17,7 +17,7 @@ nexrender.typesMatch = function (types, layer) {
     }).length > 0;
 };
 
-nexrender.replaceFootage = function (layer, filepath) {
+nexrender.replaceFootage = function (layer, filepath, sequence) {
     if (!layer) { return false; }
 
     var file = new File(filepath);
@@ -27,9 +27,10 @@ nexrender.replaceFootage = function (layer, filepath) {
     }
 
     var importOptions = new ImportOptions(file);
-    //importOptions.importAs = ImportAsType.COMP; // you can do stuff like this at this point for PSDs
+
+    if (sequence) { importOptions.sequence = true;}
     var theImport = app.project.importFile(importOptions);
-    
+
     var oldFootage = layer.source || null;
 
     layer.replaceSource(theImport, true);
