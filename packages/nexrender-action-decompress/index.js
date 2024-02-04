@@ -1,6 +1,10 @@
 const AdmZip = require('adm-zip');
 
 const decompress = (job, settings, asset, action) => {
+    if (asset.dest.indexOf('.' + action.format) === -1) {
+        return Promise.resolve();
+    }
+
     switch (action.format) {
         case 'zip':
             const zip = new AdmZip(asset.dest);
