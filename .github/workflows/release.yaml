@@ -35,15 +35,47 @@ jobs:
         apple-team-id: 89QX7NXPQM
         app-path: bin/nexrender-cli-macos
 
-    - name: Sign and notarize the nexrender-worker-macos
-      uses: toitlang/action-macos-sign-notarize@v1.1.1
-      with:
-        certificate: ${{ secrets.MACOS_CERTIFICATE }}
-        certificate-password: ${{ secrets.MACOS_CERTIFICATE_PWD }}
-        username: ${{ secrets.APPLE_ID_USERNAME }}
-        password: ${{ secrets.APPLE_ID_PASSWORD }}
-        apple-team-id: 89QX7NXPQM
-        app-path: bin/nexrender-worker-macos
+    # - name: Sign and notarize the nexrender-worker-macos
+    - name: Code sign (nexrender-worker-macos)
+      shell: bash
+      run: |
+        security find-identity -v signing_temp.keychain | grep "89QX7NXPQM" | grep "Developer ID Application"
+        codesign --keychain signing_temp.keychain --force --deep --sign "89QX7NXPQM" "nexrender-worker-macos" --options=runtime
+
+    - name: Create a tmp directory
+      id: tmp2
+      shell: bash
+      run: |
+        echo "path=$(mktemp -d -t sign_notarize.XXXXXXXXXX)" >> $GITHUB_OUTPUT
+
+    - name: Create a ZIP (nexrender-worker-macos)
+      id: zip2
+      shell: bash
+      run: |
+        TMP=${{ steps.tmp2.outputs.path }}
+        ZIP_PATH="$TMP/app2.zip"
+        zip -j "$ZIP_PATH" "nexrender-worker-macos"
+        echo "zip_path=$ZIP_PATH" >> $GITHUB_OUTPUT
+
+    - name: Notarize (nexrender-worker-macos)
+      shell: bash
+      run: |
+        TMP=${{ steps.tmp.outputs.path }}
+        xcrun notarytool submit \
+            "${{ steps.zip2.outputs.zip_path }}" \
+            --wait \
+            --apple-id "${{ secrets.APPLE_ID_USERNAME }}" \
+            --password "${{ secrets.APPLE_ID_PASSWORD }}" \
+            --team-id "89QX7NXPQM" \
+            --output-format json \
+          | tee "$TMP/out.json"
+        grep -q "Accepted" "$TMP/out.json"
+
+    - name: Check notarization (nexrender-worker-macos)
+      shell: bash
+      run: |
+        # See https://developer.apple.com/forums/thread/130560
+        codesign -vvvv -R="notarized" --check-notarization "bin/nexrender-worker-macos"
 
     - name: Publish release
       uses: softprops/action-gh-release@v1
