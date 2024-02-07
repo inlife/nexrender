@@ -256,7 +256,7 @@ Estimated date of change to the new behavior: 2023-06-01.\n`);
             fs.writeFileSync(logPath, outputStr);
 
             /* resolve job without checking if file exists, or its size for image sequences */
-            if (settings.skipRender || job.template.imageSequence || ['jpeg', 'jpg', 'png'].indexOf(outputFile) !== -1) {
+            if (settings.skipRender || job.template.imageSequence || ['jpeg', 'jpg', 'png', 'tif'].indexOf(outputFile) !== -1) {
                 settings.track('Job Render Finished', {
                     job_id: job.uid, // anonymized internally
                     job_finish_reason: 'skipped_check',
