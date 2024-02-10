@@ -17,7 +17,7 @@ nexrender.typesMatch = function (types, layer) {
     }).length > 0;
 };
 
-nexrender.replaceFootage = function (layer, filepath, sequence) {
+nexrender.replaceFootage = function (layer, filepath, sequence, removeOldFootage) {
     if (!layer) { return false; }
 
     var file = new File(filepath);
@@ -35,7 +35,7 @@ nexrender.replaceFootage = function (layer, filepath, sequence) {
 
     layer.replaceSource(theImport, true);
 
-    if (oldFootage) oldFootage.remove();
+    if (removeOldFootage && oldFootage) oldFootage.remove();
 
     return true;
 };
@@ -178,12 +178,12 @@ nexrender.selectLayersByType = function(
   });
 
   if (!foundOnce && !continueOnMissing) {
-    throw new Error( 
-      "nexrender: Couldn't find any layers by provided type (" 
+    throw new Error(
+      "nexrender: Couldn't find any layers by provided type ("
       + type +
-      ") inside a composition: " 
+      ") inside a composition: "
       + compositionName
-    ); 
+    );
   }
 };
 
@@ -259,4 +259,4 @@ nexrender.changeValueForKeypath = function (layer, keys, val) {
 
 /* end of custom user script */
 },{}]},{},[1]);
-`
+`;
