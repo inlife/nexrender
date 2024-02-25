@@ -77,19 +77,9 @@ jobs:
     #     # See https://developer.apple.com/forums/thread/130560
     #     codesign -vvvv -R="notarized" --check-notarization "bin/nexrender-worker-macos"
 
-    - name: Release Notes
-      uses: post-op/chatgpt-release@v1
-      id: release_notes
-      with:
-        version: ${{ github.ref_name }}
-        whimsical: true
-      env:
-        OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
     - name: Publish release
       uses: softprops/action-gh-release@v1
       if: success()
       with:
-        body: ${{ steps.release_notes.outputs.release_body }}
+        # body: ${{ steps.release_notes.outputs.release_body }}
         files: bin/*
