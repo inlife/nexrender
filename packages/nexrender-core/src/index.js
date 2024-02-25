@@ -91,6 +91,9 @@ const init = (settings) => {
 
         onInstanceSpawn: undefined,
 
+        // amount of seconds before job will be marked as "stuck"
+        maxUpdateTimeout: process.env.NEXRENDER_MAX_UPDATE_TIMEOUT || 60,
+
         __initialized: true,
     }, settings, {
         binary: binaryUser || binaryAuto,
