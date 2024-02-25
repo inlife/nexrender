@@ -2,7 +2,7 @@ const fs = require('fs')
 const {name} = require('./package.json')
 const path = require('path')
 
-module.exports = (job, settings, { input, output }, type) => {
+module.exports = (job, settings, { input, output, useJobId }, type) => {
     if (type != 'postrender') {
         throw new Error(`Action ${name} can be only run in postrender mode, you provided: ${type}.`)
     }
@@ -14,9 +14,15 @@ module.exports = (job, settings, { input, output }, type) => {
     if (!path.isAbsolute(input)) input = path.join(job.workpath, input);
     if (!path.isAbsolute(output)) output = path.join(job.workpath, output);
 
+    /* create folders along the path if needed */
+    fs.mkdirSync(path.dirname(output), { recursive: true });
+
     /* output is a directory, save to input filename */
     if (fs.existsSync(output) && fs.lstatSync(output).isDirectory()) {
-        output = path.join(output, path.basename(input));
+        output = path.join(output, useJobId
+            ? job.uid + path.extname(input)
+            : path.basename(input)
+        );
     }
 
     /* plain asset stream copy */
