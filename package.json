@@ -26,7 +26,7 @@
     "pkg-server": "cross-env NEXRENDER_REQUIRE_PLUGINS=1 pkg packages/nexrender-server/package.json --out-path bin/",
     "pkg-prelink": "lerna run --scope @nexrender/core pkg-prelink && lerna run --scope @nexrender/server pkg-prelink",
     "pkg": "npm run pkg-prelink && npm run pkg-cli && npm run pkg-server && npm run pkg-worker && npm run pkg-rename",
-    "test": "npm run lint && lerna bootstrap && lerna run test"
+    "test": "npm run lint && mocha"
   },
   "devDependencies": {
     "chai": "^4.3.10",
