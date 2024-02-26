@@ -186,9 +186,11 @@ Estimated date of change to the new behavior: 2023-06-01.\n`);
         renderStopwatch = Date.now();
 
         let timeoutID = 0;
-        let updateTimeout = Date.now();
+        let updateTimeout = 0;
 
         const updateTimeoutInterval = setInterval(() => {
+            if (projectStart === null) return;
+
             const now = Date.now()
             if (now - updateTimeout > settings.maxUpdateTimeout * 1000) {
                 clearInterval(updateTimeoutInterval);
@@ -196,7 +198,7 @@ Estimated date of change to the new behavior: 2023-06-01.\n`);
                 settings.trackSync('Job Render Failed', { job_id: job.uid, error: 'aerender_no_update' });
                 reject(new Error(`No update from aerender for ${settings.maxUpdateTimeout} seconds`));
             }
-        }, settings.maxUpdateTimeout * 1000)
+        }, 5000)
 
         if (settings.debug) {
             settings.logger.log(`[${job.uid}] spawning aerender process: ${settings.binary} ${params.join(' ')}`);
@@ -226,6 +228,7 @@ Estimated date of change to the new behavior: 2023-06-01.\n`);
         instance.stderr.on('data', (data) => {
             output.push(data.toString('utf8'));
             (settings.verbose && settings.logger.log(data.toString('utf8')));
+            updateTimeout = Date.now()
         });
 
         if (settings.maxRenderTimeout && settings.maxRenderTimeout > 0) {
