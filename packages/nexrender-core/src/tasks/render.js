@@ -188,18 +188,6 @@ Estimated date of change to the new behavior: 2023-06-01.\n`);
         let timeoutID = 0;
         let updateTimeout = 0;
 
-        const updateTimeoutInterval = setInterval(() => {
-            if (projectStart === null) return;
-
-            const now = Date.now()
-            if (now - updateTimeout > settings.maxUpdateTimeout * 1000) {
-                clearInterval(updateTimeoutInterval);
-                clearTimeout(timeoutID);
-                settings.trackSync('Job Render Failed', { job_id: job.uid, error: 'aerender_no_update' });
-                reject(new Error(`No update from aerender for ${settings.maxUpdateTimeout} seconds`));
-            }
-        }, 5000)
-
         if (settings.debug) {
             settings.logger.log(`[${job.uid}] spawning aerender process: ${settings.binary} ${params.join(' ')}`);
         }
@@ -230,6 +218,19 @@ Estimated date of change to the new behavior: 2023-06-01.\n`);
             (settings.verbose && settings.logger.log(data.toString('utf8')));
             updateTimeout = Date.now()
         });
+
+        const updateTimeoutInterval = setInterval(() => {
+            if (projectStart === null) return;
+
+            const now = Date.now()
+            if (now - updateTimeout > settings.maxUpdateTimeout * 1000) {
+                clearInterval(updateTimeoutInterval);
+                clearTimeout(timeoutID);
+                settings.trackSync('Job Render Failed', { job_id: job.uid, error: 'aerender_no_update' });
+                reject(new Error(`No update from aerender for ${settings.maxUpdateTimeout} seconds`));
+                instance.kill('SIGINT');
+            }
+        }, 5000)
 
         if (settings.maxRenderTimeout && settings.maxRenderTimeout > 0) {
             const timeout = 1000 * settings.maxRenderTimeout;
