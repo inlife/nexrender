@@ -187,6 +187,7 @@ Estimated date of change to the new behavior: 2023-06-01.\n`);
 
         let timeoutID = 0;
         let updateTimeout = 0;
+        let updateTimeoutInterval = null;
 
         if (settings.debug) {
             settings.logger.log(`[${job.uid}] spawning aerender process: ${settings.binary} ${params.join(' ')}`);
@@ -219,7 +220,7 @@ Estimated date of change to the new behavior: 2023-06-01.\n`);
             updateTimeout = Date.now()
         });
 
-        const updateTimeoutInterval = setInterval(() => {
+        updateTimeoutInterval = setInterval(() => {
             if (projectStart === null) return;
 
             const now = Date.now()
