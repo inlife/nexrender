@@ -80,13 +80,8 @@ const defaultPaths = {
     ],
 }
 
-/**
- * Attemnt to find a aebinary path automatically
- * (using a table of predefined paths)
- * @param  {Object} settings
- * @return {String|null}
- */
-module.exports = settings => {
+
+const findAll = settings => {
     let platform = os.platform()
 
     if (settings.wsl) platform = 'wsl'
@@ -100,6 +95,21 @@ module.exports = settings => {
         .map(folderPath => path.join(folderPath, binary))
         .filter(binaryPath => fs.existsSync(binaryPath))
 
+    return results
+}
+
+/**
+ * Attemnt to find a aebinary path automatically
+ * (using a table of predefined paths)
+ * @param  {Object} settings
+ * @return {String|null}
+ */
+module.exports = settings => {
+    const results = findAll(settings)
+
     // return first matched result
     return results.length ? results[0] : null;
 }
+
+module.exports.defaultPaths = defaultPaths
+module.exports.findAll = findAll
