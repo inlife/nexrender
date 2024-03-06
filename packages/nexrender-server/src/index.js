@@ -2,7 +2,7 @@ const cors   = require('micro-cors')
 const micro  = require('micro')
 const {send} = require('micro')
 
-const withCors = cors({ allowHeaders: ['X-Requested-With','Access-Control-Allow-Origin','X-HTTP-Method-Override','Content-Type','Authorization','Accept','nexrender-secret']})
+const withCors = cors({ allowHeaders: ['X-Requested-With','Access-Control-Allow-Origin','X-HTTP-Method-Override','Content-Type','Authorization','Accept','nexrender-secret','nexrender-name']})
 
 const { router, withNamespace } = require('microrouter')
 const { get, post, put, del }   = require('microrouter')
