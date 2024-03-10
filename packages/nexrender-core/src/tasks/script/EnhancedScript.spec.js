@@ -24,7 +24,7 @@ describe('tasks/script/EnhancedScript', () => {
             key: 'unittest_defined_parameter',
             value: 'VALUE'
         },
-    ], 'NX', {}, 'unittest', console);
+    ], 'NX', {}, 'unittest', { log: () => {} });
 
         const anyMissing = enhancedScript.findMissingMatchesInJSX();
         expect(anyMissing).true;
@@ -94,7 +94,7 @@ describe('tasks/script/EnhancedScript', () => {
                     }
                 ]
             }
-        ], 'NX', {}, 'unittest', console);
+        ], 'NX', {}, 'unittest', { log: () => {} });
 
         const anyMissing = enhancedScript.findMissingMatchesInJSX();
         expect(anyMissing).false;

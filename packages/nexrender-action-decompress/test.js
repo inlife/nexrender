@@ -5,7 +5,7 @@ const AdmZip = require('adm-zip');
 const decompressAction = require('./index');
 const { describe, it, before, after } = require('mocha');
 
-describe('decompressAction', function() {
+describe('actions/decompress', function() {
     const workpath = path.join(__dirname, 'test-workpath');
 
     // Setup for tests: create zip files and write a non-archive file

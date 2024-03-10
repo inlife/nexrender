@@ -2,7 +2,7 @@ const fs = require('fs')
 const assert = require('assert').strict;
 const action = require('./index')
 
-describe('Postrender Action Test', function() {
+describe('actions/copy', function() {
     let mockJob = {
         output: 'result.mp4',
         workpath: __dirname + '/test/nexrender/',
