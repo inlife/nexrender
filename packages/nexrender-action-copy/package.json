@@ -2,7 +2,7 @@
   "name": "@nexrender/action-copy",
   "homepage": "https://www.nexrender.com",
   "author": "inlife",
-  "version": "1.49.0",
+  "version": "1.49.4",
   "main": "index.js",
   "publishConfig": {
     "access": "public"
