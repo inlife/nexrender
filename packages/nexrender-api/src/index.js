@@ -1,6 +1,6 @@
 // require node fetch if we are in nodejs environment (not browser)
-const localFetch = typeof process == 'undefined' ? fetch : require('node-fetch')
-const fetchAgent = typeof process == 'undefined' ? null : { // eslint-disable-line multiline-ternary
+let localFetch = typeof process == 'undefined' ? fetch : require('node-fetch')
+let fetchAgent = typeof process == 'undefined' ? null : { // eslint-disable-line multiline-ternary
     http: require('http').Agent,
     https: require('https').Agent,
 }
@@ -8,6 +8,10 @@ const fetchAgent = typeof process == 'undefined' ? null : { // eslint-disable-li
 const pkg = require('../package.json')
 
 const createClient = ({ host, secret, polling, headers, name }) => {
+    if (localFetch.default) {
+        localFetch = localFetch.default
+    }
+
     const wrappedFetch = async (path, options) => {
         options = options || {}
         const defaultHeaders = {};
