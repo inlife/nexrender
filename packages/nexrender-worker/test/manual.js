@@ -1,21 +1,14 @@
-process.env.NEXRENDER_API_POLLING = 500;
+process.env.NEXRENDER_API_POLLING = 1000
+const {createWorker} = require('../src/instance')
 
-const { nextJob } = require('../src')
+const instance1 = createWorker()
+const instance2 = createWorker()
+const instance3 = createWorker()
 
-let i = 0;
-const listJobs = async () => {
-    console.log('listJobs')
-    if (i++ > 5) {
-        return [{state: 'queued'}]
-    }
-    return [];
-}
+setTimeout(() => instance1.start('https://localhost:3000', 'secret', {name: 'worker 1'}), 0)
+setTimeout(() => instance2.start('https://localhost:3000', 'secret', {name: 'worker 2'}), 1000)
+setTimeout(() => instance3.start('https://localhost:3000', 'secret', {name: 'worker 3'}), 2000)
 
-const client = { listJobs }
-
-const foo = async () => {
-    const p = await nextJob(client)
-    console.log('got job', p)
-}
-
-foo();
+setTimeout(() => instance1.stop(), 4000)
+setTimeout(() => instance2.stop(), 5000)
+setTimeout(() => instance3.stop(), 6000)
