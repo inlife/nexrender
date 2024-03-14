@@ -62,6 +62,7 @@ const main = async () => {
         onRenderError: function(job, err) {},
         onFinished: function(job) {},
         onError: function(job, err) {},
+        onShouldRetry: function (job, err) { return false; },
     })
 }
 
