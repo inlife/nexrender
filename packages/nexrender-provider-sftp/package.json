@@ -11,5 +11,8 @@
   "publishConfig": {
     "access": "public"
   },
-  "gitHead": "b787c28c083185753d51cfb1b6d3dc4a6a5bda64"
+  "gitHead": "b787c28c083185753d51cfb1b6d3dc4a6a5bda64",
+  "dependencies": {
+    "ssh2-sftp-client": "^10.0.3"
+  }
 }
