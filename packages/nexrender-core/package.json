@@ -26,7 +26,7 @@
   },
   "peerDependencies": {
     "@nexrender/action-copy": "^1.0.0",
-    "@nexrender/action-decompress": "1.48.2",
+    "@nexrender/action-decompress": "^1.48.2",
     "@nexrender/action-encode": "^1.1.4",
     "@nexrender/action-upload": "^1.0.0",
     "@nexrender/provider-ftp": "^1.17.2",
