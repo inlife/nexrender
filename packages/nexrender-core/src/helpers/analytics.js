@@ -3,7 +3,6 @@ const os           = require('os')
 const path         = require('path')
 const crypto       = require('crypto')
 
-const si           = require('systeminformation')
 const { nanoid }   = require('nanoid')
 const childProcess = require('child_process')
 
@@ -96,32 +95,32 @@ const track = async (settings, event, properties = {}) => {
         return;
     }
 
-    // collect system info
-    if (!settings.systemInfo) {
-        // if (isRemote) console.log('collecting systeminfo')
+    // // collect system info
+    // if (!settings.systemInfo) {
+    //     // if (isRemote) console.log('collecting systeminfo')
 
-        settings.systemInfo = await si.get({
-            cpu: 'manufacturer,brand,cores',
-            mem: 'total',
-            graphics: '*',
-            osInfo: 'platform,arch,distro,release',
-            dockerInfo: 'id',
-        })
+    //     settings.systemInfo = await si.get({
+    //         cpu: 'manufacturer,brand,cores',
+    //         mem: 'total',
+    //         graphics: '*',
+    //         osInfo: 'platform,arch,distro,release',
+    //         dockerInfo: 'id',
+    //     })
 
-        properties.$set_once = {
-            sys_cpu_manufacturer: settings.systemInfo.cpu.manufacturer,
-            sys_cpu_brand: settings.systemInfo.cpu.brand,
-            sys_cpu_cores: settings.systemInfo.cpu.cores,
-            sys_mem_total: settings.systemInfo.mem.total,
-            sys_graphics_vendor: (settings.systemInfo.graphics.controllers[0] || []).vendor,
-            sys_graphics_model: (settings.systemInfo.graphics.controllers[0] || []).model,
-            sys_os_platform: settings.systemInfo.osInfo.platform,
-            sys_os_arch: settings.systemInfo.osInfo.arch,
-            sys_os_distro: settings.systemInfo.osInfo.distro,
-            sys_os_release: settings.systemInfo.osInfo.release,
-            sys_docker: !!settings.systemInfo.dockerInfo.id,
-        }
-    }
+    //     properties.$set_once = {
+    //         sys_cpu_manufacturer: settings.systemInfo.cpu.manufacturer,
+    //         sys_cpu_brand: settings.systemInfo.cpu.brand,
+    //         sys_cpu_cores: settings.systemInfo.cpu.cores,
+    //         sys_mem_total: settings.systemInfo.mem.total,
+    //         sys_graphics_vendor: (settings.systemInfo.graphics.controllers[0] || []).vendor,
+    //         sys_graphics_model: (settings.systemInfo.graphics.controllers[0] || []).model,
+    //         sys_os_platform: settings.systemInfo.osInfo.platform,
+    //         sys_os_arch: settings.systemInfo.osInfo.arch,
+    //         sys_os_distro: settings.systemInfo.osInfo.distro,
+    //         sys_os_release: settings.systemInfo.osInfo.release,
+    //         sys_docker: !!settings.systemInfo.dockerInfo.id,
+    //     }
+    // }
 
     if (event == 'Job Cleanup') {
         const events = Object.keys(cache.data)

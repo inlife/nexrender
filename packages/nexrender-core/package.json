@@ -21,8 +21,7 @@
     "nanoid": "^3.2.0",
     "requireg": "^0.2.1",
     "rimraf": "^3.0.2",
-    "strip-comments": "^2.0.1",
-    "systeminformation": "^5.18.3"
+    "strip-comments": "^2.0.1"
   },
   "peerDependencies": {
     "@nexrender/action-copy": "^1.0.0",
