@@ -1,14 +1,16 @@
-const fs = require('fs')
-var path = require("path");
-let Client = require('ssh2-sftp-client');
-let sftp = new Client();
+const fs = require("fs");
+const path = require("path");
+const SFTPS = require("sftps");
 
+const escapeshell = (cmd) => {
+    return cmd.replace(/(["\s'$`\\])/g, "\\$1");
+};
 
 const upload = (job, settings, src, params) => {
-    if (!params.host) throw new Error('SFTP Host not provided.')
-    if (!params.port) throw new Error('SFTP Port not provided.')
-    if (!params.user) throw new Error('SFTP Username not provided.')
-    if (!params.password) throw new Error('SFTP Password not provided.')
+    if (!params.host) throw new Error("SFTP Host not provided.");
+    if (!params.port) throw new Error("SFTP Port not provided.");
+    if (!params.user) throw new Error("SFTP Username not provided.");
+    if (!params.password) throw new Error("SFTP Password not provided.");
 
     let file;
 
@@ -17,34 +19,33 @@ const upload = (job, settings, src, params) => {
         try {
             file = fs.createReadStream(src);
         } catch (e) {
-            throw new Error('Could not read file. Please check path and permissions.')
+            throw new Error(
+                "Could not read file. Please check path and permissions.",
+            );
         }
 
-        file.on('error', (err) => reject(err))
-        const filename = path.basename(src)
-        const output = params.output || filename
-        delete params.output
-        console.log(path.dirname(output));
-        sftp.connect({
+        file.on("error", (err) => reject(err));
+
+        const filename = path.basename(src);
+        const output = params.output || filename;
+
+        const sftp = new SFTPS({
             host: params.host,
+            username: params.user,
+            password: params.password,
             port: params.port,
-            user: params.user,
-            password: params.password
-        }).then(() => {
-            return sftp.exists(path.dirname(output));
-        }).then((directoryExists) => {
-            if (!directoryExists) return sftp.mkdir(path.dirname(output));
-        }).then(() => {
-            return sftp.put(src, output);
-        }).finally(() => {
-            sftp.end();
-            resolve();
-        }).catch((e) => {
-            reject(e);
         });
-    })
-}
+
+        sftp.put(src, escapeshell(output), (err) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve();
+            }
+        });
+    });
+};
 
 module.exports = {
-    upload
-}
+    upload,
+};
