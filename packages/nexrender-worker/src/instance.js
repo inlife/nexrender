@@ -53,9 +53,11 @@ const createWorker = () => {
      * @return {Promise}
      */
     const start = async (host, secret, settings, headers) => {
-        settings = init(Object.assign({ process: 'nexrender-worker' }, settings, {
+        settings = init(Object.assign({
+            process: 'nexrender-worker',
+            stopOnError: false,
             logger: console,
-        }))
+        }, settings))
 
         settingsRef = settings;
         active = true;
