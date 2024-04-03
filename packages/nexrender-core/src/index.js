@@ -114,9 +114,7 @@ const init = (settings) => {
     }
 
     // add license helper
-    if (settings.addLicense) {
-        license(settings);
-    }
+    license.add(settings);
 
     // attempt to patch the default
     // Scripts/commandLineRenderer.jsx
