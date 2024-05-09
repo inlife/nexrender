@@ -36,7 +36,7 @@ An example of how that might look like: { "outputModule": "h264", "outputExt": "
     }
 
     // NOTE: for still (jpg) image sequence frame filename will be changed to result_[#####].jpg
-    if (job.template.outputExt && ['jpeg', 'jpg', 'png', 'tif'].indexOf(job.template.outputExt) !== -1) {
+    if (job.template.outputExt && ['jpeg', 'jpg', 'png', 'tif', 'tga'].indexOf(job.template.outputExt) !== -1) {
         job.resultname = 'result_[#####].' + job.template.outputExt;
         job.template.imageSequence = true;
     }
