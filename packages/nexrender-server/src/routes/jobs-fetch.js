@@ -34,7 +34,7 @@ const fetchAllJobs = async (page = 1, size = 20, types = [],) => {
     const paginatedResults = page ?
         paginate(results, {
             page: clamp(page, {min: 1}),
-            size: clamp(size, {min: 1, max: 30})
+            size: clamp(size, {min: 1, max: 2000})
         })
         : results
 
