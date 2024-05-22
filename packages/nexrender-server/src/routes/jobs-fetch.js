@@ -31,12 +31,11 @@ const fetchAllJobs = async (page = 1, size = 20, types = [],) => {
     const results = await fetch(null, types)
     const total = results.length
 
-    const paginatedResults = page ?
+    const paginatedResults =
         paginate(results, {
             page: clamp(page, {min: 1}),
             size: clamp(size, {min: 1, max: 2000})
         })
-        : results
 
     return transformResults(paginatedResults, {page, size, total})
 }
