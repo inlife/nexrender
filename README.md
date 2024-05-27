@@ -1608,6 +1608,7 @@ If you've used nexrender, and you like it, please feel free to add yourself into
 * [den frie vilje](https://denfrievilje.dk)
 * [DR (Danish National Broadcaster)](https://dr.dk)
 * [TV2 (Danish Broadcaster)](https://tv2.dk/)
+* [Stargazer](https://gostargazer.com/)
 * you name goes here
 
 ## Plans
