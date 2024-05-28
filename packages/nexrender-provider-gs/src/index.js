@@ -1,7 +1,16 @@
 const fs  = require('fs')
 const {Storage} = require('@google-cloud/storage')
 
-const storage = new Storage()
+/* initialize google cloud storage */
+let storage;
+
+if (process.env.NEXRENDER_GCS_KEY_FILE) {
+    storage = new Storage({
+        keyFilename: process.env.NEXRENDER_GCS_KEY_FILE
+    })
+} else {
+    storage = new Storage()
+}
 
 /* define public methods */
 // eslint-disable-next-line
