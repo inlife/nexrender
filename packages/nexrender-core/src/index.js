@@ -109,6 +109,7 @@ const render = (job, settings = {}, updateJob) => {
         settings = init(settings)
     }
 
+    // Call the state function with the job and settings
     return Promise.resolve(job)
         .then(job => state(job, settings, updateJob, setup, 'setup'))
         .then(job => state(job, settings, updateJob, predownload, 'predownload'))

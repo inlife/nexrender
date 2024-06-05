@@ -118,6 +118,7 @@ const start = async (host, secret, settings) => {
             job = await Promise.race([
                 waitAndThrow(NEXRENDER_TIMEOUT, 'render timeout'),
                 render(job, settings, (data) => {
+                    // update job with new data
                     client.updateJob(job.uid, {
                         ...job,
                         ...data

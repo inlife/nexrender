@@ -20,6 +20,7 @@ const PromiseSerial = handlers => handlers.reduce(
 module.exports = actionType => (job, settings, updateJob) => {
     settings.logger.log(`[${job.uid}] applying ${actionType} actions...`);
 
+    // Call the actions in sequence
     return PromiseSerial((job.actions[actionType] || []).map(action => () => {
         if(settings.actions && settings.actions[action.module]){
             return settings.actions[action.module](job, settings, action, actionType, updateJob);
