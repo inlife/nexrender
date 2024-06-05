@@ -1,6 +1,6 @@
 {
   "name": "@create-global/nexrender-worker",
-  "version": "1.51.0",
+  "version": "1.51.1",
   "author": "inlife",
   "main": "src/index.js",
   "scripts": {
@@ -17,7 +17,7 @@
   },
   "dependencies": {
     "@create-global/nexrender-api": "^1.50.6",
-    "@create-global/nexrender-core": "^1.51.0",
+    "@create-global/nexrender-core": "^1.51.1",
     "@create-global/nexrender-types": "^1.45.0",
     "arg": "^4.1.0",
     "chalk": "^2.4.2",
