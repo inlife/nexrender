@@ -117,7 +117,12 @@ const start = async (host, secret, settings) => {
 
             job = await Promise.race([
                 waitAndThrow(NEXRENDER_TIMEOUT, 'render timeout'),
-                render(job, settings)
+                render(job, settings, (data) => {
+                    client.updateJob(job.uid, {
+                        ...job,
+                        ...data
+                    })
+                })
             ]);
             job.state = 'finished';
             job.finishedAt = new Date()

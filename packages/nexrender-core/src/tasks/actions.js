@@ -17,14 +17,14 @@ const PromiseSerial = handlers => handlers.reduce(
  * @param  {string} actionType
  * @return {Function}
  */
-module.exports = actionType => (job, settings) => {
+module.exports = actionType => (job, settings, updateJob) => {
     settings.logger.log(`[${job.uid}] applying ${actionType} actions...`);
 
     return PromiseSerial((job.actions[actionType] || []).map(action => () => {
         if(settings.actions && settings.actions[action.module]){
-            return settings.actions[action.module](job, settings, action, actionType);
+            return settings.actions[action.module](job, settings, action, actionType, updateJob);
         }else{
-            return requireg(action.module)(job, settings, action, actionType).catch(err => {
+            return requireg(action.module)(job, settings, action, actionType, updateJob).catch(err => {
                 return Promise.reject(new Error(`Error loading ${actionType} module ${action.module}: ${err}`));
             });
         }

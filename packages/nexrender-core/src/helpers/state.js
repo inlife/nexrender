@@ -1,9 +1,9 @@
-module.exports = (job, settings, fn, fnName) => {
+module.exports = (job, settings, updateJob, fn, fnName) => {
     job.state = `render:${fnName}`;
 
     if (job.onChange) {
         job.onChange(job, job.state);
     }
 
-    return fn(job, settings);
+    return fn(job, settings, updateJob);
 }
