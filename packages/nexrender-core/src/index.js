@@ -104,23 +104,23 @@ const init = (settings) => {
 }
 
 
-const render = (job, settings = {}) => {
+const render = (job, settings = {}, updateJob) => {
     if (!settings.__initialized) {
         settings = init(settings)
     }
 
     return Promise.resolve(job)
-        .then(job => state(job, settings, setup, 'setup'))
-        .then(job => state(job, settings, predownload, 'predownload'))
-        .then(job => state(job, settings, download, 'download'))
-        .then(job => state(job, settings, postdownload, 'postdownload'))
-        .then(job => state(job, settings, prerender, 'prerender'))
-        .then(job => state(job, settings, script, 'script'))
-        .then(job => state(job, settings, dorender, 'dorender'))
-        .then(job => state(job, settings, postrender, 'postrender'))
-        .then(job => state(job, settings, cleanup, 'cleanup'))
+        .then(job => state(job, settings, updateJob, setup, 'setup'))
+        .then(job => state(job, settings, updateJob, predownload, 'predownload'))
+        .then(job => state(job, settings, updateJob, download, 'download'))
+        .then(job => state(job, settings, updateJob, postdownload, 'postdownload'))
+        .then(job => state(job, settings, updateJob, prerender, 'prerender'))
+        .then(job => state(job, settings, updateJob, script, 'script'))
+        .then(job => state(job, settings, updateJob, dorender, 'dorender'))
+        .then(job => state(job, settings, updateJob, postrender, 'postrender'))
+        .then(job => state(job, settings, updateJob, cleanup, 'cleanup'))
         .catch(e => {
-            state(job, settings, cleanup, 'cleanup');
+            state(job, settings, updateJob, cleanup, 'cleanup');
             throw e;
         });
 };
