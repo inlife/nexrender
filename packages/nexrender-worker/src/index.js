@@ -69,7 +69,7 @@ const start = async (host, secret, settings) => {
         settings.onError = () => {}
     }
 
-    const client = createClient({ host, secret });
+    const client = createClient({ host, secret, headers: settings.headers });
 
     do {
         let job = await nextJob(client, settings);

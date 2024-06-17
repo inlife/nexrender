@@ -1,6 +1,6 @@
 const fetch = require('isomorphic-unfetch')
 
-const createClient = ({ host, secret, polling }) => {
+const createClient = ({ host, secret, polling, headers = {} }) => {
     const wrappedFetch = async (path, options) => {
         options = options || {}
         options.headers = options.headers || {}
@@ -8,6 +8,8 @@ const createClient = ({ host, secret, polling }) => {
         if (secret) {
             options.headers['nexrender-secret'] = secret
         }
+
+        options.headers = {...options.headers, ...headers}
 
         const response = await fetch(`${host}/api/v1${path}`, options)
 
