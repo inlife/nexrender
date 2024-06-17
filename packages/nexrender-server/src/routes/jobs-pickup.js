@@ -61,7 +61,7 @@ module.exports = async (req, res) => {
         /* update the job locally, and send it to the worker */
         send(res, 200, await update(
             job.uid,
-            { state: 'picked', executor: req.headers["x-forwarded-for"] || req.socket.remoteAddress },
+            { state: 'picked', executor: req.headers['x-worker-name'] || req.headers["x-forwarded-for"] || req.socket.remoteAddress },
             { transaction: true }
         ))
     } finally {
