@@ -223,7 +223,7 @@ More info: [@nexrender/cli](packages/nexrender-cli)
 
 #### After Effects 2023
 
-Please not that for After Effects 2023, it's vital to set up an Output Module, even if you want to rely on the default output module. After Effects 2023 rendering binary (aerender) in a lot of cases will not render a composition unless it has a configured output module. Additionally, AE2023 now allows rendering directly to mp4, so consider setting up a custom value for `outputExt` as well. To do that, take a look at following example:
+Please note that for After Effects 2023, it's vital to set up an Output Module, even if you want to rely on the default output module. After Effects 2023 rendering binary (aerender) in a lot of cases will not render a composition unless it has a configured output module. Additionally, AE2023 now allows rendering directly to mp4, so consider setting up a custom value for `outputExt` as well. To do that, take a look at following example:
 
 ```json
 // myjob.json
@@ -1608,6 +1608,7 @@ If you've used nexrender, and you like it, please feel free to add yourself into
 * [den frie vilje](https://denfrievilje.dk)
 * [DR (Danish National Broadcaster)](https://dr.dk)
 * [TV2 (Danish Broadcaster)](https://tv2.dk/)
+* [Stargazer](https://gostargazer.com/)
 * you name goes here
 
 ## Plans
