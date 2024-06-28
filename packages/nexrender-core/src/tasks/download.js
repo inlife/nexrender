@@ -86,7 +86,7 @@ const download = (job, settings, asset) => {
             /* TODO: maybe move to external package ?? */
             const src = asset.src
             return fetch(src, asset.params)
-                .then(res => res.ok ? res : Promise.reject({reason: 'Initial error downloading file', meta: {src, error: res.error}}))
+                .then(res => res.ok ? res : Promise.reject(new Error(`Unable to download file ${src}`)))
                 .then(res => {
                     // Set a file extension based on content-type header if not already set
                     if (!asset.extension) {
