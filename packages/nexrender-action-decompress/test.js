@@ -49,10 +49,12 @@ describe('actions/decompress', function() {
             workpath: workpath,
             template: {
                 dest: path.join(workpath, 'template.zip'),
+                decompressed: 'template.aep',
             },
             assets: [
                 {
                     dest: path.join(workpath, 'asset.zip'),
+                    decompressed: 'asset.jpg',
                 },
                 {
                     dest: path.join(workpath, 'non-archive.jpg'),
@@ -73,6 +75,36 @@ describe('actions/decompress', function() {
                 assert.strictEqual(fs.readFileSync(path.join(workpath, '(Footage)', 'test.jpg'), 'utf8'), 'hello there 2');
                 assert.strictEqual(fs.readFileSync(path.join(workpath, 'asset.jpg'), 'utf8'), 'hello there 3');
                 assert.strictEqual(fs.readFileSync(path.join(workpath, 'non-archive.jpg'), 'utf8'), 'hello there 4');
+
+                done();
+            })
+            .catch(done);
+    });
+
+    it('should update the dest values for each asset to reflect the extracted files', function(done) {
+        const job = {
+            workpath: workpath,
+            template: {
+                dest: path.join(workpath, 'template.zip'),
+                decompressed: 'template.aep',
+            },
+            assets: [
+                {
+                    dest: path.join(workpath, 'asset.zip'),
+                    decompressed: 'asset.jpg',
+                },
+                {
+                    dest: path.join(workpath, 'non-archive.jpg'),
+                }
+            ],
+        };
+
+        decompressAction(job, {}, { format: 'zip' }, 'prerender')
+            .then(() => {
+                // ensure each asset has updated dest value
+                assert.strictEqual(job.template.dest, path.join(workpath, 'template.aep'));
+                assert.strictEqual(job.assets[0].dest, path.join(workpath, 'asset.jpg'));
+                assert.strictEqual(job.assets[1].dest, path.join(workpath, 'non-archive.jpg'));
 
                 done();
             })

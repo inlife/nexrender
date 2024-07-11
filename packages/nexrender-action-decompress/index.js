@@ -1,3 +1,4 @@
+const path = require('path');
 const AdmZip = require('adm-zip');
 
 const decompress = (job, settings, asset, action) => {
@@ -13,8 +14,16 @@ const decompress = (job, settings, asset, action) => {
         case 'zip':
             const zip = new AdmZip(asset.dest);
             zip.extractAllTo(job.workpath, action.overwrite || false);
-            return Promise.resolve();
+            break;
     }
+
+    if (asset.decompressed) {
+        asset.src = asset.dest;
+        asset.dest = path.join(job.workpath, asset.decompressed);
+    }
+
+    return Promise.resolve();
+
 }
 
 module.exports = (job, settings, action, type) => {
