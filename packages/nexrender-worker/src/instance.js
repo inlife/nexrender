@@ -89,7 +89,30 @@ const createWorker = () => {
             worker_setting_stop_on_error: settings.stopOnError,
         })
 
+        let stop_datetime = null;
+        if(settings.stopAtTime) {
+            let stopTimeParts = settings.stopAtTime.split(':'); // split the hour and minute
+            let now = new Date(); // get current date object
+
+            let stopTimeDate = new Date(); // new date object for stopping time
+            stopTimeDate.setHours(stopTimeParts[0], stopTimeParts[1], 0, 0); // set the stop time
+
+            if(stopTimeDate.getTime() <= now.getTime()){
+                stopTimeDate.setDate(stopTimeDate.getDate() + 1); // if it's past the stop time, move it to next day
+            }
+
+            stop_datetime = stopTimeDate;
+            if(settings.stopDays) {
+                    let stopDaysList = settings.stopDays.split(',').map(Number); // convert string weekdays into integer values
+                    while(!stopDaysList.includes(stop_datetime.getDay())) {
+                        stop_datetime.setDate(stop_datetime.getDate() + 1); // if stop_datetime's weekday is not in the list, add one day
+                    }
+            }
+        }
+
         do {
+            if (stop_datetime !== null && new Date() > stop_datetime) { active = false; break; }
+
             let job = await nextJob(client, settings);
 
             // if the worker has been deactivated, exit this loop
