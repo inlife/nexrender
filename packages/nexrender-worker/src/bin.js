@@ -130,7 +130,8 @@ if (args['--help']) {
                                             example: 5:00 will stop at 5 am local time.  
     
     --stop-days                             comma separated list of weekdays when to stop. Must be used together with --stop-at-time
-                                            example: --stop-at-time=5:00 stop-days=0,1,2,3,4
+                                            0 is sunday, 6 is saturday
+                                            example: --stop-at-time=5:00 stop-days=1,2,3,4,5
                                             will stop at 5 am but not on weekend                                          
                                             
     --no-license                            prevents creation of the ae_render_only_node.txt file (enabled by default),
