@@ -12,10 +12,16 @@ const createWorker = () => {
     let emptyReturns = 0;
     let active = false;
     let settingsRef = null;
+    let stop_datetime = null;
 
     const nextJob = async (client, settings) => {
         do {
             try {
+                if (stop_datetime !== null && new Date() > stop_datetime) {
+                    active = false;
+                    return
+                }
+
                 let job = await (settings.tagSelector ?
                     await client.pickupJob(settings.tagSelector) :
                     await client.pickupJob()
@@ -89,7 +95,6 @@ const createWorker = () => {
             worker_setting_stop_on_error: settings.stopOnError,
         })
 
-        let stop_datetime = null;
         if(settings.stopAtTime) {
             let stopTimeParts = settings.stopAtTime.split(':'); // split the hour and minute
             let now = new Date(); // get current date object
@@ -110,10 +115,6 @@ const createWorker = () => {
         }
 
         do {
-            if (stop_datetime !== null && new Date() > stop_datetime) {
-                active = false;
-                break;
-            }
 
             let job = await nextJob(client, settings);
 
