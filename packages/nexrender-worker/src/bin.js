@@ -27,6 +27,8 @@ const args = arg({
     '--stop-on-error':          Boolean,
     '--exit-on-empty-queue':    Boolean,
     '--tolerate-empty-queues':  Number,
+    '--stop-at-time':           String,
+    '--stop-days':              String,
 
     '--skip-cleanup':           Boolean,
     '--skip-render':            Boolean,
@@ -123,7 +125,15 @@ if (args['--help']) {
     --tolerate-empty-queues                 worker will check an empty queue this many times before exiting (if that option has
                                             been set using --exit-on-empty-queues). Defaults to zero. If specified will be used instead of
                                             NEXRENDER_TOLERATE_EMPTY_QUEUES env variable
-
+                                            
+    --stop-at-time                          worker will exit at the given time if given.
+                                            example: 5:00 will stop at 5 am local time.  
+    
+    --stop-days                             comma separated list of weekdays when to stop. Must be used together with --stop-at-time
+                                            0 is sunday, 6 is saturday
+                                            example: --stop-at-time=5:00 stop-days=1,2,3,4,5
+                                            will stop at 5 am but not on weekend                                          
+                                            
     --no-license                            prevents creation of the ae_render_only_node.txt file (enabled by default),
                                             which allows free usage of trial version of Adobe After Effects
 
@@ -219,6 +229,8 @@ opt('reuse',                '--reuse');
 opt('stopOnError',          '--stop-on-error');
 opt('tolerateEmptyQueues',  '--tolerate-empty-queues');
 opt('exitOnEmptyQueue',     '--exit-on-empty-queue');
+opt('stopAtTime',           '--stop-at-time');
+opt('stopDays',             '--stop-days');
 opt('maxMemoryPercent',     '--max-memory-percent');
 opt('imageCachePercent',    '--image-cache-percent');
 opt('polling',              '--polling');

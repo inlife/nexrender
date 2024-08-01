@@ -12,10 +12,16 @@ const createWorker = () => {
     let emptyReturns = 0;
     let active = false;
     let settingsRef = null;
+    let stop_datetime = null;
 
     const nextJob = async (client, settings) => {
         do {
             try {
+                if (stop_datetime !== null && new Date() > stop_datetime) {
+                    active = false;
+                    return
+                }
+
                 let job = await (settings.tagSelector ?
                     await client.pickupJob(settings.tagSelector) :
                     await client.pickupJob()
@@ -89,7 +95,27 @@ const createWorker = () => {
             worker_setting_stop_on_error: settings.stopOnError,
         })
 
+        if(settings.stopAtTime) {
+            let stopTimeParts = settings.stopAtTime.split(':'); // split the hour and minute
+            let now = new Date(); // get current date object
+
+            stop_datetime = new Date(); // new date object for stopping time
+            stop_datetime.setHours(stopTimeParts[0], stopTimeParts[1], 0, 0); // set the stop time
+
+            if(stop_datetime.getTime() <= now.getTime()){
+                stop_datetime.setDate(stop_datetime.getDate() + 1); // if it's past the stop time, move it to next day
+            }
+
+            if(settings.stopDays) {
+                let stopDaysList = settings.stopDays.split(',').map(Number); // convert string weekdays into integer values
+                while(!stopDaysList.includes(stop_datetime.getDay())) {
+                    stop_datetime.setDate(stop_datetime.getDate() + 1); // if stop_datetime's weekday is not in the list, add one day
+                }
+            }
+        }
+
         do {
+
             let job = await nextJob(client, settings);
 
             // if the worker has been deactivated, exit this loop
