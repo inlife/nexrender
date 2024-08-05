@@ -28,7 +28,7 @@
     "@nexrender/action-decompress": "^1.48.2",
     "@nexrender/action-encode": "^1.1.4",
     "@nexrender/action-image": "^1.49.4",
-    "@nexrender/action-fonts": "^1.58.1",
+    "@nexrender/action-fonts": "^1.51.8",
     "@nexrender/action-upload": "^1.0.0",
     "@nexrender/action-webhook": "^1.51.3",
     "@nexrender/provider-ftp": "^1.17.2",
