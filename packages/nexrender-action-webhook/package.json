@@ -2,7 +2,7 @@
   "name": "@nexrender/action-webhook",
   "homepage": "https://www.nexrender.com",
   "author": "inlife",
-  "version": "1.51.3",
+  "version": "1.52.1",
   "main": "index.js",
   "publishConfig": {
     "access": "public"

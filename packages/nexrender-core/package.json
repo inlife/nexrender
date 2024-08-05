@@ -1,6 +1,6 @@
 {
   "name": "@nexrender/core",
-  "version": "1.51.8",
+  "version": "1.52.1",
   "main": "src/index.js",
   "author": "Inlife",
   "homepage": "https://www.nexrender.com",
@@ -27,8 +27,8 @@
     "@nexrender/action-copy": "^1.0.0",
     "@nexrender/action-decompress": "^1.48.2",
     "@nexrender/action-encode": "^1.1.4",
-    "@nexrender/action-image": "^1.49.4",
     "@nexrender/action-fonts": "^1.51.8",
+    "@nexrender/action-image": "^1.49.4",
     "@nexrender/action-upload": "^1.0.0",
     "@nexrender/action-webhook": "^1.51.3",
     "@nexrender/provider-ftp": "^1.17.2",
