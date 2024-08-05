@@ -32,6 +32,7 @@ if (process.env.NEXRENDER_REQUIRE_PLUGINS) {
     require('@nexrender/action-upload');
     require('@nexrender/action-decompress');
     require('@nexrender/action-image');
+    require('@nexrender/action-fonts');
     require('@nexrender/action-webhook');
 
     require('@nexrender/provider-s3');

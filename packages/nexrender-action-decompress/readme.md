@@ -1,5 +1,7 @@
 # Action Decompress
 
+(alpha version)
+
 Decompress/extract your zip-archived template file and/or assets to the project work directory.
 
 ## Installation
