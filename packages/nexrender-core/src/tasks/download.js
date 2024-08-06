@@ -26,7 +26,9 @@ const download = (job, settings, asset) => {
         destName = decodeURI(destName) /* < remove/decode any special URI symbols within filename */
 
         /* prevent duplicate filename collisions during parallel fetch */
-        destName = Math.random().toString(36).substring(2) + '-' + destName;
+        if (!asset.sequence) {
+            destName = Math.random().toString(36).substring(2) + '-' + destName;
+        }
     }
 
     /* force asset name if it is provided */
