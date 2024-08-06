@@ -9,6 +9,6 @@
     "access": "public"
   },
   "dependencies": {
-    "adm-zip": "^0.5.10"
+    "adm-zip": "0.5.10"
   }
 }
