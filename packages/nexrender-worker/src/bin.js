@@ -46,6 +46,7 @@ const args = arg({
     '--header':                 [String],
 
     '--aerender-parameter':     [String],
+    '--language':               String,
 
     // Aliases
     '-v':           '--version',
@@ -177,6 +178,8 @@ if (args['--help']) {
     --aerender-parameter, --ae              forward parameter to aerender (see Adobe site). Parameters with arguments have to be
                                             enclosed in single quotes. For example:
                                             nexrender --aerender-parameter 'close SAVE_CHANGES' --ae 'i 10' job.json
+                                            
+    --language                              language of local after effects installation. currently only en and de are supported                                        
 
 
   {bold ENV VARS}
@@ -237,6 +240,7 @@ opt('polling',              '--polling');
 opt('wslMap',               '--wsl-map');
 opt('aeParams',             '--aerender-parameter');
 opt('tagSelector',          '--tag-selector');
+opt('language',             '--language');
 
 if(args['--cache-path']){
     opt('cache', '--cache-path');
@@ -270,6 +274,9 @@ if (settings['no-license']) {
 } else {
     settings.addLicense = true;
 }
+
+/* debug implies verbose */
+// settings.verbose = settings.debug;
 
 if (settings['no-analytics']) {
     settings.noAnalytics = true;
