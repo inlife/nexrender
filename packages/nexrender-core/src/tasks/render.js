@@ -3,11 +3,19 @@ const path = require('path')
 const {spawn} = require('child_process')
 const {expandEnvironmentVariables, checkForWSL} = require('../helpers/path')
 
-const progressRegex = /([\d]{1,2}:[\d]{2}:[\d]{2}:[\d]{2})\s+(\(\d+[UL]?\))/gi;
-const durationRegex = /Duration:\s+([\d]{1,2}:[\d]{2}:[\d]{2}:[\d]{2})/gi;
-const startRegex = /Start:\s+([\d]{1,2}:[\d]{2}:[\d]{2}:[\d]{2})/gi;
-const nexrenderErrorRegex = /Error:\s+(nexrender:.*)$/gim;
-const errorRegex = /aerender Error:\s*(.*)$/gis;
+const translations = {
+    "en": {
+        "duration": "Duration",
+        "error"   : "Error",
+        "start"   : "Start"
+    },
+    "de": {
+        "duration": "Dauer",
+        "error"   : "Fehler",
+        "start"   : "Anfang"
+    }
+};
+
 
 const option = (params, name, ...values) => {
     if (values !== undefined) {
@@ -24,6 +32,17 @@ const seconds = (string) => string.split(':')
  */
 module.exports = (job, settings) => {
     settings.logger.log(`[${job.uid}] rendering job...`);
+
+    if(!settings.language) {
+        settings.lang = "en"
+    }
+
+    const progressRegex = /([\d]{1,2}:[\d]{2}:[\d]{2}:[\d]{2})\s+(\(\d+[UL]?\))/gi;
+    const durationRegex = new RegExp(translations[settings.language].duration + ":\\s+([\\d]{1,2}:[\\d]{2}:[\\d]{2}:[\\d]{2})", "gi");
+    const startRegex = new RegExp(translations[settings.language].start + ":\\s+([\\d]{1,2}:[\\d]{2}:[\\d]{2}:[\\d]{2})", "gi");
+    const nexrenderErrorRegex = new RegExp(translations[settings.language].error + ":\\s+(nexrender:.*)$", "gim");
+    const errorRegex = new RegExp("aerender " + translations[settings.language].error + ":\\s*(.*)$", "gis");
+
 
     // create container for our parameters
     let params = [];
