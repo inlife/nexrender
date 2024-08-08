@@ -58,7 +58,7 @@ async function saveCache(asset, settings, workpath, cacheDirectory){
     }
 
     const fileName = path.basename(asset.src);
-    const from = path.join(workpath, fileName);
+    const from = asset.dest ? asset.dest: path.join(workpath, fileName);
     const to = path.join(cacheDirectory, fileName);
     settings.logger.log(`> Copying from ${from} to ${to}`);
 
@@ -86,7 +86,7 @@ module.exports = (job, settings, { cacheDirectory, ttl, cacheAssets }, type) => 
     }
 
     cacheDirectory = cacheDirectory.replace('~', require('os').homedir());
-    
+
     if (fs.existsSync(cacheDirectory) && !fs.lstatSync(cacheDirectory).isDirectory()) {
         throw new Error(`Cache path of ${cacheDirectory} exists but is not a directory, stopping`);
     }
