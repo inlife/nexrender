@@ -33,8 +33,9 @@ const seconds = (string) => string.split(':')
 module.exports = (job, settings) => {
     settings.logger.log(`[${job.uid}] rendering job...`);
 
-    if(!settings.language) {
-        settings.lang = "en"
+    if (!settings.language || !translations.hasOwnProperty(settings.language)) {
+        settings.language = "en";
+        settings.logger.log(`[${job.uid}] AE language not set, defaulting to "en"`);
     }
 
     const progressRegex = /([\d]{1,2}:[\d]{2}:[\d]{2}:[\d]{2})\s+(\(\d+[UL]?\))/gi;
@@ -361,4 +362,3 @@ Estimated date of change to the new behavior: 2023-06-01.\n`);
         }
     })
 };
-
