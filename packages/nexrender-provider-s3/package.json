@@ -1,7 +1,7 @@
 {
   "name": "@nexrender/provider-s3",
   "homepage": "https://www.nexrender.com",
-  "version": "1.45.6",
+  "version": "1.53.2",
   "author": "inlife",
   "main": "src/index.js",
   "dependencies": {
