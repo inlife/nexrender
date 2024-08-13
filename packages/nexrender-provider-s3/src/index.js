@@ -101,9 +101,6 @@ const upload = (job, settings, src, params, onProgress, onComplete) => {
     if (!params.key) {
         return Promise.reject(new Error('S3 key not provided.'))
     }
-    if (!params.acl) {
-        return Promise.reject(new Error('S3 ACL not provided.'))
-    }
 
     const onUploadProgress = (e) => {
         const progress = Math.ceil(e.loaded / e.total * 100)
@@ -132,14 +129,15 @@ const upload = (job, settings, src, params, onProgress, onComplete) => {
         const awsParams = {
             Bucket: params.bucket,
             Key: params.key,
-            ACL: params.acl,
             Body: file,
             ContentType: params.contentType || "application/octet-stream"
         }
+
+        if (params.acl) awsParams.ACL = params.acl;
         if (params.metadata) awsParams.Metadata = params.metadata;
         if (params.contentDisposition) awsParams.ContentDisposition = params.contentDisposition;
         if (params.cacheControl) awsParams.CacheControl = params.cacheControl;
-        
+
         const credentials = getCredentials(params.credentials)
 
         const s3instance = params.endpoint ?
