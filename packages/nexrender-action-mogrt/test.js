@@ -2,6 +2,7 @@ const extension = require('./index.js');
 const url = require('node:url');
 const path = require('node:path');
 const assert = require('assert');
+const tempy = require('tempy');
 
 describe("action/mogrt",() => {
     const defaultParameters = {
@@ -26,9 +27,8 @@ describe("action/mogrt",() => {
     let parameters;
 
     beforeEach(async () => {
-        const { temporaryDirectory } = await import('tempy');
         parameters = JSON.parse(JSON.stringify(defaultParameters));
-        parameters.job.workpath = temporaryDirectory();
+        parameters.job.workpath = tempy.directory();
     })
 
     it('self-adds to postdownload', async () => {

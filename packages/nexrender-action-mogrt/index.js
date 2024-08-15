@@ -1,5 +1,6 @@
 const path = require('path');
 const url = require('url');
+const Mogrt = require('./mogrt');
 
 module.exports = async (job, settings, options, type) => {
     settings.logger = settings.logger ?? console;
@@ -38,7 +39,6 @@ module.exports = async (job, settings, options, type) => {
             return job;
         }
 
-        const { Mogrt } = await import('mogrt');
         const mogrt = new Mogrt(job.template.dest);
         await mogrt.init();
 

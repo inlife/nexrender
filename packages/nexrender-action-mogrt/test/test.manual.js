@@ -2,11 +2,11 @@ process.env.NEXRENDER_ENABLE_AELOG_PROJECT_FOLDER = 1;
 
 const path = require('path');
 const url = require('node:url');
-const { render } = require("@nexrender/core");
+const { render } = require("../../nexrender-core");
 
 const job = {
     template: {
-        src: url.pathToFileURL(path.join(__dirname, '__tests__', './assets/ae.mogrt')).href,
+        src: url.pathToFileURL(path.join(__dirname, './assets/ae.mogrt')).href,
         composition: 'ignored',
         // continueOnMissing: true,
     },
@@ -22,8 +22,8 @@ const job = {
     actions: {
         predownload: [
             {
-                module: require.resolve('./index.js'),
-                essentialParameters: {
+                module: require.resolve('../index.js'),
+                params: {
                     'Group Test': {
                         'Image': 'ref-image-layer'
                     }
