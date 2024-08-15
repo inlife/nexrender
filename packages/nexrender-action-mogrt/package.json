@@ -1,0 +1,33 @@
+{
+  "name": "@nexrender/action-mogrt",
+  "version": "1.0.2",
+  "description": "MOGRT support for Nexrender",
+  "main": "index.js",
+  "scripts": {
+    "test": "node  --experimental-vm-modules ./node_modules/.bin/jest "
+  },
+  "jest": {
+    "testPathIgnorePatterns": ["test.manual.js"]
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vonstring/nexrender-action-mogrt-template.git"
+  },
+  "author": "Kristian von Streng Hæhre",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/vonstring/nexrender-action-mogrt-template/issues"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "homepage": "https://github.com/vonstring/nexrender-action-mogrt-template#readme",
+  "dependencies": {
+    "mogrt": "^0.0.2",
+    "node-stream-zip": "^1.15.0"
+  },
+  "devDependencies": {
+    "@nexrender/core": "^1.53.1",
+    "jest": "^28.1.3"
+  }
+}

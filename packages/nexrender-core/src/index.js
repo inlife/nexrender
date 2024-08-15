@@ -34,6 +34,7 @@ if (process.env.NEXRENDER_REQUIRE_PLUGINS) {
     require('@nexrender/action-image');
     require('@nexrender/action-fonts');
     require('@nexrender/action-webhook');
+    require('@nexrender/action-mogrt');
 
     require('@nexrender/provider-s3');
     require('@nexrender/provider-ftp');
