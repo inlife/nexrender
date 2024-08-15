@@ -10,7 +10,8 @@ This plugin adds .mogrt support to Nexrender.
 
 1. Set a .mogrt file as the `template.src` value
 2. Add this module in predownload actions
-3. Add any Essential Graphics parameters you want to change as `essentialParameters`
+3. Add any Essential Graphics parameters you want to change as `params`
+4. Use unique layer names in the .mogrt file to reference assets to leverage nexrender built-in asset substitution
 
 
 ```json
@@ -19,13 +20,31 @@ This plugin adds .mogrt support to Nexrender.
         "src": "http://www.foo.com/template.mogrt",
         "composition": "will_be_ignored"
     },
+    "assets": [
+        {
+            "type": "image",
+            "src": "http://www.foo.com/image.png",
+            "layerName": "$ref-layer-1"
+        },
+        {
+            "type": "image",
+            "src": "http://www.foo.com/image2.png",
+            "layerName": "$ref-layer-2"
+        }
+    ],
     "actions": {
         "predownload": [
             {
                 "module": "nexrender-action-mogrt-template",
-                "essentialParameters": {
+                "params": {
                     "Title": "This should be the title",
                     "Dropdown": 2,
+                        "Group Name": {
+                        "Some Name": "Some Value",
+                        "Another Name": 123
+                    },
+                    "My First Image": "$ref-image-1",
+                    "My Second Image": "$ref-image-2"
                     "Scale": [50, 50],
                     "Checkbox": true,
                     "Point Control:": [30, 50],
@@ -43,5 +62,4 @@ This plugin adds .mogrt support to Nexrender.
 
 * Any `template.src` without a .mogrt extension will be ignored
 * The value in `template.composition` will be ignored, as .mogrt files specify what composition to use on their own, but Nexrender requires one to be specified
-* Media replacement through essential graphics isn't supported (yet), but normal asset injection with Nexrender will work
 * Invalid .mogrt files will cause an error

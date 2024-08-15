@@ -5,7 +5,7 @@ module.exports = async (job, settings, options, type) => {
     settings.logger = settings.logger ?? console;
     const jsxUrl = url.pathToFileURL(path.join(__dirname, 'applyEssentialValues.jsx')).toString();
     if (type === 'predownload') {
-        if (typeof options.essentialParameters !== 'undefined') {
+        if (typeof options.params !== 'undefined') {
             job.assets.unshift({
                 src: jsxUrl,
                 keyword: '_essential',
@@ -13,7 +13,7 @@ module.exports = async (job, settings, options, type) => {
                 parameters: [
                     {
                         key: 'essentialParameters',
-                        value: Object.assign({}, options.essentialParameters)
+                        value: Object.assign({}, options.params)
                     }
                 ]
             })

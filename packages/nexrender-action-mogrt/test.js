@@ -16,7 +16,7 @@ describe("action/mogrt",() => {
         },
         settings: {},
         options: {
-            essentialParameters: {
+            params: {
                 foo: 'bar',
             }
         },
