@@ -1,3 +1,4 @@
+/* eslint-disable */
 (function () {
     function emptyDuplicate(comp, name) {
         name = name || ('empty ' + comp.name);
@@ -26,10 +27,10 @@
             }
         }
         else if (prop instanceof Property) {
-            if (prop.matchName == 'ADBE Layer Source Alternate') {
+            if (prop.essentialPropertySource.matchName == 'ADBE AV Layer') {
                 prop.essentialPropertySource.name = subArray;
             }
-            else if (prop.matchName == 'ADBE Text Document' && typeof subArray !== 'string') {
+            else if (prop.essentialPropertySource.matchName == 'ADBE Text Document' && typeof subArray !== 'string') {
                 var value = prop.essentialPropertySource.value;
                 if (subArray.hasOwnProperty('Size')) value.fontSize = subArray['Size'];
                 if (subArray.hasOwnProperty('Text')) value.text = subArray['Text'];
@@ -51,3 +52,4 @@
         lookInside(prop, essentialParameters);
     }
 })();
+/* eslint-enable */
