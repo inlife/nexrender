@@ -117,6 +117,8 @@
     - [Financial Contributors](#financial-contributors)
       - [Individuals](#individuals)
       - [Organizations](#organizations)
+  - [Need a quick solution or help?](#need-a-quick-solution-or-help)
+  - [Showcase your achievements](#showcase-your-achievements)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -1643,7 +1645,7 @@ Nexrender began as a hobby project with the goal of simplifying video creation t
 
 If you’re looking for an easy-to-use, reliable rendering solution with expert guidance every step of the way, consider trying our SaaS platform - [Nexrender Cloud](https://www.nexrender.com/products/cloud).
 
-In addition to our SaaS solution, we also build highly customized rendering infrastructures for customers who prefer on-premises solutions, have specific requirements, and a certain vision of how everything should be integrated across their systems.
+In addition to our SaaS solution, we also build highly customized [rendering infrastructures](https://www.nexrender.com/products/custom) for customers who prefer on-premises solutions, have specific requirements, and a certain vision of how everything should be integrated across their systems.
 
 If you prefer a DIY approach, that’s fantastic! Our open-source project was created with that in mind, and we’re thrilled that so many people love and continue to use it. However, if you do have some questions along the way, feel free to reach out at [hello@nexrender.com](mailto:hello@nexrender.com) — we offer consultations to help you out.
 
