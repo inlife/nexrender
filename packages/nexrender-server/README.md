@@ -20,6 +20,10 @@ Can be changed by providing `NEXRENDER_ORDERING` env vartiable before launching 
 * `random` - Random access queue, jobs will be selected based on random counter
 * `priority` - Jobs are selected based on their priority field (default 0), in case of a collision it will choose the oldest one.
 
+If you want to monitor the status of all your running jobs, consider trying our SaaS solution, [Nexrender Cloud](https://www.nexrender.com/products/cloud), which offers enhanced visibility and a range of other cool features. Here is how it looks like:
+
+![Nexrender Cloud Screenshot](https://github.com/user-attachments/assets/4daa7764-7e92-4cab-96a8-7c246c8fbb61)
+
 ## Installation
 
 * For binary usage:
@@ -112,4 +116,3 @@ Probably should not be used by users, unless they know what are they doing.
 
 Can serve as the health check for the service, does not require the secret header to be passed.
 Returns 200 always.
-
