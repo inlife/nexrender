@@ -1607,22 +1607,6 @@ All tools include better help screen, and a lot of customization from command li
 
 </details>
 
-## Customers
-
-Technically, since the tool is free, customers should be called users.
-In any case this section describes a list of users or companies that are proud users of nexrender.
-If you've used nexrender, and you like it, please feel free to add yourself into the list.
-
-* [Noxcaos Music](https://www.youtube.com/channel/UC2D9WSUKnyTX8wWqNVITTAw)
-* [Two Bit Circus](https://twobitcircus.com)
-* [Flügerl](https://www.youtube.com/fluegerl)
-* [NewFlight](https://newflight.co)
-* [den frie vilje](https://denfrievilje.dk)
-* [DR (Danish National Broadcaster)](https://dr.dk)
-* [TV2 (Danish Broadcaster)](https://tv2.dk/)
-* [Stargazer](https://gostargazer.com/)
-* you name goes here
-
 ## Contributors
 
 ### Code Contributors
@@ -1652,3 +1636,17 @@ Support this project with your organization. Your logo will show up here with a 
 <a href="https://opencollective.com/nexrender/organization/7/website"><img src="https://opencollective.com/nexrender/organization/7/avatar.svg"></a>
 <a href="https://opencollective.com/nexrender/organization/8/website"><img src="https://opencollective.com/nexrender/organization/8/avatar.svg"></a>
 <a href="https://opencollective.com/nexrender/organization/9/website"><img src="https://opencollective.com/nexrender/organization/9/avatar.svg"></a>
+
+## Need a quick solution or help?
+
+Nexrender began as a hobby project with the goal of simplifying video creation through automation. Since 2016, it has evolved into a full-fledged company with lots to offer.
+
+If you’re looking for an easy-to-use, reliable rendering solution with expert guidance every step of the way, consider trying our SaaS platform - [Nexrender Cloud](https://www.nexrender.com/products/cloud).
+
+In addition to our SaaS solution, we also build highly customized rendering infrastructures for customers who prefer on-premises solutions, have specific requirements, and a certain vision of how everything should be integrated across their systems.
+
+If you prefer a DIY approach, that’s fantastic! Our open-source project was created with that in mind, and we’re thrilled that so many people love and continue to use it. However, if you do have some questions along the way, feel free to reach out at [hello@nexrender.com](mailto:hello@nexrender.com) — we offer consultations to help you out.
+
+## Showcase your achievements
+
+And last but not least, we’re eager to see what you’ve created with Nexrender! We’d greatly appreciate any assets, videos, or images you can share. Just send them to [hello@nexrender.com](mailto:hello@nexrender.com). If we like the case and you’re interested, we could collaborate on a joint use case article and share it across our media channels!
