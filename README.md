@@ -157,7 +157,7 @@ If coding isn’t your thing or you want a quick managed solution, we got you! W
 
 The main alternative to our open-source project is [Nexrender Cloud](https://www.nexrender.com/products/cloud) - our hosted SaaS platform with easy setup, additional features and best price on the market.
 
-Among more expensive alternatives, there is Plainly, a tool built on **Nexrender** infrastructure that offers cloud rendering. Another noteworthy option currently available is Dataclay's Templater bot edition.
+Among more expensive and less flexible alternatives, there is Plainly, a tool built on **Nexrender** infrastructure that offers cloud rendering. Another noteworthy option currently available is Dataclay's Templater bot edition.
 
 # Installation
 
