@@ -1651,4 +1651,4 @@ If you prefer a DIY approach, that’s fantastic! Our open-source project was cr
 
 ## Showcase your achievements
 
-And last but not least, we’re eager to see what you’ve created with Nexrender! We’d greatly appreciate any assets, videos, or images you can share. Just send them to [hello@nexrender.com](mailto:hello@nexrender.com). If we like the case and you’re interested, we could collaborate on a joint use case article and share it across our media channels!
+And last but not least, we’re excited to see what you’ve created with Nexrender! We’d love to see any assets, videos, or images you can share. Just send them to [hello@nexrender.com](mailto:hello@nexrender.com). If your project is a good match for our audience, we’ll create a whole use case about it and feature it on all our social media!
