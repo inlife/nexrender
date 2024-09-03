@@ -1,6 +1,6 @@
 const fs = require('fs')
 const path = require('path')
-const {spawn} = require('child_process')
+const {spawn, exec} = require('child_process')
 const {expandEnvironmentVariables, checkForWSL} = require('../helpers/path')
 
 const translations = {
@@ -34,6 +34,29 @@ const crossPlatformKill = (instance) => {
     } else {
         instance.kill('SIGINT');
     }
+}
+
+function killProcessByName(settings, processName) {
+    if (process.platform !== 'win32') {
+        return;
+    }
+
+    const command = `taskkill /IM ${processName} /F`;
+
+    exec(command, (error, stdout, stderr) => {
+        if (error) {
+            settings.logger.log(`Error killing process: ${error.message}`);
+            return;
+        }
+
+        if (stderr) {
+            settings.logger.log(`Error: ${stderr}`);
+            return;
+        }
+
+        settings.logger.log(`Process ${processName} killed successfully.`);
+        settings.logger.log(stdout);
+    });
 }
 
 /**
@@ -271,6 +294,7 @@ Estimated date of change to the new behavior: 2023-06-01.\n`);
                     settings.trackSync('Job Render Failed', { job_id: job.uid, error: 'aerender_timeout' });
                     reject(new Error(`Maximum rendering time exceeded`));
                     crossPlatformKill(instance)
+                    killProcessByName('AfterFX.com')
                 },
                 timeout
             );
