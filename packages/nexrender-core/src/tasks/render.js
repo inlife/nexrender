@@ -294,7 +294,8 @@ Estimated date of change to the new behavior: 2023-06-01.\n`);
                     settings.trackSync('Job Render Failed', { job_id: job.uid, error: 'aerender_timeout' });
                     reject(new Error(`Maximum rendering time exceeded`));
                     crossPlatformKill(instance)
-                    killProcessByName('AfterFX.com')
+                    if (settings.killAEFXOnRenderTimeout)
+                        killProcessByName('AfterFX.com')
                 },
                 timeout
             );

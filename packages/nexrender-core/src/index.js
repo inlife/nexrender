@@ -97,6 +97,7 @@ const init = (settings) => {
 
         // amount of seconds before job will be marked as "stuck"
         maxUpdateTimeout: process.env.NEXRENDER_MAX_UPDATE_TIMEOUT || 60,
+        killAEFXOnRenderTimeout: process.env.NEXRENDER_KILL_AEFX_ON_RENDER_TIMEOUT || false,
 
         __initialized: true,
     }, settings, {
