@@ -27,6 +27,15 @@ const seconds = (string) => string.split(':')
     .map((e, i) => (i < 3) ? +e * Math.pow(60, 2 - i) : +e * 10e-6)
     .reduce((acc, val) => acc + val);
 
+const crossPlatformKill = (instance) => {
+    if (process.platform === 'win32') {
+        // kill the aerender process and all its children
+        spawn('taskkill', ['/pid', instance.pid, '/f', '/t']);
+    } else {
+        instance.kill('SIGINT');
+    }
+}
+
 /**
  * This task creates rendering process
  */
@@ -249,7 +258,7 @@ Estimated date of change to the new behavior: 2023-06-01.\n`);
                 clearTimeout(timeoutID);
                 settings.trackSync('Job Render Failed', { job_id: job.uid, error: 'aerender_no_update' });
                 reject(new Error(`No update from aerender for ${settings.maxUpdateTimeout} seconds`));
-                instance.kill('SIGINT');
+                crossPlatformKill(instance)
             }
         }, 5000)
 
@@ -261,7 +270,7 @@ Estimated date of change to the new behavior: 2023-06-01.\n`);
                     clearTimeout(timeoutID);
                     settings.trackSync('Job Render Failed', { job_id: job.uid, error: 'aerender_timeout' });
                     reject(new Error(`Maximum rendering time exceeded`));
-                    instance.kill('SIGINT');
+                    crossPlatformKill(instance)
                 },
                 timeout
             );
