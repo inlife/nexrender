@@ -202,6 +202,10 @@ const createWorker = () => {
                     console.log(`[${job.uid}] continue listening next job...`)
                 }
             }
+
+            if (settings.waitBetweenJobs) {
+                await delay(settings.waitBetweenJobs);
+            }
         } while (active)
     }
 
