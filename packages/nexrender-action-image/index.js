@@ -16,16 +16,16 @@ module.exports = async (job, settings, { create, input, output, filters }) => {
         throw new Error('No output provided');
     }
 
+    /* fill absolute/relative paths */
+    if (input && !path.isAbsolute(input)) input = path.join(job.workpath, input);
+    if (output && !path.isAbsolute(output)) output = path.join(job.workpath, output);
+
     if (!input && create) {
         const [width, height] = create;
         image = new jimp(width, height);
     } else {
         image = await jimp.read(input);
     }
-
-    /* fill absolute/relative paths */
-    if (input && !path.isAbsolute(input)) input = path.join(job.workpath, input);
-    if (output && !path.isAbsolute(output)) output = path.join(job.workpath, output);
 
     for (const filter of filters) {
         const { name, args } = filter;
