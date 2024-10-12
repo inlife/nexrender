@@ -49,6 +49,8 @@ const args = arg({
     '--aerender-parameter':     [String],
     '--language':               String,
 
+    '--handle-interruption':     Boolean,
+
     // Aliases
     '-v':           '--version',
     '-t':           '--tag-selector',
@@ -193,6 +195,7 @@ if (args['--help']) {
 
       {bold $} NEXRENDER_API_POLLING=1000 {cyan nexrender-worker}
 `);
+
     process.exit(2);
 }
 
@@ -245,6 +248,7 @@ opt('wslMap',               '--wsl-map');
 opt('aeParams',             '--aerender-parameter');
 opt('tagSelector',          '--tag-selector');
 opt('language',             '--language');
+opt('handleInterruption',    '--handle-interruption');
 
 if(args['--cache-path']){
     opt('cache', '--cache-path');

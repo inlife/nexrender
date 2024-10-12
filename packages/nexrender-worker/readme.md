@@ -96,4 +96,4 @@ Available settings (almost same as for `nexrender-core`):
 * `actions` - an object with keys corresponding to the `module` field when defining an action, value should be a function matching expected signature of an action. Used for defining actions programmatically without needing to package the action as a separate package
 * `cache` - boolean or string. Set the cache folder used by HTTP assets. If `true` will use the default path of `${workpath}/http-cache`, if set to a string it will be interpreted as a filesystem path to the cache folder.
 * `name` - string. An unique name (or not) to the `nexrender-worker`, and it will be identified in the `nexrender-server`. It can be used as an executor name on picked job(s) as well.
-
+* `handleInterruption` - boolean, if set to true, enables handling of interruption signals (SIGINT, SIGTERM). When an interruption signal is received, the worker will attempt to update the current job's state to 'queued' before shutting down. (false by default)
