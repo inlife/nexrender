@@ -4,7 +4,7 @@ This plugin adds .mogrt support to Nexrender.
 
 ## Install
 
-`npm install nexrender-action-mogrt-template`
+`npm install @nexrender/action-mogrt`
 
 ## How to use
 
@@ -35,7 +35,7 @@ This plugin adds .mogrt support to Nexrender.
     "actions": {
         "predownload": [
             {
-                "module": "nexrender-action-mogrt-template",
+                "module": "@nexrender/action-mogrt",
                 "params": {
                     "Title": "This should be the title",
                     "Dropdown": 2,
