@@ -163,10 +163,10 @@ const createWorker = () => {
             }
 
             try {
-                currentJob.onRenderProgress = ((c, s) => (job) => {
+                currentJob.onRenderProgress = ((c, s) => async (job) => {
                     try {
                         /* send render progress to our server */
-                        c.updateJob(job.uid, getRenderingStatus(job));
+                        await c.updateJob(job.uid, getRenderingStatus(job));
 
                         if (s.onRenderProgress) {
                             s.onRenderProgress(job);
@@ -175,9 +175,7 @@ const createWorker = () => {
                         if (s.stopOnError) {
                             throw err;
                         } else {
-                            console.log(`[${job.uid}] error occurred: ${err.stack}`)
-                            console.log(`[${job.uid}] render proccess stopped with error...`)
-                            console.log(`[${job.uid}] continue listening next job...`)
+                            console.log(`[${job.uid}] error updating job state occurred: ${err.stack}`)
                         }
                     }
                 })(client, settings);
