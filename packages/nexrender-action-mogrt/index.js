@@ -45,8 +45,13 @@ module.exports = async (job, settings, options, type) => {
         if (!mogrt.isAfterEffects()) {
             throw Error('[action-mogrt-template] ERROR - .mogrt was not made with After Effects');
         }
+
         const manifest = await mogrt.getManifest();
-        const compName = manifest.sourceInfoLocalized.en_US.name;
+        const names = Object.keys(manifest.sourceInfoLocalized)
+            .map(lang => manifest.sourceInfoLocalized[lang].name)
+            .filter(val => !!val)
+
+        const compName = names[0];
 
         const asset = job.assets.find(a => a.src === jsxUrl);
         asset.parameters.push({
