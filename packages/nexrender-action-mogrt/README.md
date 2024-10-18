@@ -63,3 +63,8 @@ This plugin adds .mogrt support to Nexrender.
 * Any `template.src` without a .mogrt extension will be ignored
 * The value in `template.composition` will be ignored, as .mogrt files specify what composition to use on their own, but Nexrender requires one to be specified
 * Invalid .mogrt files will cause an error
+
+
+## License
+
+Please refer to the [LICENSE](LICENSE) file for more information. Unlike the main nexrender project, this plugin is licensed under the AGPL-3.0 license.
