@@ -165,7 +165,6 @@ const render = (jobConfig, settings = {}) => {
         .then(job => state(job, settings, postrender, 'postrender'))
         .then(job => state(job, settings, cleanup, 'cleanup'))
         .catch(e => {
-            console.log('catching the error internally')
             state(job, settings, cleanup, 'cleanup');
             throw e;
         });
