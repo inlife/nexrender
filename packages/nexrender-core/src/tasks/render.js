@@ -206,6 +206,7 @@ Estimated date of change to the new behavior: 2023-06-01.\n`);
                 job.onRenderError(job, new Error(matchError[1]));
             }
             errorSent = true
+            throw new Error(matchError[1]);
         }
 
         return data;

@@ -185,8 +185,6 @@ const createWorker = () => {
 
                     if (settings.onRenderError) {
                         settings.onRenderError(currentJob, err);
-                    } else {
-                        throw err;
                     }
                 }
 
