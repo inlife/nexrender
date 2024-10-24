@@ -179,14 +179,16 @@ const createWorker = () => {
                         }
                     }
                 })(client, settings);
+                currentJob.onRenderError = ((c, s, job) => (_, err) => {
+                    job.error = [].concat(job.error || [], [err.toString()]);
 
-                currentJob.onRenderError = (currentJob, err /* on render error */) => {
-                    currentJob.error = [].concat(currentJob.error || [], [err.toString()]);
-
-                    if (settings.onRenderError) {
-                        settings.onRenderError(currentJob, err);
+                    if (s.onRenderError) {
+                        s.onRenderError(job, err);
                     }
-                }
+
+                    /* send render progress to our server */
+                    c.updateJob(job.uid, getRenderingStatus(job));
+                })(client, settings, currentJob);
 
                 currentJob = await render(currentJob, settings); {
                     currentJob.state = 'finished';
