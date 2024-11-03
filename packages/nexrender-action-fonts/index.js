@@ -20,10 +20,11 @@ const installWin = async (job, fontpath) => {
         fs.mkdirSync(fontdir, { recursive: true });
     }
 
-    fs.copyFileSync(fontpath, path.join(fontdir, path.basename(fontpath)));
+    const fontdest = path.join(fontdir, path.basename(fontpath));
+    fs.copyFileSync(fontpath, fontdest);
 
     const fontdisplayname = path.basename(fontpath, path.extname(fontpath)).replace(/-/g, " ");
-    const fontreg = `reg add "HKCU\\Software\\Microsoft\\Windows NT\\CurrentVersion\\Fonts" /v "${fontdisplayname} (TrueType)" /t REG_SZ /d "${fontpath}" /f`;
+    const fontreg = `reg add "HKCU\\Software\\Microsoft\\Windows NT\\CurrentVersion\\Fonts" /v "${fontdisplayname} (TrueType)" /t REG_SZ /d "${fontdest}" /f`;
 
     execSync(fontreg);
 };
