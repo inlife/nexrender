@@ -3,22 +3,37 @@ const path = require("path");
 const { execSync } = require("child_process");
 const { name } = require("./package.json");
 
-const installMac = async (job, fontpath) => {
+const installMac = async (settings, job, fontpath) => {
     const fontdir = path.join(process.env.HOME, "Library", "Fonts");
 
     if (!fs.existsSync(fontdir)) {
         fs.mkdirSync(fontdir, { recursive: true });
     }
 
+    if (fs.existsSync(fontpath)) {
+        settings.logger.log(`[action-fonts] Font ${fontpath} already exists, skipping.`);
+        return 0;
+    }
+
+    settings.logger.log(`[action-fonts] Installing font ${fontpath} to ${fontdir}...`);
     fs.copyFileSync(fontpath, path.join(fontdir, path.basename(fontpath)));
+
+    return 1;
 };
 
-const installWin = async (job, fontpath) => {
+const installWin = async (settings, job, fontpath) => {
     const fontdir = path.join(process.env.LOCALAPPDATA, "Microsoft", "Windows", "Fonts");
 
     if (!fs.existsSync(fontdir)) {
         fs.mkdirSync(fontdir, { recursive: true });
     }
+
+    if (fs.existsSync(fontpath)) {
+        settings.logger.log(`[action-fonts] Font ${fontpath} already exists, skipping.`);
+        return 0;
+    }
+
+    settings.logger.log(`[action-fonts] Installing font ${fontpath} to ${fontdir}...`);
 
     const fontdest = path.join(fontdir, path.basename(fontpath));
     fs.copyFileSync(fontpath, fontdest);
@@ -27,6 +42,7 @@ const installWin = async (job, fontpath) => {
     const fontreg = `reg add "HKCU\\Software\\Microsoft\\Windows NT\\CurrentVersion\\Fonts" /v "${fontdisplayname} (TrueType)" /t REG_SZ /d "${fontdest}" /f`;
 
     execSync(fontreg);
+    return 1;
 };
 
 const notifyWin = async (job) => {
@@ -64,14 +80,12 @@ module.exports = async (job, settings, params, type) => {
         }
 
         if (process.platform === "darwin") {
-            await installMac(job, asset.dest);
+            fontsAdded += await installMac(settings, job, asset.dest);
         } else if (process.platform === "win32") {
-            await installWin(job, asset.dest);
+            fontsAdded += await installWin(settings, job, asset.dest);
         } else {
             throw new Error(`Platform ${process.platform} is not supported.`);
         }
-
-        fontsAdded++;
     }
 
     if (fontsAdded > 0 && process.platform === "win32") {
