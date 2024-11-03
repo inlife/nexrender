@@ -2,7 +2,7 @@
   "name": "@nexrender/action-fonts",
   "homepage": "https://www.nexrender.com",
   "author": "inlife",
-  "version": "1.57.1",
+  "version": "1.57.5",
   "main": "index.js",
   "publishConfig": {
     "access": "public"
