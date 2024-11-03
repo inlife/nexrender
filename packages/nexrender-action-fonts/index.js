@@ -54,16 +54,18 @@ module.exports = async (job, settings, params, type) => {
             continue;
         }
 
+        if (!asset.name) {
+            throw new Error(`Asset ${asset.uid} has to be named using the "name" property that would contain the font name as it is used to be then used in the After Effets project.`);
+        }
+
         if (!asset.src.match(/\.(ttf)$/)) {
             continue;
         }
 
-        const fontpath = path.join(job.workpath, asset.dest);
-
         if (process.platform === "darwin") {
-            await installMac(job, fontpath);
+            await installMac(job, asset.dest);
         } else if (process.platform === "win32") {
-            await installWin(job, fontpath);
+            await installWin(job, asset.dest);
         } else {
             throw new Error(`Platform ${process.platform} is not supported.`);
         }
