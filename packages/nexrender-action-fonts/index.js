@@ -23,19 +23,18 @@ const installMac = async (settings, job, fontpath) => {
 
 const installWin = async (settings, job, fontpath) => {
     const fontdir = path.join(process.env.LOCALAPPDATA, "Microsoft", "Windows", "Fonts");
+    const fontdest = path.join(fontdir, path.basename(fontpath));
 
     if (!fs.existsSync(fontdir)) {
         fs.mkdirSync(fontdir, { recursive: true });
     }
 
-    if (fs.existsSync(fontpath)) {
-        settings.logger.log(`[action-fonts] Font ${fontpath} already exists, skipping.`);
+    if (fs.existsSync(fontdest)) {
+        settings.logger.log(`[action-fonts] Font ${fontdest} already exists, skipping.`);
         return 0;
     }
 
     settings.logger.log(`[action-fonts] Installing font ${fontpath} to ${fontdir}...`);
-
-    const fontdest = path.join(fontdir, path.basename(fontpath));
     fs.copyFileSync(fontpath, fontdest);
 
     const fontdisplayname = path.basename(fontpath, path.extname(fontpath)).replace(/-/g, " ");
