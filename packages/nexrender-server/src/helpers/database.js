@@ -1,5 +1,3 @@
-const requireg = require('requireg');
-
 const databaseType = process.env.NEXRENDER_DATABASE_PROVIDER;
 
 /* place to register all plugins */
@@ -8,8 +6,8 @@ if (process.env.NEXRENDER_REQUIRE_PLUGINS) {
     require('@create-global/nexrender-database-redis');
 }
 
-if (databaseType !== undefined) {
-    module.exports = requireg(`@create-global/nexrender-database-${databaseType}`);
+if (databaseType === 'redis') {
+    module.exports = require('@create-global/nexrender-database-redis');
 } else {
     module.exports = require('./disk.js');
 }
