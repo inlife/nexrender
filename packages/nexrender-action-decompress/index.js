@@ -13,7 +13,25 @@ const decompress = (job, settings, asset, action) => {
     switch (action.format) {
         case 'zip':
             const zip = new AdmZip(asset.dest);
-            zip.extractAllTo(job.workpath, action.overwrite || false);
+            const entries = zip.getEntries();
+
+            // Check if zip has a single root folder
+            const rootFolders = new Set(entries.map(entry => entry.entryName.split('/')[0]));
+            const hasSingleRootFolder = rootFolders.size === 1 && entries.every(entry => entry.entryName.startsWith([...rootFolders][0] + '/'));
+
+            if (hasSingleRootFolder) {
+                // Extract all files, removing the root folder from paths
+                const rootFolder = [...rootFolders][0];
+                entries.forEach(entry => {
+                    if (!entry.isDirectory) {
+                        const relativePath = entry.entryName.substring(rootFolder.length + 1);
+                        zip.extractEntryTo(entry.entryName, job.workpath, false, true, false, relativePath);
+                    }
+                });
+            } else {
+                // Default behavior - extract all files
+                zip.extractAllTo(job.workpath, action.overwrite || false);
+            }
             break;
     }
 
@@ -23,7 +41,6 @@ const decompress = (job, settings, asset, action) => {
     }
 
     return Promise.resolve();
-
 }
 
 module.exports = (job, settings, action, type) => {
