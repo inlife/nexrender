@@ -27,7 +27,8 @@ Note: Creating symbolic links may require elevated permissions on some systems.
             {
                 "module": "@nexrender/action-link",
                 "input": "source/large-file.mp4",
-                "output": "assets/linked-file.mp4"
+                "output": "assets/linked-file.mp4",
+                "type": "file"
             }
         ]
     }

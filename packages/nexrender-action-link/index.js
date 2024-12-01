@@ -1,7 +1,7 @@
 const fs = require("fs");
 const path = require("path");
 
-module.exports = async (job, settings, { input, output, type = "dir" }, actionType) => {
+module.exports = async (job, settings, { input, output, type = "dir" }) => {
     if (!input) {
         throw new Error("No input path provided");
     }
