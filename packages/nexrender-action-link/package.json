@@ -2,7 +2,7 @@
   "name": "@nexrender/action-link",
   "homepage": "https://www.nexrender.com",
   "author": "inlife",
-  "version": "1.59.0",
+  "version": "1.59.1",
   "main": "index.js",
   "publishConfig": {
     "access": "public"
