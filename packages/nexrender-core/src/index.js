@@ -33,6 +33,7 @@ if (process.env.NEXRENDER_REQUIRE_PLUGINS) {
     require('@nexrender/action-decompress');
     require('@nexrender/action-image');
     require('@nexrender/action-fonts');
+    require('@nexrender/action-link');
     require('@nexrender/action-webhook');
     require('@nexrender/action-mogrt');
 
