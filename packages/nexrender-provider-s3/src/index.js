@@ -51,7 +51,9 @@ const createS3Client = (params, credentials) => {
 const download = async (job, settings, src, dest, params) => {
     src = src.replace('s3://', 'http://')
     let parsed = {}
-    try { parsed = uri(src) } catch (err) {}
+    try { parsed = uri(src) } catch (err) {
+        // ignore
+    }
 
     if (!parsed.bucket) {
         throw new Error('S3 bucket not provided.')
