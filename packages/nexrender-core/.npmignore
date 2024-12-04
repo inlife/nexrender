@@ -1,6 +1,3 @@
 node_modules/
 test/
 test.js
-manual.js
-**/*/manual.js
-**/test/
