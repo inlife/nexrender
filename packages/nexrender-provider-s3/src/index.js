@@ -1,169 +1,149 @@
-const fs  = require('fs')
+const fs = require('fs')
 const uri = require('./uri')
-const AWS = require('aws-sdk/global')
-const S3 = require('aws-sdk/clients/s3')
+const { S3Client, GetObjectCommand } = require('@aws-sdk/client-s3')
+const { fromIni } = require('@aws-sdk/credential-providers')
+const { Upload } = require('@aws-sdk/lib-storage')
 
-let regions = {}
-let endpoints = {}
-
-/* return a credentials object if possible, otherwise return false */
+/* return a credentials object if possible, otherwise return undefined */
 const getCredentials = params => {
     if (params && params.profile) {
-        // will throw if the profile is not configured
-        return new AWS.SharedIniFileCredentials({ profile: params.profile })
+        return fromIni({ profile: params.profile })
     } else if (params && params.accessKeyId && params.secretAccessKey) {
-        return { accessKeyId: params.accessKeyId, secretAccessKey: params.secretAccessKey }
-    // Cross-account role access pattern
-    } else if (params && params.RoleArn && params.RoleSessionName) {
-        return new AWS.ChainableTemporaryCredentials({ params: { ...params }})
-    } else if (process.env.AWS_PROFILE) { // prioritize any explicitly set params before env variables
-        // will throw if the profile is not configured
-        return new AWS.SharedIniFileCredentials({ profile: process.env.AWS_PROFILE })
-    } else if (process.env.AWS_ACCESS_KEY && process.env.AWS_SECRET_KEY) {
-        return { accessKeyId: process.env.AWS_ACCESS_KEY, secretAccessKey: process.env.AWS_SECRET_KEY }
-    }
-}
-
-/* create or get api instance with region */
-const s3instanceWithRegion = (region, credentials) => {
-    const key = region || 0
-
-    if (!regions.hasOwnProperty(key)) {
-        const options = { region: region }
-
-        if (credentials) options.credentials = credentials
-
-        regions[key] = new S3(options)
-    }
-
-    return regions[key]
-}
-
-const s3instanceWithEndpoint = (endpoint, credentials) => {
-    const key = endpoint || 0
-
-    if (!endpoints.hasOwnProperty(key)) {
-        const options = { endpoint: endpoint }
-
-        if (credentials) options.credentials = credentials
-
-        endpoints[key] = new S3(options)
-    }
-
-    return endpoints[key]
-}
-
-/* define public methods */
-const download = (job, settings, src, dest, params, /* type */) => {
-    src = src.replace('s3://', 'http://')
-
-    const parsed = uri(src)
-    const file = fs.createWriteStream(dest)
-
-    if (!parsed.bucket) {
-        return Promise.reject(new Error('S3 bucket not provided.'))
-    }
-    if (!parsed.key) {
-        return Promise.reject(new Error('S3 key not provided.'))
-    }
-
-    return new Promise((resolve, reject) => {
-        file.on('close', resolve);
-
-        const awsParams = {
-            Bucket: parsed.bucket,
-            Key: parsed.key,
+        return {
+            accessKeyId: params.accessKeyId,
+            secretAccessKey: params.secretAccessKey
         }
+    } else if (params && params.RoleArn && params.RoleSessionName) {
+        return {
+            roleArn: params.RoleArn,
+            roleSessionName: params.RoleSessionName,
+            ...params
+        }
+    } else if (process.env.AWS_PROFILE) {
+        return fromIni({ profile: process.env.AWS_PROFILE })
+    } else if (process.env.AWS_ACCESS_KEY && process.env.AWS_SECRET_KEY) {
+        return {
+            accessKeyId: process.env.AWS_ACCESS_KEY,
+            secretAccessKey: process.env.AWS_SECRET_KEY
+        }
+    }
+}
 
-        const credentials = getCredentials(params.credentials)
+/* create new S3 client instance */
+const createS3Client = (params, credentials) => {
+    if (params.endpoint) {
+        return new S3Client({
+            region: params.region || 'auto',
+            endpoint: params.endpoint,
+            credentials: credentials,
+            forcePathStyle: true, // Required for custom endpoints
+            ...(params.signatureVersion && { signatureVersion: params.signatureVersion }),
+        })
+    }
 
-        const s3instance = params.endpoint ?
-            s3instanceWithEndpoint(params.endpoint, credentials) :
-            s3instanceWithRegion(params.region, credentials)
-
-        s3instance
-            .getObject(awsParams)
-            .createReadStream()
-            .on('error', reject)
-            .pipe(file)
+    return new S3Client({
+        region: params.region,
+        credentials: credentials
     })
 }
 
-const upload = (job, settings, src, params, onProgress, onComplete) => {
-    const file = fs.createReadStream(src);
+/* define public methods */
+const download = async (job, settings, src, dest, params) => {
+    src = src.replace('s3://', 'http://')
+    let parsed = {}
+    try { parsed = uri(src) } catch (err) {}
 
+    if (!parsed.bucket) {
+        throw new Error('S3 bucket not provided.')
+    }
+
+    if (!parsed.key) {
+        throw new Error('S3 key not provided.')
+    }
+
+    const credentials = getCredentials(params.credentials)
+    const s3Client = createS3Client(params, credentials)
+
+    const command = new GetObjectCommand({
+        Bucket: parsed.bucket,
+        Key: parsed.key,
+    })
+
+    try {
+        const response = await s3Client.send(command)
+        const writeStream = fs.createWriteStream(dest)
+
+        return new Promise((resolve, reject) => {
+            response.Body.pipe(writeStream)
+                .on('error', reject)
+                .on('finish', resolve)
+        })
+    } catch (err) {
+        throw new Error(`S3 download failed: ${err.message}`)
+    }
+}
+
+const upload = async (job, settings, src, params, onProgress, onComplete) => {
     if (!params.endpoint && !params.region) {
-        return Promise.reject(new Error('S3 region or endpoint not provided.'))
+        throw new Error('S3 region or endpoint not provided.')
     }
+
     if (!params.bucket) {
-        return Promise.reject(new Error('S3 bucket not provided.'))
+        throw new Error('S3 bucket not provided.')
     }
+
     if (!params.key) {
-        return Promise.reject(new Error('S3 key not provided.'))
+        throw new Error('S3 key not provided.')
     }
 
-    const onUploadProgress = (e) => {
-        const progress = Math.ceil(e.loaded / e.total * 100)
-        if (typeof onProgress == 'function') {
-            onProgress(job, progress);
-        }
-        settings.logger.log(`[${job.uid}] action-upload: upload progress ${progress}%...`)
-    }
+    const credentials = getCredentials(params.credentials)
+    const s3Client = createS3Client(params, credentials)
 
-    const onUploadComplete = (file) => {
-        if (typeof onComplete == 'function') {
-            onComplete(job, file);
-        }
-        settings.logger.log(`[${job.uid}] action-upload: upload complete: ${file}`)
+    const fileStream = fs.createReadStream(src)
+    const uploadParams = {
+        Bucket: params.bucket,
+        Key: params.key,
+        Body: fileStream,
+        ContentType: params.contentType || "application/octet-stream",
+        ...(params.acl && { ACL: params.acl }),
+        ...(params.metadata && { Metadata: params.metadata }),
+        ...(params.contentDisposition && { ContentDisposition: params.contentDisposition }),
+        ...(params.cacheControl && { CacheControl: params.cacheControl })
     }
 
     const output = params.endpoint ?
         `${params.endpoint}/${params.bucket}/${params.key}` :
-        `https://s3-${params.region}.amazonaws.com/${params.bucket}/${params.key}`;
+        `https://s3-${params.region}.amazonaws.com/${params.bucket}/${params.key}`
+
     settings.logger.log(`[${job.uid}] action-upload: input file ${src}`)
     settings.logger.log(`[${job.uid}] action-upload: output file ${output}`)
 
-    return new Promise((resolve, reject) => {
-        file.on('error', (err) => reject(err))
+    try {
+        const upload = new Upload({
+            client: s3Client,
+            params: uploadParams
+        })
 
-        const awsParams = {
-            Bucket: params.bucket,
-            Key: params.key,
-            Body: file,
-            ContentType: params.contentType || "application/octet-stream"
+        upload.on('httpUploadProgress', (progress) => {
+            const percent = Math.ceil((progress.loaded / progress.total) * 100)
+            if (typeof onProgress === 'function') {
+                onProgress(job, percent)
+            }
+            settings.logger.log(`[${job.uid}] action-upload: upload progress ${percent}%...`)
+        })
+
+        const result = await upload.done()
+
+        if (typeof onComplete === 'function') {
+            onComplete(job, result.Location)
         }
-
-        if (params.acl) awsParams.ACL = params.acl;
-        if (params.metadata) awsParams.Metadata = params.metadata;
-        if (params.contentDisposition) awsParams.ContentDisposition = params.contentDisposition;
-        if (params.cacheControl) awsParams.CacheControl = params.cacheControl;
-
-        const credentials = getCredentials(params.credentials)
-
-        const s3instance = params.endpoint ?
-            s3instanceWithEndpoint(params.endpoint, credentials) :
-            s3instanceWithRegion(params.region, credentials)
-
-        s3instance
-            .upload(awsParams, (err, data) => {
-                if (err) {
-                    reject(err)
-                }
-                else
-                {
-                    onUploadComplete(data.Location)
-                    resolve()
-                }
-            })
-            .on('httpUploadProgress', onUploadProgress)
-    })
+        settings.logger.log(`[${job.uid}] action-upload: upload complete: ${result.Location}`)
+    } catch (err) {
+        throw new Error(`S3 upload failed: ${err.message}`)
+    }
 }
 
 module.exports = {
     download,
     upload,
 }
-
-/* tests */
-// download({}, {}, 's3://BUCKET.s3.REGION.amazonaws.com/KEY', 'test.txt')
-// download({}, {}, 's3://BUCKET.REGION.digitaloceanspaces.com/KEY', 'test.txt')

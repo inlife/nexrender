@@ -1,15 +1,16 @@
 {
   "name": "@nexrender/provider-s3",
   "homepage": "https://www.nexrender.com",
-  "version": "1.53.2",
+  "version": "1.54.0",
   "author": "inlife",
   "main": "src/index.js",
   "dependencies": {
-    "amazon-s3-uri": "0.1.1",
-    "aws-sdk": "^2.344.0"
+    "@aws-sdk/client-s3": "^3.705.0",
+    "@aws-sdk/credential-providers": "^3.699.0",
+    "@aws-sdk/lib-storage": "^3.705.0",
+    "amazon-s3-uri": "^0.1.1"
   },
   "publishConfig": {
     "access": "public"
-  },
-  "gitHead": "84cef65e008026f6fcf4f040943144401f101fce"
+  }
 }

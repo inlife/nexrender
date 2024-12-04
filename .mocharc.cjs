@@ -7,6 +7,7 @@ module.exports = {
     timeout: '10000',
     spec: [
         './packages/*/src/**/*.spec.js',
+        './packages/*/test/*.test.js',
         './packages/*/test.js',
     ],
     global: ['expect', 'td', 'nock'],

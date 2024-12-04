@@ -86,7 +86,7 @@ Refer to [AWS SDK Documentation](https://docs.aws.amazon.com/sdk-for-javascript/
         }
     ]
 }
-````
+```
 
 Uri follows this scheme:
 
@@ -133,3 +133,7 @@ Example:
         ]
     }
 }
+
+## License
+
+Please refer to the [LICENSE](LICENSE) file for more information. Unlike the main nexrender project, this plugin is licensed under the AGPL-3.0 license.
