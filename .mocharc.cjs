@@ -9,6 +9,7 @@ module.exports = {
         './packages/*/src/**/*.spec.js',
         './packages/*/test/*.test.js',
         './packages/*/test.js',
+        './packages/*/test/index.js',
     ],
     global: ['expect', 'td', 'nock'],
     'check-leaks': true,
