@@ -33,6 +33,7 @@
     "@nexrender/action-mogrt": "^1.0.2",
     "@nexrender/action-upload": "^1.0.0",
     "@nexrender/action-webhook": "^1.51.3",
+    "@nexrender/action-cache": "^1.53.2",
     "@nexrender/provider-ftp": "^1.17.2",
     "@nexrender/provider-gs": "^1.21.3",
     "@nexrender/provider-nx": "^1.47.0",
