@@ -54,7 +54,7 @@ const decompress = (job, settings, asset, action) => {
                 })
 
                 myStream.on('progress', function (progress) {
-                    settings.logger.log(`[action-decompress] Extracting ${progress.percent}%`);
+                    if (settings.logger) settings.logger.log(`[action-decompress] Extracting ${progress.percent}%`);
                 })
 
                 myStream.on('end', function () {
