@@ -88,7 +88,7 @@ const download = (job, settings, asset) => {
 
             /* TODO: maybe move to external package ?? */
             const src = asset.src
-            return withTimeout(fetch(src, asset.params), NEXRENDER_DOWNLOAD_TIMEOUT, 'Download timed out')
+            return fetch(src, asset.params)
                 .then(res => res.ok ? res : Promise.reject(new Error(`Unable to download file ${src}`)))
                 .then(res => {
                     // Set a file extension based on content-type header if not already set
@@ -107,7 +107,7 @@ const download = (job, settings, asset) => {
 
                     const stream = fs.createWriteStream(asset.dest)
 
-                    return new Promise((resolve, reject) => {
+                    return withTimeout(new Promise((resolve, reject) => {
                         const errorHandler = (error) => {
                             reject(new Error({reason: 'Unable to download file', meta: {src, error}}))
                         };
@@ -119,7 +119,7 @@ const download = (job, settings, asset) => {
                         stream
                             .on('error', errorHandler)
                             .on('finish', resolve)
-                    })
+                    }), NEXRENDER_DOWNLOAD_TIMEOUT, 'Download timed out for asset ' + asset.src)
                 });
 
         case 'file':

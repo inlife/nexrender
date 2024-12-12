@@ -7,7 +7,13 @@ const decompress = (job, settings, asset, action) => {
         return Promise.resolve();
     }
 
-    if (asset.dest.indexOf('.' + action.format) === -1) {
+    const supportedFormats = {
+        'zip': ['zip'],
+        'zip-7z': ['zip', '7z', 'rar', 'tar', 'gz', 'bz2', 'xz']
+    };
+
+    // skip if the file doesn't have the correct extension
+    if (!supportedFormats[action.format].map(format => asset.dest.indexOf('.' + format) !== -1).includes(true)) {
         return Promise.resolve();
     }
 
