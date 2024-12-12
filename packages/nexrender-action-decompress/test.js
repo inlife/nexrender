@@ -88,6 +88,43 @@ describe('actions/decompress', function() {
             .catch(done);
     });
 
+    it('it should extract zip files with 7z', function(done) {
+        const job = {
+            workpath: workpath,
+            template: {
+                dest: path.join(workpath, 'template.zip'),
+                decompressed: 'template.aep',
+            },
+            assets: [
+                {
+                    dest: path.join(workpath, 'asset.zip'),
+                    decompressed: 'asset.jpg',
+                },
+                {
+                    dest: path.join(workpath, 'non-archive.jpg'),
+                }
+            ],
+        };
+
+        decompressAction(job, {}, { format: 'zip-7z' }, 'prerender')
+            .then(() => {
+                // ensure each file is extracted
+                assert(fs.existsSync(path.join(workpath, 'template.aep')));
+                assert(fs.existsSync(path.join(workpath, '(Footage)', 'test.jpg')));
+                assert(fs.existsSync(path.join(workpath, 'asset.jpg')));
+                assert(fs.existsSync(path.join(workpath, 'non-archive.jpg')));
+
+                // ensure each file has correct content
+                assert.strictEqual(fs.readFileSync(path.join(workpath, 'template.aep'), 'utf8'), 'hello there 1');
+                assert.strictEqual(fs.readFileSync(path.join(workpath, '(Footage)', 'test.jpg'), 'utf8'), 'hello there 2');
+                assert.strictEqual(fs.readFileSync(path.join(workpath, 'asset.jpg'), 'utf8'), 'hello there 3');
+                assert.strictEqual(fs.readFileSync(path.join(workpath, 'non-archive.jpg'), 'utf8'), 'hello there 4');
+
+                done();
+            })
+            .catch(done);
+    });
+
     it('should update the dest values for each asset to reflect the extracted files', function(done) {
         const job = {
             workpath: workpath,

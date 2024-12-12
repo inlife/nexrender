@@ -1,5 +1,6 @@
 const path = require('path');
 const AdmZip = require('adm-zip');
+const { extractFull } = require('node-7z');
 
 const decompress = (job, settings, asset, action) => {
     if (asset.type === 'data') {
@@ -33,6 +34,28 @@ const decompress = (job, settings, asset, action) => {
                 zip.extractAllTo(job.workpath, action.overwrite || false);
             }
             break;
+
+        case 'zip-7z':
+            const promise = new Promise((resolve, reject) => {
+                const myStream = extractFull(asset.dest, job.workpath, {
+                    $progress: true
+                })
+
+                myStream.on('progress', function (progress) {
+                    settings.logger.log(`[action-decompress] Extracting ${progress.percent}%`);
+                })
+
+                myStream.on('end', function () {
+                    resolve();
+                })
+
+                myStream.on('error', (err) => reject(err))
+            });
+
+            return promise;
+
+        default:
+            return Promise.resolve();
     }
 
     if (asset.decompressed) {
@@ -48,7 +71,7 @@ module.exports = (job, settings, action, type) => {
         return Promise.reject("'action-decompress' module should be used only in 'prerender' section")
     }
 
-    if (['zip'].indexOf(action.format) === -1) {
+    if (['zip', 'zip-7z'].indexOf(action.format) === -1) {
         return Promise.reject(`'action-decompress' module doesn't support '${action.format}' format archives`)
     }
 
