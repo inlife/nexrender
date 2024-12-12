@@ -33,6 +33,12 @@ const decompress = (job, settings, asset, action) => {
                 // Default behavior - extract all files
                 zip.extractAllTo(job.workpath, action.overwrite || false);
             }
+
+            if (asset.decompressed) {
+                asset.src = asset.dest;
+                asset.dest = path.join(job.workpath, asset.decompressed);
+            }
+
             break;
 
         case 'zip-7z':
@@ -52,15 +58,15 @@ const decompress = (job, settings, asset, action) => {
                 myStream.on('error', (err) => reject(err))
             });
 
+            if (asset.decompressed) {
+                asset.src = asset.dest;
+                asset.dest = path.join(job.workpath, asset.decompressed);
+            }
+
             return promise;
 
         default:
             return Promise.resolve();
-    }
-
-    if (asset.decompressed) {
-        asset.src = asset.dest;
-        asset.dest = path.join(job.workpath, asset.decompressed);
     }
 
     return Promise.resolve();

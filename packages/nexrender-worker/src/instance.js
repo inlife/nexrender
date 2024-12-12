@@ -1,8 +1,8 @@
 const { createClient } = require('@nexrender/api')
 const { init, render } = require('@nexrender/core')
 const { getRenderingStatus } = require('@nexrender/types/job')
-const pkg = require('../package.json')
 const { withTimeout } = require('@nexrender/core/src/helpers/timeout');
+const pkg = require('../package.json')
 
 const NEXRENDER_API_POLLING = process.env.NEXRENDER_API_POLLING || 30 * 1000;
 const NEXRENDER_TOLERATE_EMPTY_QUEUES = process.env.NEXRENDER_TOLERATE_EMPTY_QUEUES;
