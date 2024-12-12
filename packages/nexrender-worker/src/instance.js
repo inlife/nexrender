@@ -2,29 +2,13 @@ const { createClient } = require('@nexrender/api')
 const { init, render } = require('@nexrender/core')
 const { getRenderingStatus } = require('@nexrender/types/job')
 const pkg = require('../package.json')
+const { withTimeout } = require('@nexrender/core/src/helpers/timeout');
 
 const NEXRENDER_API_POLLING = process.env.NEXRENDER_API_POLLING || 30 * 1000;
 const NEXRENDER_TOLERATE_EMPTY_QUEUES = process.env.NEXRENDER_TOLERATE_EMPTY_QUEUES;
 const NEXRENDER_PICKUP_TIMEOUT = process.env.NEXRENDER_PICKUP_TIMEOUT || 60 * 1000; // 60 second timeout by default
 
 const delay = amount => new Promise(resolve => setTimeout(resolve, amount))
-
-// Helper function to add timeout to promises
-const withTimeout = (promise, timeoutMs, errorMsg) => {
-    let timeoutHandle;
-    const timeoutPromise = new Promise((_, reject) => {
-        timeoutHandle = setTimeout(() => {
-            reject(new Error(errorMsg));
-        }, timeoutMs);
-    });
-
-    return Promise.race([
-        promise,
-        timeoutPromise,
-    ]).finally(() => {
-        clearTimeout(timeoutHandle);
-    });
-};
 
 const createWorker = () => {
     let emptyReturns = 0;
