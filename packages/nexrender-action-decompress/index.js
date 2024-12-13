@@ -2,9 +2,9 @@ const path = require('path');
 const AdmZip = require('adm-zip');
 const { extractFull } = require('node-7z');
 
-const decompress = (job, settings, asset, action) => {
+const decompress = async (job, settings, asset, action) => {
     if (asset.type === 'data') {
-        return Promise.resolve();
+        return false;
     }
 
     const supportedFormats = {
@@ -14,7 +14,7 @@ const decompress = (job, settings, asset, action) => {
 
     // skip if the file doesn't have the correct extension
     if (!supportedFormats[action.format].map(format => asset.dest.indexOf('.' + format) !== -1).includes(true)) {
-        return Promise.resolve();
+        return false;
     }
 
     switch (action.format) {
@@ -40,44 +40,49 @@ const decompress = (job, settings, asset, action) => {
                 zip.extractAllTo(job.workpath, action.overwrite || false);
             }
 
-            if (asset.decompressed) {
-                asset.src = asset.dest;
-                asset.dest = path.join(job.workpath, asset.decompressed);
-            }
-
             break;
 
         case 'zip-7z':
-            const promise = new Promise((resolve, reject) => {
-                const myStream = extractFull(asset.dest, job.workpath, {
-                    $progress: true
-                })
+            // retry 3 times
+            for (let i = 0; i < 3; i++) {
+                try {
+                    const promise = new Promise((resolve, reject) => {
+                        const myStream = extractFull(asset.dest, job.workpath, {
+                            $progress: true
+                        })
 
-                myStream.on('progress', function (progress) {
-                    if (progress.percent % 10 === 0) {
-                        if (settings.logger) settings.logger.log(`[action-decompress] Extracting ${progress.percent}%`);
+                        let lastProgress = 0;
+                        myStream.on('progress', function (progress) {
+                            let progressPercent = Math.round(progress.percent);
+                            if (lastProgress !== progressPercent && progressPercent % 10 === 0) {
+                                if (settings.logger) settings.logger.log(`[action-decompress] Extracting ${progressPercent}%`);
+                                lastProgress = progressPercent;
+                            }
+                        })
+
+                        myStream.on('end', function () {
+                            resolve();
+                        })
+
+                        myStream.on('error', (err) => reject(err.stderr))
+                    });
+
+                    await promise;
+                } catch (err) {
+                    if (i >= 2) {
+                        throw err;
                     }
-                })
 
-                myStream.on('end', function () {
-                    resolve();
-                })
-
-                myStream.on('error', (err) => reject(err))
-            });
-
-            if (asset.decompressed) {
-                asset.src = asset.dest;
-                asset.dest = path.join(job.workpath, asset.decompressed);
+                    if (settings.logger) settings.logger.log(`[action-decompress] Failed to extract ${asset.dest} due to ${err}, retrying...`);
+                    await new Promise(resolve => setTimeout(resolve, 1000));
+                }
             }
-
-            return promise;
-
-        default:
-            return Promise.resolve();
     }
 
-    return Promise.resolve();
+    if (asset.decompressed) {
+        asset.src = asset.dest;
+        asset.dest = path.join(job.workpath, asset.decompressed);
+    }
 }
 
 module.exports = (job, settings, action, type) => {
