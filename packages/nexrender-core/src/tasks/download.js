@@ -109,7 +109,7 @@ const download = (job, settings, asset) => {
 
                     return withTimeout(new Promise((resolve, reject) => {
                         const errorHandler = (error) => {
-                            reject(new Error({reason: 'Unable to download file', meta: {src, error}}))
+                            reject(new Error('Unable to download file ' + asset.src + ' due to ' + error))
                         };
 
                         res.body
