@@ -38,7 +38,7 @@ const installWin = async (settings, job, fontpath) => {
     settings.logger.log(`[action-fonts] Installing font ${fontpath} to ${fontdest}...`);
     fs.copyFileSync(fontpath, fontdest);
 
-    const fontdisplayname = path.basename(fontpath, path.extname(fontpath)).replace(/-/g, " ");
+    const fontdisplayname = path.basename(fontpath, path.extname(fontpath));
     const fontreg = `reg add "HKCU\\Software\\Microsoft\\Windows NT\\CurrentVersion\\Fonts" /v "${fontdisplayname} (TrueType)" /t REG_SZ /d "${fontdest}" /f`;
 
     execSync(fontreg);
