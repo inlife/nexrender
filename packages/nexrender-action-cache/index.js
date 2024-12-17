@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 
-async function findValidateCache(asset, settings, cacheDirectory, ttl){
+async function findValidateCache(asset, settings, cacheDirectory, ttl, useOriginal) {
     if (asset.src.startsWith('file://')) {
         settings.logger.log(`> Skipping cache for ${asset.src}; local file protocol is being used`);
         return;
@@ -28,25 +28,28 @@ async function findValidateCache(asset, settings, cacheDirectory, ttl){
     settings.logger.log(`> Cached file found at ${maybeCachedFileLocation}`);
     settings.logger.log(`> Old source: ${asset.src}`);
     asset.src = `file://${maybeCachedFileLocation}`;
+    if (useOriginal) asset.useOriginal = true;
     settings.logger.log(`> New source: ${asset.src}`);
 }
 
-const predownload = async (job, settings, { cacheDirectory, ttl, cacheAssets }) => {
+const predownload = async (job, settings, { cacheDirectory, ttl, cacheAssets, useOriginal }) => {
     // Job template
-    await findValidateCache(job.template, settings, cacheDirectory, ttl);
+    await findValidateCache(job.template, settings, cacheDirectory, ttl, useOriginal);
 
-    if(cacheAssets){
-        // Job assets
-        for(const asset of job.assets){
-            // Only asset types that can be downloaded files
-            if(['image', 'audio', 'video', 'script', 'static'].includes(asset.type)){
-                await findValidateCache(asset, settings, cacheDirectory, ttl);
-            }
+    if (!cacheAssets) {
+        return;
+    }
+
+    // Job assets
+    for (const asset of job.assets) {
+        // Only asset types that can be downloaded files
+        if (['image', 'audio', 'video', 'script', 'static'].includes(asset.type)) {
+            await findValidateCache(asset, settings, cacheDirectory, ttl, useOriginal);
         }
     }
 }
 
-async function saveCache(asset, settings, workpath, cacheDirectory){
+async function saveCache(asset, settings, workpath, cacheDirectory) {
     if (asset.src.startsWith('file://')) {
         settings.logger.log(`> Skipping cache for ${asset.src}; local file protocol is being used`);
         return;
@@ -66,21 +69,21 @@ async function saveCache(asset, settings, workpath, cacheDirectory){
 }
 
 const postdownload = async (job, settings, { cacheDirectory, cacheAssets }) => {
-    // Job template
-    await saveCache(job.template, settings, job.workpath, cacheDirectory);
+    await saveCache(job.template, settings, job.workpath, cacheDirectory); // Job template
 
-    if(cacheAssets){
-        // Job assets
-        for(const asset of job.assets){
-            // Only asset types that can be downloaded files
-            if(['image', 'audio', 'video', 'script', 'static'].includes(asset.type)){
-                await saveCache(asset, settings, job.workpath, cacheDirectory);
-            }
+    if (!cacheAssets) {
+        return;
+    }
+
+    // Job assets
+    for (const asset of job.assets) {
+        if (['image', 'audio', 'video', 'script', 'static'].includes(asset.type)) {
+            await saveCache(asset, settings, job.workpath, cacheDirectory);
         }
     }
 }
 
-module.exports = (job, settings, { cacheDirectory, ttl, cacheAssets }, type) => {
+module.exports = (job, settings, { cacheDirectory, ttl, cacheAssets, useOriginal = false }, type) => {
     if (!cacheDirectory) {
         throw new Error(`cacheDirectory not provided.`);
     }
@@ -92,7 +95,7 @@ module.exports = (job, settings, { cacheDirectory, ttl, cacheAssets }, type) => 
     }
 
     if (type === 'predownload') {
-        return predownload(job, settings, { cacheDirectory, ttl, cacheAssets }, type);
+        return predownload(job, settings, { cacheDirectory, ttl, cacheAssets, useOriginal }, type);
     }
 
     if (type === 'postdownload') {

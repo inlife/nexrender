@@ -14,6 +14,8 @@ const NEXRENDER_DOWNLOAD_TIMEOUT = process.env.NEXRENDER_DOWNLOAD_TIMEOUT || 3 *
 const download = (job, settings, asset) => {
     if (asset.type == 'data') return Promise.resolve();
 
+    settings.logger.log(`[${job.uid}] > Downloading asset ${asset.src}...`);
+
     // eslint-disable-next-line
     const uri = global.URL ? new URL(asset.src) : url.parse(asset.src)
     const protocol = uri.protocol.replace(/:$/, '');
