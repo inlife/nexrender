@@ -5,6 +5,8 @@ const client = redis.createClient({
     url: process.env.REDIS_URL
 });
 
+const scanChunkSize = process.env.SCAN_CHUNK_SIZE? process.env.SCAN_CHUNK_SIZE : '10';
+
 client.getAsync = promisify(client.get).bind(client);
 client.setAsync = promisify(client.set).bind(client);
 client.delAsync = promisify(client.del).bind(client);
@@ -16,7 +18,7 @@ const scan = async parser => {
     let results = [];
 
     const _scan = async () => {
-        const [ next, keys ] = await client.scanAsync(cursor, 'MATCH', 'nexjob:*', 'COUNT', '10');
+        const [ next, keys ] = await client.scanAsync(cursor, 'MATCH', 'nexjob:*', 'COUNT', scanChunkSize);
 
         cursor = next;
         results = results.concat(keys);
