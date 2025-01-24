@@ -9,7 +9,7 @@ const mime     = require('mime-types')
 const {expandEnvironmentVariables} = require('../helpers/path')
 const { withTimeout } = require('../helpers/timeout');
 
-const NEXRENDER_DOWNLOAD_TIMEOUT = process.env.NEXRENDER_DOWNLOAD_TIMEOUT || 3 * 60 * 1000; // 3 minutes timeout by default
+const NEXRENDER_DOWNLOAD_TIMEOUT = Number(process.env.NEXRENDER_DOWNLOAD_TIMEOUT) || 3 * 60 * 1000; // 3 minutes timeout by default
 
 const download = (job, settings, asset) => {
     if (asset.type == 'data') return Promise.resolve();
@@ -90,7 +90,11 @@ const download = (job, settings, asset) => {
 
             /* TODO: maybe move to external package ?? */
             const src = asset.src
-            return fetch(src, asset.params)
+            return withTimeout(
+                fetch(src, {
+                    ...asset.params,
+                    timeout: NEXRENDER_DOWNLOAD_TIMEOUT
+                })
                 .then(res => res.ok ? res : Promise.reject(new Error(`Unable to download file ${src}`)))
                 .then(res => {
                     // Set a file extension based on content-type header if not already set
@@ -122,7 +126,7 @@ const download = (job, settings, asset) => {
                             .on('error', errorHandler)
                             .on('finish', resolve)
                     }), NEXRENDER_DOWNLOAD_TIMEOUT, 'Download timed out for asset ' + asset.src)
-                });
+                }), NEXRENDER_DOWNLOAD_TIMEOUT, 'Download timed out for asset ' + asset.src)
 
         case 'file':
             const filepath = uri2path(expandEnvironmentVariables(asset.src))
