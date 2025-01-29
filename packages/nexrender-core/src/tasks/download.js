@@ -90,43 +90,49 @@ const download = (job, settings, asset) => {
 
             /* TODO: maybe move to external package ?? */
             const src = asset.src
-            return withTimeout(
-                fetch(src, {
-                    ...asset.params,
-                    timeout: NEXRENDER_DOWNLOAD_TIMEOUT
-                })
-                .then(res => res.ok ? res : Promise.reject(new Error(`Unable to download file ${src}`)))
-                .then(res => {
-                    // Set a file extension based on content-type header if not already set
-                    if (!asset.extension) {
-                        const contentType = res.headers.get('content-type')
-                        const fileExt = mime.extension(contentType) || undefined
 
-                        asset.extension = fileExt
-                        const destHasExtension = path.extname(asset.dest) ? true : false
-                        // don't do this if asset.dest already has extension else it gives you example.jpg.jpg
-                        // like file in case of assets and aep/aepx file
-                        if (asset.extension && !destHasExtension) {
-                            asset.dest += `.${fileExt}`
+            try {
+                return withTimeout(
+                    fetch(src, {
+                        ...asset.params,
+                        timeout: NEXRENDER_DOWNLOAD_TIMEOUT
+                    })
+                    .then(res => res.ok ? res : Promise.reject(new Error(`Unable to download file ${src}`)))
+                    .then(res => {
+                        // Set a file extension based on content-type header if not already set
+                        if (!asset.extension) {
+                            const contentType = res.headers.get('content-type')
+                            const fileExt = mime.extension(contentType) || undefined
+
+                            asset.extension = fileExt
+                            const destHasExtension = path.extname(asset.dest) ? true : false
+                            // don't do this if asset.dest already has extension else it gives you example.jpg.jpg
+                            // like file in case of assets and aep/aepx file
+                            if (asset.extension && !destHasExtension) {
+                                asset.dest += `.${fileExt}`
+                            }
                         }
-                    }
 
-                    const stream = fs.createWriteStream(asset.dest)
+                        const stream = fs.createWriteStream(asset.dest)
 
-                    return withTimeout(new Promise((resolve, reject) => {
-                        const errorHandler = (error) => {
-                            reject(new Error('Unable to download file ' + asset.src + ' due to ' + error))
-                        };
+                        return withTimeout(new Promise((resolve, reject) => {
+                            const errorHandler = (error) => {
+                                reject(new Error('Unable to download file ' + asset.src + ' due to ' + error))
+                            };
 
-                        res.body
-                            .on('error', errorHandler)
-                            .pipe(stream)
+                            res.body
+                                .on('error', errorHandler)
+                                .pipe(stream)
 
-                        stream
-                            .on('error', errorHandler)
-                            .on('finish', resolve)
+                            stream
+                                .on('error', errorHandler)
+                                .on('finish', resolve)
+                        }), NEXRENDER_DOWNLOAD_TIMEOUT, 'Download timed out for asset ' + asset.src)
                     }), NEXRENDER_DOWNLOAD_TIMEOUT, 'Download timed out for asset ' + asset.src)
-                }), NEXRENDER_DOWNLOAD_TIMEOUT, 'Download timed out for asset ' + asset.src)
+            } catch (error) {
+                settings.logger.log(`[download] error downloading asset ${asset.src}: ${error}`);
+                return Promise.reject(error);
+            }
 
         case 'file':
             const filepath = uri2path(expandEnvironmentVariables(asset.src))
