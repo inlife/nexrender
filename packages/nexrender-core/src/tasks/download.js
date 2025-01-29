@@ -16,10 +16,18 @@ const download = (job, settings, asset) => {
 
     settings.logger.log(`[${job.uid}] > Downloading asset ${asset.src}...`);
 
-    // eslint-disable-next-line
-    const uri = global.URL ? new URL(asset.src) : url.parse(asset.src)
-    const protocol = uri.protocol.replace(/:$/, '');
+    let uri;
+    let protocol;
     let destName = '';
+
+    try {
+        // eslint-disable-next-line
+        uri = global.URL ? new URL(asset.src) : url.parse(asset.src)
+        protocol = uri.protocol.replace(/:$/, '');
+    } catch (error) {
+        settings.logger.log(`[download] error parsing asset ${asset.src}: ${error}`);
+        return Promise.reject(error);
+    }
 
     /* if asset doesnt have a file name, make up a random one */
     if (protocol === 'data' && !asset.layerName) {
@@ -181,10 +189,15 @@ const download = (job, settings, asset) => {
 module.exports = function(job, settings) {
     settings.logger.log(`[${job.uid}] downloading assets...`)
 
-    const promises = [].concat(
-        download(job, settings, job.template),
-        job.assets.map(asset => download(job, settings, asset))
-    )
+    try {
+        const promises = [].concat(
+            download(job, settings, job.template),
+            job.assets.map(asset => download(job, settings, asset))
+        )
 
-    return Promise.all(promises).then(() => job);
+        return Promise.all(promises).then(() => job);
+    } catch (error) {
+        settings.logger.log(`[download] error downloading assets: ${error}`);
+        return Promise.reject(error);
+    }
 }
