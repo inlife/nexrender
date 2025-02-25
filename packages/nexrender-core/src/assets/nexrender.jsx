@@ -13,6 +13,12 @@ var nexrender = {
     types: [CompItem, FolderItem, FootageItem, AVLayer, ShapeLayer, TextLayer, CameraLayer, LightLayer, Property, PropertyGroup],
 };
 
+nexrender.log = function (message) {
+    if (gAECommandLineRenderer && gAECommandLineRenderer.log_file) {
+        gAECommandLineRenderer.log_file.writeln("NX: " + message);
+    }
+};
+
 nexrender.typesMatch = function (types, layer) {
     return nexrender.types.filter(function (t) {
         return layer instanceof t;
@@ -252,13 +258,6 @@ nexrender.changeValueForKeypath = function (layer, keys, val) {
     }
     change(layer, keys, val);
 };
-
-nexrender.log = function(message) {
-    if (gAECommandLineRenderer && gAECommandLineRenderer.log_file) {
-        gAECommandLineRenderer.log_file.writeln("NX:" + message);
-    }
-}
-
 
 /* end of nexrender script */
 /* start of custom user script */
