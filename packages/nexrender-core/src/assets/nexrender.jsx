@@ -253,6 +253,12 @@ nexrender.changeValueForKeypath = function (layer, keys, val) {
     change(layer, keys, val);
 };
 
+nexrender.log = function(message) {
+    if (gAECommandLineRenderer && gAECommandLineRenderer.log_file) {
+        gAECommandLineRenderer.log_file.writeln("NX:" + message);
+    }
+}
+
 
 /* end of nexrender script */
 /* start of custom user script */

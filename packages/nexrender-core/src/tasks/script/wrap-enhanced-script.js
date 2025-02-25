@@ -18,7 +18,21 @@ const EnhancedScript = require('./EnhancedScript')
  *   @return string             (String)         The compiled script with parameter injection outside its original scope to avoid user-defined defaults collision.
  */
 const wrapEnhancedScript = (job, settings, { dest, src, parameters = [], keyword, defaults,  /* ...asset */ }) => {
-    const enhancedScript = new EnhancedScript(dest, src, parameters, keyword, defaults, job.uid, settings.logger);
+    const builtInParameters = [
+        { type: 'string', key: 'nxWorkpath', value: job.workpath },
+        { type: 'string', key: 'nxUID', value: job.uid },
+    ];
+
+    const enhancedScript = new EnhancedScript(
+        dest,
+        src,
+        [...builtInParameters, ...parameters],
+        keyword,
+        defaults,
+        job.uid,
+        settings.logger
+    );
+
     return enhancedScript.build();
 }
 
