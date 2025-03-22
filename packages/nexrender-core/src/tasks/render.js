@@ -107,7 +107,13 @@ Estimated date of change to the new behavior: 2023-06-01.\n`);
 
     // setup parameters
     params.push('-project', projectFile);
-    params.push('-comp', job.template.composition);
+
+    if (job.template.composition) {
+        params.push('-comp', job.template.composition);
+    } else {
+        settings.logger.log(`[${job.uid}] Warning: No composition specified in the template.`);
+    }
+
     params.push('-output', outputFileAE);
 
     if (!settings.skipRender) {
