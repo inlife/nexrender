@@ -1,3 +1,5 @@
+const fs = require('fs');
+const path = require('path');
 const { createClient } = require('@nexrender/api')
 const { init, render } = require('@nexrender/core')
 const { getRenderingStatus } = require('@nexrender/types/job')
@@ -7,8 +9,23 @@ const pkg = require('../package.json')
 const NEXRENDER_API_POLLING = process.env.NEXRENDER_API_POLLING || 30 * 1000;
 const NEXRENDER_TOLERATE_EMPTY_QUEUES = process.env.NEXRENDER_TOLERATE_EMPTY_QUEUES;
 const NEXRENDER_PICKUP_TIMEOUT = process.env.NEXRENDER_PICKUP_TIMEOUT || 60 * 1000; // 60 second timeout by default
+const LOCK_FILE_NAME = process.env.NEXRENDER_LOCK_FILE_NAME || '.nexrender-worker.lock';
 
 const delay = amount => new Promise(resolve => setTimeout(resolve, amount))
+
+const checkLockFile = (settings) => {
+    const lockFilePath = path.join(path.dirname(process.execPath), LOCK_FILE_NAME);
+    try {
+        if (fs.existsSync(lockFilePath)) {
+            settings.logger.log('[worker] Lock file detected, initiating graceful shutdown...');
+            fs.unlinkSync(lockFilePath);
+            return true;
+        }
+    } catch (err) {
+        settings.logger.error(`[worker] Error handling lock file: ${err.message}`);
+    }
+    return false;
+}
 
 const createWorker = () => {
     let emptyReturns = 0;
@@ -41,6 +58,12 @@ const createWorker = () => {
                 if (stop_datetime !== null && new Date() > stop_datetime) {
                     active = false;
                     return null
+                }
+
+                // Check for lock file before proceeding
+                if (checkLockFile(settings)) {
+                    active = false;
+                    return null;
                 }
 
                 settings.logger.log(`[worker] checking for new jobs...`);
