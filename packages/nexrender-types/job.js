@@ -16,6 +16,8 @@ const create = job => Object.assign({
     tags: '',
     priority: job.priority ? job.priority : 0,
 
+    timings: {},
+
     template: {
         src: '',
         composition: '',
@@ -112,7 +114,8 @@ const getRenderingStatus = job => ({
     finishedAt: job.finishedAt || null,
     errorAt: job.errorAt || null,
     jobCreator: job.creator,
-    jobExecutor: job.executor || null
+    jobExecutor: job.executor || null,
+    timings: job.timings || null,
 })
 
 module.exports = {
