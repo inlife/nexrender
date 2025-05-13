@@ -56,40 +56,92 @@ const notifyWin = async (job) => {
     execSync(`cscript //nologo ${script}`);
 }
 
+const uninstallWin = async (settings, job, fontpath) => {
+    const fontdir = path.join(process.env.LOCALAPPDATA, "Microsoft", "Windows", "Fonts");
+    const fontdest = path.join(fontdir, path.basename(fontpath));
+
+    settings.logger.log(`[action-fonts] Uninstalling font ${fontdest}...`);
+
+    if (fs.existsSync(fontdest)) {
+        fs.unlinkSync(fontdest);
+    }
+
+    /* remove from registry */
+    const fontdisplayname = path.basename(fontpath, path.extname(fontpath));
+    const fontreg = `reg delete "HKCU\\Software\\Microsoft\\Windows NT\\CurrentVersion\\Fonts" /v "${fontdisplayname} (TrueType)" /f`;
+
+    execSync(fontreg);
+    return 1;
+}
+
+const uninstallMac = async (settings, job, fontpath) => {
+    const fontdir = path.join(process.env.HOME, "Library", "Fonts");
+    const fontdest = path.join(fontdir, path.basename(fontpath));
+
+    settings.logger.log(`[action-fonts] Uninstalling font ${fontdest}...`);
+
+    if (fs.existsSync(fontdest)) {
+        fs.unlinkSync(fontdest);
+    }
+}
+
 module.exports = async (job, settings, params, type) => {
-    if (type != "prerender") {
+    if (type != "prerender" && type != "postrender") {
         throw new Error(
-            `Action ${name} can be only run in prerender mode, you provided: ${type}.`,
+            `Action ${name} can be only run in prerender or postrender mode, you provided: ${type}.`,
         );
     }
 
-    let fontsAdded = 0;
+    /* add this action to postrender if it's not already there, to clean up the fonts after the render */
+    if (type == "prerender") {
+        job.actions.postrender.push({
+            module: __filename,
+        });
 
-    /* iterate over assets, and install all assets which are fonts */
-    for (const asset of job.assets) {
-        if (asset.type !== "static") {
-            continue;
+        let fontsAdded = 0;
+
+        /* iterate over assets, and install all assets which are fonts */
+        for (const asset of job.assets) {
+            if (asset.type !== "static") {
+                continue;
+            }
+
+            if (!asset.src.match(/\.(ttf)$/)) {
+                continue;
+            }
+
+            if (!asset.name) {
+                throw new Error(`Asset ${asset.src} has to be named using the "name" property that would contain the font name as it is used to be then used in the After Effets project.`);
+            }
+
+            if (process.platform === "darwin") {
+                fontsAdded += await installMac(settings, job, asset.dest);
+            } else if (process.platform === "win32") {
+                fontsAdded += await installWin(settings, job, asset.dest);
+            } else {
+                throw new Error(`Platform ${process.platform} is not supported.`);
+            }
         }
 
-        if (!asset.src.match(/\.(ttf)$/)) {
-            continue;
+        if (fontsAdded > 0 && process.platform === "win32") {
+            await notifyWin(job);
         }
+    } else if (type == "postrender") {
+        for (const asset of job.assets) {
+            if (asset.type !== "static") {
+                continue;
+            }
 
-        if (!asset.name) {
-            throw new Error(`Asset ${asset.src} has to be named using the "name" property that would contain the font name as it is used to be then used in the After Effets project.`);
+            if (!asset.src.match(/\.(ttf)$/)) {
+                continue;
+            }
+
+            if (process.platform === "darwin") {
+                await uninstallMac(settings, job, asset.dest);
+            } else if (process.platform === "win32") {
+                await uninstallWin(settings, job, asset.dest);
+            }
         }
-
-        if (process.platform === "darwin") {
-            fontsAdded += await installMac(settings, job, asset.dest);
-        } else if (process.platform === "win32") {
-            fontsAdded += await installWin(settings, job, asset.dest);
-        } else {
-            throw new Error(`Platform ${process.platform} is not supported.`);
-        }
-    }
-
-    if (fontsAdded > 0 && process.platform === "win32") {
-        await notifyWin(job);
     }
 
     return job;
