@@ -33,14 +33,14 @@ const copy = (srcDir, dstDir) => {
             try {
                 fs.mkdirSync(dst);
             } catch(e) {
-                console.log('[action-lottie][copy] could\'t create directory: ' + dst);
+                console.log('[action-lottie][copy] could\'t create directory: ' + dst + ' ' + e.message);
             }
             results = results.concat(copy(src, dst));
         } else {
             try {
                 fs.writeFileSync(dst, fs.readFileSync(src));
             } catch(e) {
-                console.log('[action-lottie][copy] could\'t copy file: ' + dst);
+                console.log('[action-lottie][copy] could\'t copy file: ' + dst + ' ' + e.message);
             }
             results.push(src);
         }
@@ -65,7 +65,10 @@ module.exports = async (job, settings, { params = {} }) => {
     console.log(fs.readdirSync(path.join(__dirname, "..", "lib", "jsx")))
 
     // copy recursively all files from the lib folder to the job.workpath
-    copy(path.join(__dirname, "..", "lib"), path.join(job.workpath, "lib"));
+    copy(
+        path.resolve(path.join(__dirname, "..", "lib")),
+        path.resolve(path.join(job.workpath, "lib"))
+    );
 
     // add lottie prerender finish script
     settings.logger.log(`[${job.uid}] [action-lottie] adding lottie prerender finish script`);
