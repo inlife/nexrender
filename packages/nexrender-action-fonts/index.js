@@ -66,7 +66,11 @@ const uninstallWin = async (settings, job, fontpath) => {
     const fontdisplayname = path.basename(fontpath, path.extname(fontpath));
     const fontreg = `reg delete "HKCU\\Software\\Microsoft\\Windows NT\\CurrentVersion\\Fonts" /v "${fontdisplayname} (TrueType)" /f`;
 
-    execSync(fontreg);
+    try {
+        execSync(fontreg);
+    } catch (e) {
+        settings.logger.log(`[action-fonts] Error removing font ${fontdest} from registry: ${e.message}`);
+    }
 
     try {
         if (fs.existsSync(fontdest)) {
