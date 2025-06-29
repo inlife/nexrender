@@ -20,6 +20,34 @@ const createScript = ({ composition, logPath, bodymovinPath, serverUrl, outputPa
     };
 };
 
+const copy = (srcDir, dstDir) => {
+    let results = [];
+    const list = fs.readdirSync(srcDir);
+    list.forEach(function(file) {
+        const src = srcDir + '/' + file;
+        const dst = dstDir + '/' + file;
+        console.log('[action-lottie][copy] checking stat for', src);
+        const stat = fs.statSync(src);
+
+        if (stat && stat.isDirectory()) {
+            try {
+                fs.mkdirSync(dst);
+            } catch(e) {
+                console.log('[action-lottie][copy] could\'t create directory: ' + dst);
+            }
+            results = results.concat(copy(src, dst));
+        } else {
+            try {
+                fs.writeFileSync(dst, fs.readFileSync(src));
+            } catch(e) {
+                console.log('[action-lottie][copy] could\'t copy file: ' + dst);
+            }
+            results.push(src);
+        }
+    });
+    return results;
+}
+
 module.exports = async (job, settings, { params = {} }) => {
     settings.logger.log(`[${job.uid}] [action-lottie] starting`);
     const port = await server.start(job, settings);
@@ -37,7 +65,7 @@ module.exports = async (job, settings, { params = {} }) => {
     console.log(fs.readdirSync(path.join(__dirname, "..", "lib", "jsx")))
 
     // copy recursively all files from the lib folder to the job.workpath
-    fs.cpSync(path.join(__dirname, "..", "lib"), path.join(job.workpath, "lib"), { recursive: true });
+    copy(path.join(__dirname, "..", "lib"), path.join(job.workpath, "lib"));
 
     // add lottie prerender finish script
     settings.logger.log(`[${job.uid}] [action-lottie] adding lottie prerender finish script`);
