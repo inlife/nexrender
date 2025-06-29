@@ -30,6 +30,7 @@ if (process.env.NEXRENDER_REQUIRE_PLUGINS) {
     require('@nexrender/action-copy');
     require('@nexrender/action-encode');
     require('@nexrender/action-upload');
+    require('@nexrender/action-compress');
     require('@nexrender/action-decompress');
     require('@nexrender/action-image');
     require('@nexrender/action-fonts');
@@ -37,6 +38,7 @@ if (process.env.NEXRENDER_REQUIRE_PLUGINS) {
     require('@nexrender/action-webhook');
     require('@nexrender/action-mogrt');
     require('@nexrender/action-cache');
+    require('@nexrender/action-lottie');
 
     require('@nexrender/provider-s3');
     require('@nexrender/provider-ftp');

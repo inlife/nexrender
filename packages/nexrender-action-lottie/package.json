@@ -1,0 +1,14 @@
+{
+  "name": "@nexrender/action-lottie",
+  "homepage": "https://www.nexrender.com",
+  "author": "inlife",
+  "version": "1.0.0",
+  "main": "src/index.js",
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "escodegen": "^2.1.0",
+    "esprima": "^4.0.1"
+  }
+}

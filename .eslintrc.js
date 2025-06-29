@@ -275,5 +275,8 @@ module.exports = {
             "error",
             "never"
         ]
-    }
+    },
+    "ignorePatterns": [
+        "packages/nexrender-action-lottie/lib/**"
+    ]
 };

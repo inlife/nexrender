@@ -28,14 +28,16 @@ const download = (job, settings, src, dest, params, type) => {
     }
 
     return new Promise((resolve, reject) => {
-        file.on('close', resolve)
-
-        storage
+        const stream = storage
             .bucket(bucket_name)
             .file(item)
-            .createReadStream()
-            .on('error', reject)
-            .pipe(file)
+            .createReadStream();
+
+        stream.on('error', reject);
+        file.on('error', reject);
+        file.on('finish', resolve);
+
+        stream.pipe(file);
     })
 }
 

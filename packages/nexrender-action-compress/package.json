@@ -1,0 +1,15 @@
+{
+  "name": "@nexrender/action-compress",
+  "homepage": "https://www.nexrender.com",
+  "version": "1.60.7",
+  "main": "src/index.js",
+  "author": "Vladyslav Hrytsenko",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "adm-zip": "0.5.10",
+    "node-7z": "^3.0.0"
+  }
+}
