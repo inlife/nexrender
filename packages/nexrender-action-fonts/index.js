@@ -62,15 +62,20 @@ const uninstallWin = async (settings, job, fontpath) => {
 
     settings.logger.log(`[action-fonts] Uninstalling font ${fontdest}...`);
 
-    if (fs.existsSync(fontdest)) {
-        fs.unlinkSync(fontdest);
-    }
-
     /* remove from registry */
     const fontdisplayname = path.basename(fontpath, path.extname(fontpath));
     const fontreg = `reg delete "HKCU\\Software\\Microsoft\\Windows NT\\CurrentVersion\\Fonts" /v "${fontdisplayname} (TrueType)" /f`;
 
     execSync(fontreg);
+
+    try {
+        if (fs.existsSync(fontdest)) {
+            fs.unlinkSync(fontdest);
+        }
+    } catch (e) {
+        settings.logger.log(`[action-fonts] Error removing font ${fontdest}: ${e.message}`);
+    }
+
     return 1;
 }
 
@@ -80,8 +85,12 @@ const uninstallMac = async (settings, job, fontpath) => {
 
     settings.logger.log(`[action-fonts] Uninstalling font ${fontdest}...`);
 
-    if (fs.existsSync(fontdest)) {
-        fs.unlinkSync(fontdest);
+    try {
+        if (fs.existsSync(fontdest)) {
+            fs.unlinkSync(fontdest);
+        }
+    } catch (e) {
+        settings.logger.log(`[action-fonts] Error removing font ${fontdest}: ${e.message}`);
     }
 }
 
