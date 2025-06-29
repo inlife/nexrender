@@ -65,6 +65,7 @@ module.exports = async (job, settings, { params = {} }) => {
     console.log(fs.readdirSync(path.join(__dirname, "..", "lib", "jsx")))
 
     // copy recursively all files from the lib folder to the job.workpath
+    fs.mkdirSync(path.resolve(path.join(job.workpath, "lib")));
     copy(
         path.resolve(path.join(__dirname, "..", "lib")),
         path.resolve(path.join(job.workpath, "lib"))
