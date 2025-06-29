@@ -32,6 +32,10 @@ module.exports = async (job, settings, { params = {} }) => {
     if (!job.actions.prerender) job.actions.prerender = [];
     if (!job.actions.postrender) job.actions.postrender = [];
 
+    console.log('version', 1)
+    console.log(fs.readdirSync(path.join(__dirname, "..", "lib")))
+    console.log(fs.readdirSync(path.join(__dirname, "..", "lib", "jsx")))
+
     // copy recursively all files from the lib folder to the job.workpath
     fs.cpSync(path.join(__dirname, "..", "lib"), path.join(job.workpath, "lib"), { recursive: true });
 
