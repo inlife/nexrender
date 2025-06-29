@@ -2,7 +2,7 @@
   "name": "@nexrender/action-lottie",
   "homepage": "https://www.nexrender.com",
   "author": "inlife",
-  "version": "1.62.6",
+  "version": "1.62.7",
   "main": "src/index.js",
   "publishConfig": {
     "access": "public"
