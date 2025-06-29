@@ -26,7 +26,6 @@ const copy = (srcDir, dstDir) => {
     list.forEach(function(file) {
         const src = srcDir + '/' + file;
         const dst = dstDir + '/' + file;
-        console.log('[action-lottie][copy] checking stat for', src);
         const stat = fs.statSync(src);
 
         if (stat && stat.isDirectory()) {
@@ -59,10 +58,6 @@ module.exports = async (job, settings, { params = {} }) => {
     if (!job.actions) job.actions = {};
     if (!job.actions.prerender) job.actions.prerender = [];
     if (!job.actions.postrender) job.actions.postrender = [];
-
-    console.log('version', 1)
-    console.log(fs.readdirSync(path.join(__dirname, "..", "lib")))
-    console.log(fs.readdirSync(path.join(__dirname, "..", "lib", "jsx")))
 
     // copy recursively all files from the lib folder to the job.workpath
     fs.mkdirSync(path.resolve(path.join(job.workpath, "lib")));
