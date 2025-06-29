@@ -79,6 +79,9 @@ const uninstallWin = async (settings, job, fontpath) => {
         settings.logger.log(`[action-fonts] Error removing font ${fontdest} from registry: ${e.message}`);
     }
 
+    // wait for the registry to be updated
+    await new Promise(resolve => setTimeout(resolve, 1000));
+
     try {
         if (fs.existsSync(fontdest)) {
             fs.unlinkSync(fontdest);
