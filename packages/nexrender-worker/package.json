@@ -13,6 +13,9 @@
     "nexrender-worker": "src/bin.js"
   },
   "pkg": {
+    "assets": [
+      "/**/action-lottie/lib/**/*"
+    ],
     "targets": [
       "node18-macos-x64",
       "node18-win-x64"
