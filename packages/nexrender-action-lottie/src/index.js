@@ -1,3 +1,4 @@
+const fs = require("fs");
 const url = require("url");
 const path = require("path");
 const server = require("./server");
@@ -31,6 +32,9 @@ module.exports = async (job, settings, { params = {} }) => {
     if (!job.actions.prerender) job.actions.prerender = [];
     if (!job.actions.postrender) job.actions.postrender = [];
 
+    // copy recursively all files from the lib folder to the job.workpath
+    fs.cpSync(path.join(__dirname, "..", "lib"), path.join(job.workpath, "lib"), { recursive: true });
+
     // add lottie prerender finish script
     settings.logger.log(`[${job.uid}] [action-lottie] adding lottie prerender finish script`);
     job.actions.postrender.unshift({
@@ -61,8 +65,6 @@ module.exports = async (job, settings, { params = {} }) => {
         }),
     });
 
-    console.log(preparedLottieSettings);
-
     // // ln -s (Footage) folder to the temp workdir
     // fs.symlinkSync(
     //     path.resolve(path.join(__dirname, "..", "scripts", "forward")),
@@ -75,7 +77,7 @@ module.exports = async (job, settings, { params = {} }) => {
     job.assets.push(createScript({
         composition: job.template.composition,
         logPath: path.join(job.workpath, "lottie.log"),
-        bodymovinPath: path.join(__dirname, "..", "lib", "jsx"),
+        bodymovinPath: path.join(job.workpath, "lib", "jsx"),
         serverUrl: `localhost:${port}`,
         outputPath: path.join(job.workpath, '--banner--'), // will be placed in the FolderName of the provided path (/uid/banner/)
         lottiePaths,
