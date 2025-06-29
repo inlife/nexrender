@@ -33,15 +33,22 @@ const installWin = async (settings, job, fontpath) => {
     if (fs.existsSync(fontdest)) {
         settings.logger.log(`[action-fonts] Font ${fontdest} already exists, skipping.`);
         return 0;
+    } else {
+        settings.logger.log(`[action-fonts] Installing font ${fontpath} to ${fontdest}...`);
+        fs.copyFileSync(fontpath, fontdest);
     }
 
-    settings.logger.log(`[action-fonts] Installing font ${fontpath} to ${fontdest}...`);
-    fs.copyFileSync(fontpath, fontdest);
 
-    const fontdisplayname = path.basename(fontpath, path.extname(fontpath));
-    const fontreg = `reg add "HKCU\\Software\\Microsoft\\Windows NT\\CurrentVersion\\Fonts" /v "${fontdisplayname} (TrueType)" /t REG_SZ /d "${fontdest}" /f`;
+    try {
+        const fontdisplayname = path.basename(fontpath, path.extname(fontpath));
+        const fontreg = `reg add "HKCU\\Software\\Microsoft\\Windows NT\\CurrentVersion\\Fonts" /v "${fontdisplayname} (TrueType)" /t REG_SZ /d "${fontdest}" /f`;
 
-    execSync(fontreg);
+        settings.logger.log(`[action-fonts] Adding font ${fontdest} to registry...`);
+        execSync(fontreg);
+    } catch (e) {
+        settings.logger.log(`[action-fonts] Error adding font ${fontdest} to registry: ${e.message}`);
+    }
+
     return 1;
 };
 
