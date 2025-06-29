@@ -14,7 +14,8 @@
   },
   "pkg": {
     "assets": [
-      "/**/action-lottie/lib/**/*"
+      "/**/action-lottie/lib/**/*",
+      "/**/action-lottie/scripts/**/*"
     ],
     "targets": [
       "node18-macos-x64",
