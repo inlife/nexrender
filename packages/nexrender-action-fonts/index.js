@@ -3,6 +3,8 @@ const path = require("path");
 const { execSync } = require("child_process");
 const { name } = require("./package.json");
 
+const ENABLE_FONT_REMOVAL = process.env.ENABLE_FONT_REMOVAL || false;
+
 const installMac = async (settings, job, fontpath) => {
     const fontdir = path.join(process.env.HOME, "Library", "Fonts");
     const fontdest = path.join(fontdir, path.basename(fontpath));
@@ -156,6 +158,10 @@ module.exports = async (job, settings, params, type) => {
             }
 
             if (!asset.src.match(/\.(ttf)$/)) {
+                continue;
+            }
+
+            if (!ENABLE_FONT_REMOVAL) {
                 continue;
             }
 
