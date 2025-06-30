@@ -3,7 +3,8 @@ const path = require("path");
 const { execSync } = require("child_process");
 const { name } = require("./package.json");
 
-const ENABLE_FONT_REMOVAL = process.env.ENABLE_FONT_REMOVAL || false;
+const NX_ENABLE_FONT_REMOVAL = process.env.NX_ENABLE_FONT_REMOVAL || false;
+const NX_FONT_REMOVAL_RETRIES = process.env.NX_FONT_REMOVAL_RETRIES || 30;
 
 const installMac = async (settings, job, fontpath) => {
     const fontdir = path.join(process.env.HOME, "Library", "Fonts");
@@ -81,15 +82,22 @@ const uninstallWin = async (settings, job, fontpath) => {
         settings.logger.log(`[action-fonts] Error removing font ${fontdest} from registry: ${e.message}`);
     }
 
-    // wait for the registry to be updated
-    await new Promise(resolve => setTimeout(resolve, 1000));
-
-    try {
+    let retries = 0;
+    while (retries < NX_FONT_REMOVAL_RETRIES) {
         if (fs.existsSync(fontdest)) {
-            fs.unlinkSync(fontdest);
+            break;
         }
-    } catch (e) {
-        settings.logger.log(`[action-fonts] Error removing font ${fontdest}: ${e.message}`);
+        retries++;
+
+        settings.logger.log(`[action-fonts] Font ${fontdest} still exists, retrying... (${retries}/${NX_FONT_REMOVAL_RETRIES})`);
+
+        try {
+            fs.unlinkSync(fontdest);
+        } catch (e) {
+            settings.logger.log(`[action-fonts] Error removing font ${fontdest}: ${e.message}`);
+        }
+
+        await new Promise(resolve => setTimeout(resolve, 500));
     }
 
     return 1;
@@ -161,7 +169,7 @@ module.exports = async (job, settings, params, type) => {
                 continue;
             }
 
-            if (!ENABLE_FONT_REMOVAL) {
+            if (!NX_ENABLE_FONT_REMOVAL) {
                 continue;
             }
 

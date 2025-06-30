@@ -47,7 +47,7 @@ const copy = (srcDir, dstDir) => {
     return results;
 }
 
-module.exports = async (job, settings, { params = {} }) => {
+module.exports = async (job, settings, { banner = {} }) => {
     settings.logger.log(`[${job.uid}] [action-lottie] starting`);
     const port = await server.start(job, settings);
 
@@ -84,15 +84,15 @@ module.exports = async (job, settings, { params = {} }) => {
 
     const preparedLottieSettings = Object.assign({}, lottieSettings, {
         banner: Object.assign({}, lottieSettings.banner, {
-            lottie_origin: params.lottie_origin || "local",
-            lottie_renderer: params.lottie_renderer || "svg",
-            lottie_library: params.lottie_library || "full",
-            use_original_sizes: params.use_original_sizes === undefined ? true : params.use_original_sizes,
-            width: params.width === undefined ? 500 : params.width,
-            height: params.height === undefined ? 500 : params.height,
-            click_tag: params.click_tag || "#",
-            shouldLoop: params.shouldLoop === undefined ? true : params.shouldLoop,
-            loopCount: params.loopCount === undefined ? 0 : params.loopCount,
+            lottie_origin: banner.lottie_origin || "local",
+            lottie_renderer: banner.lottie_renderer || "svg",
+            lottie_library: banner.lottie_library || "full",
+            use_original_sizes: banner.use_original_sizes === undefined ? true : banner.use_original_sizes,
+            width: banner.width === undefined ? 500 : banner.width,
+            height: banner.height === undefined ? 500 : banner.height,
+            click_tag: banner.click_tag || "#",
+            shouldLoop: banner.shouldLoop === undefined ? true : banner.shouldLoop,
+            loopCount: banner.loopCount === undefined ? 0 : banner.loopCount,
         }),
     });
 
