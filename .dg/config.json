@@ -1,0 +1,30 @@
+{
+  "version": "0.1.0",
+  "project": "nexrender",
+  "outputDir": ".dg",
+  "updated": "2025-07-10T06:03:14.070Z",
+  "casts": [
+    {
+      "name": "showhelp",
+      "title": "showhelp",
+      "created": "2025-07-10T06:02:47.927Z",
+      "updated": "2025-07-10T06:02:47.927Z",
+      "interactive": false,
+      "validation": {
+        "mode": "auto"
+      },
+      "command": "nexrender-cli --help"
+    },
+    {
+      "name": "showversion",
+      "title": "showversion",
+      "created": "2025-07-10T06:03:14.069Z",
+      "updated": "2025-07-10T06:03:14.069Z",
+      "interactive": false,
+      "validation": {
+        "mode": "auto"
+      },
+      "command": "nexrender-cli --version"
+    }
+  ]
+}
