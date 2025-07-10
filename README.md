@@ -1,4 +1,4 @@
-<p align="center">
+![image](https://github.com/user-attachments/assets/561231c0-1620-4dab-ae24-3d83e5ad79e8)<p align="center">
     <img src="https://user-images.githubusercontent.com/2182108/60247318-22ba6480-98c9-11e9-8447-1cbb01db15fe.png" />
 </p>
 
@@ -172,7 +172,14 @@ npm i -g @nexrender/cli @nexrender/action-copy @nexrender/action-encode ...
 ```
 
 # Usage
-
+```
+nexrender-cli --help
+```
+![showhelp](.dg/svg/showhelp-dark.svg)
+```
+nexrender-cli --version
+```
+![showhelp](.dg/svg/showversion-dark.svg)
 We will be using `nexrender-cli` binary for this example. It's recommended to download/install it if you haven't already.
 
 >⚠ If using WSL check out [wsl support](#wsl)
