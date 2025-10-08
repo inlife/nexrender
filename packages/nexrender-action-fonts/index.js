@@ -139,12 +139,12 @@ module.exports = async (job, settings, params, type) => {
                 continue;
             }
 
-            if (!asset.src.match(/\.(ttf)$/)) {
+            if (!asset.src.match(/\.(ttf)$/) && !asset.src.match(/\.otf$/)) {
                 continue;
             }
 
             if (!asset.name) {
-                throw new Error(`Asset ${asset.src} has to be named using the "name" property that would contain the font name as it is used to be then used in the After Effets project.`);
+                throw new Error(`Asset ${asset.src} has to be named using the "name" property that would contain the font name as it is used to be then used in the After Effects project.`);
             }
 
             if (process.platform === "darwin") {
@@ -165,7 +165,7 @@ module.exports = async (job, settings, params, type) => {
                 continue;
             }
 
-            if (!asset.src.match(/\.(ttf)$/)) {
+            if (!asset.src.match(/\.(ttf)$/) && !asset.src.match(/\.otf$/)) {
                 continue;
             }
 
