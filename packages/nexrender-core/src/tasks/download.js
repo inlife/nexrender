@@ -59,6 +59,19 @@ const download = (job, settings, asset) => {
         destName += '.' + asset.extension
     }
 
+    /* Truncate filename if too long to avoid Windows MAX_PATH (260 chars) issues */
+    if (process.platform === 'win32') {
+        const maxFilenameLength = 50; // Conservative limit to account for long base paths
+        if (destName.length > maxFilenameLength) {
+            const ext = path.extname(destName);
+            const baseName = path.basename(destName, ext);
+            const randomSuffix = Math.random().toString(36).substring(2, 10); // 8 chars
+            const truncatedBase = baseName.substring(0, maxFilenameLength - ext.length - randomSuffix.length - 1);
+            destName = `${truncatedBase}-${randomSuffix}${ext}`;
+            settings.logger.log(`[${job.uid}] Truncated long filename to: ${destName}`);
+        }
+    }
+
     asset.dest = path.join(job.workpath, destName);
 
     settings.trackCombined('Asset Download', {
