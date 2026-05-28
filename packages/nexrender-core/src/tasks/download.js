@@ -33,8 +33,9 @@ const download = (job, settings, asset) => {
     if (protocol === 'data' && !asset.layerName) {
         destName = Math.random().toString(36).substring(2);
     } else {
-        // Use uri.pathname to avoid issues with forward slashes in query parameters (e.g., Adobe Scene7 URLs)
-        destName = uri.pathname || path.basename(asset.src)
+        // Use uri.pathname to avoid issues with forward slashes in query parameters (e.g., Adobe Scene7 URLs),
+        // then take basename so only the file name is used (not the full url path, which would create subfolders)
+        destName = path.basename(uri.pathname || asset.src)
         destName = destName.indexOf('?') !== -1 ? destName.slice(0, destName.indexOf('?')) : destName;
         /* ^ remove possible query search string params ^ */
         destName = decodeURI(destName) /* < remove/decode any special URI symbols within filename */
