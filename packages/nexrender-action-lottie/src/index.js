@@ -109,7 +109,7 @@ module.exports = async (job, settings, { banner = {} }) => {
         composition: job.template.composition,
         logPath: path.join(job.workpath, "lottie.log"),
         bodymovinPath: path.join(job.workpath, "lib", "jsx"),
-        serverUrl: `localhost:${port}`,
+        serverUrl: `127.0.0.1:${port}`,
         outputPath: path.join(job.workpath, '--banner--'), // will be placed in the FolderName of the provided path (/uid/banner/)
         lottiePaths,
         lottieSettings: preparedLottieSettings,
